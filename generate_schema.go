@@ -518,7 +518,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*ogen.Parameter
 			filters = append(filters, &ogen.Parameter{
 				Name:        "has." + CamelCase(SnakeCase(entityName)),
 				In:          "query",
-				Description: fmt.Sprintf("If true, only return entities that have an %s edge.", entityName),
+				Description: fmt.Sprintf("If true, only return entities that have a %s edge.", entityName),
 				Schema:      &ogen.Schema{Type: "boolean"},
 			})
 

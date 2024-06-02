@@ -17,31 +17,6 @@ import (
 	"github.com/ogen-go/ogen/jsonschema"
 )
 
-// Structure:
-// - /<entity>
-//   get -> Schema<<entity>List -> edges use <entity> not <entity>Read>
-//   post -> inline <entity>
-// - /<entity>/{id}
-//   get -> Schema<<entity>Read>
-//   patch -> inline <entity>
-//   delete -> empty response
-// - /<entity>/{id}/<edge>
-//   get -> Schema<<edge>List>
-//
-// Schema naming convention:
-// - <entity>Create
-//   - entity with defaults set to not required, no edges.
-// - <entity>Update
-//   - entity with all fields set to not required, no edges.
-// - <entity>Read
-//   - entity with first level of eager loaded edges.
-// - <entity>List
-//   - paginated object with content being a list of <entity>Read (including eager loaded edges).
-// - <entity>
-//   - entity with all fields, but no eager loaded edges (meant for <entity> -> <edge> so <edge> doesn't also load it's own edges).
-//
-// Eager loaded edges should be able to just reference the <entity>Read or <entity>List schema.
-
 const eagerLoadDepthMessage = "If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -> edge, not entity -> edge -> edge -> etc)."
 
 func newBaseSpec(cfg *Config) *ogen.Spec {
@@ -119,7 +94,7 @@ func newBaseSpec(cfg *Config) *ogen.Spec {
 					Schema: &ogen.Schema{
 						Type:        "boolean",
 						Description: "If true, the current results are the last page of results.",
-						Example:     jsonschema.RawValue(`true`),
+						Example:     jsonschema.RawValue(`false`),
 					},
 				},
 			},
@@ -303,7 +278,7 @@ func GenSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			Responses: ogen.Responses{
 				strconv.Itoa(http.StatusOK): ogen.NewResponse().
 					SetDescription(fmt.Sprintf("The requested %s.", entityName)).
-					SetJSONContent(ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "Read")),
+					SetJSONContent(ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "List")),
 			},
 		}
 
