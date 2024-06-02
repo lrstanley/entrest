@@ -44,7 +44,10 @@ var ( // Ensure that Annotation implements necessary interfaces.
 )
 
 type Annotation struct {
-	// WARNING: if you add a new field, ensure you update the Merge method.
+	// WARNING: if you add a new field, ensure you update the Merge method, the Get*
+	// methods (primarily only if there are three states for an annotation field, e.g.
+	// when the the field default can be changed via the global config), and if
+	// necessary, the With* methods.
 
 	// Fields that map directly to the OpenAPI schema.
 
@@ -248,117 +251,117 @@ func (a *Annotation) GetOperationID(op Operation) string {
 	return a.OperationID[op]
 }
 
-// OperationSummary provides a summary for the specified operation.
-func OperationSummary(op Operation, v string) Annotation {
+// WithOperationSummary provides a summary for the specified operation.
+func WithOperationSummary(op Operation, v string) Annotation {
 	return Annotation{OperationSummary: map[Operation]string{op: v}}
 }
 
-// OperationDescription provides a description for the specified operation.
-func OperationDescription(op Operation, v string) Annotation {
+// WithOperationDescription provides a description for the specified operation.
+func WithOperationDescription(op Operation, v string) Annotation {
 	return Annotation{OperationDescription: map[Operation]string{op: v}}
 }
 
-// AdditionalTags adds additional tags to all operations for this schema/edge.
-func AdditionalTags(v ...string) Annotation {
+// WithAdditionalTags adds additional tags to all operations for this schema/edge.
+func WithAdditionalTags(v ...string) Annotation {
 	return Annotation{AdditionalTags: v}
 }
 
-// Tags sets the tags for the schema/edge in the REST API. This will otherwise default
+// WithTags sets the tags for the schema/edge in the REST API. This will otherwise default
 // to the schema/edge's name(s).
-func Tags(v ...string) Annotation {
+func WithTags(v ...string) Annotation {
 	return Annotation{Tags: v}
 }
 
-func OperationID(op Operation, v string) Annotation {
+func WithOperationID(op Operation, v string) Annotation {
 	return Annotation{OperationID: map[Operation]string{op: v}}
 }
 
-// Description sets the description for the schema/edge/field in the REST API. This will
+// WithDescription sets the description for the schema/edge/field in the REST API. This will
 // otherwise default to the schema/edge/field's description according to Ent (e.g. the
 // comment).
-func Description(v string) Annotation {
+func WithDescription(v string) Annotation {
 	return Annotation{Description: v}
 }
 
-// Pagination sets the schema to be paginated in the REST API. This is not required to be
+// WithPagination sets the schema to be paginated in the REST API. This is not required to be
 // provided unless pagination was disabled globally.
-func Pagination(v bool) Annotation {
+func WithPagination(v bool) Annotation {
 	return Annotation{Pagination: ptr(v)}
 }
 
-// MinItemsPerPage sets an explicit minimum number of items per page for paginated calls.
-func MinItemsPerPage(v int) Annotation {
+// WithMinItemsPerPage sets an explicit minimum number of items per page for paginated calls.
+func WithMinItemsPerPage(v int) Annotation {
 	return Annotation{MinItemsPerPage: v}
 }
 
-// MaxItemsPerPage sets an explicit maximum number of items per page for paginated calls.
-func MaxItemsPerPage(v int) Annotation {
+// WithMaxItemsPerPage sets an explicit maximum number of items per page for paginated calls.
+func WithMaxItemsPerPage(v int) Annotation {
 	return Annotation{MaxItemsPerPage: v}
 }
 
-// ItemsPerPage sets an explicit default number of items per page for paginated calls.
-func ItemsPerPage(v int) Annotation {
+// WithItemsPerPage sets an explicit default number of items per page for paginated calls.
+func WithItemsPerPage(v int) Annotation {
 	return Annotation{ItemsPerPage: v}
 }
 
-// EagerLoad sets the edge to be eager-loaded in the REST API for each associated
+// WithEagerLoad sets the edge to be eager-loaded in the REST API for each associated
 // entity. Note that edges are not eager-loaded by default.
-func EagerLoad(v bool) Annotation {
+func WithEagerLoad(v bool) Annotation {
 	return Annotation{EagerLoad: ptr(v)}
 }
 
-// Filter sets the field to be filterable with the provided predicate(s). When applied
+// WithFilter sets the field to be filterable with the provided predicate(s). When applied
 // on an edge with [FilterEdge], it will include the fields associated with the edge
 // that are also filterable.
 //
 // Example:
 //
-//	entrest.Filter(entrest.FilterGroupArray | entrest.FilterGroupLength) // Bundle using groups.
-//	entrest.Filter(entrest.FilterEQ | entrest.FilterNEQ) // Or use individual predicates.
-func Filter(v Predicate) Annotation {
+//	entrest.WithFilter(entrest.FilterGroupArray | entrest.FilterGroupLength) // Bundle using groups.
+//	entrest.WithFilter(entrest.FilterEQ | entrest.FilterNEQ) // Or use individual predicates.
+func WithFilter(v Predicate) Annotation {
 	return Annotation{Filter: v}
 }
 
-// Handler sets the schema/edge to have an HTTP handler generated for it.
-func Handler(v bool) Annotation {
+// WithHandler sets the schema/edge to have an HTTP handler generated for it.
+func WithHandler(v bool) Annotation {
 	return Annotation{Handler: ptr(v)}
 }
 
-// Sortable sets the field to be sortable in the REST API.
-func Sortable(v bool) Annotation {
+// WithSortable sets the field to be sortable in the REST API.
+func WithSortable(v bool) Annotation {
 	return Annotation{Sortable: v}
 }
 
-// Skip sets the schema, edge, or field to be skipped in the REST API.
-func Skip(v bool) Annotation {
+// WithSkip sets the schema, edge, or field to be skipped in the REST API.
+func WithSkip(v bool) Annotation {
 	return Annotation{Skip: v}
 }
 
-// ReadOnly sets the field to be read-only in the REST API. If you want to make
+// WithReadOnly sets the field to be read-only in the REST API. If you want to make
 // a schema or edge read-only, use the Operations annotation instead.
-func ReadOnly(v bool) Annotation {
+func WithReadOnly(v bool) Annotation {
 	return Annotation{ReadOnly: v}
 }
 
-// Example sets the OpenAPI Specification example value for a field.
-func Example(v any) Annotation {
+// WithExample sets the OpenAPI Specification example value for a field.
+func WithExample(v any) Annotation {
 	return Annotation{Example: v}
 }
 
-// Schema sets the OpenAPI schema for a field.
-func Schema(v *ogen.Schema) Annotation {
+// WithSchema sets the OpenAPI schema for a field.
+func WithSchema(v *ogen.Schema) Annotation {
 	return Annotation{Schema: v}
 }
 
-// IncludeOperations includes the specified operations in the REST API for the
+// WithIncludeOperations includes the specified operations in the REST API for the
 // schema. If empty, all operations are generated (unless globally disabled).
-func IncludeOperations(v ...Operation) Annotation {
+func WithIncludeOperations(v ...Operation) Annotation {
 	return Annotation{Operations: v}
 }
 
-// ExcludeOperations excludes the specified operations in the REST API for the
+// WithExcludeOperations excludes the specified operations in the REST API for the
 // schema. If empty, all operations are generated (unless globally disabled).
-func ExcludeOperations(v ...Operation) Annotation {
+func WithExcludeOperations(v ...Operation) Annotation {
 	var ops []Operation
 	for _, o := range AllOperations {
 		if !slices.Contains(v, o) {
