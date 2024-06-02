@@ -3,7 +3,7 @@
   "nodescription": true
 }
 -->
-![logo](https://liam.sh/-/gh/svg/lrstanley/entrest?layout=left&icon=logos%3Aopenapi&icon.height=70&bg=geometric&bgcolor=rgba%2810%2C+10%2C+10%2C+1%29)
+![logo](https://liam.sh/-/gh/svg/lrstanley/entrest?layout=left&icon=logos%3Aopenapi&icon.height=60&bg=geometric&bgcolor=rgba%2810%2C+10%2C+10%2C+1%29)
 
 <!-- template:begin:header -->
 <!-- template:end:header -->
