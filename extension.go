@@ -62,6 +62,12 @@ func (e *Extension) Hooks() []gen.Hook {
 }
 
 func (e *Extension) Generate(g *gen.Graph) error {
+	// Validate all annotations first.
+	err := ValidateAnnotations(g)
+	if err != nil {
+		return fmt.Errorf("failed to validate annotations: %w", err)
+	}
+
 	// TODO: how do we make this more configurable?
 	spec := ogen.NewSpec().
 		SetOpenAPI("3.0.3").
@@ -112,7 +118,7 @@ func (e *Extension) Generate(g *gen.Graph) error {
 		}
 	}
 
-	err := MergeSpecOverlap(spec, specs...)
+	err = MergeSpecOverlap(spec, specs...)
 	if err != nil {
 		panic(err)
 	}

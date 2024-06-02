@@ -7,7 +7,9 @@ package entrest
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 	"slices"
+	"strings"
 
 	"entgo.io/ent/entc/gen"
 	"entgo.io/ent/schema"
@@ -38,11 +40,33 @@ func decodeAnnotation(as gen.Annotations) *Annotation {
 	return ant
 }
 
+// ValidateAnnotations ensures that all annotations on the given graph are correctly
+// attached to the right types (e.g. a field-only annotation on a schema or edge type).
+func ValidateAnnotations(graph *gen.Graph) error {
+	for _, t := range graph.Nodes {
+		if err := GetAnnotation(t).getSupportedType(t.Name, "schema"); err != nil {
+			return err
+		}
+		for _, f := range t.Fields {
+			if err := GetAnnotation(f).getSupportedType(f.Name, "field"); err != nil {
+				return err
+			}
+		}
+		for _, e := range t.Edges {
+			if err := GetAnnotation(e).getSupportedType(e.Name, "edge"); err != nil {
+				return err
+			}
+		}
+	}
+	return nil
+}
+
 var ( // Ensure that Annotation implements necessary interfaces.
 	_ schema.Annotation = (*Annotation)(nil)
 	_ schema.Merger     = (*Annotation)(nil)
 )
 
+// Annotation adds configuration options for specific layers of the Ent graph.
 type Annotation struct {
 	// WARNING: if you add a new field, ensure you update the Merge method, the Get*
 	// methods (primarily only if there are three states for an annotation field, e.g.
@@ -51,29 +75,55 @@ type Annotation struct {
 
 	// Fields that map directly to the OpenAPI schema.
 
-	AdditionalTags       []string             `json:",omitempty"` // schema/edge.
-	Tags                 []string             `json:",omitempty"` // schema/edge.
-	OperationSummary     map[Operation]string `json:",omitempty"` // schema/edge.
-	OperationDescription map[Operation]string `json:",omitempty"` // schema/edge.
-	OperationID          map[Operation]string `json:",omitempty"` // schema/edge.
-	Description          string               `json:",omitempty"` // schema/edge/field.
-	Example              any                  `json:",omitempty"` // field.
-	Deprecated           bool                 `json:",omitempty"` // schema/edge/field.
-	Schema               *ogen.Schema         `json:",omitempty"` // field.
+	AdditionalTags       []string             `json:",omitempty" ent:"schema,edge"`
+	Tags                 []string             `json:",omitempty" ent:"schema,edge"`
+	OperationSummary     map[Operation]string `json:",omitempty" ent:"schema,edge"`
+	OperationDescription map[Operation]string `json:",omitempty" ent:"schema,edge"`
+	OperationID          map[Operation]string `json:",omitempty" ent:"schema,edge"`
+	Description          string               `json:",omitempty" ent:"schema,edge,field"`
+	Example              any                  `json:",omitempty" ent:"field"`
+	Deprecated           bool                 `json:",omitempty" ent:"schema,edge,field"`
+	Schema               *ogen.Schema         `json:",omitempty" ent:"field"`
 
 	// All others.
 
-	Pagination      *bool       `json:",omitempty"` // schema/edge.
-	MinItemsPerPage int         `json:",omitempty"` // schema/edge.
-	MaxItemsPerPage int         `json:",omitempty"` // schema/edge.
-	ItemsPerPage    int         `json:",omitempty"` // schema/edge.
-	EagerLoad       *bool       `json:",omitempty"` // edge.
-	Filter          Predicate   `json:",omitempty"` // schema/edge/field.
-	Handler         *bool       `json:",omitempty"` // schema/edge.
-	Sortable        bool        `json:",omitempty"` // field.
-	Skip            bool        `json:",omitempty"` // schema/edge/field.
-	ReadOnly        bool        `json:",omitempty"` // field.
-	Operations      []Operation `json:",omitempty"` // schema/edge.
+	Pagination      *bool       `json:",omitempty" ent:"schema,edge"`
+	MinItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
+	MaxItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
+	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
+	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
+	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
+	Handler         *bool       `json:",omitempty" ent:"schema,edge"`
+	Sortable        bool        `json:",omitempty" ent:"field"`
+	Skip            bool        `json:",omitempty" ent:"schema,edge,field"`
+	ReadOnly        bool        `json:",omitempty" ent:"field"`
+	Operations      []Operation `json:",omitempty" ent:"schema,edge"`
+}
+
+// getSupportedType uses reflection to check if the annotation is supported on the
+// given type, returning an error if it is not with information about the annotation
+// and what type it is on.
+func (a Annotation) getSupportedType(name, typ string) error {
+	ant := reflect.ValueOf(a)
+
+	for i := range ant.NumField() {
+		if ant.Field(i).IsZero() || (reflect.ValueOf(ant.Field(i)).Kind() == reflect.Ptr && ant.Field(i).IsNil()) {
+			continue
+		}
+
+		supported := strings.Split(ant.Type().Field(i).Tag.Get("ent"), ",")
+
+		if !slices.Contains(supported, typ) {
+			return fmt.Errorf(
+				"annotation field %q is set on %q %s type, but only one of the following types is supported: %s",
+				ant.Type().Field(i).Name,
+				name,
+				typ,
+				strings.Join(supported, ", "),
+			)
+		}
+	}
+	return nil
 }
 
 func (Annotation) Name() string {
