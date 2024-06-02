@@ -78,7 +78,12 @@ func newBaseSpec(cfg *Config) *ogen.Spec {
 				},
 			},
 		},
-		Tags: []ogen.Tag{},
+		Tags: []ogen.Tag{
+			{
+				Name:        "Meta",
+				Description: "Includes various endpoints for meta information about the service, like the OpenAPI spec, version, health, etc.",
+			},
+		},
 	}
 
 	if !cfg.DisablePagination {

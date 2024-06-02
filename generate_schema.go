@@ -137,7 +137,6 @@ func GenSchemaField(f *gen.Field) (*ogen.Schema, error) {
 // has edges). Note that depending on the operation, this schema may be for the request or
 // response, or both. Recursive should always be true for the first call.
 func GenSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolint:funlen,gocyclo,cyclop
-	// TODO: can I use t.IsEdgeSchema() here to bypass the need for a recurse bool?
 	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t)
 
