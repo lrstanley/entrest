@@ -19,7 +19,7 @@ func sliceToRawMessage[T any](v []T) []json.RawMessage {
 	for i, v := range v {
 		r[i], err = json.Marshal(v)
 		if err != nil {
-			panic(fmt.Sprintf("failed to marshal %v: %w", v, err))
+			panic(fmt.Sprintf("failed to marshal %v: %v", v, err))
 		}
 	}
 	return r
