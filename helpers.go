@@ -81,3 +81,13 @@ func withDefault[T comparable](v T, defaults ...T) T {
 	}
 	return v
 }
+
+// mapKeys returns the keys of the map m, sorted.
+func mapKeys[M ~map[K]V, K cmp.Ordered, V any](m M) []K {
+	r := make([]K, 0, len(m))
+	for k := range m {
+		r = append(r, k)
+	}
+	slices.Sort(r)
+	return r
+}

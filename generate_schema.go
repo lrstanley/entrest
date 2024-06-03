@@ -424,12 +424,14 @@ func GetSortableFields(t *gen.Type) (sortable []string) {
 	return sortable
 }
 
-func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*ogen.Parameter) {
+func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters map[string]*ogen.Parameter) {
 	ta := GetAnnotation(t.ID)
 
 	if ta.Skip {
 		return nil
 	}
+
+	filters = map[string]*ogen.Parameter{}
 
 	for _, f := range t.Fields {
 		fa := GetAnnotation(f)
@@ -497,11 +499,11 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*ogen.Parameter
 
 			if edge != nil {
 				param.Name = CamelCase(SnakeCase(Singularize(edge.Name))) + "." + CamelCase(f.Name) + "." + predicateFormat(op)
+				filters["Edge"+PascalCase(Singularize(edge.Name))+PascalCase(f.Name)+PascalCase(op.Name())] = param
 			} else {
 				param.Name = CamelCase(f.Name) + "." + predicateFormat(op)
+				filters[PascalCase(t.Name)+PascalCase(f.Name)+PascalCase(op.Name())] = param
 			}
-
-			filters = append(filters, param)
 		}
 	}
 
@@ -515,25 +517,18 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*ogen.Parameter
 
 			entityName := Singularize(e.Name)
 
-			filters = append(filters, &ogen.Parameter{
+			filters["EdgeHas"+PascalCase(Singularize(e.Name))] = &ogen.Parameter{
 				Name:        "has." + CamelCase(SnakeCase(entityName)),
 				In:          "query",
 				Description: fmt.Sprintf("If true, only return entities that have a %s edge.", entityName),
 				Schema:      &ogen.Schema{Type: "boolean"},
-			})
+			}
 
-			filters = append(filters, GetFilterableFields(e.Type, e)...)
+			for k, v := range GetFilterableFields(e.Type, e) {
+				filters[k] = v
+			}
 		}
 	}
-
-	slices.SortFunc(filters, func(a, b *ogen.Parameter) int {
-		if a.Name < b.Name {
-			return -1
-		} else if a.Name > b.Name {
-			return 1
-		}
-		return 0
-	})
 
 	return filters
 }
