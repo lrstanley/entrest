@@ -135,6 +135,16 @@ func GenSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		return nil, err
 	}
 
+	if op != OperationList {
+		spec.Components.Parameters[entityName+"ID"] = &ogen.Parameter{
+			Name:        "id",
+			In:          "path",
+			Description: fmt.Sprintf("The ID of the %s to act upon.", entityName),
+			Required:    true,
+			Schema:      idSchema,
+		}
+	}
+
 	for k, v := range GenSchemaType(t, op) {
 		spec.Components.Schemas[k] = v
 	}
@@ -201,13 +211,7 @@ func GenSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			Patch:       oper,
 			Parameters: []*ogen.Parameter{
 				{Ref: "#/components/parameters/PrettyResponse"},
-				{
-					Name:        "id",
-					In:          "path",
-					Description: fmt.Sprintf("The ID of the %s to act upon.", entityName),
-					Required:    true,
-					Schema:      idSchema,
-				},
+				{Ref: "#/components/parameters/" + entityName + "ID"},
 			},
 		}
 	case OperationRead:
@@ -241,13 +245,7 @@ func GenSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			Get:         oper,
 			Parameters: []*ogen.Parameter{
 				{Ref: "#/components/parameters/PrettyResponse"},
-				{
-					Name:        "id",
-					In:          "path",
-					Description: fmt.Sprintf("The ID of the %s to act upon.", entityName),
-					Required:    true,
-					Schema:      idSchema,
-				},
+				{Ref: "#/components/parameters/" + entityName + "ID"},
 			},
 		}
 	case OperationList:
@@ -342,13 +340,7 @@ func GenSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			Description: fmt.Sprintf("Operate on a single %s entity by its ID.", entityName),
 			Delete:      oper,
 			Parameters: []*ogen.Parameter{
-				{
-					Name:        "id",
-					In:          "path",
-					Description: fmt.Sprintf("The ID of the %s to act upon.", entityName),
-					Required:    true,
-					Schema:      idSchema,
-				},
+				{Ref: "#/components/parameters/" + entityName + "ID"},
 			},
 		}
 	default:
@@ -389,6 +381,14 @@ func GenSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) {
 	idSchema, err := GenSchemaField(t.ID)
 	if err != nil {
 		return nil, err
+	}
+
+	spec.Components.Parameters[rootEntityName+"ID"] = &ogen.Parameter{
+		Name:        "id",
+		In:          "path",
+		Description: fmt.Sprintf("The ID of the %s to act upon.", rootEntityName),
+		Required:    true,
+		Schema:      idSchema,
 	}
 
 	for k, v := range GenSchemaType(t, op) {
@@ -437,13 +437,7 @@ func GenSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) {
 			Get:         oper,
 			Parameters: []*ogen.Parameter{
 				{Ref: "#/components/parameters/PrettyResponse"},
-				{
-					Name:        "id",
-					In:          "path",
-					Description: fmt.Sprintf("The ID of the %s entity which this edge is attached to.", rootEntityName),
-					Required:    true,
-					Schema:      idSchema,
-				},
+				{Ref: "#/components/parameters/" + rootEntityName + "ID"},
 			},
 		}
 	case OperationList: // Not unique.
@@ -522,6 +516,7 @@ func GenSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) {
 			Get:         oper,
 			Parameters: []*ogen.Parameter{
 				{Ref: "#/components/parameters/PrettyResponse"},
+				{Ref: "#/components/parameters/" + rootEntityName + "ID"},
 			},
 		}
 	default:
