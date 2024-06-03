@@ -68,16 +68,26 @@ func (e *Extension) Generate(g *gen.Graph) error {
 		return fmt.Errorf("failed to validate annotations: %w", err)
 	}
 
-	// TODO: how do we make this more configurable?
-	spec := ogen.NewSpec().
-		SetOpenAPI("3.0.3").
-		SetInfo(
-			ogen.NewInfo().
-				SetTitle("API").
-				SetVersion("1.0.0"),
-		)
+	spec := e.config.Spec
+	if spec == nil {
+		spec = ogen.NewSpec()
+	}
+
+	// If they weren't provided, set some defaults which are required by OpenAPI,
+	// as well as most code-generators.
+	if spec.OpenAPI == "" {
+		spec.OpenAPI = OpenAPIVersion
+	}
+	if spec.Info.Title == "" {
+		spec.Info.Title = "EntGo Generated REST API"
+	}
+	if spec.Info.Version == "" {
+		spec.Info.Version = "1.0.0"
+	}
 
 	var specs []*ogen.Spec
+	var tspec *ogen.Spec
+
 	for _, t := range g.Nodes {
 		ta := GetAnnotation(t)
 
@@ -86,7 +96,7 @@ func (e *Extension) Generate(g *gen.Graph) error {
 		}
 
 		for _, op := range ta.GetOperations(e.config) {
-			tspec, err := GenSpecType(t, op)
+			tspec, err = GenSpecType(t, op)
 			if err != nil {
 				panic(err)
 			}
@@ -100,9 +110,6 @@ func (e *Extension) Generate(g *gen.Graph) error {
 			}
 
 			ops := ta.GetOperations(e.config)
-
-			var tspec *ogen.Spec
-			var err error
 
 			if edge.Unique && slices.Contains(ops, OperationRead) {
 				tspec, err = GenSpecEdge(t, edge, OperationRead)

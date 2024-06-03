@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
+	"github.com/ogen-go/ogen"
 )
 
 var _ entc.Annotation = (*Config)(nil)
@@ -18,6 +19,10 @@ var _ entc.Annotation = (*Config)(nil)
 // Config holds the main configuration for this extension.
 type Config struct {
 	isValidated bool
+
+	// Spec is an optional default spec to merge all generated endpoints/schemas/etc
+	// into, which will allow you to specify API info, servers, security schemes, etc.
+	Spec *ogen.Spec
 
 	// DisablePagination disables pagination support for all schemas by default.
 	// It scan still be enabled on a per-schema basis with annotations.

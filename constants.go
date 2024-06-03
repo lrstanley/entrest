@@ -12,6 +12,8 @@ import (
 	"github.com/stoewer/go-strcase"
 )
 
+const OpenAPIVersion = "3.0.3"
+
 var (
 	// Add all casing and word-massaging functions here so others can use them if they
 	// want to customize the naming of their spec/endpoints/etc.
