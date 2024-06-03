@@ -32,6 +32,9 @@ func mergeOperation(overlap bool, orig, op *ogen.Operation) (*ogen.Operation, er
 		return oldParam.Name == newParam.Name
 	})
 
+	if orig.Responses == nil {
+		orig.Responses = map[string]*ogen.Response{}
+	}
 	err := mergeMap(overlap, orig.Responses, op.Responses)
 	if err != nil {
 		return nil, err
@@ -138,29 +141,50 @@ func mergeSpec(overlap bool, orig *ogen.Spec, toMerge ...*ogen.Spec) error {
 		}
 
 		if spec.Components != nil {
+			if orig.Components.Schemas == nil {
+				orig.Components.Schemas = map[string]*ogen.Schema{}
+			}
 			err = mergeMap(overlap, orig.Components.Schemas, spec.Components.Schemas)
 			if err != nil {
 				return err
+			}
+			if orig.Components.Responses == nil {
+				orig.Components.Responses = map[string]*ogen.Response{}
 			}
 			err = mergeMap(overlap, orig.Components.Responses, spec.Components.Responses)
 			if err != nil {
 				return err
 			}
+			if orig.Components.Parameters == nil {
+				orig.Components.Parameters = map[string]*ogen.Parameter{}
+			}
 			err = mergeMap(overlap, orig.Components.Parameters, spec.Components.Parameters)
 			if err != nil {
 				return err
+			}
+			if orig.Components.RequestBodies == nil {
+				orig.Components.RequestBodies = map[string]*ogen.RequestBody{}
 			}
 			err = mergeMap(overlap, orig.Components.RequestBodies, spec.Components.RequestBodies)
 			if err != nil {
 				return err
 			}
+			if orig.Components.Headers == nil {
+				orig.Components.Headers = map[string]*ogen.Header{}
+			}
 			err = mergeMap(overlap, orig.Components.Headers, spec.Components.Headers)
 			if err != nil {
 				return err
 			}
+			if orig.Components.SecuritySchemes == nil {
+				orig.Components.SecuritySchemes = map[string]*ogen.SecurityScheme{}
+			}
 			err = mergeMap(overlap, orig.Components.SecuritySchemes, spec.Components.SecuritySchemes)
 			if err != nil {
 				return err
+			}
+			if orig.Components.PathItems == nil {
+				orig.Components.PathItems = map[string]*ogen.PathItem{}
 			}
 			err = mergeMap(overlap, orig.Components.PathItems, spec.Components.PathItems)
 			if err != nil {

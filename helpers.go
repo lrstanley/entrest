@@ -5,14 +5,19 @@
 package entrest
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
+	"slices"
 )
 
+// ptr returns a pointer to the given value. Should only be used for primitives.
 func ptr[T any](v T) *T {
 	return &v
 }
 
+// sliceToRawMessage returns a slice of json.RawMessage from a slice of T. Panics
+// if any of the values cannot be marshaled to JSON.
 func sliceToRawMessage[T any](v []T) []json.RawMessage {
 	r := make([]json.RawMessage, len(v))
 	var err error
@@ -25,6 +30,8 @@ func sliceToRawMessage[T any](v []T) []json.RawMessage {
 	return r
 }
 
+// appendIfNotContainsFunc returns a copy of orig with newv appended to it, but only if
+// newv does not already exist in orig. fn is used to determine if two values are equal.
 func appendIfNotContainsFunc[T any](orig, newv []T, fn func(oldv, newv T) (matches bool)) []T {
 	for _, v := range newv {
 		var found bool
@@ -41,15 +48,20 @@ func appendIfNotContainsFunc[T any](orig, newv []T, fn func(oldv, newv T) (match
 	return orig
 }
 
+// appendIfNotContains returns a copy of orig with newv appended to it, but only if
+// newv does not already exist in orig. T must be comparable.
 func appendIfNotContains[T comparable](orig, newv []T) []T {
 	return appendIfNotContainsFunc(orig, newv, func(oldv, newv T) bool {
 		return oldv == newv
 	})
 }
 
+// mergeMap returns a copy of orig with newv merged into it, but only if
+// newv does not already exist in orig. If orig is nil, this will panic, as we cannot
+// merge into a nil map without returning a new map.
 func mergeMap[K comparable, V any](overlap bool, orig, newv map[K]V) error {
 	if orig == nil {
-		orig = make(map[K]V)
+		panic("orig is nil")
 	}
 	if newv == nil {
 		return nil
