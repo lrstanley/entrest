@@ -43,7 +43,9 @@ func mergeOperation(overlap bool, orig, op *ogen.Operation) (*ogen.Operation, er
 	return orig, nil
 }
 
-func mergeSpec(overlap bool, orig *ogen.Spec, toMerge ...*ogen.Spec) error {
+// mergeSpec merges multiple [ogen.Spec] into a single [ogen.Spec]. See [MergeSpec] and
+// [MergeSpecOverlap] for more information.
+func mergeSpec(overlap bool, orig *ogen.Spec, toMerge ...*ogen.Spec) error { //nolint:gocyclo,cyclop,funlen
 	var err error
 
 	for _, spec := range toMerge {
@@ -202,11 +204,15 @@ func mergeSpec(overlap bool, orig *ogen.Spec, toMerge ...*ogen.Spec) error {
 
 // MergeSpec merges multiple [ogen.Spec] into a single [ogen.Spec]. This does not cover
 // all possible fields, and is not a full merge. It's a simple merge at the core-component
-// level, for thingsl ike servers, paths, components, tags, etc.
+// level, for things like servers, paths, components, tags, etc.
 func MergeSpec(orig *ogen.Spec, toMerge ...*ogen.Spec) error {
 	return mergeSpec(false, orig, toMerge...)
 }
 
+// MergeSpecOverlap merges multiple [ogen.Spec] into a single [ogen.Spec], allowing for
+// overlapping fields. This does not cover all possible fields, and is not a full merge.
+// It's a simple merge at the core-component level, for things like servers, paths, components,
+// tags, etc.
 func MergeSpecOverlap(orig *ogen.Spec, toMerge ...*ogen.Spec) error {
 	return mergeSpec(true, orig, toMerge...)
 }
