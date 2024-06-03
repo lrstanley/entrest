@@ -96,7 +96,7 @@ func (e *Extension) Generate(g *gen.Graph) error {
 		}
 
 		for _, op := range ta.GetOperations(e.config) {
-			tspec, err = GenSpecType(t, op)
+			tspec, err = GetSpecType(t, op)
 			if err != nil {
 				panic(err)
 			}
@@ -112,10 +112,10 @@ func (e *Extension) Generate(g *gen.Graph) error {
 			ops := ta.GetOperations(e.config)
 
 			if edge.Unique && slices.Contains(ops, OperationRead) {
-				tspec, err = GenSpecEdge(t, edge, OperationRead)
+				tspec, err = GetSpecEdge(t, edge, OperationRead)
 			}
 			if !edge.Unique && slices.Contains(ops, OperationList) {
-				tspec, err = GenSpecEdge(t, edge, OperationList)
+				tspec, err = GetSpecEdge(t, edge, OperationList)
 			}
 
 			if err != nil {

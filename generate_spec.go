@@ -117,7 +117,10 @@ func newBaseSpec(cfg *Config) *ogen.Spec {
 	return spec
 }
 
-func GenSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funlen,gocyclo,cyclop
+// GetSpecType generates an independent spec for the given type, which should encapsulate
+// all schemas, parameters, components and paths for the provided type that can then be
+// merged into another spec.
+func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funlen,gocyclo,cyclop
 	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t)
 
@@ -130,7 +133,7 @@ func GenSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		Description: ta.Description,
 	})
 
-	idSchema, err := GenSchemaField(t.ID)
+	idSchema, err := GetSchemaField(t.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +148,7 @@ func GenSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	}
 
-	for k, v := range GenSchemaType(t, op) {
+	for k, v := range GetSchemaType(t, op) {
 		spec.Components.Schemas[k] = v
 	}
 
@@ -354,7 +357,10 @@ func GenSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 	return spec, nil
 }
 
-func GenSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) {
+// GetSpecEdge generates an independent spec for the given edge, which should encapsulate
+// all schemas, parameters, components and paths for the provided edge that can then be
+// merged into another spec.
+func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { // nolint:funlen,gocyclo,cyclop
 	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t)
 	ea := GetAnnotation(e)
@@ -382,7 +388,7 @@ func GenSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) {
 		},
 	)
 
-	idSchema, err := GenSchemaField(t.ID)
+	idSchema, err := GetSchemaField(t.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -395,10 +401,10 @@ func GenSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) {
 		Schema:      idSchema,
 	}
 
-	for k, v := range GenSchemaType(t, op) {
+	for k, v := range GetSchemaType(t, op) {
 		spec.Components.Schemas[k] = v
 	}
-	for k, v := range GenSchemaType(e.Type, op) {
+	for k, v := range GetSchemaType(e.Type, op) {
 		spec.Components.Schemas[k] = v
 	}
 
@@ -534,6 +540,8 @@ func GenSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) {
 	return spec, nil
 }
 
+// edgesToTags allows providing additional tags for a given operation based on the
+// eager-loaded schemas in the response schema.
 func edgesToTags(cfg *Config, t *gen.Type) (tags []string) {
 	for _, e := range t.Edges {
 		ea := GetAnnotation(e)

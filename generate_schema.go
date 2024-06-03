@@ -59,7 +59,10 @@ func mapTypeToSchema(baseType string) *ogen.Schema {
 	}
 }
 
-func GenSchemaField(f *gen.Field) (*ogen.Schema, error) {
+// GetSchemaField generates a schema for the given field, if its supported. If the
+// field you have provided is not supported, use the [WithSchema] annotation on the
+// field to provide a custom schema (primarily beneficial for JSON fields).
+func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 	fa := GetAnnotation(f)
 
 	var err error
@@ -132,11 +135,11 @@ func GenSchemaField(f *gen.Field) (*ogen.Schema, error) {
 	return schema, nil
 }
 
-// GenSchematype returns a map of ogen.Schemas for the given gen.Type. Multiple may be
+// GetSchemaType returns a map of ogen.Schemas for the given gen.Type. Multiple may be
 // returned if the type has multiple schemas (e.g. a list of entities, or an entity which
 // has edges). Note that depending on the operation, this schema may be for the request or
 // response, or both. Recursive should always be true for the first call.
-func GenSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolint:funlen,gocyclo,cyclop
+func GetSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolint:funlen,gocyclo,cyclop
 	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t)
 
@@ -163,7 +166,7 @@ func GenSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 		var fieldSchema *ogen.Schema
 
 		if op == OperationCreate && cfg.AllowClientUUIDs && t.ID.IsUUID() {
-			fieldSchema, err = GenSchemaField(t.ID)
+			fieldSchema, err = GetSchemaField(t.ID)
 			if err != nil {
 				panic(fmt.Sprintf("failed to generate schema for field %s: %v", t.ID.StructField(), err))
 			}
@@ -183,7 +186,7 @@ func GenSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 			}
 
 			if op == OperationCreate || !f.Immutable {
-				fieldSchema, err = GenSchemaField(f)
+				fieldSchema, err = GetSchemaField(f)
 				if err != nil {
 					panic(fmt.Sprintf("failed to generate schema for field %s: %v", f.StructField(), err))
 				}
@@ -205,7 +208,7 @@ func GenSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 				continue
 			}
 
-			fieldSchema, err = GenSchemaField(e.Type.ID)
+			fieldSchema, err = GetSchemaField(e.Type.ID)
 			if err != nil {
 				panic(fmt.Sprintf("failed to generate schema for field %s: %v", e.Type.ID.StructField(), err))
 			}
@@ -258,7 +261,7 @@ func GenSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 
 		var fieldSchema *ogen.Schema
 
-		fieldSchema, err = GenSchemaField(t.ID)
+		fieldSchema, err = GetSchemaField(t.ID)
 		if err != nil {
 			panic(fmt.Sprintf("failed to generate schema for field %s: %v", t.ID.StructField(), err))
 		}
@@ -276,7 +279,7 @@ func GenSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 				schema.Required = append(schema.Required, f.Name)
 			}
 
-			fieldSchema, err = GenSchemaField(f)
+			fieldSchema, err = GetSchemaField(f)
 			if err != nil {
 				panic(fmt.Sprintf("failed to generate schema for field %s: %v", f.StructField(), err))
 			}
@@ -315,7 +318,7 @@ func GenSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 			edgeSchema.Properties = append(edgeSchema.Properties, prop)
 
 			if t.IsEdgeSchema() {
-				for k, v := range GenSchemaType(e.Type, OperationRead) {
+				for k, v := range GetSchemaType(e.Type, OperationRead) {
 					schemas[k] = v
 				}
 			}
@@ -376,7 +379,7 @@ func GenSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 		if oper == op {
 			continue
 		}
-		for k, v := range GenSchemaType(t, oper) {
+		for k, v := range GetSchemaType(t, oper) {
 			schemas[k] = v
 		}
 	}
@@ -424,6 +427,9 @@ func GetSortableFields(t *gen.Type) (sortable []string) {
 	return sortable
 }
 
+// GetFilterableFields returns a list of filterable fields for the given type, where
+// the key is the component name, and the value is the parameter which includes the
+// name, description and schema for the parameter.
 func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters map[string]*ogen.Parameter) {
 	ta := GetAnnotation(t.ID)
 
@@ -455,7 +461,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters map[string]*ogen.
 				continue // Since you can use EQ=false instead.
 			}
 
-			fieldSchema, err := GenSchemaField(f)
+			fieldSchema, err := GetSchemaField(f)
 			if err != nil {
 				continue // Just skip things that can't be generated/easily mapped.
 			}
