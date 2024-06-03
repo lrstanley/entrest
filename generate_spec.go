@@ -543,3 +543,57 @@ func edgesToTags(cfg *Config, t *gen.Type) (tags []string) {
 	}
 	return tags
 }
+
+// addGlobalRequestHeaders adds the given headers to shared component parameters,
+// then adds each of those parameters to each path root (rather than each request,
+// to deduplicate references for those headers).
+//
+// NOTE: order of operations for this function is important. Ideally, it should be
+// called after all requests have been added to the spec.
+func addGlobalRequestHeaders(spec *ogen.Spec, headers map[string]*ogen.Header) {
+	for k, v := range headers {
+		spec.Components.Parameters[k] = v.InHeader().SetName(k)
+	}
+
+	for pathName := range spec.Paths {
+		for k := range headers {
+			spec.Paths[pathName].Parameters = append(
+				spec.Paths[pathName].Parameters,
+				&ogen.Parameter{Ref: "#/components/parameters/" + k},
+			)
+		}
+	}
+}
+
+// addGlobalResponseHeaders adds the given headers to shared component headers,
+// then adds each of those headers to every single response body.
+//
+// NOTE: order of operations for this function is important. Ideally, it should be
+// called after all responses have been added to the spec (including error responses).
+func addGlobalResponseHeaders(spec *ogen.Spec, headers map[string]*ogen.Header) {
+	if spec.Components.Headers == nil {
+		spec.Components.Headers = make(map[string]*ogen.Header)
+	}
+
+	for k, v := range headers {
+		spec.Components.Headers[k] = v
+	}
+
+	for pathName, pathItem := range spec.Paths {
+		spec.Paths[pathName] = PatchPathItem(pathItem, func(resp *ogen.Response) *ogen.Response {
+			if resp.Ref != "" {
+				return resp
+			}
+
+			if resp.Headers == nil {
+				resp.Headers = make(map[string]*ogen.Header)
+			}
+
+			for k := range headers {
+				resp.Headers[k] = &ogen.Header{Ref: "#/components/headers/" + k}
+			}
+
+			return resp
+		})
+	}
+}

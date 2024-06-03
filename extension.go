@@ -130,6 +130,11 @@ func (e *Extension) Generate(g *gen.Graph) error {
 		panic(err)
 	}
 
+	// TODO: ensure errors are added before headers are added.
+
+	addGlobalRequestHeaders(spec, e.config.GlobalRequestHeaders)
+	addGlobalResponseHeaders(spec, e.config.GlobalResponseHeaders)
+
 	f, err := os.OpenFile("openapi.json", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
 	if err != nil {
 		panic(err)
