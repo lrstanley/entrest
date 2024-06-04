@@ -365,7 +365,7 @@ func WithDescription(v string) Annotation {
 // WithPagination sets the schema to be paginated in the REST API. This is not required to be
 // provided unless pagination was disabled globally.
 func WithPagination(v bool) Annotation {
-	return Annotation{Pagination: ptr(v)}
+	return Annotation{Pagination: &v}
 }
 
 // WithMinItemsPerPage sets an explicit minimum number of items per page for paginated calls.
@@ -386,7 +386,7 @@ func WithItemsPerPage(v int) Annotation {
 // WithEagerLoad sets the edge to be eager-loaded in the REST API for each associated
 // entity. Note that edges are not eager-loaded by default.
 func WithEagerLoad(v bool) Annotation {
-	return Annotation{EagerLoad: ptr(v)}
+	return Annotation{EagerLoad: &v}
 }
 
 // WithEdgeEndpoint sets the edge to have an endpoint. If the edge is eager-loaded,
@@ -395,7 +395,7 @@ func WithEagerLoad(v bool) Annotation {
 // endpoints are disabled globally and you want to specifically enable one edge to
 // have an endpoint, or want to disable an edge from having an endpoint in general.
 func WithEdgeEndpoint(v bool) Annotation {
-	return Annotation{EdgeEndpoint: ptr(v)}
+	return Annotation{EdgeEndpoint: &v}
 }
 
 // WithFilter sets the field to be filterable with the provided predicate(s). When applied
@@ -412,7 +412,7 @@ func WithFilter(v Predicate) Annotation {
 
 // WithHandler sets the schema/edge to have an HTTP handler generated for it.
 func WithHandler(v bool) Annotation {
-	return Annotation{Handler: ptr(v)}
+	return Annotation{Handler: &v}
 }
 
 // WithSortable sets the field to be sortable in the REST API.
