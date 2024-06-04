@@ -92,6 +92,7 @@ type Annotation struct {
 	MaxItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
 	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
 	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
+	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
 	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
 	Handler         *bool       `json:",omitempty" ent:"schema,edge"`
 	Sortable        bool        `json:",omitempty" ent:"field"`
@@ -207,6 +208,9 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 	if am.EagerLoad != nil {
 		a.EagerLoad = am.EagerLoad
 	}
+	if am.EdgeEndpoint != nil {
+		a.EdgeEndpoint = am.EdgeEndpoint
+	}
 	if am.Filter != 0 {
 		a.Filter = am.Filter.Add(a.Filter)
 	}
@@ -270,6 +274,23 @@ func (a *Annotation) GetEagerLoad(config *Config) bool {
 		return config.DefaultEagerLoad
 	}
 	return *a.EagerLoad
+}
+
+// GetEdgeEndpoint returns if the edge should have an endpoint (or defaults).
+func (a *Annotation) GetEdgeEndpoint(config *Config) bool {
+	if a.EdgeEndpoint != nil {
+		return *a.EdgeEndpoint
+	}
+	if config.DisableEagerLoadedEndpoints {
+		// Only return false if the edge is in fact eager-loaded.
+		if a.EagerLoad != nil && *a.EagerLoad {
+			return false
+		}
+		if a.EagerLoad == nil && config.DefaultEagerLoad {
+			return false
+		}
+	}
+	return true
 }
 
 // GetOperations returns the operations annotation (or defaults).
@@ -358,6 +379,15 @@ func WithItemsPerPage(v int) Annotation {
 // entity. Note that edges are not eager-loaded by default.
 func WithEagerLoad(v bool) Annotation {
 	return Annotation{EagerLoad: ptr(v)}
+}
+
+// WithEdgeEndpoint sets the edge to have an endpoint. If the edge is eager-loaded,
+// and the global config is set to disable endpoints for edges which are also
+// eager-loaded, this will default to false. Not required to be provided unless
+// endpoints are disabled globally and you want to specifically enable one edge to
+// have an endpoint, or want to disable an edge from having an endpoint in general.
+func WithEdgeEndpoint(v bool) Annotation {
+	return Annotation{EdgeEndpoint: ptr(v)}
 }
 
 // WithFilter sets the field to be filterable with the provided predicate(s). When applied

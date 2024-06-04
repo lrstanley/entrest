@@ -52,9 +52,16 @@ type Config struct {
 	DefaultEagerLoad bool
 
 	// DisableEagerLoadedEndpoints disables the generation of dedicated endpoints for
-	// edges which are also eager loaded. This can be useful to reduce the number of
+	// edges which are also eager-loaded. This can be useful to reduce the number of
 	// endpoints generated, but does mean that callers would have to always call the
 	// entity which eager loads the edge, rather than only fetching the edge itself.
+	// This can be overridden on a per-edge basis with annotations.
+	//
+	// Example: Given a schema with users and pets, and an edge on pets called "owner",
+	// pointing to user, if you configure owner to be eager-loaded (so any time you query
+	// a pet, you also get the owner), setting this to true will then disable the
+	// /pets/{id}/owner endpoint (idea being that you could just call /pets/{id} and
+	// get the owner from that response).
 	DisableEagerLoadedEndpoints bool
 
 	// AddEdgesToTags enables the addition of edge fields to the "tags" field in the

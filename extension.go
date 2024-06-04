@@ -105,7 +105,8 @@ func (e *Extension) Generate(g *gen.Graph) error {
 
 		for _, edge := range t.Edges {
 			ea := GetAnnotation(edge)
-			if ea.Skip {
+
+			if ea.Skip || !ea.GetEdgeEndpoint(e.config) {
 				continue
 			}
 
