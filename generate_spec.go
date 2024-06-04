@@ -625,15 +625,25 @@ func addGlobalResponseHeaders(spec *ogen.Spec, headers map[string]*ogen.Header) 
 //
 // NOTE: order of operations for this function is important. Ideally, it should be
 // called before headers are added.
-func addGlobalErrorResponses(spec *ogen.Spec, responses map[int]*ogen.Response) {
+func addGlobalErrorResponses(spec *ogen.Spec, responses map[int]*ogen.Schema) {
 	// TODO: there is probably a more clean way of doing this, but this also covers
 	// user-provided paths/operations passed in via config and hooks.
+
 	if spec.Components.Responses == nil {
 		spec.Components.Responses = map[string]*ogen.Response{}
 	}
 
 	for k, v := range responses {
-		spec.Components.Responses["Error"+PascalCase(http.StatusText(k))] = v
+		name := "Error" + PascalCase(http.StatusText(k))
+		spec.Components.Schemas[name] = v
+		spec.Components.Responses[name] = &ogen.Response{
+			Description: fmt.Sprintf("%s (http status code %d)", http.StatusText(k), k),
+			Content: map[string]ogen.Media{
+				"application/json": {
+					Schema: &ogen.Schema{Ref: "#/components/schemas/" + name},
+				},
+			},
+		}
 	}
 
 	for pathName, pathItem := range spec.Paths {
@@ -662,62 +672,53 @@ func addGlobalErrorResponses(spec *ogen.Spec, responses map[int]*ogen.Response) 
 	}
 }
 
-// defaultErrorResponse returns a default error response object for the provided HTTP
+// defaultErrorResponse returns a default error schema for the provided HTTP
 // status code.
-func defaultErrorResponse(code int) *ogen.Response {
-	strCode := strconv.Itoa(code)
-
-	return &ogen.Response{
-		Description: fmt.Sprintf("%s (http status code %d)", http.StatusText(code), code),
-		Content: map[string]ogen.Media{
-			"application/json": {
+func defaultErrorResponse(code int) *ogen.Schema {
+	return &ogen.Schema{
+		Type: "object",
+		Properties: []ogen.Property{
+			{
+				Name: "error",
 				Schema: &ogen.Schema{
-					Type: "object",
-					Properties: []ogen.Property{
-						{
-							Name: "error",
-							Schema: &ogen.Schema{
-								Type:        "string",
-								Description: "The underlying error, which may be masked when debugging is disabled.",
-							},
-						},
-						{
-							Name: "type",
-							Schema: &ogen.Schema{
-								Type:        "string",
-								Description: "A summary of the error code based off the HTTP status code or application error code.",
-								Example:     jsonschema.RawValue(fmt.Sprintf("%q", http.StatusText(code))),
-							},
-						},
-						{
-							Name: "code",
-							Schema: &ogen.Schema{
-								Type:        "integer",
-								Description: "The HTTP status code or other internal application error code.",
-								Example:     jsonschema.RawValue(strCode),
-							},
-						},
-						{
-							Name: "request_id",
-							Schema: &ogen.Schema{
-								Type:        "string",
-								Description: "The unique request ID for this error.",
-								Example:     jsonschema.RawValue(`"cb6f6f9c1783cdc9752cee2a4e95dd4c"`),
-							},
-						},
-						{
-							Name: "timestamp",
-							Schema: &ogen.Schema{
-								Type:        "string",
-								Format:      "date-time",
-								Description: "The timestamp of the error, in RFC3339 format.",
-								Example:     jsonschema.RawValue(`"2024-04-26T12:19:01Z"`),
-							},
-						},
-					},
-					Required: []string{"error", "type", "code", "timestamp"},
+					Type:        "string",
+					Description: "The underlying error, which may be masked when debugging is disabled.",
+				},
+			},
+			{
+				Name: "type",
+				Schema: &ogen.Schema{
+					Type:        "string",
+					Description: "A summary of the error code based off the HTTP status code or application error code.",
+					Example:     jsonschema.RawValue(fmt.Sprintf("%q", http.StatusText(code))),
+				},
+			},
+			{
+				Name: "code",
+				Schema: &ogen.Schema{
+					Type:        "integer",
+					Description: "The HTTP status code or other internal application error code.",
+					Example:     jsonschema.RawValue(strconv.Itoa(code)),
+				},
+			},
+			{
+				Name: "request_id",
+				Schema: &ogen.Schema{
+					Type:        "string",
+					Description: "The unique request ID for this error.",
+					Example:     jsonschema.RawValue(`"cb6f6f9c1783cdc9752cee2a4e95dd4c"`),
+				},
+			},
+			{
+				Name: "timestamp",
+				Schema: &ogen.Schema{
+					Type:        "string",
+					Format:      "date-time",
+					Description: "The timestamp of the error, in RFC3339 format.",
+					Example:     jsonschema.RawValue(`"2024-04-26T12:19:01Z"`),
 				},
 			},
 		},
+		Required: []string{"error", "type", "code", "timestamp"},
 	}
 }

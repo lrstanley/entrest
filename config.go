@@ -83,7 +83,7 @@ type Config struct {
 	// operations (e.g. 404 on list, 409 on non-create/update, etc). If not specified,
 	// a default set of responses will be generated which can be used with entrest's
 	// built-in auto-generated HTTP handlers.
-	GlobalErrorResponses map[int]*ogen.Response
+	GlobalErrorResponses map[int]*ogen.Schema
 
 	// Handler enables the generation of HTTP handlers for the specified server/routing
 	// library. Use HandlerGeneric if yours isn't supported, which should allow you to
@@ -146,7 +146,7 @@ func (c *Config) Validate() error {
 	}
 
 	if len(c.GlobalErrorResponses) == 0 {
-		c.GlobalErrorResponses = map[int]*ogen.Response{
+		c.GlobalErrorResponses = map[int]*ogen.Schema{
 			http.StatusBadRequest:          defaultErrorResponse(http.StatusBadRequest),
 			http.StatusUnauthorized:        defaultErrorResponse(http.StatusUnauthorized),
 			http.StatusForbidden:           defaultErrorResponse(http.StatusForbidden),
