@@ -132,6 +132,7 @@ func (e *Extension) Generate(g *gen.Graph) error {
 
 	// TODO: ensure errors are added before headers are added.
 
+	addGlobalErrorResponses(spec, e.config.GlobalErrorResponses)
 	addGlobalRequestHeaders(spec, e.config.GlobalRequestHeaders)
 	addGlobalResponseHeaders(spec, e.config.GlobalResponseHeaders)
 

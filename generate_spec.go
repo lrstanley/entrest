@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"entgo.io/ent/entc/gen"
 	"github.com/ogen-go/ogen"
@@ -603,5 +604,120 @@ func addGlobalResponseHeaders(spec *ogen.Spec, headers map[string]*ogen.Header) 
 
 			return resp
 		})
+	}
+
+	for k := range headers {
+		for r := range spec.Components.Responses {
+			if spec.Components.Responses[r].Ref != "" {
+				continue
+			}
+
+			if spec.Components.Responses[r].Headers == nil {
+				spec.Components.Responses[r].Headers = make(map[string]*ogen.Header)
+			}
+			spec.Components.Responses[r].Headers[k] = &ogen.Header{Ref: "#/components/headers/" + k}
+		}
+	}
+}
+
+// addGlobalErrorResponses adds the given error responses to shared component
+// responses, then adds each of those responses to all responses.
+//
+// NOTE: order of operations for this function is important. Ideally, it should be
+// called before headers are added.
+func addGlobalErrorResponses(spec *ogen.Spec, responses map[int]*ogen.Response) {
+	// TODO: there is probably a more clean way of doing this, but this also covers
+	// user-provided paths/operations passed in via config and hooks.
+	if spec.Components.Responses == nil {
+		spec.Components.Responses = map[string]*ogen.Response{}
+	}
+
+	for k, v := range responses {
+		spec.Components.Responses["Error"+PascalCase(http.StatusText(k))] = v
+	}
+
+	for pathName, pathItem := range spec.Paths {
+		spec.Paths[pathName] = PatchOperations(pathItem, func(_ string, op *ogen.Operation) *ogen.Operation {
+			if op == nil {
+				return nil
+			}
+
+			if op.Responses == nil {
+				op.Responses = map[string]*ogen.Response{}
+			}
+
+			for k := range responses {
+				switch {
+				case strings.HasPrefix(op.OperationID, "list") && k == http.StatusNotFound:
+					continue
+				case !strings.HasPrefix(op.OperationID, "create") && !strings.HasPrefix(op.OperationID, "update") && k == http.StatusConflict:
+					continue
+				}
+
+				op.Responses[strconv.Itoa(k)] = &ogen.Response{Ref: "#/components/responses/Error" + PascalCase(http.StatusText(k))}
+			}
+
+			return op
+		})
+	}
+}
+
+// defaultErrorResponse returns a default error response object for the provided HTTP
+// status code.
+func defaultErrorResponse(code int) *ogen.Response {
+	strCode := strconv.Itoa(code)
+
+	return &ogen.Response{
+		Description: fmt.Sprintf("%s (http status code %d)", http.StatusText(code), code),
+		Content: map[string]ogen.Media{
+			"application/json": {
+				Schema: &ogen.Schema{
+					Type: "object",
+					Properties: []ogen.Property{
+						{
+							Name: "error",
+							Schema: &ogen.Schema{
+								Type:        "string",
+								Description: "The underlying error, which may be masked when debugging is disabled.",
+							},
+						},
+						{
+							Name: "type",
+							Schema: &ogen.Schema{
+								Type:        "string",
+								Description: "A summary of the error code based off the HTTP status code or application error code.",
+								Example:     jsonschema.RawValue(fmt.Sprintf("%q", http.StatusText(code))),
+							},
+						},
+						{
+							Name: "code",
+							Schema: &ogen.Schema{
+								Type:        "integer",
+								Description: "The HTTP status code or other internal application error code.",
+								Example:     jsonschema.RawValue(strCode),
+							},
+						},
+						{
+							Name: "request_id",
+							Schema: &ogen.Schema{
+								Type:        "string",
+								Description: "The unique request ID for this error.",
+								Example:     jsonschema.RawValue(`"cb6f6f9c1783cdc9752cee2a4e95dd4c"`),
+							},
+						},
+						{
+							Name: "timestamp",
+							Schema: &ogen.Schema{
+								Type:        "string",
+								Format:      "date-time",
+								Description: "The timestamp of the error, in RFC3339 format.",
+								Example:     jsonschema.RawValue(`"2024-04-26T12:19:01Z"`),
+							},
+						},
+					},
+					Required: []string{"error", "type", "code", "timestamp"},
+				},
+			},
+		},
 	}
 }

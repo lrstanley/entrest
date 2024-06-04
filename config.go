@@ -7,6 +7,7 @@ package entrest
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"slices"
 
 	"entgo.io/ent/entc"
@@ -77,6 +78,13 @@ type Config struct {
 	// like X-Ratelimit-Limit, X-Ratelimit-Remaining, X-Ratelimit-Reset, etc.
 	GlobalResponseHeaders map[string]*ogen.Header
 
+	// GlobalErrorResponses are status code -> response mappings for errors, which are
+	// added to all path operations. Note that some status codes are excluded on specific
+	// operations (e.g. 404 on list, 409 on non-create/update, etc). If not specified,
+	// a default set of responses will be generated which can be used with entrest's
+	// built-in auto-generated HTTP handlers.
+	GlobalErrorResponses map[int]*ogen.Response
+
 	// Handler enables the generation of HTTP handlers for the specified server/routing
 	// library. Use HandlerGeneric if yours isn't supported, which should allow you to
 	// wire up the handlers yourself.
@@ -135,6 +143,24 @@ func (c *Config) Validate() error {
 
 	if c.DefaultOperations == nil {
 		c.DefaultOperations = AllOperations
+	}
+
+	if len(c.GlobalErrorResponses) == 0 {
+		c.GlobalErrorResponses = map[int]*ogen.Response{
+			http.StatusBadRequest:          defaultErrorResponse(http.StatusBadRequest),
+			http.StatusUnauthorized:        defaultErrorResponse(http.StatusUnauthorized),
+			http.StatusForbidden:           defaultErrorResponse(http.StatusForbidden),
+			http.StatusNotFound:            defaultErrorResponse(http.StatusNotFound),
+			http.StatusConflict:            defaultErrorResponse(http.StatusConflict),
+			http.StatusTooManyRequests:     defaultErrorResponse(http.StatusTooManyRequests),
+			http.StatusInternalServerError: defaultErrorResponse(http.StatusInternalServerError),
+		}
+	}
+
+	for k := range c.GlobalErrorResponses {
+		if k < 400 {
+			return fmt.Errorf("error response defined with status code %d, which is not an HTTP error code", k)
+		}
 	}
 
 	if c.Handler != "" && !slices.Contains(AllSupportedHTTPHandlers, c.Handler) {
