@@ -301,6 +301,8 @@ func (a *Annotation) GetOperations(config *Config) []Operation {
 	return a.Operations
 }
 
+// GetOperationSummary returns the summary for the provided operation or an empty
+// string if not configured.
 func (a *Annotation) GetOperationSummary(op Operation) string {
 	if a.OperationSummary == nil {
 		return ""
@@ -308,6 +310,8 @@ func (a *Annotation) GetOperationSummary(op Operation) string {
 	return a.OperationSummary[op]
 }
 
+// GetOperationDescription returns the description for the provided operation or an
+// empty string if not configured.
 func (a *Annotation) GetOperationDescription(op Operation) string {
 	if a.OperationDescription == nil {
 		return ""
@@ -315,6 +319,8 @@ func (a *Annotation) GetOperationDescription(op Operation) string {
 	return a.OperationDescription[op]
 }
 
+// GetOperationID returns the operation ID for the provided operation or an empty
+// string if not configured.
 func (a *Annotation) GetOperationID(op Operation) string {
 	if a.OperationID == nil {
 		return ""
@@ -343,6 +349,8 @@ func WithTags(v ...string) Annotation {
 	return Annotation{Tags: v}
 }
 
+// WithOperationID provides an operation ID for the specified operation. This should be
+// snake-cased and unique for the operation.
 func WithOperationID(op Operation, v string) Annotation {
 	return Annotation{OperationID: map[Operation]string{op: v}}
 }
