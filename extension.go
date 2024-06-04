@@ -79,7 +79,7 @@ func (e *Extension) Generate(g *gen.Graph) error {
 		spec.OpenAPI = OpenAPIVersion
 	}
 	if spec.Info.Title == "" {
-		spec.Info.Title = "EntGo Generated REST API"
+		spec.Info.Title = "EntGo Rest API"
 	}
 	if spec.Info.Version == "" {
 		spec.Info.Version = "1.0.0"
@@ -129,8 +129,6 @@ func (e *Extension) Generate(g *gen.Graph) error {
 	if err != nil {
 		panic(err)
 	}
-
-	// TODO: ensure errors are added before headers are added.
 
 	addGlobalErrorResponses(spec, e.config.GlobalErrorResponses)
 	addGlobalRequestHeaders(spec, e.config.GlobalRequestHeaders)
