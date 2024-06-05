@@ -494,7 +494,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			Responses: ogen.Responses{
 				strconv.Itoa(http.StatusOK): ogen.NewResponse().
 					SetDescription(fmt.Sprintf("The requested %s.", Pluralize(CamelCase(e.Name)))).
-					SetJSONContent(ogen.NewSchema().SetRef("#/components/schemas/" + refEntityName + "Read")),
+					SetJSONContent(ogen.NewSchema().SetRef("#/components/schemas/" + refEntityName + "List")),
 			},
 		}
 
