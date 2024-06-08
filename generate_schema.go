@@ -235,7 +235,18 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 					schema.Required = append(schema.Required, e.Name)
 				}
 			}
+
+			if op == OperationUpdate && !e.Unique {
+				// Handle adding the "add_<field>" and "remove_<field>" object properties for update operations.
+				schema.Properties = append(
+					schema.Properties,
+					*fieldSchema.ToProperty("add_" + e.Name),
+					*fieldSchema.ToProperty("remove_" + e.Name),
+				)
+			}
+
 			schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(e.Name))
+
 			if !slices.Contains(schema.Required, e.Name) && op == OperationCreate && !e.Optional {
 				schema.Required = append(schema.Required, e.Name)
 			}

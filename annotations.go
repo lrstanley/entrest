@@ -239,7 +239,9 @@ func (a *Annotation) Decode(o any) error {
 	return json.Unmarshal(buf, a)
 }
 
-// GetPagination returns the pagination annotation (or defaults).
+// GetPagination returns the pagination annotation (or defaults from
+// [Config.DisablePagination] and [Config.DefaultEagerLoad] depending on the
+// type/edge/etc).
 func (a *Annotation) GetPagination(config *Config, edge *gen.Edge) bool {
 	if a.Pagination == nil {
 		if edge != nil {
@@ -254,6 +256,8 @@ func (a *Annotation) GetPagination(config *Config, edge *gen.Edge) bool {
 	return *a.Pagination
 }
 
+// GetMinItemsPerPage returns the minimum number of items per page for paginated calls
+// (or defaults from [Config.MinItemsPerPage]).
 func (a *Annotation) GetMinItemsPerPage(config *Config) int {
 	if a.MinItemsPerPage == 0 {
 		return config.MinItemsPerPage
@@ -261,6 +265,8 @@ func (a *Annotation) GetMinItemsPerPage(config *Config) int {
 	return a.MinItemsPerPage
 }
 
+// GetMaxItemsPerPage returns the maximum number of items per page for paginated calls
+// (or defaults from [Config.MaxItemsPerPage]).
 func (a *Annotation) GetMaxItemsPerPage(config *Config) int {
 	if a.MaxItemsPerPage == 0 {
 		return config.MaxItemsPerPage
@@ -268,6 +274,8 @@ func (a *Annotation) GetMaxItemsPerPage(config *Config) int {
 	return a.MaxItemsPerPage
 }
 
+// GetItemsPerPage returns the number of items per page for paginated calls
+// (or defaults from [Config.ItemsPerPage]).
 func (a *Annotation) GetItemsPerPage(config *Config) int {
 	if a.ItemsPerPage == 0 {
 		return config.ItemsPerPage
@@ -275,7 +283,8 @@ func (a *Annotation) GetItemsPerPage(config *Config) int {
 	return a.ItemsPerPage
 }
 
-// GetEagerLoad returns if the edge should be eager-loaded (or defaults).
+// GetEagerLoad returns if the edge should be eager-loaded (or defaults from
+// [Config.DefaultEagerLoad]).
 func (a *Annotation) GetEagerLoad(config *Config) bool {
 	if a.EagerLoad == nil {
 		return config.DefaultEagerLoad
@@ -283,7 +292,8 @@ func (a *Annotation) GetEagerLoad(config *Config) bool {
 	return *a.EagerLoad
 }
 
-// GetEdgeEndpoint returns if the edge should have an endpoint (or defaults).
+// GetEdgeEndpoint returns if the edge should have an endpoint (or defaults from
+// [Config.DisableEagerLoadedEndpoints]).
 func (a *Annotation) GetEdgeEndpoint(config *Config) bool {
 	if a.EdgeEndpoint != nil {
 		return *a.EdgeEndpoint
@@ -300,7 +310,8 @@ func (a *Annotation) GetEdgeEndpoint(config *Config) bool {
 	return true
 }
 
-// GetOperations returns the operations annotation (or defaults).
+// GetOperations returns the operations annotation (or defaults from
+// [Config.DefaultOperations]).
 func (a *Annotation) GetOperations(config *Config) []Operation {
 	if a.Operations == nil {
 		return config.DefaultOperations
