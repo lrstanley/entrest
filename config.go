@@ -51,6 +51,13 @@ type Config struct {
 	// or are expensive, this can be a performance hit and isn't recommended.
 	DefaultEagerLoad bool
 
+	// DisableEagerLoadNonPagedOpt disables the optimization which automatically disables
+	// the pagination for edge endpoints where the edge was also eager-loaded. The idea for
+	// the optimization is that if the edge is also eager-loaded, then the amount of data
+	// isn't large enough to justify the additional overhead of pagination, so we can
+	// disable it.
+	DisableEagerLoadNonPagedOpt bool
+
 	// DisableEagerLoadedEndpoints disables the generation of dedicated endpoints for
 	// edges which are also eager-loaded. This can be useful to reduce the number of
 	// endpoints generated, but does mean that callers would have to always call the

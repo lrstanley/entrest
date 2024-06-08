@@ -149,7 +149,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	}
 
-	for k, v := range GetSchemaType(t, op) {
+	for k, v := range GetSchemaType(t, op, nil) {
 		spec.Components.Schemas[k] = v
 	}
 
@@ -285,7 +285,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 
 		// Greater than 1 because we want to sort by id by default.
-		if sortable := GetSortableFields(t); len(sortable) > 1 {
+		if sortable := GetSortableFields(t, false); len(sortable) > 1 {
 			oper.Parameters = append(
 				oper.Parameters,
 				&ogen.Parameter{
@@ -406,10 +406,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		Schema:      idSchema,
 	}
 
-	for k, v := range GetSchemaType(t, op) {
-		spec.Components.Schemas[k] = v
-	}
-	for k, v := range GetSchemaType(e.Type, op) {
+	for k, v := range GetSchemaType(t, op, e) {
 		spec.Components.Schemas[k] = v
 	}
 
@@ -479,9 +476,18 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			),
 			OperationID: withDefault(ea.GetOperationID(op), fmt.Sprintf("list%s%s", rootEntityName, entityName)),
 			Deprecated:  ta.Deprecated || ea.Deprecated || ra.Deprecated,
-			Parameters: []*ogen.Parameter{
-				{Ref: "#/components/parameters/Page"},
-				{
+			Parameters:  []*ogen.Parameter{},
+			Responses: ogen.Responses{
+				strconv.Itoa(http.StatusOK): ogen.NewResponse().
+					SetDescription(fmt.Sprintf("The requested %s.", Pluralize(CamelCase(e.Name)))).
+					SetJSONContent(ogen.NewSchema().SetRef("#/components/schemas/" + refEntityName + "List")),
+			},
+		}
+
+		if cfg.DisableEagerLoadNonPagedOpt || ea.GetPagination(cfg, e) || ra.GetPagination(cfg, e) {
+			oper.Parameters = append(oper.Parameters,
+				&ogen.Parameter{Ref: "#/components/parameters/Page"},
+				&ogen.Parameter{
 					Name:        "itemsPerPage",
 					In:          "query",
 					Description: "The number of entities to retrieve per page.",
@@ -490,16 +496,16 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 						SetMaximum(ptr(int64(ta.GetMaxItemsPerPage(cfg)))).
 						SetDefault(json.RawMessage(strconv.Itoa(ta.GetItemsPerPage(cfg)))),
 				},
-			},
-			Responses: ogen.Responses{
-				strconv.Itoa(http.StatusOK): ogen.NewResponse().
-					SetDescription(fmt.Sprintf("The requested %s.", Pluralize(CamelCase(e.Name)))).
-					SetJSONContent(ogen.NewSchema().SetRef("#/components/schemas/" + refEntityName + "List")),
-			},
+			)
+		} else {
+			code := strconv.Itoa(http.StatusOK)
+			oper.Responses[code] = oper.Responses[code].SetJSONContent(&ogen.Schema{
+				Ref: "#/components/schemas/" + rootEntityName + entityName + "List",
+			})
 		}
 
 		// Greater than 1 because we want to sort by id by default.
-		if sortable := GetSortableFields(e.Type); len(sortable) > 1 {
+		if sortable := GetSortableFields(e.Type, false); len(sortable) > 1 {
 			oper.Parameters = append(
 				oper.Parameters,
 				&ogen.Parameter{

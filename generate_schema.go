@@ -138,8 +138,8 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 // GetSchemaType returns a map of ogen.Schemas for the given gen.Type. Multiple may be
 // returned if the type has multiple schemas (e.g. a list of entities, or an entity which
 // has edges). Note that depending on the operation, this schema may be for the request or
-// response, or both. Recursive should always be true for the first call.
-func GetSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolint:funlen,gocyclo,cyclop
+// response, or both. Edge should be provided only if the type is from an edge schema.
+func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.Schema { // nolint:funlen,gocyclo,cyclop
 	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t)
 
@@ -317,8 +317,8 @@ func GetSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 
 			edgeSchema.Properties = append(edgeSchema.Properties, prop)
 
-			if t.IsEdgeSchema() {
-				for k, v := range GetSchemaType(e.Type, OperationRead) {
+			if edge == nil {
+				for k, v := range GetSchemaType(e.Type, OperationRead, e) {
 					schemas[k] = v
 				}
 			}
@@ -347,9 +347,30 @@ func GetSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 			schemas[entityName+"Read"] = &ogen.Schema{Ref: "#/components/schemas/" + entityName}
 		}
 	case OperationList:
-		schema := ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "Read").AsArray()
+		if !cfg.DisableEagerLoadNonPagedOpt && edge != nil {
+			// TODO: if /categories does not have pagination enabled, and then we have another
+			// endpoint like /pets/{id}/categories, we could reuse the /categories schema,
+			// because both are []Category. Would optimize the schema size, with the downside
+			// that the description would be less accurate (can't describe the relationship).
+			ea := GetAnnotation(edge)
+			ra := GetAnnotation(edge.Type)
 
-		if !ta.GetPagination(cfg) {
+			if !ea.GetPagination(cfg, edge) && !ra.GetPagination(cfg, edge) {
+				// This should allow setting the normal list operation as well, so don't return.
+				schema := ogen.NewSchema().SetRef("#/components/schemas/" + Singularize(edge.Type.Name) + "Read").AsArray()
+				schema.Description = fmt.Sprintf(
+					"List of %s associated with %s (%s entity type).",
+					Pluralize(CamelCase(edge.Name)),
+					Pluralize(CamelCase(t.Name)),
+					Singularize(CamelCase(edge.Type.Name)),
+				)
+
+				schemas[entityName+Singularize(PascalCase(edge.Name))+"List"] = schema
+			}
+		}
+
+		if !ta.GetPagination(cfg, nil) {
+			schema := ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "Read").AsArray()
 			schema.Description = fmt.Sprintf("A list of %s entities. Includes eager-loaded edges (if any) for each entity.", entityName)
 			schemas[entityName+"List"] = schema
 			return schemas
@@ -360,9 +381,12 @@ func GetSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 			AllOf: []*ogen.Schema{
 				{Ref: "#/components/schemas/PagedResponse"},
 				{
-					Type:       "object",
-					Properties: ogen.Properties{{Name: "content", Schema: schema}},
-					Required:   []string{"content"},
+					Type: "object",
+					Properties: ogen.Properties{{
+						Name:   "content",
+						Schema: ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "Read").AsArray(),
+					}},
+					Required: []string{"content"},
 				},
 			},
 		}
@@ -379,7 +403,7 @@ func GetSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 		if oper == op {
 			continue
 		}
-		for k, v := range GetSchemaType(t, oper) {
+		for k, v := range GetSchemaType(t, oper, nil) {
 			schemas[k] = v
 		}
 	}
@@ -389,7 +413,7 @@ func GetSchemaType(t *gen.Type, op Operation) map[string]*ogen.Schema { // nolin
 
 // GetSortableFields returnsd a list of sortable fields for the given type. It
 // recurses through edges to find sortable fields as well.
-func GetSortableFields(t *gen.Type) (sortable []string) {
+func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 	fields := t.Fields
 
 	if t.ID != nil {
@@ -410,7 +434,7 @@ func GetSortableFields(t *gen.Type) (sortable []string) {
 		sortable = append(sortable, f.Name)
 	}
 
-	if !t.IsEdgeSchema() {
+	if !isEdge {
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
@@ -418,7 +442,7 @@ func GetSortableFields(t *gen.Type) (sortable []string) {
 				continue
 			}
 
-			for _, f := range GetSortableFields(e.Type) {
+			for _, f := range GetSortableFields(e.Type, true) {
 				sortable = append(sortable, fmt.Sprintf("%s.%s", e.Name, f))
 			}
 		}

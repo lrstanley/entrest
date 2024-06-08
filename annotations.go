@@ -240,8 +240,15 @@ func (a *Annotation) Decode(o any) error {
 }
 
 // GetPagination returns the pagination annotation (or defaults).
-func (a *Annotation) GetPagination(config *Config) bool {
+func (a *Annotation) GetPagination(config *Config, edge *gen.Edge) bool {
 	if a.Pagination == nil {
+		if edge != nil {
+			ea := GetAnnotation(edge)
+			if ea.EagerLoad != nil && *ea.EagerLoad {
+				return false
+			}
+			return !config.DefaultEagerLoad
+		}
 		return !config.DisablePagination
 	}
 	return *a.Pagination
