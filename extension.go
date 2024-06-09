@@ -51,7 +51,11 @@ func (e *Extension) Hooks() []gen.Hook {
 		},
 		func(next gen.Generator) gen.Generator {
 			return gen.GenerateFunc(func(g *gen.Graph) error {
-				err := e.Generate(g)
+				spec, err := e.Generate(g)
+				if err != nil {
+					return err
+				}
+				err = e.writeSpec(spec)
 				if err != nil {
 					return err
 				}
@@ -61,11 +65,11 @@ func (e *Extension) Hooks() []gen.Hook {
 	}
 }
 
-func (e *Extension) Generate(g *gen.Graph) error {
+func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	// Validate all annotations first.
 	err := ValidateAnnotations(g)
 	if err != nil {
-		return fmt.Errorf("failed to validate annotations: %w", err)
+		return nil, fmt.Errorf("failed to validate annotations: %w", err)
 	}
 
 	spec := e.config.Spec
@@ -135,6 +139,10 @@ func (e *Extension) Generate(g *gen.Graph) error {
 	addGlobalRequestHeaders(spec, e.config.GlobalRequestHeaders)
 	addGlobalResponseHeaders(spec, e.config.GlobalResponseHeaders)
 
+	return spec, nil
+}
+
+func (e *Extension) writeSpec(spec *ogen.Spec) error {
 	f, err := os.OpenFile("openapi.json", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
 	if err != nil {
 		panic(err)
@@ -143,12 +151,7 @@ func (e *Extension) Generate(g *gen.Graph) error {
 
 	enc := json.NewEncoder(f)
 	enc.SetIndent("", "    ")
-	err = enc.Encode(spec)
-	if err != nil {
-		panic(err)
-	}
-
-	return nil
+	return enc.Encode(spec)
 }
 
 func (e *Extension) Annotations() []entc.Annotation {
