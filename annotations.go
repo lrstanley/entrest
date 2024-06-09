@@ -42,8 +42,8 @@ func decodeAnnotation(as gen.Annotations) *Annotation {
 
 // ValidateAnnotations ensures that all annotations on the given graph are correctly
 // attached to the right types (e.g. a field-only annotation on a schema or edge type).
-func ValidateAnnotations(graph *gen.Graph) error {
-	for _, t := range graph.Nodes {
+func ValidateAnnotations(nodes ...*gen.Type) error {
+	for _, t := range nodes {
 		if err := GetAnnotation(t).getSupportedType(t.Name, "schema"); err != nil {
 			return err
 		}

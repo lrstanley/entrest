@@ -67,7 +67,7 @@ func (e *Extension) Hooks() []gen.Hook {
 
 func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	// Validate all annotations first.
-	err := ValidateAnnotations(g)
+	err := ValidateAnnotations(g.Nodes...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to validate annotations: %w", err)
 	}
