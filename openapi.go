@@ -22,10 +22,10 @@ func mergeOperation(overlap bool, orig, op *ogen.Operation) (*ogen.Operation, er
 	}
 
 	orig.Tags = appendIfNotContains(orig.Tags, op.Tags)
-	op.Summary = withDefault(op.Summary, orig.Summary)
-	op.Description = withDefault(op.Description, orig.Description)
-	op.OperationID = withDefault(op.OperationID, orig.OperationID)
-	op.Deprecated = orig.Deprecated || op.Deprecated
+	orig.Summary = withDefault(op.Summary, orig.Summary)
+	orig.Description = withDefault(op.Description, orig.Description)
+	orig.OperationID = withDefault(op.OperationID, orig.OperationID)
+	orig.Deprecated = orig.Deprecated || op.Deprecated
 
 	// Merge parameters.
 	orig.Parameters = appendIfNotContainsFunc(orig.Parameters, op.Parameters, func(oldParam, newParam *ogen.Parameter) bool {
