@@ -21,7 +21,9 @@ var _ entc.Extension = (*Extension)(nil)
 type Extension struct {
 	entc.DefaultExtension
 
-	config *Config
+	config           *Config
+	disableSpecWrite bool
+	generatedSpec    *ogen.Spec
 }
 
 func NewExtension(config *Config) (*Extension, error) {
@@ -51,13 +53,16 @@ func (e *Extension) Hooks() []gen.Hook {
 		},
 		func(next gen.Generator) gen.Generator {
 			return gen.GenerateFunc(func(g *gen.Graph) error {
-				spec, err := e.Generate(g)
+				var err error
+				e.generatedSpec, err = e.Generate(g)
 				if err != nil {
 					return err
 				}
-				err = e.writeSpec(spec)
-				if err != nil {
-					return err
+				if !e.disableSpecWrite {
+					err = e.writeSpec(e.generatedSpec)
+					if err != nil {
+						return err
+					}
 				}
 				return next.Generate(g)
 			})

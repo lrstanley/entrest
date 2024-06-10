@@ -20,6 +20,80 @@ import (
 
 const eagerLoadDepthMessage = "If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -> edge, not entity -> edge -> edge -> etc)."
 
+func addPagination(spec *ogen.Spec, cfg *Config) {
+	if spec.Components == nil {
+		spec.Components = &ogen.Components{}
+	}
+
+	if spec.Components.Parameters == nil {
+		spec.Components.Parameters = make(map[string]*ogen.Parameter)
+	}
+
+	if _, ok := spec.Components.Schemas["Page"]; !ok {
+		spec.Components.Parameters["Page"] = &ogen.Parameter{
+			Name:        "page",
+			In:          "query",
+			Description: "The page number to retrieve.",
+			Schema: ogen.Int().
+				SetMinimum(ptr(int64(1))).
+				SetDefault(json.RawMessage(`1`)),
+		}
+	}
+
+	if spec.Components.Schemas == nil {
+		spec.Components.Schemas = make(map[string]*ogen.Schema)
+	}
+
+	if _, ok := spec.Components.Schemas["PagedResponse"]; ok {
+		return
+	}
+
+	pagedSchema := &ogen.Schema{
+		Type: "object",
+		Properties: ogen.Properties{
+			{
+				Name: "page",
+				Schema: &ogen.Schema{
+					Type:        "integer",
+					Description: "Page which the results are associated with.",
+					Example:     jsonschema.RawValue(`1`),
+				},
+			},
+			{
+				Name: "last_page",
+				Schema: &ogen.Schema{
+					Type:        "integer",
+					Description: "The number of the last page of results.",
+					Example:     jsonschema.RawValue(`3`),
+				},
+			},
+			{
+				Name: "is_last_page",
+				Schema: &ogen.Schema{
+					Type:        "boolean",
+					Description: "If true, the current results are the last page of results.",
+					Example:     jsonschema.RawValue(`false`),
+				},
+			},
+		},
+		Required: []string{"page", "last_page", "is_last_page"},
+	}
+
+	if !cfg.DisableTotalCount {
+		pagedSchema.Properties = append(pagedSchema.Properties, ogen.Property{
+			Name: "total_count",
+			Schema: &ogen.Schema{
+				Type:        "integer",
+				Description: "Total number of results.",
+				Example:     jsonschema.RawValue(`100`),
+			},
+		})
+		pagedSchema.Required = append(pagedSchema.Required, "total_count")
+	}
+
+	spec.Components.Schemas["PagedResponse"] = pagedSchema
+}
+
 func newBaseSpec(cfg *Config) *ogen.Spec {
 	spec := &ogen.Spec{
 		Paths: ogen.Paths{},
@@ -60,59 +134,6 @@ func newBaseSpec(cfg *Config) *ogen.Spec {
 				Description: "Includes various endpoints for meta information about the service, like the OpenAPI spec, version, health, etc.",
 			},
 		},
-	}
-
-	if !cfg.DisablePagination {
-		spec.Components.Parameters["Page"] = &ogen.Parameter{
-			Name:        "page",
-			In:          "query",
-			Description: "The page number to retrieve.",
-			Schema: ogen.Int().
-				SetMinimum(ptr(int64(1))).
-				SetDefault(json.RawMessage(`1`)),
-		}
-		pagedSchema := &ogen.Schema{
-			Type: "object",
-			Properties: ogen.Properties{
-				{
-					Name: "page",
-					Schema: &ogen.Schema{
-						Type:        "integer",
-						Description: "Page which the results are associated with.",
-						Example:     jsonschema.RawValue(`1`),
-					},
-				},
-				{
-					Name: "last_page",
-					Schema: &ogen.Schema{
-						Type:        "integer",
-						Description: "The number of the last page of results.",
-						Example:     jsonschema.RawValue(`3`),
-					},
-				},
-				{
-					Name: "is_last_page",
-					Schema: &ogen.Schema{
-						Type:        "boolean",
-						Description: "If true, the current results are the last page of results.",
-						Example:     jsonschema.RawValue(`false`),
-					},
-				},
-			},
-			Required: []string{"page", "last_page", "is_last_page"},
-		}
-		if !cfg.DisableTotalCount {
-			pagedSchema.Properties = append(pagedSchema.Properties, ogen.Property{
-				Name: "total_count",
-				Schema: &ogen.Schema{
-					Type:        "integer",
-					Description: "Total number of results.",
-					Example:     jsonschema.RawValue(`100`),
-				},
-			})
-			pagedSchema.Required = append(pagedSchema.Required, "total_count")
-		}
-		spec.Components.Schemas["PagedResponse"] = pagedSchema
 	}
 
 	return spec
@@ -265,9 +286,21 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			),
 			OperationID: withDefault(ta.GetOperationID(op), fmt.Sprintf("list%s", Pluralize(t.Name))),
 			Deprecated:  ta.Deprecated,
-			Parameters: []*ogen.Parameter{
-				{Ref: "#/components/parameters/Page"},
-				{
+			Parameters:  []*ogen.Parameter{},
+			Responses: ogen.Responses{
+				strconv.Itoa(http.StatusOK): ogen.NewResponse().
+					SetDescription(fmt.Sprintf("The requested %s.", entityName)).
+					SetJSONContent(ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "List")),
+			},
+		}
+
+		if ta.GetPagination(cfg, nil) {
+			addPagination(spec, cfg)
+
+			oper.Parameters = append(
+				oper.Parameters,
+				&ogen.Parameter{Ref: "#/components/parameters/Page"},
+				&ogen.Parameter{
 					Name:        "itemsPerPage",
 					In:          "query",
 					Description: "The number of entities to retrieve per page.",
@@ -276,12 +309,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 						SetMaximum(ptr(int64(ta.GetMaxItemsPerPage(cfg)))).
 						SetDefault(json.RawMessage(strconv.Itoa(ta.GetItemsPerPage(cfg)))),
 				},
-			},
-			Responses: ogen.Responses{
-				strconv.Itoa(http.StatusOK): ogen.NewResponse().
-					SetDescription(fmt.Sprintf("The requested %s.", entityName)).
-					SetJSONContent(ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "List")),
-			},
+			)
 		}
 
 		// Greater than 1 because we want to sort by id by default.
@@ -485,6 +513,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		}
 
 		if cfg.DisableEagerLoadNonPagedOpt || ea.GetPagination(cfg, e) || ra.GetPagination(cfg, e) {
+			addPagination(spec, cfg)
 			oper.Parameters = append(oper.Parameters,
 				&ogen.Parameter{Ref: "#/components/parameters/Page"},
 				&ogen.Parameter{

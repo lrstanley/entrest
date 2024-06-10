@@ -197,14 +197,21 @@ func (c *Config) Decode(o any) error {
 	return json.Unmarshal(buf, c) //nolint:musttag
 }
 
+// GetConfig returns the rest config for the given graph. If the graph does not
+// contain the config (extension was not loaded), this will panic.
 func GetConfig(gc *gen.Config) *Config {
 	c := &Config{}
-	if gc != nil && gc.Annotations != nil && gc.Annotations[c.Name()] != nil {
-		if err := c.Decode(gc.Annotations[c.Name()]); err != nil {
-			panic(fmt.Sprintf("failed to decode config: %v", err))
-		}
+
+	if gc == nil || gc.Annotations == nil || gc.Annotations[c.Name()] == nil {
+		panic("nil config")
 	}
-	err := c.Validate()
+
+	err := c.Decode(gc.Annotations[c.Name()])
+	if err != nil {
+		panic(fmt.Sprintf("failed to decode config: %v", err))
+	}
+
+	err = c.Validate()
 	if err != nil {
 		panic(fmt.Sprintf("failed to validate config: %v", err))
 	}

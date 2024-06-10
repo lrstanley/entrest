@@ -244,6 +244,9 @@ func (a *Annotation) Decode(o any) error {
 // type/edge/etc).
 func (a *Annotation) GetPagination(config *Config, edge *gen.Edge) bool {
 	if a.Pagination == nil {
+		if config.DisablePagination {
+			return false
+		}
 		if edge != nil {
 			ea := GetAnnotation(edge)
 			if ea.EagerLoad != nil && *ea.EagerLoad {
@@ -251,7 +254,7 @@ func (a *Annotation) GetPagination(config *Config, edge *gen.Edge) bool {
 			}
 			return !config.DefaultEagerLoad
 		}
-		return !config.DisablePagination
+		return true
 	}
 	return *a.Pagination
 }
