@@ -12,7 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func mergeAnnotations(in gen.Annotations, annotations ...Annotation) gen.Annotations {
+func mergeAnnotations(t *testing.T, in gen.Annotations, annotations ...Annotation) gen.Annotations {
+	t.Helper()
 	ant := *decodeAnnotation(in)
 	for _, a := range annotations { // nolint:gocritic
 		ant, _ = ant.Merge(a).(Annotation)

@@ -89,3 +89,46 @@ func buildSpec(config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *o
 	}
 	return graph, ext.generatedSpec, nil
 }
+
+func modifyType(t *testing.T, g *gen.Graph, name string, cb func(t *gen.Type)) {
+	t.Helper()
+	for i := range g.Nodes {
+		if g.Nodes[i].Name == name {
+			cb(g.Nodes[i])
+			return
+		}
+	}
+	t.Fatalf("failed to find type %q", name)
+}
+
+func modifyTypeField(t *testing.T, g *gen.Graph, tname, fname string, cb func(t *gen.Field)) {
+	t.Helper()
+	for i := range g.Nodes {
+		if g.Nodes[i].Name == tname {
+			for j := range g.Nodes[i].Fields {
+				if g.Nodes[i].Fields[j].Name == fname {
+					cb(g.Nodes[i].Fields[j])
+					return
+				}
+			}
+			t.Fatalf("failed to find field %q in type %q", fname, tname)
+		}
+	}
+	t.Fatalf("failed to find type %q", tname)
+}
+
+func modifyTypeEdge(t *testing.T, g *gen.Graph, tname, ename string, cb func(t *gen.Edge)) {
+	t.Helper()
+	for i := range g.Nodes {
+		if g.Nodes[i].Name == tname {
+			for j := range g.Nodes[i].Edges {
+				if g.Nodes[i].Edges[j].Name == ename {
+					cb(g.Nodes[i].Edges[j])
+					return
+				}
+			}
+			t.Fatalf("failed to find edge %q in type %q", ename, tname)
+		}
+	}
+	t.Fatalf("failed to find type %q", tname)
+}

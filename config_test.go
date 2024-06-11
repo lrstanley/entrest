@@ -37,6 +37,20 @@ func TestConfig_DisablePagination(t *testing.T) {
 		assert.Equal(t, "#/components/schemas/PagedResponse", spec.Components.Schemas["PetList"].AllOf[0].Ref)
 	})
 
+	t.Run("with-pagination-edge", func(t *testing.T) {
+		t.Parallel()
+		_, spec := mustBuildSpec(t, &Config{DisablePagination: false}, nil)
+
+		assert.Equal(t,
+			"#/components/schemas/CategoryList",
+			spec.Paths["/pets/{id}/categories"].Get.Responses["200"].Content["application/json"].Schema.Ref,
+		)
+		assert.Equal(t,
+			"#/components/schemas/PagedResponse",
+			spec.Components.Schemas["CategoryList"].AllOf[0].Ref,
+		)
+	})
+
 	t.Run("without-pagination", func(t *testing.T) {
 		t.Parallel()
 		_, spec := mustBuildSpec(t, &Config{DisablePagination: true}, nil)
@@ -46,12 +60,48 @@ func TestConfig_DisablePagination(t *testing.T) {
 	t.Run("no-global-but-local", func(t *testing.T) {
 		t.Parallel()
 		_, spec := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
-			for _, t := range g.Nodes {
-				if t.Name == "Pet" {
-					t.Annotations = mergeAnnotations(t.Annotations, WithPagination(true))
-				}
-			}
+			modifyType(t, g, "Pet", func(tt *gen.Type) {
+				tt.Annotations = mergeAnnotations(t, tt.Annotations, WithPagination(true))
+			})
 		})
 		assert.Equal(t, "#/components/schemas/PagedResponse", spec.Components.Schemas["PetList"].AllOf[0].Ref)
+	})
+
+	t.Run("no-global-but-local-edge", func(t *testing.T) {
+		t.Parallel()
+		_, spec := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
+			modifyTypeEdge(t, g, "Pet", "categories", func(e *gen.Edge) {
+				// e.Type vs e, for WithPagination.
+				// e.Type.Annotations = mergeAnnotations(t, e.Type.Annotations, WithPagination(true))
+				e.Annotations = mergeAnnotations(t, e.Annotations, WithPagination(true))
+			})
+		})
+		assert.Equal(t,
+			"#/components/schemas/PetCategoryList",
+			spec.Paths["/pets/{id}/categories"].Get.Responses["200"].Content["application/json"].Schema.Ref,
+		)
+		assert.Equal(t,
+			"#/components/schemas/PagedResponse",
+			spec.Components.Schemas["PetCategoryList"].AllOf[0].Ref,
+		)
+	})
+
+	// Same as no-global-but-local-edge but pagination is enabled on the edges
+	// underlying type.
+	t.Run("no-global-but-local-edge-ref", func(t *testing.T) {
+		t.Parallel()
+		_, spec := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
+			modifyTypeEdge(t, g, "Pet", "categories", func(e *gen.Edge) {
+				e.Type.Annotations = mergeAnnotations(t, e.Type.Annotations, WithPagination(true))
+			})
+		})
+		assert.Equal(t,
+			"#/components/schemas/CategoryList",
+			spec.Paths["/pets/{id}/categories"].Get.Responses["200"].Content["application/json"].Schema.Ref,
+		)
+		assert.Equal(t,
+			"#/components/schemas/PagedResponse",
+			spec.Components.Schemas["CategoryList"].AllOf[0].Ref,
+		)
 	})
 }
