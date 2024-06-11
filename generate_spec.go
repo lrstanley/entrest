@@ -512,6 +512,8 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			},
 		}
 
+		code := strconv.Itoa(http.StatusOK)
+
 		if cfg.DisableEagerLoadNonPagedOpt || ea.GetPagination(cfg, e) || ra.GetPagination(cfg, e) {
 			addPagination(spec, cfg)
 			oper.Parameters = append(oper.Parameters,
@@ -526,8 +528,17 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 						SetDefault(json.RawMessage(strconv.Itoa(ta.GetItemsPerPage(cfg)))),
 				},
 			)
+
+			// If edge pagination is enabled, but edge type is not paginated, we cannot re-use
+			// the paginated schema from the edge type.
+			if !ra.GetPagination(cfg, e) {
+				oper.Responses[code] = oper.Responses[code].SetJSONContent(&ogen.Schema{
+					Ref: "#/components/schemas/" + rootEntityName + entityName + "List",
+				})
+			}
 		} else {
-			code := strconv.Itoa(http.StatusOK)
+			// We're setting a specific schema for the edge response because the edge isn't
+			// paginated, but the underlying edge type schema is.
 			oper.Responses[code] = oper.Responses[code].SetJSONContent(&ogen.Schema{
 				Ref: "#/components/schemas/" + rootEntityName + entityName + "List",
 			})

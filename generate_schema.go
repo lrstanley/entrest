@@ -366,7 +366,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 			ea := GetAnnotation(edge)
 			ra := GetAnnotation(edge.Type)
 
-			if !ea.GetPagination(cfg, edge) && !ra.GetPagination(cfg, edge) {
+			if !ea.GetPagination(cfg, edge) || !ra.GetPagination(cfg, edge) {
 				// This should allow setting the normal list operation as well, so don't return.
 				schema := ogen.NewSchema().SetRef("#/components/schemas/" + Singularize(edge.Type.Name) + "Read").AsArray()
 				schema.Description = fmt.Sprintf(
@@ -376,6 +376,14 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 					Singularize(CamelCase(edge.Type.Name)),
 				)
 
+				// If edge pagination is enabled, but edge type isn't paginated, we cannot re-use
+				// the paginated schema from the edge type.
+				if !ra.GetPagination(cfg, edge) {
+					schema = toPagedSchema(schema)
+				}
+
+				// We're setting a specific schema for the edge response because we cannot re-use
+				// the paginated schema from the edge type (as it's paginated and the edge isn't).
 				schemas[entityName+Singularize(PascalCase(edge.Name))+"List"] = schema
 			}
 		}
@@ -387,20 +395,11 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 			return schemas
 		}
 
-		schemas[entityName+"List"] = &ogen.Schema{
-			Description: fmt.Sprintf("A paginated result set of %s entities. Includes eager-loaded edges (if any) for each entity.", entityName),
-			AllOf: []*ogen.Schema{
-				{Ref: "#/components/schemas/PagedResponse"},
-				{
-					Type: "object",
-					Properties: ogen.Properties{{
-						Name:   "content",
-						Schema: ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "Read").AsArray(),
-					}},
-					Required: []string{"content"},
-				},
-			},
-		}
+		schemas[entityName+"List"] = toPagedSchema(
+			ogen.NewSchema().
+				SetRef("#/components/schemas/" + entityName + "Read").
+				SetDescription(fmt.Sprintf("A paginated result set of %s entities. Includes eager-loaded edges (if any) for each entity.", entityName)),
+		)
 
 		dependencies = append(dependencies, OperationRead)
 	case OperationDelete:
@@ -420,6 +419,32 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 	}
 
 	return schemas
+}
+
+// toPagedSchema converts a response schema to a paged response schema, hoisting the
+// description from the response schema to the paged response schema.
+func toPagedSchema(schema *ogen.Schema) *ogen.Schema {
+	desc := schema.Description
+	schema.Description = ""
+
+	if schema.Items == nil {
+		schema = schema.AsArray()
+	}
+
+	return &ogen.Schema{
+		Description: desc,
+		AllOf: []*ogen.Schema{
+			{Ref: "#/components/schemas/PagedResponse"},
+			{
+				Type: "object",
+				Properties: ogen.Properties{{
+					Name:   "content",
+					Schema: schema,
+				}},
+				Required: []string{"content"},
+			},
+		},
+	}
 }
 
 // GetSortableFields returnsd a list of sortable fields for the given type. It
