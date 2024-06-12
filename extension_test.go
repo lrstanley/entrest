@@ -5,6 +5,7 @@
 package entrest
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"path"
@@ -14,6 +15,9 @@ import (
 	"entgo.io/ent/entc/gen"
 	"entgo.io/ent/entc/load"
 	"github.com/ogen-go/ogen"
+	"github.com/pb33f/libopenapi"
+	validator "github.com/pb33f/libopenapi-validator"
+	"github.com/stretchr/testify/require"
 )
 
 // Setup helpers/initialization for all integration related tests.
@@ -29,14 +33,21 @@ var (
 	specMutex sync.Mutex
 )
 
+// mustBuildSpec is like buildSpec, but it fails if the extension execution fails.
+// Also runs spec validation, which will fail is the spec has any errors.
 func mustBuildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *ogen.Spec) {
+	t.Helper()
 	graph, spec, err := buildSpec(config, hook)
 	if err != nil {
 		t.Fatal(err)
 	}
+	validateSpec(t, spec)
 	return graph, spec
 }
 
+// buildSpec uses the shared schema cache, and invokes the extension to build the
+// spec. It also invokes the provided hook on the graph before executing the extension,
+// if provided. DOES NOT RUN SPEC VALIDATION.
 func buildSpec(config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *ogen.Spec, err error) {
 	if config == nil {
 		config = &Config{}
@@ -155,4 +166,29 @@ func mergeAnnotations(t *testing.T, in gen.Annotations, annotations ...Annotatio
 	}
 	in.Set(ant.Name(), ant)
 	return in
+}
+
+func validateSpec(t *testing.T, spec *ogen.Spec) {
+	t.Helper()
+
+	b, err := json.Marshal(spec)
+	require.NoError(t, err)
+
+	doc, err := libopenapi.NewDocument(b)
+	require.NoError(t, err)
+
+	docValidator, errs := validator.NewValidator(doc)
+	if len(errs) > 0 {
+		t.Logf("spec: %s", string(b))
+	}
+	require.Len(t, errs, 0)
+
+	valid, validErrs := docValidator.ValidateDocument()
+	if !valid {
+		for _, e := range validErrs {
+			t.Errorf("spec validation failed:\n  type: %s\n  failure: %s\n  fix: %s\n", e.ValidationType, e.Message, e.HowToFix)
+		}
+		t.Logf("spec: %s", string(b))
+		t.FailNow()
+	}
 }
