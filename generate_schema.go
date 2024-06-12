@@ -378,7 +378,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 
 				// If edge pagination is enabled, but edge type isn't paginated, we cannot re-use
 				// the paginated schema from the edge type.
-				if !ra.GetPagination(cfg, edge) {
+				if !ra.GetPagination(cfg, edge) && ea.GetPagination(cfg, edge) {
 					schema = toPagedSchema(schema)
 				}
 
