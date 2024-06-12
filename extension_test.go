@@ -6,6 +6,7 @@ package entrest
 
 import (
 	"fmt"
+	"io"
 	"path"
 	"sync"
 	"testing"
@@ -15,9 +16,10 @@ import (
 	"github.com/ogen-go/ogen"
 )
 
+// Setup helpers/initialization for all integration related tests.
 var (
 	integrationSchema = sync.OnceValue(func() *load.SchemaSpec {
-		spec, err := (&load.Config{Path: "./integration/schema", BuildFlags: nil}).Load()
+		spec, err := (&load.Config{Path: "./testdata/schema", BuildFlags: nil}).Load()
 		if err != nil {
 			panic(fmt.Sprintf("failed to load schema: %v", err))
 		}
@@ -36,6 +38,19 @@ func mustBuildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) (graph *
 }
 
 func buildSpec(config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *ogen.Spec, err error) {
+	if config == nil {
+		config = &Config{}
+	}
+
+	if config.Writer == nil {
+		config.Writer = io.Discard
+	}
+
+	config.PreWriteHook = func(s *ogen.Spec) error {
+		spec = s
+		return nil
+	}
+
 	specMutex.Lock()
 	defer specMutex.Unlock()
 
@@ -43,11 +58,10 @@ func buildSpec(config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *o
 	if err != nil {
 		return nil, nil, err
 	}
-	ext.disableSpecWrite = true
 
 	gconfig := &gen.Config{Hooks: ext.Hooks(), Annotations: gen.Annotations{}}
 
-	// LoadSchema doesn't configure annotations, so we have to do that manually.
+	// LoadGraph doesn't configure annotations, so we have to do that manually.
 	for _, a := range ext.Annotations() {
 		gconfig.Annotations[a.Name()] = a
 	}
@@ -87,7 +101,7 @@ func buildSpec(config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *o
 	if err != nil {
 		return nil, nil, err
 	}
-	return graph, ext.generatedSpec, nil
+	return graph, spec, nil
 }
 
 func modifyType(t *testing.T, g *gen.Graph, name string, cb func(t *gen.Type)) {
@@ -131,4 +145,14 @@ func modifyTypeEdge(t *testing.T, g *gen.Graph, tname, ename string, cb func(t *
 		}
 	}
 	t.Fatalf("failed to find type %q", tname)
+}
+
+func mergeAnnotations(t *testing.T, in gen.Annotations, annotations ...Annotation) gen.Annotations {
+	t.Helper()
+	ant := *decodeAnnotation(in)
+	for _, a := range annotations { // nolint:gocritic
+		ant, _ = ant.Merge(a).(Annotation)
+	}
+	in.Set(ant.Name(), ant)
+	return in
 }

@@ -3,16 +3,15 @@
 license:
 	curl -sL https://liam.sh/-/gh/g/license-header.sh | bash -s
 
-up: go-upgrade-deps
-	@echo
+up:
+	go get -t -u ./... && go mod tidy
+	cd _examples && go get -u ./... && go mod tidy
 
-go-fetch:
+prepare:
 	go mod tidy
+	cd _examples && go mod tidy
 
-go-upgrade-deps:
-	go get -u ./... && go mod tidy
-
-simple:
+simple: prepare
 	cd _examples/simple && go generate -x ./...
 
 dlv-simple:
@@ -21,3 +20,6 @@ dlv-simple:
 		--api-version=2 --log \
 		--allow-non-terminal-interactive \
 		generate.go
+
+test: simple
+	go test -v -race -timeout 30s -count 3 -cpu 1,4 ./...

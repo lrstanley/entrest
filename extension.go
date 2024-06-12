@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"path/filepath"
 	"slices"
 
 	"entgo.io/ent/entc"
@@ -21,9 +22,7 @@ var _ entc.Extension = (*Extension)(nil)
 type Extension struct {
 	entc.DefaultExtension
 
-	config           *Config
-	disableSpecWrite bool
-	generatedSpec    *ogen.Spec
+	config *Config
 }
 
 func NewExtension(config *Config) (*Extension, error) {
@@ -53,16 +52,14 @@ func (e *Extension) Hooks() []gen.Hook {
 		},
 		func(next gen.Generator) gen.Generator {
 			return gen.GenerateFunc(func(g *gen.Graph) error {
-				var err error
-				e.generatedSpec, err = e.Generate(g)
+				spec, err := e.Generate(g)
 				if err != nil {
 					return err
 				}
-				if !e.disableSpecWrite {
-					err = e.writeSpec(e.generatedSpec)
-					if err != nil {
-						return err
-					}
+
+				err = e.writeSpec(g, spec)
+				if err != nil {
+					return err
 				}
 				return next.Generate(g)
 			})
@@ -80,6 +77,13 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	spec := e.config.Spec
 	if spec == nil {
 		spec = ogen.NewSpec()
+	}
+
+	if e.config.PreGenerateHook != nil {
+		err = e.config.PreGenerateHook(g, spec)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	// If they weren't provided, set some defaults which are required by OpenAPI,
@@ -140,6 +144,13 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 		panic(err)
 	}
 
+	if e.config.PostGenerateHook != nil {
+		err = e.config.PostGenerateHook(g, spec)
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	addGlobalErrorResponses(spec, e.config.GlobalErrorResponses)
 	addGlobalRequestHeaders(spec, e.config.GlobalRequestHeaders)
 	addGlobalResponseHeaders(spec, e.config.GlobalResponseHeaders)
@@ -147,14 +158,31 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	return spec, nil
 }
 
-func (e *Extension) writeSpec(spec *ogen.Spec) error {
-	f, err := os.OpenFile("openapi.json", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o644)
-	if err != nil {
-		panic(err)
+func (e *Extension) writeSpec(g *gen.Graph, spec *ogen.Spec) error {
+	if e.config.PreWriteHook != nil {
+		if err := e.config.PreWriteHook(spec); err != nil {
+			return err
+		}
 	}
-	defer f.Close()
 
-	enc := json.NewEncoder(f)
+	if e.config.Writer == nil {
+		dir := filepath.Join(g.Target, "rest")
+
+		err := os.MkdirAll(dir, 0o750)
+		if err != nil {
+			return fmt.Errorf("failed to create directory: %w", err)
+		}
+
+		f, err := os.OpenFile(filepath.Join(dir, "openapi.json"), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o640)
+		if err != nil {
+			return fmt.Errorf("failed to open file: %w", err)
+		}
+		defer f.Close()
+
+		e.config.Writer = f
+	}
+
+	enc := json.NewEncoder(e.config.Writer)
 	enc.SetIndent("", "    ")
 	return enc.Encode(spec)
 }

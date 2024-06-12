@@ -7,6 +7,7 @@ package entrest
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"slices"
 
@@ -124,6 +125,23 @@ type Config struct {
 	// have default values and/or aren't required, still get returned in JSON response
 	// bodies. Skips over fields which are json-excluded (e.g. sensitive data).
 	PatchJSONTag bool
+
+	// PreHook is a hook that runs before the spec is generated. This is useful for
+	// things like adding global security schemes, or adding global request headers,
+	// if you're unable to provide the [Config.Spec] field for some reason.
+	PreGenerateHook func(g *gen.Graph, spec *ogen.Spec) error `json:"-"`
+	// PostHook is a hook that runs after the spec is generated, but before we run global
+	// writers (headers, error codes, etc) as well as before we write the spec to disk.
+	// Recommended for adding additional paths so they can also receive the global headers,
+	// error codes, etc.
+	PostGenerateHook func(g *gen.Graph, spec *ogen.Spec) error `json:"-"`
+	// PreWriteHook is similar to PostGenerateHook, except it is run directly before
+	// writing to disk, after the entire spec has been resolved.
+	PreWriteHook func(spec *ogen.Spec) error `json:"-"`
+
+	// Writer is an optional writer to write the spec to. If not provided, the spec
+	// will be written to the filesystem under "<ent>/rest/openapi.json".
+	Writer io.Writer `json:"-"`
 }
 
 func (c *Config) Validate() error {

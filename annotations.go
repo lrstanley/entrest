@@ -29,7 +29,8 @@ func GetAnnotation[T gen.Type | gen.Field | gen.Edge](v *T) *Annotation {
 	panic("unreachable")
 }
 
-// decodeAnnotation decodes the decodeAnnotation from the given gen.Annotations.
+// decodeAnnotation decodes the entrest [Annotation] from the given gen.Annotations.
+// Panics if it's unable to decode the annotation.
 func decodeAnnotation(as gen.Annotations) *Annotation {
 	ant := &Annotation{}
 	if as != nil && as[ant.Name()] != nil {

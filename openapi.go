@@ -13,6 +13,32 @@ import (
 	"github.com/ogen-go/ogen"
 )
 
+// PatchOperations applies a callback to each operation in a path inside of the OpenAPI spec.
+func PatchOperations(pathItem *ogen.PathItem, cb func(method string, op *ogen.Operation) *ogen.Operation) *ogen.PathItem {
+	pathItem.Get = cb(http.MethodGet, pathItem.Get)
+	pathItem.Post = cb(http.MethodPost, pathItem.Post)
+	pathItem.Put = cb(http.MethodPut, pathItem.Put)
+	pathItem.Patch = cb(http.MethodPatch, pathItem.Patch)
+	pathItem.Delete = cb(http.MethodDelete, pathItem.Delete)
+	pathItem.Options = cb(http.MethodOptions, pathItem.Options)
+	pathItem.Head = cb(http.MethodHead, pathItem.Head)
+	pathItem.Trace = cb(http.MethodTrace, pathItem.Trace)
+	return pathItem
+}
+
+// PatchPathItem applies a callback to each response in a path inside of the OpenAPI spec.
+func PatchPathItem(pathItem *ogen.PathItem, cb func(resp *ogen.Response) *ogen.Response) *ogen.PathItem {
+	return PatchOperations(pathItem, func(_ string, op *ogen.Operation) *ogen.Operation {
+		if op == nil {
+			return nil
+		}
+		for k, v := range op.Responses {
+			op.Responses[k] = cb(v)
+		}
+		return op
+	})
+}
+
 func mergeOperation(overlap bool, orig, op *ogen.Operation) (*ogen.Operation, error) {
 	if orig == nil {
 		return op, nil
