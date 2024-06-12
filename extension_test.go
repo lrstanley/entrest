@@ -192,3 +192,12 @@ func validateSpec(t *testing.T, spec *ogen.Spec) {
 		t.FailNow()
 	}
 }
+
+func mustJSONDecode(t *testing.T, v any) []byte {
+	t.Helper()
+	b, err := json.Marshal(v)
+	if err != nil {
+		panic(err)
+	}
+	return b
+}

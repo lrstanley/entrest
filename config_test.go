@@ -105,3 +105,49 @@ func TestConfig_DisablePagination(t *testing.T) {
 		)
 	})
 }
+
+func TestConfig_ItemsPerPage(t *testing.T) {
+	t.Parallel()
+
+	t.Run("defaults", func(t *testing.T) {
+		t.Parallel()
+		c := &Config{}
+		_, spec := mustBuildSpec(t, c, nil)
+
+		var param *ogen.Parameter
+		for _, p := range spec.Paths["/pets"].Get.Parameters {
+			if p.Name == "itemsPerPage" {
+				param = p
+				break
+			}
+		}
+		assert.NotNil(t, param)
+
+		assert.Equal(t, mustJSONDecode(t, c.ItemsPerPage), mustJSONDecode(t, param.Schema.Default))
+		assert.Equal(t, mustJSONDecode(t, c.MinItemsPerPage), mustJSONDecode(t, param.Schema.Minimum))
+		assert.Equal(t, mustJSONDecode(t, c.MaxItemsPerPage), mustJSONDecode(t, param.Schema.Maximum))
+	})
+
+	t.Run("with-specified", func(t *testing.T) {
+		t.Parallel()
+		c := &Config{
+			MinItemsPerPage: 2,
+			ItemsPerPage:    5,
+			MaxItemsPerPage: 999,
+		}
+		_, spec := mustBuildSpec(t, c, nil)
+
+		var param *ogen.Parameter
+		for _, p := range spec.Paths["/pets"].Get.Parameters {
+			if p.Name == "itemsPerPage" {
+				param = p
+				break
+			}
+		}
+		assert.NotNil(t, param)
+
+		assert.Equal(t, mustJSONDecode(t, c.ItemsPerPage), mustJSONDecode(t, param.Schema.Default))
+		assert.Equal(t, mustJSONDecode(t, c.MinItemsPerPage), mustJSONDecode(t, param.Schema.Minimum))
+		assert.Equal(t, mustJSONDecode(t, c.MaxItemsPerPage), mustJSONDecode(t, param.Schema.Maximum))
+	})
+}
