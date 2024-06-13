@@ -10,7 +10,6 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
-	"github.com/lrstanley/entrest"
 )
 
 type User struct {
@@ -49,7 +48,6 @@ func (User) Fields() []ent.Field {
 		field.Time("created_at").
 			Immutable().
 			Default(time.Now).
-			Annotations(entrest.WithSortable(true)).
 			Comment("Time the identity was created in the source system."),
 		field.Time("updated_at").
 			Immutable().
