@@ -17,6 +17,7 @@ import (
 	"github.com/ogen-go/ogen"
 	"github.com/pb33f/libopenapi"
 	validator "github.com/pb33f/libopenapi-validator"
+	"github.com/spyzhov/ajson"
 	"github.com/stretchr/testify/require"
 )
 
@@ -35,20 +36,68 @@ var (
 
 // mustBuildSpec is like buildSpec, but it fails if the extension execution fails.
 // Also runs spec validation, which will fail is the spec has any errors.
-func mustBuildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *ogen.Spec) {
+func mustBuildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) *testSpecResult {
 	t.Helper()
-	graph, spec, err := buildSpec(config, hook)
+
+	result, err := buildSpec(config, hook)
 	if err != nil {
 		t.Fatal(err)
 	}
-	validateSpec(t, spec)
-	return graph, spec
+
+	validateSpec(t, result.spec)
+	return result
+}
+
+type testSpecResult struct {
+	graph  *gen.Graph
+	spec   *ogen.Spec
+	config *Config
+
+	ensureObj func()
+	_obj      *ajson.Node
+}
+
+// json queries the resulting JSON version of the OpenAPI spec using JSONPath
+// syntax. If length of results is 0, it returns nil, if length is 1, it returns
+// the first result, if length is greater than 1, it returns all values as a
+// []<underlying type>. Also note that integers will be returned as float64s.
+//
+// Refs:
+//   - https://jsonpath.com/ (super helpful for debugging/testing validations,
+//     but doesn't support everything ajson does).
+func (s *testSpecResult) json(jsonPath string) any {
+	s.ensureObj()
+
+	results, err := s._obj.JSONPath(jsonPath)
+	if err != nil {
+		panic(fmt.Sprintf("failed to parse json path: %v", err))
+	}
+
+	if len(results) == 0 {
+		return nil
+	}
+
+	var out []any
+	var v any
+
+	for _, n := range results {
+		v, err = n.Unpack()
+		if err != nil {
+			panic(fmt.Sprintf("failed to unpack node: %v", err))
+		}
+		out = append(out, v)
+	}
+
+	if len(out) == 1 {
+		return out[0]
+	}
+	return out
 }
 
 // buildSpec uses the shared schema cache, and invokes the extension to build the
 // spec. It also invokes the provided hook on the graph before executing the extension,
 // if provided. DOES NOT RUN SPEC VALIDATION.
-func buildSpec(config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *ogen.Spec, err error) {
+func buildSpec(config *Config, hook func(*gen.Graph)) (*testSpecResult, error) {
 	if config == nil {
 		config = &Config{}
 	}
@@ -57,8 +106,10 @@ func buildSpec(config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *o
 		config.Writer = io.Discard
 	}
 
+	result := &testSpecResult{config: config}
+
 	config.PreWriteHook = func(s *ogen.Spec) error {
-		spec = s
+		result.spec = s
 		return nil
 	}
 
@@ -67,7 +118,7 @@ func buildSpec(config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *o
 
 	ext, err := NewExtension(config)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	gconfig := &gen.Config{Hooks: ext.Hooks(), Annotations: gen.Annotations{}}
@@ -95,24 +146,38 @@ func buildSpec(config *Config, hook func(*gen.Graph)) (graph *gen.Graph, spec *o
 	if gconfig.Package == "" {
 		gconfig.Package = path.Dir(schema.PkgPath)
 	}
-	graph, err = gen.NewGraph(gconfig, schema.Schemas...)
+	result.graph, err = gen.NewGraph(gconfig, schema.Schemas...)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	// Same with hooks.
 	var g gen.Generator = gen.GenerateFunc(func(_ *gen.Graph) error {
 		return nil
 	})
-	for i := len(graph.Hooks) - 1; i >= 0; i-- {
-		g = graph.Hooks[i](g)
+	for i := len(result.graph.Hooks) - 1; i >= 0; i-- {
+		g = result.graph.Hooks[i](g)
 	}
 
-	err = g.Generate(graph)
+	err = g.Generate(result.graph)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	return graph, spec, nil
+
+	result.ensureObj = sync.OnceFunc(func() {
+		var b []byte
+		b, err = json.Marshal(result.spec)
+		if err != nil {
+			panic(fmt.Sprintf("failed to marshal spec: %v", err))
+		}
+
+		result._obj, err = ajson.Unmarshal(b)
+		if err != nil {
+			panic(fmt.Sprintf("failed to unmarshal spec: %v", err))
+		}
+	})
+
+	return result, nil
 }
 
 func modifyType(t *testing.T, g *gen.Graph, name string, cb func(t *gen.Type)) {
@@ -191,13 +256,4 @@ func validateSpec(t *testing.T, spec *ogen.Spec) {
 		t.Logf("spec: %s", string(b))
 		t.FailNow()
 	}
-}
-
-func mustJSONDecode(t *testing.T, v any) []byte {
-	t.Helper()
-	b, err := json.Marshal(v)
-	if err != nil {
-		panic(err)
-	}
-	return b
 }

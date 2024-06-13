@@ -17,14 +17,14 @@ func TestConfig_Spec(t *testing.T) {
 
 	t.Run("default-spec", func(t *testing.T) {
 		t.Parallel()
-		_, spec := mustBuildSpec(t, &Config{Spec: nil}, nil)
-		assert.Equal(t, "EntGo Rest API", spec.Info.Title)
+		r := mustBuildSpec(t, &Config{Spec: nil}, nil)
+		assert.Equal(t, "EntGo Rest API", r.json(`$.info.title`))
 	})
 
 	t.Run("with-spec", func(t *testing.T) {
 		t.Parallel()
-		_, spec := mustBuildSpec(t, &Config{Spec: &ogen.Spec{Info: ogen.Info{Title: "foo"}}}, nil)
-		assert.Equal(t, "foo", spec.Info.Title)
+		r := mustBuildSpec(t, &Config{Spec: &ogen.Spec{Info: ogen.Info{Title: "foo"}}}, nil)
+		assert.Equal(t, "foo", r.json(`$.info.title`))
 	})
 }
 
@@ -33,99 +33,73 @@ func TestConfig_DisablePagination(t *testing.T) {
 
 	t.Run("with-pagination", func(t *testing.T) {
 		t.Parallel()
-		_, spec := mustBuildSpec(t, &Config{DisablePagination: false}, nil)
-		assert.Equal(t, "#/components/schemas/PagedResponse", spec.Components.Schemas["PetList"].AllOf[0].Ref)
+		r := mustBuildSpec(t, &Config{DisablePagination: false}, nil)
+		assert.Contains(t, r.json(`$.components.schemas.PetList.allOf[?(@.$ref)].*`), "/PagedResponse")
 	})
 
 	t.Run("with-pagination-edge", func(t *testing.T) {
 		t.Parallel()
-		_, spec := mustBuildSpec(t, &Config{DisablePagination: false}, nil)
+		r := mustBuildSpec(t, &Config{DisablePagination: false}, nil)
 
-		assert.Equal(t,
-			"#/components/schemas/CategoryList",
-			spec.Paths["/pets/{id}/categories"].Get.Responses["200"].Content["application/json"].Schema.Ref,
-		)
-		assert.Equal(t,
-			"#/components/schemas/PagedResponse",
-			spec.Components.Schemas["CategoryList"].AllOf[0].Ref,
-		)
+		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..responses..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf[?(@.$ref)].*`), "/PagedResponse")
 	})
 
 	t.Run("without-pagination", func(t *testing.T) {
 		t.Parallel()
-		_, spec := mustBuildSpec(t, &Config{DisablePagination: true}, nil)
-		assert.Equal(t, []*ogen.Schema(nil), spec.Components.Schemas["PetList"].AllOf)
+		r := mustBuildSpec(t, &Config{DisablePagination: true}, nil)
+		assert.Equal(t, nil, r.json(`$.components.schemas.PetList.allOf`))
 	})
 
 	t.Run("no-global-but-local", func(t *testing.T) {
 		t.Parallel()
-		_, spec := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
+		r := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
 			modifyType(t, g, "Pet", func(tt *gen.Type) {
 				tt.Annotations = mergeAnnotations(t, tt.Annotations, WithPagination(true))
 			})
 		})
-		assert.Equal(t, "#/components/schemas/PagedResponse", spec.Components.Schemas["PetList"].AllOf[0].Ref)
+		assert.Contains(t, r.json(`$.components.schemas.PetList.allOf[?(@.$ref)].*`), "/PagedResponse")
 	})
 
 	t.Run("no-global-but-local-edge", func(t *testing.T) {
 		t.Parallel()
-		_, spec := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
+		r := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
 			modifyTypeEdge(t, g, "Pet", "categories", func(e *gen.Edge) {
-				// e.Type vs e, for WithPagination.
-				// e.Type.Annotations = mergeAnnotations(t, e.Type.Annotations, WithPagination(true))
 				e.Annotations = mergeAnnotations(t, e.Annotations, WithPagination(true))
 			})
 		})
-		assert.Equal(t,
-			"#/components/schemas/PetCategoryList",
-			spec.Paths["/pets/{id}/categories"].Get.Responses["200"].Content["application/json"].Schema.Ref,
-		)
-		assert.Equal(t,
-			"#/components/schemas/PagedResponse",
-			spec.Components.Schemas["PetCategoryList"].AllOf[0].Ref,
-		)
+
+		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..responses..schema.$ref`), "/PetCategoryList")
+		assert.Contains(t, r.json(`$.components.schemas.PetCategoryList.allOf[?(@.$ref)].*`), "/PagedResponse")
 	})
 
 	// Same as no-global-but-local-edge but pagination is enabled on the edges
 	// underlying type.
 	t.Run("no-global-but-local-edge-ref", func(t *testing.T) {
 		t.Parallel()
-		_, spec := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
+		r := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
 			modifyTypeEdge(t, g, "Pet", "categories", func(e *gen.Edge) {
 				e.Type.Annotations = mergeAnnotations(t, e.Type.Annotations, WithPagination(true))
 			})
 		})
-		assert.Equal(t,
-			"#/components/schemas/CategoryList",
-			spec.Paths["/pets/{id}/categories"].Get.Responses["200"].Content["application/json"].Schema.Ref,
-		)
-		assert.Equal(t,
-			"#/components/schemas/PagedResponse",
-			spec.Components.Schemas["CategoryList"].AllOf[0].Ref,
-		)
+		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..responses..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf[?(@.$ref)].*`), "/PagedResponse")
 	})
 }
 
 func TestConfig_ItemsPerPage(t *testing.T) {
 	t.Parallel()
 
+	base := `$.paths./pets..parameters[?(@.name == "itemsPerPage")].schema`
+
 	t.Run("defaults", func(t *testing.T) {
 		t.Parallel()
 		c := &Config{}
-		_, spec := mustBuildSpec(t, c, nil)
+		r := mustBuildSpec(t, c, nil)
 
-		var param *ogen.Parameter
-		for _, p := range spec.Paths["/pets"].Get.Parameters {
-			if p.Name == "itemsPerPage" {
-				param = p
-				break
-			}
-		}
-		assert.NotNil(t, param)
-
-		assert.Equal(t, mustJSONDecode(t, c.ItemsPerPage), mustJSONDecode(t, param.Schema.Default))
-		assert.Equal(t, mustJSONDecode(t, c.MinItemsPerPage), mustJSONDecode(t, param.Schema.Minimum))
-		assert.Equal(t, mustJSONDecode(t, c.MaxItemsPerPage), mustJSONDecode(t, param.Schema.Maximum))
+		assert.Equal(t, float64(c.ItemsPerPage), r.json(base+`.default`))
+		assert.Equal(t, float64(c.MinItemsPerPage), r.json(base+`.minimum`))
+		assert.Equal(t, float64(c.MaxItemsPerPage), r.json(base+`.maximum`))
 	})
 
 	t.Run("with-specified", func(t *testing.T) {
@@ -135,19 +109,45 @@ func TestConfig_ItemsPerPage(t *testing.T) {
 			ItemsPerPage:    5,
 			MaxItemsPerPage: 999,
 		}
-		_, spec := mustBuildSpec(t, c, nil)
+		r := mustBuildSpec(t, c, nil)
 
-		var param *ogen.Parameter
-		for _, p := range spec.Paths["/pets"].Get.Parameters {
-			if p.Name == "itemsPerPage" {
-				param = p
-				break
-			}
-		}
-		assert.NotNil(t, param)
+		assert.Equal(t, float64(c.ItemsPerPage), r.json(base+`.default`))
+		assert.Equal(t, float64(c.MinItemsPerPage), r.json(base+`.minimum`))
+		assert.Equal(t, float64(c.MaxItemsPerPage), r.json(base+`.maximum`))
+	})
+}
 
-		assert.Equal(t, mustJSONDecode(t, c.ItemsPerPage), mustJSONDecode(t, param.Schema.Default))
-		assert.Equal(t, mustJSONDecode(t, c.MinItemsPerPage), mustJSONDecode(t, param.Schema.Minimum))
-		assert.Equal(t, mustJSONDecode(t, c.MaxItemsPerPage), mustJSONDecode(t, param.Schema.Maximum))
+func TestConfig_DisableTotalCount(t *testing.T) {
+	t.Parallel()
+
+	t.Run("with-total-count", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DisableTotalCount: false}, nil)
+		assert.NotNil(t, r.json(`$.components.schemas.PagedResponse.properties.total_count`))
+	})
+
+	t.Run("without-total-count", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DisableTotalCount: true}, nil)
+		assert.Nil(t, r.json(`$.components.schemas.PagedResponse.properties.total_count`))
+	})
+}
+
+func TestConfig_DefaultEagerLoad(t *testing.T) {
+	t.Parallel()
+
+	t.Run("with-eager-load", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DefaultEagerLoad: true}, nil)
+
+		assert.NotNil(t, r.json(`$.components.schemas.PetRead..properties.edges`))
+		assert.NotNil(t, r.json(`$.components.schemas.PetEdges.properties.owner.$ref`))
+	})
+
+	t.Run("without-eager-load", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DefaultEagerLoad: false}, nil)
+		assert.Nil(t, r.json(`$.components.schemas.PetRead..properties.edges`))
+		assert.Nil(t, r.json(`$.components.schemas.PetEdges`))
 	})
 }

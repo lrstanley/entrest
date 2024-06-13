@@ -38,7 +38,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
-// test specific dependencies.
+// test specific dependencies -- not downloaded with go get by default, unless -t is used.
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
@@ -49,6 +49,7 @@ require (
 	github.com/pb33f/libopenapi-validator v0.0.56
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
+	github.com/spyzhov/ajson v0.9.1
 	github.com/stretchr/testify v1.9.0
 	github.com/vmware-labs/yaml-jsonpath v0.3.2 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
