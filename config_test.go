@@ -193,7 +193,7 @@ func TestConfig_DisableTotalCount(t *testing.T) {
 func TestConfig_DefaultEagerLoad(t *testing.T) {
 	t.Parallel()
 
-	t.Run("with-eager-load", func(t *testing.T) {
+	t.Run("global-eager-load", func(t *testing.T) {
 		t.Parallel()
 		r := mustBuildSpec(t, &Config{DefaultEagerLoad: true}, nil)
 
@@ -201,10 +201,22 @@ func TestConfig_DefaultEagerLoad(t *testing.T) {
 		assert.NotNil(t, r.json(`$.components.schemas.PetEdges.properties.owner.$ref`))
 	})
 
-	t.Run("without-eager-load", func(t *testing.T) {
+	t.Run("no-global-eager-load", func(t *testing.T) {
 		t.Parallel()
 		r := mustBuildSpec(t, &Config{DefaultEagerLoad: false}, nil)
 		assert.Nil(t, r.json(`$.components.schemas.PetRead..properties.edges`))
 		assert.Nil(t, r.json(`$.components.schemas.PetEdges`))
+	})
+
+	t.Run("no-global-but-local-eager-load", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DefaultEagerLoad: false}, func(g *gen.Graph) {
+			modifyTypeEdge(t, g, "Pet", "categories", func(e *gen.Edge) {
+				e.Annotations = mergeAnnotations(t, e.Annotations, WithEagerLoad(true))
+			})
+		})
+		assert.NotNil(t, r.json(`$.components.schemas.PetRead..properties.edges`))
+		assert.NotNil(t, r.json(`$.components.schemas.PetEdges.properties.categories.items.$ref`))
+		assert.Nil(t, r.json(`$.components.schemas.PetEdges.properties.owner`))
 	})
 }
