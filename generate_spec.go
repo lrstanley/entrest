@@ -57,6 +57,7 @@ func addPagination(spec *ogen.Spec, cfg *Config) {
 					Type:        "integer",
 					Description: "Page which the results are associated with.",
 					Example:     jsonschema.RawValue(`1`),
+					Minimum:     ogen.Int().SetMinimum(ptr(int64(1))).Minimum,
 				},
 			},
 			{
@@ -65,6 +66,7 @@ func addPagination(spec *ogen.Spec, cfg *Config) {
 					Type:        "integer",
 					Description: "The number of the last page of results.",
 					Example:     jsonschema.RawValue(`3`),
+					Minimum:     ogen.Int().SetMinimum(ptr(int64(1))).Minimum,
 				},
 			},
 			{
@@ -86,6 +88,7 @@ func addPagination(spec *ogen.Spec, cfg *Config) {
 				Type:        "integer",
 				Description: "Total number of results.",
 				Example:     jsonschema.RawValue(`100`),
+				Minimum:     ogen.Int().SetMinimum(ptr(int64(0))).Minimum,
 			},
 		})
 		pagedSchema.Required = append(pagedSchema.Required, "total_count")
