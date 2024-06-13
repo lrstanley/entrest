@@ -5,12 +5,69 @@
 package entrest
 
 import (
+	"encoding/json"
+	"fmt"
 	"testing"
 
 	"entgo.io/ent/entc/gen"
 	"github.com/ogen-go/ogen"
 	"github.com/stretchr/testify/assert"
 )
+
+func TestEnsureIntegration(t *testing.T) {
+	t.Parallel()
+
+	// This test ensures that all of the integration test schemas don't have any
+	// pre-attached annotations, which would cause the test to fail or succeed
+	// in a way that is not expected.
+
+	r := mustBuildSpec(t, &Config{}, nil)
+
+	check := func(a *Annotation) error {
+		t.Helper()
+		out := map[string]any{}
+
+		b, err := json.Marshal(a)
+		if err != nil {
+			return err
+		}
+
+		err = json.Unmarshal(b, &out)
+		if err != nil {
+			return err
+		}
+
+		if _, ok := out["Schema"]; (ok && len(out) != 1) || (!ok && len(out) != 0) {
+			return fmt.Errorf("only 'Schema' annotation should exist in integration tests, but found others: %#v", out)
+		}
+		return nil
+	}
+
+	for _, n := range r.graph.Nodes {
+		na := GetAnnotation(n)
+		t.Run(n.Name, func(t *testing.T) {
+			t.Parallel()
+			if err := check(na); err != nil {
+				t.Error(err)
+			}
+		})
+
+		for _, f := range n.Fields {
+			t.Run(n.Name+"/"+f.Name, func(t *testing.T) {
+				if err := check(GetAnnotation(f)); err != nil {
+					t.Error(err)
+				}
+			})
+		}
+		for _, e := range n.Edges {
+			t.Run(n.Name+"/"+e.Name, func(t *testing.T) {
+				if err := check(GetAnnotation(e)); err != nil {
+					t.Error(err)
+				}
+			})
+		}
+	}
+}
 
 func TestConfig_Spec(t *testing.T) {
 	t.Parallel()
