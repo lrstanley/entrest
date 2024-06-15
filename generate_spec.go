@@ -600,7 +600,7 @@ func edgesToTags(cfg *Config, t *gen.Type) (tags []string) {
 	for _, e := range t.Edges {
 		ea := GetAnnotation(e)
 		if !ea.Skip && ea.GetEagerLoad(cfg) {
-			tags = append(tags, Singularize(e.Name))
+			tags = append(tags, Singularize(PascalCase(e.Name)))
 		}
 	}
 	return tags
