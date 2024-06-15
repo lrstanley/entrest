@@ -8,7 +8,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"os"
 	"path"
+	"path/filepath"
+	"strings"
 	"sync"
 	"testing"
 
@@ -20,6 +23,24 @@ import (
 	"github.com/spyzhov/ajson"
 	"github.com/stretchr/testify/require"
 )
+
+func writeSpec(t *testing.T, spec *ogen.Spec, fn string) { //nolint:unused
+	t.Helper()
+	err := os.MkdirAll(filepath.Dir(fn), 0o750)
+	if err != nil {
+		panic(fmt.Sprintf("failed to create directory: %v", err))
+	}
+
+	b, err := json.MarshalIndent(spec, "", "    ")
+	if err != nil {
+		panic(fmt.Sprintf("failed to marshal spec: %v", err))
+	}
+
+	err = os.WriteFile(fn, b, 0o640)
+	if err != nil {
+		panic(fmt.Sprintf("failed to write spec: %v", err))
+	}
+}
 
 // Setup helpers/initialization for all integration related tests.
 var (
@@ -180,47 +201,39 @@ func buildSpec(config *Config, hook func(*gen.Graph)) (*testSpecResult, error) {
 	return result, nil
 }
 
-func modifyType(t *testing.T, g *gen.Graph, name string, cb func(t *gen.Type)) {
+// injectAnnotations injects the provided annotations into the provided schema path.
+// "Pet" means the Pet schema, "Pet.categories" means the categories edge on the Pet,
+// and "Pet.some_field" means the some_field field on the Pet schema.
+func injectAnnotations(t *testing.T, g *gen.Graph, schemaPath string, annotations ...Annotation) {
 	t.Helper()
+	parts := strings.Split(schemaPath, ".")
+
 	for i := range g.Nodes {
-		if g.Nodes[i].Name == name {
-			cb(g.Nodes[i])
+		if g.Nodes[i].Name != parts[0] {
+			continue
+		}
+
+		if len(parts) < 2 {
+			g.Nodes[i].Annotations = mergeAnnotations(t, g.Nodes[i].Annotations, annotations...)
 			return
 		}
-	}
-	t.Fatalf("failed to find type %q", name)
-}
 
-func modifyTypeField(t *testing.T, g *gen.Graph, tname, fname string, cb func(t *gen.Field)) {
-	t.Helper()
-	for i := range g.Nodes {
-		if g.Nodes[i].Name == tname {
-			for j := range g.Nodes[i].Fields {
-				if g.Nodes[i].Fields[j].Name == fname {
-					cb(g.Nodes[i].Fields[j])
-					return
-				}
+		for j := range g.Nodes[i].Fields {
+			if g.Nodes[i].Fields[j].Name == parts[1] {
+				g.Nodes[i].Fields[j].Annotations = mergeAnnotations(t, g.Nodes[i].Fields[j].Annotations, annotations...)
+				return
 			}
-			t.Fatalf("failed to find field %q in type %q", fname, tname)
 		}
+		for j := range g.Nodes[i].Edges {
+			if g.Nodes[i].Edges[j].Name == parts[1] {
+				g.Nodes[i].Edges[j].Annotations = mergeAnnotations(t, g.Nodes[i].Edges[j].Annotations, annotations...)
+				return
+			}
+		}
+		t.Fatalf("failed to find field or edge with name %q in type %q", parts[0], parts[1])
 	}
-	t.Fatalf("failed to find type %q", tname)
-}
 
-func modifyTypeEdge(t *testing.T, g *gen.Graph, tname, ename string, cb func(t *gen.Edge)) {
-	t.Helper()
-	for i := range g.Nodes {
-		if g.Nodes[i].Name == tname {
-			for j := range g.Nodes[i].Edges {
-				if g.Nodes[i].Edges[j].Name == ename {
-					cb(g.Nodes[i].Edges[j])
-					return
-				}
-			}
-			t.Fatalf("failed to find edge %q in type %q", ename, tname)
-		}
-	}
-	t.Fatalf("failed to find type %q", tname)
+	t.Fatalf("failed to find type %q", parts[0])
 }
 
 func mergeAnnotations(t *testing.T, in gen.Annotations, annotations ...Annotation) gen.Annotations {
