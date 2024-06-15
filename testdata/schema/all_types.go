@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest"
 	"github.com/ogen-go/ogen"
 )
@@ -19,7 +20,7 @@ type AllTypes struct{ ent.Schema }
 // Fields of the AllTypes.
 func (AllTypes) Fields() []ent.Field {
 	return []ent.Field{
-		field.Uint32("id"),
+		field.UUID("id", uuid.Nil).Default(uuid.New),
 		field.Int("int"),
 		field.Int8("int8"),
 		field.Int16("int16"),

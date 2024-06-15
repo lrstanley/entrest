@@ -557,3 +557,32 @@ func TestConfig_GlobalErrorResponses(t *testing.T) {
 		assert.Contains(t, r.json(`$.paths./pets/{id}/categories.get.responses`), "500")
 	})
 }
+
+func TestConfig_AllowClientUUIDs(t *testing.T) {
+	t.Parallel()
+
+	t.Run("with-allow", func(t *testing.T) {
+		t.Parallel()
+
+		r := mustBuildSpec(t, &Config{AllowClientUUIDs: true}, nil)
+
+		assert.Equal(t, "string", r.json(`$.components.schemas.AllType.properties.id.type`))
+		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllType.properties.id.format`))
+		assert.Equal(t, "string", r.json(`$.components.schemas.AllTypeCreate.properties.id.type`))
+		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllTypeCreate.properties.id.format`))
+		assert.Equal(t, "string", r.json(`$.components.parameters.AllTypeID.schema.type`))
+		assert.Equal(t, "uuid", r.json(`$.components.parameters.AllTypeID.schema.format`))
+	})
+
+	t.Run("without-allow", func(t *testing.T) {
+		t.Parallel()
+
+		r := mustBuildSpec(t, &Config{AllowClientUUIDs: false}, nil)
+
+		assert.Equal(t, "string", r.json(`$.components.schemas.AllType.properties.id.type`))
+		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllType.properties.id.format`))
+		assert.Nil(t, r.json(`$.components.schemas.AllTypeCreate.properties.id`))
+		assert.Equal(t, "string", r.json(`$.components.parameters.AllTypeID.schema.type`))
+		assert.Equal(t, "uuid", r.json(`$.components.parameters.AllTypeID.schema.format`))
+	})
+}
