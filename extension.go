@@ -6,6 +6,7 @@ package entrest
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -142,6 +143,10 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	err = MergeSpecOverlap(spec, specs...)
 	if err != nil {
 		panic(err)
+	}
+
+	if len(spec.Paths) == 0 {
+		return nil, errors.New("no schemas contain any operations, thus no spec paths can be generated")
 	}
 
 	if e.config.PostGenerateHook != nil {
