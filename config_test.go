@@ -7,6 +7,7 @@ package entrest
 import (
 	"encoding/json"
 	"fmt"
+	"slices"
 	"testing"
 
 	"entgo.io/ent/entc/gen"
@@ -310,4 +311,96 @@ func TestConfig_AddEdgesToTags(t *testing.T) {
 		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "Category")
 		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "User")
 	})
+}
+
+func TestConfig_DefaultOperations(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		ops     []Operation
+		wantErr bool
+	}{
+		{
+			name: "all-operations",
+			ops:  AllOperations,
+		},
+		{
+			name:    "no-operations",
+			ops:     []Operation{},
+			wantErr: true,
+		},
+		{
+			name: "create-1",
+			ops:  []Operation{OperationCreate},
+		},
+		{
+			name: "read-1",
+			ops:  []Operation{OperationRead},
+		},
+		{
+			name: "update-1",
+			ops:  []Operation{OperationUpdate},
+		},
+		{
+			name: "delete-1",
+			ops:  []Operation{OperationDelete},
+		},
+		{
+			name: "list-1",
+			ops:  []Operation{OperationList},
+		},
+		{
+			name: "create-read-2",
+			ops:  []Operation{OperationCreate, OperationRead},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if tt.wantErr {
+				_, err := buildSpec(t, &Config{DefaultOperations: tt.ops}, nil)
+				assert.Error(t, err)
+				return
+			}
+
+			r := mustBuildSpec(t, &Config{DefaultOperations: tt.ops}, nil)
+
+			if slices.Contains(tt.ops, OperationCreate) {
+				assert.NotNil(t, r.json(`$.paths./pets.post`))
+			} else {
+				assert.Nil(t, r.json(`$.paths./pets.post`))
+			}
+
+			if slices.Contains(tt.ops, OperationRead) {
+				assert.NotNil(t, r.json(`$.paths./pets/{id}.get`))
+				assert.NotNil(t, r.json(`$.paths./pets/{id}/owner.get`))
+			} else {
+				assert.Nil(t, r.json(`$.paths./pets/{id}.get`))
+				assert.Nil(t, r.json(`$.paths./pets/{id}/owner.get`))
+			}
+
+			if slices.Contains(tt.ops, OperationUpdate) {
+				assert.NotNil(t, r.json(`$.paths./pets/{id}.patch`))
+			} else {
+				assert.Nil(t, r.json(`$.paths./pets/{id}.patch`))
+			}
+
+			if slices.Contains(tt.ops, OperationDelete) {
+				assert.NotNil(t, r.json(`$.paths./pets/{id}.delete`))
+			} else {
+				assert.Nil(t, r.json(`$.paths./pets/{id}.delete`))
+			}
+
+			if slices.Contains(tt.ops, OperationList) {
+				assert.NotNil(t, r.json(`$.paths./pets.get`))
+				assert.NotNil(t, r.json(`$.paths./pets/{id}/categories.get`))
+			} else {
+				assert.Nil(t, r.json(`$.paths./pets.get`))
+				assert.Nil(t, r.json(`$.paths./pets/{id}/categories.get`))
+			}
+		})
+	}
 }
