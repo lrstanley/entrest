@@ -561,7 +561,7 @@ func TestConfig_GlobalErrorResponses(t *testing.T) {
 func TestConfig_AllowClientUUIDs(t *testing.T) {
 	t.Parallel()
 
-	t.Run("with-allow", func(t *testing.T) {
+	t.Run("enabled", func(t *testing.T) {
 		t.Parallel()
 
 		r := mustBuildSpec(t, &Config{AllowClientUUIDs: true}, nil)
@@ -574,7 +574,7 @@ func TestConfig_AllowClientUUIDs(t *testing.T) {
 		assert.Equal(t, "uuid", r.json(`$.components.parameters.AllTypeID.schema.format`))
 	})
 
-	t.Run("without-allow", func(t *testing.T) {
+	t.Run("disabled", func(t *testing.T) {
 		t.Parallel()
 
 		r := mustBuildSpec(t, &Config{AllowClientUUIDs: false}, nil)
@@ -584,5 +584,45 @@ func TestConfig_AllowClientUUIDs(t *testing.T) {
 		assert.Nil(t, r.json(`$.components.schemas.AllTypeCreate.properties.id`))
 		assert.Equal(t, "string", r.json(`$.components.parameters.AllTypeID.schema.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.parameters.AllTypeID.schema.format`))
+	})
+}
+
+func TestConfig_DisablePatchJSONTag(t *testing.T) {
+	t.Parallel()
+
+	t.Run("disabled", func(t *testing.T) {
+		t.Parallel()
+
+		r := mustBuildSpec(t, &Config{DisablePatchJSONTag: true}, nil)
+
+		for _, n := range r.graph.Nodes {
+			if n.Name == "Pet" {
+				for _, f := range n.Fields {
+					if f.Name == "name" {
+						assert.Equal(t, `json:"name,omitempty"`, f.StructTag)
+						return
+					}
+				}
+			}
+		}
+		t.Errorf("failed to find field with name 'name'")
+	})
+
+	t.Run("enabled", func(t *testing.T) {
+		t.Parallel()
+
+		r := mustBuildSpec(t, &Config{DisablePatchJSONTag: false}, nil)
+
+		for _, n := range r.graph.Nodes {
+			if n.Name == "Pet" {
+				for _, f := range n.Fields {
+					if f.Name == "name" {
+						assert.Equal(t, `json:"name"`, f.StructTag)
+						return
+					}
+				}
+			}
+		}
+		t.Errorf("failed to find field with name 'name'")
 	})
 }
