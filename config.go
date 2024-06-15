@@ -97,7 +97,19 @@ type Config struct {
 	// added to all path operations. Note that some status codes are excluded on specific
 	// operations (e.g. 404 on list, 409 on non-create/update, etc). If not specified,
 	// a default set of responses will be generated which can be used with entrest's
-	// built-in auto-generated HTTP handlers.
+	// built-in auto-generated HTTP handlers (see below).
+	//
+	// Default responses (provided via [DefaultErrorResponse]) are:
+	//
+	//	map[int]*ogen.Schema{
+	//		http.StatusBadRequest:          DefaultErrorResponse(http.StatusBadRequest),
+	//		http.StatusUnauthorized:        DefaultErrorResponse(http.StatusUnauthorized),
+	//		http.StatusForbidden:           DefaultErrorResponse(http.StatusForbidden),
+	//		http.StatusNotFound:            DefaultErrorResponse(http.StatusNotFound),
+	//		http.StatusConflict:            DefaultErrorResponse(http.StatusConflict),
+	//		http.StatusTooManyRequests:     DefaultErrorResponse(http.StatusTooManyRequests),
+	//		http.StatusInternalServerError: DefaultErrorResponse(http.StatusInternalServerError),
+	//	}
 	GlobalErrorResponses map[int]*ogen.Schema
 
 	// Handler enables the generation of HTTP handlers for the specified server/routing
@@ -179,13 +191,13 @@ func (c *Config) Validate() error {
 
 	if len(c.GlobalErrorResponses) == 0 {
 		c.GlobalErrorResponses = map[int]*ogen.Schema{
-			http.StatusBadRequest:          defaultErrorResponse(http.StatusBadRequest),
-			http.StatusUnauthorized:        defaultErrorResponse(http.StatusUnauthorized),
-			http.StatusForbidden:           defaultErrorResponse(http.StatusForbidden),
-			http.StatusNotFound:            defaultErrorResponse(http.StatusNotFound),
-			http.StatusConflict:            defaultErrorResponse(http.StatusConflict),
-			http.StatusTooManyRequests:     defaultErrorResponse(http.StatusTooManyRequests),
-			http.StatusInternalServerError: defaultErrorResponse(http.StatusInternalServerError),
+			http.StatusBadRequest:          DefaultErrorResponse(http.StatusBadRequest),
+			http.StatusUnauthorized:        DefaultErrorResponse(http.StatusUnauthorized),
+			http.StatusForbidden:           DefaultErrorResponse(http.StatusForbidden),
+			http.StatusNotFound:            DefaultErrorResponse(http.StatusNotFound),
+			http.StatusConflict:            DefaultErrorResponse(http.StatusConflict),
+			http.StatusTooManyRequests:     DefaultErrorResponse(http.StatusTooManyRequests),
+			http.StatusInternalServerError: DefaultErrorResponse(http.StatusInternalServerError),
 		}
 	}
 
