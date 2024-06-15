@@ -248,11 +248,11 @@ func TestWithDefault(t *testing.T) {
 	})
 
 	t.Run("bool-zero", func(t *testing.T) {
-		assert.Equal(t, true, withDefault(false, true))
+		assert.True(t, withDefault(false, true))
 	})
 
 	t.Run("bool", func(t *testing.T) {
-		assert.Equal(t, true, withDefault(true, false))
+		assert.True(t, withDefault(true, false))
 	})
 }
 

@@ -60,7 +60,7 @@ var (
 func mustBuildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) *testSpecResult {
 	t.Helper()
 
-	result, err := buildSpec(config, hook)
+	result, err := buildSpec(t, config, hook)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -118,7 +118,7 @@ func (s *testSpecResult) json(jsonPath string) any {
 // buildSpec uses the shared schema cache, and invokes the extension to build the
 // spec. It also invokes the provided hook on the graph before executing the extension,
 // if provided. DOES NOT RUN SPEC VALIDATION.
-func buildSpec(config *Config, hook func(*gen.Graph)) (*testSpecResult, error) {
+func buildSpec(_ *testing.T, config *Config, hook func(*gen.Graph)) (*testSpecResult, error) {
 	if config == nil {
 		config = &Config{}
 	}
@@ -259,7 +259,7 @@ func validateSpec(t *testing.T, spec *ogen.Spec) {
 	if len(errs) > 0 {
 		t.Logf("spec: %s", string(b))
 	}
-	require.Len(t, errs, 0)
+	require.Empty(t, errs)
 
 	valid, validErrs := docValidator.ValidateDocument()
 	if !valid {

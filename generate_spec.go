@@ -97,7 +97,7 @@ func addPagination(spec *ogen.Spec, cfg *Config) {
 	spec.Components.Schemas["PagedResponse"] = pagedSchema
 }
 
-func newBaseSpec(cfg *Config) *ogen.Spec {
+func newBaseSpec(_ *Config) *ogen.Spec {
 	spec := &ogen.Spec{
 		Paths: ogen.Paths{},
 		Components: &ogen.Components{

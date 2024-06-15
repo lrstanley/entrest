@@ -42,9 +42,8 @@ func TestGetAnnotation(t *testing.T) {
 	)
 
 	// Test fields.
-	assert.Equal(
+	assert.True(
 		t,
-		true,
 		GetAnnotation(&gen.Field{Annotations: map[string]any{
 			Annotation{}.Name(): WithSortable(true),
 		}}).Sortable,
@@ -89,7 +88,7 @@ func TestValidateAnnotation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := ValidateAnnotations(tt.value)
-			assert.True(t, tt.wantErr == (err != nil))
+			assert.Equal(t, tt.wantErr, err != nil)
 		})
 	}
 }

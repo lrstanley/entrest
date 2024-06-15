@@ -105,7 +105,7 @@ func TestConfig_DisablePagination(t *testing.T) {
 	t.Run("without-pagination", func(t *testing.T) {
 		t.Parallel()
 		r := mustBuildSpec(t, &Config{DisablePagination: true}, nil)
-		assert.Equal(t, nil, r.json(`$.components.schemas.PetList.allOf`))
+		assert.Nil(t, r.json(`$.components.schemas.PetList.allOf`))
 	})
 
 	t.Run("no-global-but-local", func(t *testing.T) {
@@ -148,9 +148,9 @@ func TestConfig_ItemsPerPage(t *testing.T) {
 		c := &Config{}
 		r := mustBuildSpec(t, c, nil)
 
-		assert.Equal(t, float64(c.ItemsPerPage), r.json(base+`.default`))
-		assert.Equal(t, float64(c.MinItemsPerPage), r.json(base+`.minimum`))
-		assert.Equal(t, float64(c.MaxItemsPerPage), r.json(base+`.maximum`))
+		assert.Equal(t, float64(c.ItemsPerPage), r.json(base+`.default`))    //nolint:all
+		assert.Equal(t, float64(c.MinItemsPerPage), r.json(base+`.minimum`)) //nolint:all
+		assert.Equal(t, float64(c.MaxItemsPerPage), r.json(base+`.maximum`)) //nolint:all
 	})
 
 	t.Run("with-specified", func(t *testing.T) {
@@ -162,9 +162,9 @@ func TestConfig_ItemsPerPage(t *testing.T) {
 		}
 		r := mustBuildSpec(t, c, nil)
 
-		assert.Equal(t, float64(c.ItemsPerPage), r.json(base+`.default`))
-		assert.Equal(t, float64(c.MinItemsPerPage), r.json(base+`.minimum`))
-		assert.Equal(t, float64(c.MaxItemsPerPage), r.json(base+`.maximum`))
+		assert.Equal(t, float64(c.ItemsPerPage), r.json(base+`.default`))    //nolint:all
+		assert.Equal(t, float64(c.MinItemsPerPage), r.json(base+`.minimum`)) //nolint:all
+		assert.Equal(t, float64(c.MaxItemsPerPage), r.json(base+`.maximum`)) //nolint:all
 	})
 }
 

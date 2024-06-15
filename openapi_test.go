@@ -200,7 +200,7 @@ func TestMergeOperation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			_, err := mergeOperation(tt.overlap, tt.orig, tt.toMerge)
-			require.True(t, tt.wantErr == (err != nil), "unexpected error: %v", err)
+			require.Equal(t, tt.wantErr, err != nil, "unexpected error: %v", err)
 			if tt.wantErr {
 				return
 			}
@@ -392,7 +392,7 @@ func TestMergeSpec(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			err := mergeSpec(tt.overlap, tt.orig, tt.toMerge...)
-			require.True(t, tt.wantErr == (err != nil), "unexpected error: %v", err)
+			require.Equal(t, tt.wantErr, err != nil, "unexpected error: %v", err)
 			if tt.wantErr {
 				return
 			}
