@@ -285,3 +285,29 @@ func TestConfig_DisableEagerLoadedEndpoints(t *testing.T) {
 		assert.Nil(t, r.json(`$.paths./pets/{id}/owner`))
 	})
 }
+
+func TestConfig_AddEdgesToTags(t *testing.T) {
+	t.Parallel()
+
+	t.Run("with-tags", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{AddEdgesToTags: true}, func(g *gen.Graph) {
+			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+		})
+
+		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Pet")
+		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Category")
+		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "User")
+	})
+
+	t.Run("no-tags", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{AddEdgesToTags: false}, func(g *gen.Graph) {
+			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+		})
+
+		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Pet")
+		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "Category")
+		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "User")
+	})
+}
