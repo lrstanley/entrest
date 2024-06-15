@@ -189,7 +189,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Create a new %s entity. %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: withDefault(ta.GetOperationID(op), fmt.Sprintf("create%s", entityName)),
+			OperationID: withDefault(ta.GetOperationID(op), "create"+entityName),
 			Deprecated:  ta.Deprecated,
 			RequestBody: ogen.NewRequestBody().
 				SetRequired(true).
@@ -287,7 +287,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Query all %s entities (including pagination, filtering, sorting, etc). %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: withDefault(ta.GetOperationID(op), fmt.Sprintf("list%s", Pluralize(t.Name))),
+			OperationID: withDefault(ta.GetOperationID(op), "list"+Pluralize(t.Name)),
 			Deprecated:  ta.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{

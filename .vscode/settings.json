@@ -12,6 +12,9 @@
         "**/tmp": true,
     },
     "go.lintTool": "golangci-lint",
+    "go.lintFlags": [
+        "--fix"
+    ],
     "gopls": {
         "formatting.gofumpt": true
     }
