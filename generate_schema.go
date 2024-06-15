@@ -358,7 +358,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 			schemas[entityName+"Read"] = &ogen.Schema{Ref: "#/components/schemas/" + entityName}
 		}
 	case OperationList:
-		if !cfg.DisableEagerLoadNonPagedOpt && edge != nil {
+		if edge != nil {
 			// TODO: if /categories does not have pagination enabled, and then we have another
 			// endpoint like /pets/{id}/categories, we could reuse the /categories schema,
 			// because both are []Category. Would optimize the schema size, with the downside
@@ -366,7 +366,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 			ea := GetAnnotation(edge)
 			ra := GetAnnotation(edge.Type)
 
-			if !ea.GetPagination(cfg, edge) || !ra.GetPagination(cfg, edge) {
+			if !ea.GetPagination(cfg, edge) || (!ra.GetPagination(cfg, edge) || cfg.DisableEagerLoadNonPagedOpt) {
 				// This should allow setting the normal list operation as well, so don't return.
 				schema := ogen.NewSchema().SetRef("#/components/schemas/" + Singularize(edge.Type.Name) + "Read").AsArray()
 				schema.Description = fmt.Sprintf(
