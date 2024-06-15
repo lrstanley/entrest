@@ -212,3 +212,49 @@ func TestConfig_DefaultEagerLoad(t *testing.T) {
 		assert.Nil(t, r.json(`$.components.schemas.PetEdges.properties.owner`))
 	})
 }
+
+func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
+	t.Parallel()
+
+	t.Run("no-opt-with-eager-load", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DisableEagerLoadNonPagedOpt: true}, func(g *gen.Graph) {
+			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+		})
+
+		// Validate the eager-loaded thing is still there.
+		assert.NotNil(t, r.json(`$.components.schemas.PetRead..properties.edges`))
+		assert.NotNil(t, r.json(`$.components.schemas.PetEdges.properties.categories.items.$ref`))
+		assert.Nil(t, r.json(`$.components.schemas.PetEdges.properties.owner`))
+
+		// The edge endpoint should point to the paged schema, despite us eager-loading
+		// it.
+		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
+	})
+
+	t.Run("opt-with-eager-load", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DisableEagerLoadNonPagedOpt: false}, func(g *gen.Graph) {
+			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+		})
+
+		// Validate the eager-loaded thing is still there.
+		assert.NotNil(t, r.json(`$.components.schemas.PetRead..properties.edges`))
+		assert.NotNil(t, r.json(`$.components.schemas.PetEdges.properties.categories.items.$ref`))
+		assert.Nil(t, r.json(`$.components.schemas.PetEdges.properties.owner`))
+
+		// The edge endpoint should also be non-paged, because we optimized away the
+		// need for pagination, given the edge is eager-loaded.
+		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..schema.$ref`), "/PetCategoryList")
+		assert.Equal(t, "array", r.json(`$.components.schemas.PetCategoryList.type`))
+	})
+
+	t.Run("no-opt-no-eager-load", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DisableEagerLoadNonPagedOpt: true}, nil)
+
+		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
+	})
+}
