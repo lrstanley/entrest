@@ -405,35 +405,56 @@ func TestConfig_DefaultOperations(t *testing.T) {
 	}
 }
 
-func TestConfig_GlobalRequestHeaders(t *testing.T) {
+func TestConfig_GlobalHeaders(t *testing.T) {
 	t.Parallel()
 
-	r := mustBuildSpec(t, &Config{GlobalRequestHeaders: map[string]*ogen.Parameter{
-		"X-Request-ID": {
-			Name:        "X-Request-ID",
-			In:          "header",
-			Description: "The request ID.",
-			Schema:      ogen.String(),
-			Required:    false,
+	r := mustBuildSpec(t, &Config{
+		GlobalRequestHeaders: map[string]*ogen.Parameter{
+			"X-Request-ID": {
+				Name:        "X-Request-ID",
+				In:          "header",
+				Description: "The request ID.",
+				Schema:      ogen.String(),
+				Required:    false,
+			},
+			"Foo-Bar": {
+				Name:        "Foo-Bar",
+				In:          "header",
+				Description: "Foo bar.",
+				Schema:      ogen.String(),
+			},
 		},
-		"Foo-Bar": {
-			Name:        "Foo-Bar",
-			In:          "header",
-			Description: "Foo bar.",
-			Schema:      ogen.String(),
-			Required:    false,
+		GlobalResponseHeaders: map[string]*ogen.Header{
+			"X-Ratelimit-Limit": {
+				Description: "The number of requests allowed per hour.",
+				Schema:      ogen.Int(),
+			},
+			"X-Ratelimit-Remaining": {
+				Description: "The number of requests remaining in the current hour.",
+				Schema:      ogen.Int(),
+			},
 		},
-	}}, nil)
+	}, nil)
 
 	assert.Contains(t, r.json(`$.components.parameters`), "X-Request-ID")
 	assert.Contains(t, r.json(`$.components.parameters`), "Foo-Bar")
+	assert.Contains(t, r.json(`$.components.headers`), "X-Ratelimit-Limit")
+	assert.Contains(t, r.json(`$.components.headers`), "X-Ratelimit-Remaining")
 
 	assert.Contains(t, r.json(`$.paths./pets.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
 	assert.Contains(t, r.json(`$.paths./pets.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
-
 	assert.Contains(t, r.json(`$.paths./pets/{id}.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
 	assert.Contains(t, r.json(`$.paths./pets/{id}.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
-
 	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
 	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
+
+	assert.Contains(t, r.json(`$.paths./pets.get.responses.*.headers`), "X-Ratelimit-Limit")
+	assert.Contains(t, r.json(`$.paths./pets.get.responses.*.headers`), "X-Ratelimit-Remaining")
+	assert.Contains(t, r.json(`$.paths./pets/{id}.get.responses.*.headers`), "X-Ratelimit-Limit")
+	assert.Contains(t, r.json(`$.paths./pets/{id}.get.responses.*.headers`), "X-Ratelimit-Remaining")
+	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.get.responses.*.headers`), "X-Ratelimit-Limit")
+	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.get.responses.*.headers`), "X-Ratelimit-Remaining")
+
+	assert.Contains(t, r.json(`$.components.responses.ErrorConflict.headers`), "X-Ratelimit-Limit")
+	assert.Contains(t, r.json(`$.components.responses.ErrorConflict.headers`), "X-Ratelimit-Remaining")
 }
