@@ -404,3 +404,36 @@ func TestConfig_DefaultOperations(t *testing.T) {
 		})
 	}
 }
+
+func TestConfig_GlobalRequestHeaders(t *testing.T) {
+	t.Parallel()
+
+	r := mustBuildSpec(t, &Config{GlobalRequestHeaders: map[string]*ogen.Parameter{
+		"X-Request-ID": {
+			Name:        "X-Request-ID",
+			In:          "header",
+			Description: "The request ID.",
+			Schema:      ogen.String(),
+			Required:    false,
+		},
+		"Foo-Bar": {
+			Name:        "Foo-Bar",
+			In:          "header",
+			Description: "Foo bar.",
+			Schema:      ogen.String(),
+			Required:    false,
+		},
+	}}, nil)
+
+	assert.Contains(t, r.json(`$.components.parameters`), "X-Request-ID")
+	assert.Contains(t, r.json(`$.components.parameters`), "Foo-Bar")
+
+	assert.Contains(t, r.json(`$.paths./pets.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
+	assert.Contains(t, r.json(`$.paths./pets.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
+
+	assert.Contains(t, r.json(`$.paths./pets/{id}.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
+	assert.Contains(t, r.json(`$.paths./pets/{id}.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
+
+	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
+	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
+}
