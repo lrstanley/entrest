@@ -258,3 +258,30 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
 	})
 }
+
+func TestConfig_DisableEagerLoadedEndpoints(t *testing.T) {
+	t.Parallel()
+
+	t.Run("endpoints-with-eager-load", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DisableEagerLoadedEndpoints: false}, func(g *gen.Graph) {
+			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+			injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+		})
+
+		assert.NotNil(t, r.json(`$.paths./pets/{id}/categories`))
+		assert.NotNil(t, r.json(`$.paths./pets/{id}/owner`))
+	})
+
+	t.Run("no-endpoints-with-eager-load", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{DisableEagerLoadedEndpoints: true}, func(g *gen.Graph) {
+			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+			injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+		})
+
+		// The endpoints should be nil, because we disabled them.
+		assert.Nil(t, r.json(`$.paths./pets/{id}/categories`))
+		assert.Nil(t, r.json(`$.paths./pets/{id}/owner`))
+	})
+}
