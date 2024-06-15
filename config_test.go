@@ -7,6 +7,7 @@ package entrest
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"slices"
 	"testing"
 
@@ -457,4 +458,102 @@ func TestConfig_GlobalHeaders(t *testing.T) {
 
 	assert.Contains(t, r.json(`$.components.responses.ErrorConflict.headers`), "X-Ratelimit-Limit")
 	assert.Contains(t, r.json(`$.components.responses.ErrorConflict.headers`), "X-Ratelimit-Remaining")
+}
+
+func TestConfig_GlobalErrorResponses(t *testing.T) {
+	t.Parallel()
+
+	newPathItem := func() *ogen.PathItem {
+		return &ogen.PathItem{
+			Get: &ogen.Operation{
+				Summary:     "foo",
+				Description: "foo",
+				OperationID: "getFoo",
+				Responses: ogen.Responses{
+					"200": ogen.NewResponse().
+						SetDescription("foo").
+						SetJSONContent(&ogen.Schema{
+							Type: "object",
+							Properties: ogen.Properties{
+								ogen.Property{
+									Name: "foo",
+									Schema: &ogen.Schema{
+										Type: "string",
+									},
+								},
+							},
+							Required: []string{"foo"},
+						}),
+				},
+			},
+		}
+	}
+
+	t.Run("default", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			PostGenerateHook: func(_ *gen.Graph, spec *ogen.Spec) error {
+				spec.Paths["/foo"] = newPathItem()
+				return nil
+			},
+		}, nil)
+
+		assert.NotNil(t, r.json(`$.components.responses.ErrorConflict`))
+		assert.NotNil(t, r.json(`$.components.schemas.ErrorConflict`))
+
+		// ErrorConflict only exists on POST and PATCH related endpoints.
+		assert.Contains(t, r.json(`$.paths./pets.post.responses`), "409")
+		assert.Contains(t, r.json(`$.paths./pets/{id}.patch.responses`), "409")
+		assert.NotContains(t, r.json(`$.paths./pets.get.responses`), "409")
+		assert.NotContains(t, r.json(`$.paths./pets/{id}.delete.responses`), "409")
+		assert.NotContains(t, r.json(`$.paths./pets/{id}.get.responses`), "409")
+		assert.NotContains(t, r.json(`$.paths./pets/{id}/owner.get.responses`), "409")
+
+		// ErrorNotFound doesn't exist on list related endpoints.
+		assert.Contains(t, r.json(`$.paths./pets/{id}.get.responses`), "404")
+		assert.Contains(t, r.json(`$.paths./pets/{id}.patch.responses`), "404")
+		assert.Contains(t, r.json(`$.paths./pets/{id}.delete.responses`), "404")
+		assert.Contains(t, r.json(`$.paths./pets/{id}/owner.get.responses`), "404")
+		assert.Contains(t, r.json(`$.paths./foo.get.responses`), "404")
+		assert.NotContains(t, r.json(`$.paths./pets.get.responses`), "404")
+		assert.NotContains(t, r.json(`$.paths./pets/{id}/categories.get.responses`), "404")
+	})
+
+	t.Run("custom", func(t *testing.T) {
+		t.Parallel()
+
+		r := mustBuildSpec(t, &Config{
+			GlobalErrorResponses: map[int]*ogen.Schema{
+				http.StatusInternalServerError: {
+					Type: "object",
+					Properties: ogen.Properties{
+						ogen.Property{
+							Name: "foo",
+							Schema: &ogen.Schema{
+								Type: "string",
+							},
+						},
+					},
+					Required: []string{"foo"},
+				},
+			},
+			PostGenerateHook: func(_ *gen.Graph, spec *ogen.Spec) error {
+				spec.Paths["/foo"] = newPathItem()
+				return nil
+			},
+		}, nil)
+
+		assert.NotNil(t, r.json(`$.components.responses.ErrorInternalServerError`))
+		assert.NotNil(t, r.json(`$.components.schemas.ErrorInternalServerError`))
+		assert.Equal(t, "object", r.json(`$.components.schemas.ErrorInternalServerError.type`))
+		assert.Equal(t, "string", r.json(`$.components.schemas.ErrorInternalServerError.properties.foo.type`))
+
+		assert.Contains(t, r.json(`$.paths./pets/{id}.get.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets/{id}.patch.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets/{id}.delete.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets/{id}/owner.get.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./foo.get.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets.get.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets/{id}/categories.get.responses`), "500")
+	})
 }
