@@ -42,7 +42,7 @@ func (e *Extension) Hooks() []gen.Hook {
 	return []gen.Hook{
 		func(next gen.Generator) gen.Generator {
 			return gen.GenerateFunc(func(g *gen.Graph) error {
-				if e.config.PatchJSONTag {
+				if !e.config.DisablePatchJSONTag {
 					err := e.patchJSONTag(g)
 					if err != nil {
 						return err

@@ -132,11 +132,11 @@ type Config struct {
 	// and for idempotency.
 	AllowClientUUIDs bool
 
-	// PatchJSONTag enables a ent generation hook that patches the JSON tag of all fields
-	// in the schema, removing the usage of omitempty. This helps ensure that fields that
-	// have default values and/or aren't required, still get returned in JSON response
+	// DisablePatchJSONTag disables a ent generation hook that patches the JSON tag of all
+	// fields in the schema, removing the usage of omitempty. This helps ensure that fields
+	// that have default values and/or aren't required, still get returned in JSON response
 	// bodies. Skips over fields which are json-excluded (e.g. sensitive data).
-	PatchJSONTag bool
+	DisablePatchJSONTag bool
 
 	// PreHook is a hook that runs before the spec is generated. This is useful for
 	// things like adding global security schemes, or adding global request headers,
