@@ -17,16 +17,17 @@ import (
 )
 
 // GetAnnotation returns the annotation on the given graph item.
-func GetAnnotation[T gen.Type | gen.Field | gen.Edge](v *T) *Annotation {
-	switch v := any(*v).(type) {
-	case gen.Type:
+func GetAnnotation(v any) *Annotation {
+	switch v := v.(type) {
+	case *gen.Type:
 		return decodeAnnotation(v.Annotations)
-	case gen.Field:
+	case *gen.Field:
 		return decodeAnnotation(v.Annotations)
-	case gen.Edge:
+	case *gen.Edge:
 		return decodeAnnotation(v.Annotations)
+	default:
+		panic(fmt.Sprintf("unsupported type %T", v))
 	}
-	panic("unreachable")
 }
 
 // decodeAnnotation decodes the entrest [Annotation] from the given gen.Annotations.
