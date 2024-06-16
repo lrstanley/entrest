@@ -216,7 +216,7 @@ func (c *Config) Validate() error {
 }
 
 func (c Config) Name() string {
-	return "EntRestConfig"
+	return "RestConfig"
 }
 
 func (c *Config) Decode(o any) error {
