@@ -212,8 +212,13 @@ const (
 type SupportedHTTPHandler string
 
 const (
+	HandlerNone    SupportedHTTPHandler = ""
 	HandlerGeneric SupportedHTTPHandler = "generic"
 	HandlerChi     SupportedHTTPHandler = "chi"
 )
 
-var AllSupportedHTTPHandlers = []SupportedHTTPHandler{HandlerGeneric, HandlerChi}
+var AllSupportedHTTPHandlers = []SupportedHTTPHandler{
+	HandlerNone,
+	HandlerGeneric,
+	HandlerChi,
+}
