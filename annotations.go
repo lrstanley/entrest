@@ -129,7 +129,7 @@ func (a Annotation) getSupportedType(name, typ string) error {
 }
 
 func (Annotation) Name() string {
-	return "EntRest"
+	return "Rest"
 }
 
 // Merge merges the given annotation into the current annotation.
