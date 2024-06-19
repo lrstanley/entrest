@@ -6,12 +6,12 @@ replace github.com/lrstanley/entrest => ../
 
 require (
 	entgo.io/ent v0.13.1
-	github.com/lrstanley/entrest v0.0.0-20240612032722-3948ce7e94d7
+	github.com/lrstanley/entrest v0.0.0-20240616170051-f9922b538828
 	github.com/ogen-go/ogen v1.2.1
 )
 
 require (
-	ariga.io/atlas v0.23.0 // indirect
+	ariga.io/atlas v0.24.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/dlclark/regexp2 v1.11.0 // indirect
@@ -32,7 +32,7 @@ require (
 	github.com/zclconf/go-cty v1.14.4 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/exp v0.0.0-20240604190554-fc45aab8b7f8 // indirect
+	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8 // indirect
 	golang.org/x/mod v0.18.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
