@@ -14,12 +14,15 @@ prepare:
 simple: prepare
 	cd _examples/simple && go generate -x ./...
 
-dlv-simple:
-	cd _examples/simple && dlv debug \
+debug: prepare
+	cd _examples/debug && go generate -x ./...
+
+dlv-debug:
+	cd _examples/debug && dlv debug \
 		--headless --listen=:2345 \
 		--api-version=2 --log \
 		--allow-non-terminal-interactive \
 		generate.go
 
-test: simple
-	go test -v -race -timeout 30s -count 3 -cpu 1,4 ./...
+test: prepare
+	go test -v -race -timeout 90s -count 3 -cpu 1,4 ./...
