@@ -336,9 +336,10 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		if filters := GetFilterableFields(t, nil); len(filters) > 0 {
 			oper.Parameters = append(oper.Parameters, &ogen.Parameter{Ref: "#/components/parameters/FilterOperation"})
 
-			for _, k := range mapKeys(filters) {
-				spec.Components.Parameters[k] = filters[k]
-				oper.Parameters = append(oper.Parameters, &ogen.Parameter{Ref: "#/components/parameters/" + k})
+			for _, f := range filters {
+				name := f.ComponentName()
+				spec.Components.Parameters[name] = f.Parameter()
+				oper.Parameters = append(oper.Parameters, &ogen.Parameter{Ref: "#/components/parameters/" + name})
 			}
 		}
 
@@ -568,9 +569,10 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		if filters := GetFilterableFields(e.Type, nil); len(filters) > 0 {
 			oper.Parameters = append(oper.Parameters, &ogen.Parameter{Ref: "#/components/parameters/FilterOperation"})
 
-			for _, k := range mapKeys(filters) {
-				spec.Components.Parameters[k] = filters[k]
-				oper.Parameters = append(oper.Parameters, &ogen.Parameter{Ref: "#/components/parameters/" + k})
+			for _, f := range filters {
+				name := f.ComponentName()
+				spec.Components.Parameters[name] = f.Parameter()
+				oper.Parameters = append(oper.Parameters, &ogen.Parameter{Ref: "#/components/parameters/" + name})
 			}
 		}
 

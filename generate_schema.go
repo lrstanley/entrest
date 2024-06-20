@@ -488,18 +488,127 @@ func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 	return sortable
 }
 
+// FilterableFieldOp represents a filterable field, that filters based on a specific
+// operation (e.g. eq, neq, gt, lt, etc).
+type FilterableFieldOp struct {
+	Type        *gen.Type
+	Edge        *gen.Edge    // Edge may be nil.
+	Field       *gen.Field   // Field may be nil (if so, assume we want a parameter to check for the edges existence).
+	Operation   gen.Op       // The associated operation.
+	fieldSchema *ogen.Schema // The base schema for the field, this may change based on the operation provided.
+}
+
+// ParameterName returns the raw query parameter name for the filterable field.
+func (f *FilterableFieldOp) ParameterName() string {
+	if f.Edge != nil {
+		if f.Field == nil {
+			return "has." + CamelCase(SnakeCase(Singularize(f.Edge.Name)))
+		}
+		return CamelCase(SnakeCase(Singularize(f.Edge.Name))) + "." + CamelCase(f.Field.Name) + "." + predicateFormat(f.Operation)
+	}
+	return CamelCase(f.Field.Name) + "." + predicateFormat(f.Operation)
+}
+
+// ComponentName returns the name/component alias for the parameter.
+func (f *FilterableFieldOp) ComponentName() string {
+	if f.Edge != nil {
+		if f.Field == nil {
+			return "EdgeHas" + PascalCase(Singularize(f.Edge.Name))
+		}
+		return "Edge" + PascalCase(Singularize(f.Edge.Name)) + PascalCase(f.Field.Name) + PascalCase(f.Operation.Name())
+	}
+	return PascalCase(f.Type.Name) + PascalCase(f.Field.Name) + PascalCase(f.Operation.Name())
+}
+
+// StructTag returns the struct tag for the filterable field, which uses json and
+// github.com/go-playground/validator based tags by default.
+func (f *FilterableFieldOp) StructTag() string {
+	return fmt.Sprintf(
+		`form:%q json:%q`,
+		f.ParameterName()+",omitempty",
+		SnakeCase(f.ComponentName())+",omitempty",
+	)
+}
+
+// TypeString returns the struct field type for the filterable field.
+func (f *FilterableFieldOp) TypeString() string {
+	if (f.Edge != nil && f.Field == nil) || f.Operation.Niladic() {
+		return "*bool"
+	}
+	if f.Operation.Variadic() {
+		return "[]" + f.Field.Type.String()
+	}
+	return "*" + f.Field.Type.String()
+}
+
+// Description returns a description for the filterable field.
+func (f *FilterableFieldOp) Description() string {
+	if f.Edge != nil && f.Field == nil {
+		return fmt.Sprintf("If true, only return entities that have a %s edge.", Singularize(f.Edge.Name))
+	}
+	return predicateDescription(f.Field, f.Operation)
+}
+
+// Parameter returns the parameter for the filterable field.
+func (f *FilterableFieldOp) Parameter() *ogen.Parameter {
+	if f.Edge != nil && f.Field == nil {
+		return &ogen.Parameter{
+			Name:        f.ParameterName(),
+			In:          "query",
+			Description: f.Description(),
+			Schema:      &ogen.Schema{Type: "boolean"},
+		}
+	}
+
+	schema := &ogen.Schema{
+		Type:       f.fieldSchema.Type,
+		Items:      f.fieldSchema.Items,
+		Minimum:    f.fieldSchema.Minimum,
+		Maximum:    f.fieldSchema.Maximum,
+		MinLength:  f.fieldSchema.MinLength,
+		MaxLength:  f.fieldSchema.MaxLength,
+		Enum:       f.fieldSchema.Enum,
+		Deprecated: f.fieldSchema.Deprecated,
+	}
+
+	if f.Operation == gen.GT || f.Operation == gen.LT || f.Operation == gen.GTE || f.Operation == gen.LTE {
+		if schema.Items != nil {
+			schema.Items.Item.Type = "number"
+		} else {
+			schema.Type = "number"
+		}
+	}
+
+	if f.Operation == gen.IsNil {
+		if schema.Items != nil {
+			schema.Items.Item.Type = "boolean"
+		} else {
+			schema.Type = "boolean"
+		}
+	}
+
+	if f.Operation.Variadic() {
+		schema = schema.AsArray() // If not already.
+	}
+
+	return &ogen.Parameter{
+		Name:        f.ParameterName(),
+		In:          "query",
+		Description: f.Description(),
+		Schema:      schema,
+	}
+}
+
 // GetFilterableFields returns a list of filterable fields for the given type, where
 // the key is the component name, and the value is the parameter which includes the
 // name, description and schema for the parameter.
-func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters map[string]*ogen.Parameter) {
+func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFieldOp) {
 	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t.ID)
 
 	if ta.GetSkip(cfg) {
 		return nil
 	}
-
-	filters = map[string]*ogen.Parameter{}
 
 	for _, f := range t.Fields {
 		fa := GetAnnotation(f)
@@ -528,50 +637,13 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters map[string]*ogen.
 				continue // Just skip things that can't be generated/easily mapped.
 			}
 
-			schema := &ogen.Schema{
-				Type:       fieldSchema.Type,
-				Items:      fieldSchema.Items,
-				Minimum:    fieldSchema.Minimum,
-				Maximum:    fieldSchema.Maximum,
-				MinLength:  fieldSchema.MinLength,
-				MaxLength:  fieldSchema.MaxLength,
-				Enum:       fieldSchema.Enum,
-				Deprecated: fieldSchema.Deprecated,
-			}
-
-			if op == gen.GT || op == gen.LT || op == gen.GTE || op == gen.LTE {
-				if schema.Items != nil {
-					schema.Items.Item.Type = "number"
-				} else {
-					schema.Type = "number"
-				}
-			}
-
-			if op == gen.IsNil {
-				if schema.Items != nil {
-					schema.Items.Item.Type = "boolean"
-				} else {
-					schema.Type = "boolean"
-				}
-			}
-
-			if op.Variadic() {
-				schema = schema.AsArray() // If not already.
-			}
-
-			param := &ogen.Parameter{
-				In:          "query",
-				Description: predicateDescription(f, op),
-				Schema:      schema,
-			}
-
-			if edge != nil {
-				param.Name = CamelCase(SnakeCase(Singularize(edge.Name))) + "." + CamelCase(f.Name) + "." + predicateFormat(op)
-				filters["Edge"+PascalCase(Singularize(edge.Name))+PascalCase(f.Name)+PascalCase(op.Name())] = param
-			} else {
-				param.Name = CamelCase(f.Name) + "." + predicateFormat(op)
-				filters[PascalCase(t.Name)+PascalCase(f.Name)+PascalCase(op.Name())] = param
-			}
+			filters = append(filters, &FilterableFieldOp{
+				Type:        t,
+				Edge:        edge,
+				Field:       f,
+				Operation:   op,
+				fieldSchema: fieldSchema,
+			})
 		}
 	}
 
@@ -583,20 +655,16 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters map[string]*ogen.
 				continue
 			}
 
-			entityName := Singularize(e.Name)
-
-			filters["EdgeHas"+PascalCase(Singularize(e.Name))] = &ogen.Parameter{
-				Name:        "has." + CamelCase(SnakeCase(entityName)),
-				In:          "query",
-				Description: fmt.Sprintf("If true, only return entities that have a %s edge.", entityName),
-				Schema:      &ogen.Schema{Type: "boolean"},
-			}
-
-			for k, v := range GetFilterableFields(e.Type, e) {
-				filters[k] = v
-			}
+			filters = append(filters, &FilterableFieldOp{
+				Type:      t,
+				Edge:      e,
+				Operation: gen.IsNil,
+				fieldSchema: &ogen.Schema{
+					Type: "boolean",
+				},
+			})
+			filters = append(filters, GetFilterableFields(e.Type, e)...)
 		}
 	}
-
 	return filters
 }
