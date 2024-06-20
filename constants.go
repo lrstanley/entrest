@@ -140,14 +140,18 @@ func (p Predicate) Explode() (ops []gen.Op) {
 // predicateFormat returns the query string representation of a filter predicate.
 func predicateFormat(op gen.Op) string {
 	switch op {
-	case gen.IsNil:
-		return "null"
+	case gen.Contains:
+		return "has"
+	case gen.ContainsFold:
+		return "ihas"
+	case gen.EqualFold:
+		return "ieq"
 	case gen.HasPrefix:
 		return "prefix"
 	case gen.HasSuffix:
 		return "suffix"
-	case gen.EqualFold:
-		return "eqFold"
+	case gen.IsNil:
+		return "null"
 	default:
 		return CamelCase(SnakeCase(op.Name()))
 	}
