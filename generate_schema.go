@@ -181,7 +181,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, f := range t.Fields {
 			fa := GetAnnotation(f)
 
-			if fa.Skip || fa.ReadOnly {
+			if fa.GetSkip(cfg) || fa.ReadOnly {
 				continue
 			}
 
@@ -201,7 +201,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if ea.Skip || ea.ReadOnly {
+			if ea.GetSkip(cfg) || ea.ReadOnly {
 				continue
 			}
 			if op == OperationUpdate && (e.Immutable || (e.Field() != nil && e.Field().Immutable)) {
@@ -224,7 +224,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 					continue
 				}
 
-				if !fa.Skip {
+				if !fa.GetSkip(cfg) {
 					// If the edge has a field, and the field isn't skipped, then there is no
 					// point in having two fields that can be used during create (especially
 					// if both are required).
@@ -282,7 +282,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, f := range t.Fields {
 			fa := GetAnnotation(f)
 
-			if fa.Skip {
+			if fa.GetSkip(cfg) {
 				continue
 			}
 
@@ -307,7 +307,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if ea.Skip || !ea.GetEagerLoad(cfg) {
+			if ea.GetSkip(cfg) || !ea.GetEagerLoad(cfg) {
 				continue
 			}
 
@@ -450,6 +450,7 @@ func toPagedSchema(schema *ogen.Schema) *ogen.Schema {
 // GetSortableFields returnsd a list of sortable fields for the given type. It
 // recurses through edges to find sortable fields as well.
 func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
+	cfg := GetConfig(t.Config)
 	fields := t.Fields
 
 	if t.ID != nil {
@@ -459,7 +460,7 @@ func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 	for _, f := range fields {
 		fa := GetAnnotation(f)
 
-		if fa.Skip || f.Sensitive() || (!fa.Sortable && f.Name != "id") {
+		if fa.GetSkip(cfg) || f.Sensitive() || (!fa.Sortable && f.Name != "id") {
 			continue
 		}
 
@@ -474,7 +475,7 @@ func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if !e.Unique || ea.Skip {
+			if !e.Unique || ea.GetSkip(cfg) {
 				continue
 			}
 
@@ -491,9 +492,10 @@ func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 // the key is the component name, and the value is the parameter which includes the
 // name, description and schema for the parameter.
 func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters map[string]*ogen.Parameter) {
+	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t.ID)
 
-	if ta.Skip {
+	if ta.GetSkip(cfg) {
 		return nil
 	}
 
@@ -577,7 +579,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters map[string]*ogen.
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if ea.Skip || ea.Filter == 0 || ea.Filter != FilterEdge {
+			if ea.GetSkip(cfg) || ea.Filter == 0 || ea.Filter != FilterEdge {
 				continue
 			}
 

@@ -105,7 +105,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	for _, t := range g.Nodes {
 		ta := GetAnnotation(t)
 
-		if ta.Skip {
+		if ta.GetSkip(e.config) {
 			continue
 		}
 
@@ -120,7 +120,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 		for _, edge := range t.Edges {
 			ea := GetAnnotation(edge)
 
-			if ea.Skip || !ea.GetEdgeEndpoint(e.config) {
+			if ea.GetSkip(e.config) || !ea.GetEdgeEndpoint(e.config) {
 				continue
 			}
 

@@ -351,6 +351,10 @@ func (a *Annotation) GetOperationID(op Operation) string {
 	return a.OperationID[op]
 }
 
+func (a *Annotation) GetSkip(config *Config) bool {
+	return a.Skip || len(a.GetOperations(config)) == 0
+}
+
 // WithOperationSummary provides a summary for the specified operation.
 func WithOperationSummary(op Operation, v string) Annotation {
 	return Annotation{OperationSummary: map[Operation]string{op: v}}
