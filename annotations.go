@@ -442,7 +442,8 @@ func WithHandler(v bool) Annotation {
 	return Annotation{Handler: &v}
 }
 
-// WithSortable sets the field to be sortable in the REST API.
+// WithSortable sets the field to be sortable in the REST API. Note that only types that can be
+// sorted, will be sortable.
 func WithSortable(v bool) Annotation {
 	return Annotation{Sortable: v}
 }
