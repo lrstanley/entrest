@@ -475,17 +475,34 @@ func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if !e.Unique || ea.GetSkip(cfg) {
+			if ea.GetSkip(cfg) {
+				continue
+			}
+
+			if !e.Unique {
+				sortable = append(sortable, e.Name+".count")
+
+				for _, f := range e.Type.Fields {
+					fa := GetAnnotation(f)
+
+					if fa.GetSkip(cfg) || f.Sensitive() || !fa.Sortable || (!f.IsInt() && !f.IsInt64()) {
+						continue
+					}
+
+					sortable = append(sortable, e.Name+"."+f.Name+".sum")
+				}
+
 				continue
 			}
 
 			for _, f := range GetSortableFields(e.Type, true) {
-				sortable = append(sortable, fmt.Sprintf("%s.%s", e.Name, f))
+				sortable = append(sortable, e.Name+"."+f)
 			}
 		}
 	}
 
-	return sortable
+	slices.Sort(sortable)
+	return slices.Compact(sortable)
 }
 
 // FilterableFieldOp represents a filterable field, that filters based on a specific
@@ -528,6 +545,48 @@ func (f *FilterableFieldOp) StructTag() string {
 		f.ParameterName()+",omitempty",
 		SnakeCase(f.ComponentName())+",omitempty",
 	)
+}
+
+// TODO: add tests.
+func (f *FilterableFieldOp) PredicateBuilder(structName string) string {
+	if f.Operation.Niladic() {
+		if f.Edge != nil {
+			if f.Field == nil {
+				return fmt.Sprintf("%s.Has%s()", f.Type.Package(), f.Edge.StructField())
+			}
+
+			return fmt.Sprintf(
+				"%s.Has%sWith(%s.%s%s())",
+				f.Edge.Ref.Type.Package(),
+				f.Edge.StructField(),
+				f.Type.Package(),
+				f.Field.StructField(),
+				f.Operation.Name(),
+			)
+		}
+		return fmt.Sprintf("%s.%s%s()", f.Type.Package(), f.Field.StructField(), f.Operation.Name())
+	}
+
+	field := structName + "." + f.ComponentName()
+
+	if f.Operation.Variadic() {
+		field += "..."
+	} else {
+		field = "*" + field
+	}
+
+	builder := fmt.Sprintf(
+		"%s.%s%s(%s)",
+		f.Type.Package(),
+		f.Field.StructField(),
+		f.Operation.Name(),
+		field,
+	)
+
+	if f.Edge != nil && f.Field != nil {
+		return fmt.Sprintf("%s.Has%sWith(%s)", f.Edge.Ref.Type.Package(), f.Edge.StructField(), builder)
+	}
+	return builder
 }
 
 // TypeString returns the struct field type for the filterable field.
