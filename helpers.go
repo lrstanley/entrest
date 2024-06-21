@@ -9,11 +9,34 @@ import (
 	"encoding/json"
 	"fmt"
 	"slices"
+	"sync"
 )
 
 // ptr returns a pointer to the given value. Should only be used for primitives.
 func ptr[T any](v T) *T {
 	return &v
+}
+
+// memoize memoizes the provided function, so that it is only called once for each
+// input.
+func memoize[K comparable, V any](fn func(K) V) func(K) V {
+	var mu sync.RWMutex
+	cache := map[K]V{}
+
+	return func(in K) V {
+		mu.RLock()
+		if cached, ok := cache[in]; ok {
+			mu.RUnlock()
+			return cached
+		}
+		mu.RUnlock()
+
+		mu.Lock()
+		defer mu.Unlock()
+
+		cache[in] = fn(in)
+		return cache[in]
+	}
 }
 
 // sliceToRawMessage returns a slice of json.RawMessage from a slice of T. Panics

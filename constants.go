@@ -17,12 +17,12 @@ const OpenAPIVersion = "3.0.3"
 var (
 	// Add all casing and word-massaging functions here so others can use them if they
 	// want to customize the naming of their spec/endpoints/etc.
-	Pluralize   = inflect.Pluralize // nolint: errcheck,unused
-	KebabCase   = strcase.KebabCase
-	Singularize = gen.Funcs["singular"].(func(string) string) // nolint: errcheck,unused
-	PascalCase  = gen.Funcs["pascal"].(func(string) string)   // nolint: errcheck,unused
-	CamelCase   = gen.Funcs["camel"].(func(string) string)    // nolint: errcheck,unused
-	SnakeCase   = gen.Funcs["snake"].(func(string) string)    // nolint: errcheck,unused
+	Pluralize   = memoize(inflect.Pluralize) // nolint: errcheck,unused
+	KebabCase   = memoize(strcase.KebabCase)
+	Singularize = memoize(gen.Funcs["singular"].(func(string) string)) // nolint: errcheck,unused
+	PascalCase  = memoize(gen.Funcs["pascal"].(func(string) string))   // nolint: errcheck,unused
+	CamelCase   = memoize(gen.Funcs["camel"].(func(string) string))    // nolint: errcheck,unused
+	SnakeCase   = memoize(gen.Funcs["snake"].(func(string) string))    // nolint: errcheck,unused
 )
 
 // Operation represents the CRUD operation(s).

@@ -6,6 +6,7 @@ package entrest
 
 import (
 	"encoding/json"
+	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,6 +27,23 @@ func TestPtr(t *testing.T) {
 		b := true
 		assert.Equal(t, b, *ptr(true))
 	})
+}
+
+func TestMemoize(t *testing.T) {
+	count := 0
+
+	fn := func(in string) string {
+		count++
+		return in + "_" + strconv.Itoa(count)
+	}
+	mfn := memoize(fn)
+
+	assert.Equal(t, "foo_1", fn("foo"))
+	assert.Equal(t, "foo_2", fn("foo"))
+	assert.Equal(t, "foo_3", mfn("foo"))
+	assert.Equal(t, "foo_3", mfn("foo"))
+	assert.Equal(t, "bar_4", mfn("bar"))
+	assert.Equal(t, "bar_4", mfn("bar"))
 }
 
 func TestSliceToRawMessage(t *testing.T) {
