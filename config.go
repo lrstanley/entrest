@@ -42,11 +42,6 @@ type Config struct {
 	// This can be overridden on a per-schema basis with annotations.
 	ItemsPerPage int
 
-	// DisableTotalCount disables the inclusion of a "total_count" field in the response
-	// for paginated calls, which can be useful for clients which don't need to know the
-	// total number of items in the collection, and requires additional database calls.
-	DisableTotalCount bool
-
 	// DefaultEagerLoad enables eager loading of all edges by default. This can be
 	// overridden on a per-edge basis with annotations. If edges load a lot of data
 	// or are expensive, this can be a performance hit and isn't recommended.

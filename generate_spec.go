@@ -81,19 +81,6 @@ func addPagination(spec *ogen.Spec, cfg *Config) {
 		Required: []string{"page", "last_page", "is_last_page"},
 	}
 
-	if !cfg.DisableTotalCount {
-		pagedSchema.Properties = append(pagedSchema.Properties, ogen.Property{
-			Name: "total_count",
-			Schema: &ogen.Schema{
-				Type:        "integer",
-				Description: "Total number of results.",
-				Example:     jsonschema.RawValue(`100`),
-				Minimum:     ogen.Int().SetMinimum(ptr(int64(0))).Minimum,
-			},
-		})
-		pagedSchema.Required = append(pagedSchema.Required, "total_count")
-	}
-
 	spec.Components.Schemas["PagedResponse"] = pagedSchema
 }
 

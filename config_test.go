@@ -170,22 +170,6 @@ func TestConfig_ItemsPerPage(t *testing.T) {
 	})
 }
 
-func TestConfig_DisableTotalCount(t *testing.T) {
-	t.Parallel()
-
-	t.Run("with-total-count", func(t *testing.T) {
-		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisableTotalCount: false}, nil)
-		assert.NotNil(t, r.json(`$.components.schemas.PagedResponse.properties.total_count`))
-	})
-
-	t.Run("without-total-count", func(t *testing.T) {
-		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisableTotalCount: true}, nil)
-		assert.Nil(t, r.json(`$.components.schemas.PagedResponse.properties.total_count`))
-	})
-}
-
 func TestConfig_DefaultEagerLoad(t *testing.T) {
 	t.Parallel()
 
