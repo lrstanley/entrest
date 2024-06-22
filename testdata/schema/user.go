@@ -59,5 +59,7 @@ func (User) Fields() []ent.Field {
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("pets", Pet.Type),
+		edge.To("followed_pets", Pet.Type).
+			Through("following", Follows.Type),
 	}
 }

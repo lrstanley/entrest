@@ -165,7 +165,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 
 		var fieldSchema *ogen.Schema
 
-		if op == OperationCreate && cfg.AllowClientUUIDs && t.ID.IsUUID() {
+		if op == OperationCreate && cfg.AllowClientUUIDs && t.ID != nil && t.ID.IsUUID() {
 			fieldSchema, err = GetSchemaField(t.ID)
 			if err != nil {
 				panic(fmt.Sprintf("failed to generate schema for field %s: %v", t.ID.StructField(), err))
@@ -205,6 +205,11 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 				continue
 			}
 			if op == OperationUpdate && (e.Immutable || (e.Field() != nil && e.Field().Immutable)) {
+				continue
+			}
+
+			if e.Type.ID == nil {
+				// It's a through-edge, which means it's not directly settable, so skip.
 				continue
 			}
 
@@ -272,12 +277,14 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 
 		var fieldSchema *ogen.Schema
 
-		fieldSchema, err = GetSchemaField(t.ID)
-		if err != nil {
-			panic(fmt.Sprintf("failed to generate schema for field %s: %v", t.ID.StructField(), err))
+		if t.ID != nil {
+			fieldSchema, err = GetSchemaField(t.ID)
+			if err != nil {
+				panic(fmt.Sprintf("failed to generate schema for field %s: %v", t.ID.StructField(), err))
+			}
+			fieldSchema.Description = fmt.Sprintf("The ID of the %s entity.", entityName)
+			schema.Properties = append(schema.Properties, *fieldSchema.ToProperty("id"))
 		}
-		fieldSchema.Description = fmt.Sprintf("The ID of the %s entity.", entityName)
-		schema.Properties = append(schema.Properties, *fieldSchema.ToProperty("id"))
 
 		for _, f := range t.Fields {
 			fa := GetAnnotation(f)
@@ -663,7 +670,7 @@ func (f *FilterableFieldOp) Parameter() *ogen.Parameter {
 // name, description and schema for the parameter.
 func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFieldOp) {
 	cfg := GetConfig(t.Config)
-	ta := GetAnnotation(t.ID)
+	ta := GetAnnotation(t)
 
 	if ta.GetSkip(cfg) {
 		return nil

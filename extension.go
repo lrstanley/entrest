@@ -101,6 +101,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 
 	var specs []*ogen.Spec
 	var tspec *ogen.Spec
+	var ops []Operation
 
 	for _, t := range g.Nodes {
 		ta := GetAnnotation(t)
@@ -109,7 +110,12 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 			continue
 		}
 
-		for _, op := range ta.GetOperations(e.config) {
+		ops = ta.GetOperations(e.config)
+
+		for _, op := range ops {
+			if t.ID == nil && (op != OperationList && op != OperationCreate) {
+				continue
+			}
 			tspec, err = GetSpecType(t, op)
 			if err != nil {
 				panic(err)
@@ -117,14 +123,23 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 			specs = append(specs, tspec)
 		}
 
+		if t.ID == nil {
+			continue
+		}
+
 		for _, edge := range t.Edges {
+			if edge.Type.ID == nil {
+				// It's a through-edge which has no individual ID, rather a composite ID,
+				// which likely shouldn't be queryable.
+				continue
+			}
 			ea := GetAnnotation(edge)
 
 			if ea.GetSkip(e.config) || !ea.GetEdgeEndpoint(e.config) {
 				continue
 			}
 
-			ops := ta.GetOperations(e.config)
+			ops = ta.GetOperations(e.config)
 
 			if edge.Unique && slices.Contains(ops, OperationRead) {
 				tspec, err = GetSpecEdge(t, edge, OperationRead)

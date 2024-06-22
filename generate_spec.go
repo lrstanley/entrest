@@ -145,12 +145,12 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		Description: ta.Description,
 	})
 
-	idSchema, err := GetSchemaField(t.ID)
-	if err != nil {
-		return nil, err
-	}
+	if op != OperationList && op != OperationCreate {
+		idSchema, err := GetSchemaField(t.ID)
+		if err != nil {
+			return nil, err
+		}
 
-	if op != OperationList {
 		spec.Components.Parameters[entityName+"ID"] = &ogen.Parameter{
 			Name:        "id",
 			In:          "path",

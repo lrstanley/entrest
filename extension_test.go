@@ -270,3 +270,19 @@ func validateSpec(t *testing.T, spec *ogen.Spec) {
 		t.FailNow()
 	}
 }
+
+// getPathMethods returns all of the methods that are defined on the provided path,
+// within the spec. Note that it's only going to check for methods that are defined
+// from testRequiredMethods.
+func getPathMethods(t *testing.T, r *testSpecResult, endpoint string) (methods []string) {
+	data, ok := r.json(`$.paths.` + endpoint).(map[string]any)
+	if !ok {
+		t.Fatalf("path %q does not exist or invalid", endpoint)
+	}
+	for _, method := range testRequiredMethods {
+		if _, ok = data[strings.ToLower(method)]; ok {
+			methods = append(methods, method)
+		}
+	}
+	return methods
+}

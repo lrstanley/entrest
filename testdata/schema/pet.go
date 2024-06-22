@@ -28,5 +28,8 @@ func (Pet) Edges() []ent.Edge {
 		edge.From("categories", Category.Type).Ref("pets"),
 		edge.From("owner", User.Type).Ref("pets").Unique(),
 		edge.To("friends", Pet.Type),
+		edge.From("followed_by", User.Type).
+			Ref("followed_pets").
+			Through("following", Follows.Type),
 	}
 }
