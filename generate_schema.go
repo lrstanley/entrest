@@ -562,9 +562,14 @@ func (f *FilterableFieldOp) PredicateBuilder(structName string) string {
 				return fmt.Sprintf("%s.Has%s()", f.Type.Package(), f.Edge.StructField())
 			}
 
+			pkg := f.Type.Package()
+			if f.Edge.Ref != nil {
+				pkg = f.Edge.Ref.Type.Package()
+			}
+
 			return fmt.Sprintf(
 				"%s.Has%sWith(%s.%s%s())",
-				f.Edge.Ref.Type.Package(),
+				pkg,
 				f.Edge.StructField(),
 				f.Type.Package(),
 				f.Field.StructField(),
@@ -591,7 +596,11 @@ func (f *FilterableFieldOp) PredicateBuilder(structName string) string {
 	)
 
 	if f.Edge != nil && f.Field != nil {
-		return fmt.Sprintf("%s.Has%sWith(%s)", f.Edge.Ref.Type.Package(), f.Edge.StructField(), builder)
+		pkg := f.Type.Package()
+		if f.Edge.Ref != nil {
+			pkg = f.Edge.Ref.Type.Package()
+		}
+		return fmt.Sprintf("%s.Has%sWith(%s)", pkg, f.Edge.StructField(), builder)
 	}
 	return builder
 }
