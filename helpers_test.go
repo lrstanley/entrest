@@ -274,6 +274,24 @@ func TestWithDefault(t *testing.T) {
 	})
 }
 
+func TestWithDefaultSlice(t *testing.T) {
+	t.Run("string-zero", func(t *testing.T) {
+		assert.Equal(t, []string{"foo"}, withDefaultSlice([]string{}, []string{"foo"}))
+	})
+
+	t.Run("string-zero-2", func(t *testing.T) {
+		assert.Equal(t, []string{"foo"}, withDefaultSlice([]string{}, []string{"foo"}, []string{}))
+	})
+
+	t.Run("string-single", func(t *testing.T) {
+		assert.Equal(t, []string{"bar"}, withDefaultSlice([]string{"bar"}, []string{"foo"}))
+	})
+
+	t.Run("string-multiple", func(t *testing.T) {
+		assert.Equal(t, []string{"baz", "qux"}, withDefaultSlice([]string{"baz", "qux"}, []string{"foo"}, []string{"bar"}))
+	})
+}
+
 func TestMapKeys(t *testing.T) {
 	tests := []struct {
 		name string

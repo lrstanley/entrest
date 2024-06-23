@@ -104,12 +104,24 @@ func mergeMap[K comparable, V any](overlap bool, orig, newv map[K]V) error {
 	return nil
 }
 
-// withDefault returns the provided default value if the given value is the zero value.
+// withDefault returns the provided default value(s) if the given value is the zero value.
 func withDefault[T comparable](v T, defaults ...T) T {
 	var zero T
 	if v == zero {
 		for i := range defaults {
 			if defaults[i] != zero {
+				return defaults[i]
+			}
+		}
+	}
+	return v
+}
+
+// withDefaultSlice returns the provided default value(s) if the given value is nil.
+func withDefaultSlice[T any](v []T, defaults ...[]T) []T {
+	if len(v) == 0 {
+		for i := range defaults {
+			if len(defaults[i]) > 0 {
 				return defaults[i]
 			}
 		}
