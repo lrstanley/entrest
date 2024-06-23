@@ -167,7 +167,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 	switch op {
 	case OperationCreate:
 		oper := &ogen.Operation{
-			Tags: []string{entityName},
+			Tags: append([]string{entityName}, ta.AdditionalTags...),
 			Summary: withDefault(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Create a new %s entity", entityName),
@@ -198,7 +198,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	case OperationUpdate:
 		oper := &ogen.Operation{
-			Tags: []string{entityName},
+			Tags: append([]string{entityName}, ta.AdditionalTags...),
 			Summary: withDefault(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Update an existing %s entity", entityName),
@@ -231,7 +231,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	case OperationRead:
 		oper := &ogen.Operation{
-			Tags: []string{entityName},
+			Tags: append([]string{entityName}, ta.AdditionalTags...),
 			Summary: withDefault(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Retrieve a single %s entity", entityName),
@@ -265,7 +265,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	case OperationList:
 		oper := &ogen.Operation{
-			Tags: []string{entityName},
+			Tags: append([]string{entityName}, ta.AdditionalTags...),
 			Summary: withDefault(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Query all %s entities", entityName),
@@ -344,7 +344,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	case OperationDelete:
 		oper := &ogen.Operation{
-			Tags: []string{entityName},
+			Tags: append([]string{entityName}, ta.AdditionalTags...),
 			Summary: withDefault(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Delete a single %s entity", entityName),
@@ -436,7 +436,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		}
 
 		oper := &ogen.Operation{
-			Tags: []string{rootEntityName, refEntityName},
+			Tags: append([]string{rootEntityName, refEntityName}, ea.AdditionalTags...),
 			Summary: withDefault(
 				ea.GetOperationSummary(op),
 				e.Comment(),
@@ -477,7 +477,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		}
 
 		oper := &ogen.Operation{
-			Tags: []string{rootEntityName, refEntityName},
+			Tags: append([]string{rootEntityName, refEntityName}, ea.AdditionalTags...),
 			Summary: withDefault(
 				ea.GetOperationSummary(op),
 				e.Comment(),

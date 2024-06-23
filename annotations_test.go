@@ -142,6 +142,22 @@ func TestAnnotation_Merge(t *testing.T) {
 	}
 }
 
+func TestAnnotation_AdditionalTags(t *testing.T) {
+	t.Parallel()
+
+	r := mustBuildSpec(t, &Config{}, func(g *gen.Graph) {
+		injectAnnotations(t, g, "Pet", WithAdditionalTags("Foo"))
+		injectAnnotations(t, g, "Pet.categories", WithAdditionalTags("Bar"))
+	})
+
+	assert.Contains(t, r.json(`$.paths./pets.get.tags`), "Foo")
+	assert.Contains(t, r.json(`$.paths./pets.post.tags`), "Foo")
+	assert.Contains(t, r.json(`$.paths./pets/{id}.get.tags`), "Foo")
+	assert.Contains(t, r.json(`$.paths./pets/{id}.patch.tags`), "Foo")
+	assert.Contains(t, r.json(`$.paths./pets/{id}.delete.tags`), "Foo")
+	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.get.tags`), "Bar")
+}
+
 func TestAnnotation_EdgeUpdateBulk(t *testing.T) {
 	t.Parallel()
 

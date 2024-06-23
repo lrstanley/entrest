@@ -149,8 +149,8 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 
 	if len(am.AdditionalTags) > 0 {
 		for _, t := range am.AdditionalTags {
-			if !slices.Contains(a.Tags, t) {
-				a.Tags = append(a.Tags, t)
+			if !slices.Contains(a.AdditionalTags, t) {
+				a.AdditionalTags = append(a.AdditionalTags, t)
 			}
 		}
 	}
