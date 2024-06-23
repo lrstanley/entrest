@@ -141,3 +141,27 @@ func TestAnnotation_Merge(t *testing.T) {
 		})
 	}
 }
+
+func TestAnnotation_EdgeUpdateBulk(t *testing.T) {
+	t.Parallel()
+
+	r := mustBuildSpec(t, &Config{}, func(g *gen.Graph) {
+		injectAnnotations(t, g, "Pet.categories", WithEdgeUpdateBulk(true))
+	})
+
+	// Ensure create and update on categories have the bulk field in the right place.
+	assert.NotNil(t, r.json(`$.components.schemas.PetCreate.properties.categories`))
+	assert.Nil(t, r.json(`$.components.schemas.PetCreate.properties.add_categories`))
+	assert.Nil(t, r.json(`$.components.schemas.PetCreate.properties.remove_categories`))
+	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.categories`))
+	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.add_categories`))
+	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.remove_categories`))
+
+	// And ensure it's not on others.
+	assert.NotNil(t, r.json(`$.components.schemas.PetCreate.properties.friends`))
+	assert.Nil(t, r.json(`$.components.schemas.PetCreate.properties.add_friends`))
+	assert.Nil(t, r.json(`$.components.schemas.PetCreate.properties.remove_friends`))
+	assert.Nil(t, r.json(`$.components.schemas.PetUpdate.properties.friends`))
+	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.add_friends`))
+	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.remove_friends`))
+}

@@ -95,6 +95,7 @@ type Annotation struct {
 	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
 	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
 	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
+	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
 	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
 	Handler         *bool       `json:",omitempty" ent:"schema,edge"`
 	Sortable        bool        `json:",omitempty" ent:"field"`
@@ -213,6 +214,7 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 	if am.EdgeEndpoint != nil {
 		a.EdgeEndpoint = am.EdgeEndpoint
 	}
+	a.EdgeUpdateBulk = a.EdgeUpdateBulk || am.EdgeUpdateBulk
 	if am.Filter != 0 {
 		a.Filter = am.Filter.Add(a.Filter)
 	}
@@ -423,6 +425,17 @@ func WithEagerLoad(v bool) Annotation {
 // have an endpoint, or want to disable an edge from having an endpoint in general.
 func WithEdgeEndpoint(v bool) Annotation {
 	return Annotation{EdgeEndpoint: &v}
+}
+
+// WithEdgeUpdateBulk allows the edge to be bulk updated on the entities associated with the
+// edge. This is disabled by default, which will mean that you must use the "add_<field>"
+// and "remove_<field>" object references to associate/disassociate entities with the edge.
+// This is disabled by default due to the fact that this can lead to accidental disassociation
+// of a massive number of entities, if a user doesn't happen to fully understand the
+// implications of providing values to the "bulk" field, which would just be "<field>" (sets
+// the non-unique edge to be set to those provided values).
+func WithEdgeUpdateBulk(v bool) Annotation {
+	return Annotation{EdgeUpdateBulk: v}
 }
 
 // WithFilter sets the field to be filterable with the provided predicate(s). When applied

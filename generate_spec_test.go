@@ -35,7 +35,6 @@ func TestSpec_ThroughSchema_TwoTypes(t *testing.T) {
 	assert.Equal(t, "object", r.json(`$.components.schemas.FollowCreate.type`))
 	assert.NotNil(t, r.json(`$.components.schemas.FollowList`))
 	assert.NotNil(t, r.json(`$.components.schemas.PetCreate.properties.followed_by`))
-	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.followed_by`))
 	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.add_followed_by`))
 	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.remove_followed_by`))
 	assert.ElementsMatch(t, []string{http.MethodGet, http.MethodPost}, getPathMethods(t, r, "/follows"))

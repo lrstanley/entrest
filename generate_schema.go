@@ -248,9 +248,13 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 					*fieldSchema.ToProperty("add_" + e.Name),
 					*fieldSchema.ToProperty("remove_" + e.Name),
 				)
-			}
 
-			schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(e.Name))
+				if ea.EdgeUpdateBulk {
+					schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(e.Name))
+				}
+			} else {
+				schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(e.Name))
+			}
 
 			if !slices.Contains(schema.Required, e.Name) && op == OperationCreate && !e.Optional {
 				schema.Required = append(schema.Required, e.Name)
