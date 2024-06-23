@@ -61,5 +61,7 @@ func (User) Edges() []ent.Edge {
 		edge.To("pets", Pet.Type),
 		edge.To("followed_pets", Pet.Type).
 			Through("following", Follows.Type),
+		edge.To("friends", User.Type).
+			Through("friendships", Friendship.Type),
 	}
 }

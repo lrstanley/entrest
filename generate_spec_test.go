@@ -13,7 +13,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestSpec_ThroughSchemas(t *testing.T) {
+func TestSpec_ThroughSchema_TwoTypes(t *testing.T) {
 	t.Parallel()
 	r := mustBuildSpec(t, &Config{}, nil)
 
@@ -50,6 +50,37 @@ func TestSpec_ThroughSchemas(t *testing.T) {
 
 	for name := range r.spec.Paths {
 		if (strings.Contains(name, "follows") || strings.Contains(name, "followed")) && !slices.Contains(allowedPaths, name) {
+			t.Errorf("unexpected path %q", name)
+			continue
+		}
+	}
+}
+
+func TestSpec_ThroughSchema_OneType(t *testing.T) {
+	t.Parallel()
+	r := mustBuildSpec(t, &Config{}, nil)
+
+	assert.NotNil(t, r.json(`$.components.schemas.Friendship`))
+	assert.NotNil(t, r.json(`$.components.schemas.FriendshipCreate`))
+	assert.NotNil(t, r.json(`$.components.schemas.FriendshipList`))
+	assert.NotNil(t, r.json(`$.components.schemas.FriendshipRead`))
+	assert.NotNil(t, r.json(`$.components.schemas.FriendshipUpdate`))
+	assert.ElementsMatch(t, []string{http.MethodGet, http.MethodPost}, getPathMethods(t, r, "/friendships"))
+	assert.ElementsMatch(t, []string{http.MethodGet, http.MethodPatch, http.MethodDelete}, getPathMethods(t, r, "/friendships/{id}"))
+	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/friendships/{id}/friend"))
+	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/friendships/{id}/user"))
+	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/users/{id}/friendships"))
+
+	allowedPaths := []string{
+		"/friendships",
+		"/friendships/{id}",
+		"/friendships/{id}/friend", // TODO: do we want this endpoint?
+		"/friendships/{id}/user",   // TODO: do we want this endpoint?
+		"/users/{id}/friendships",
+	}
+
+	for name := range r.spec.Paths {
+		if strings.Contains(name, "friendship") && !slices.Contains(allowedPaths, name) {
 			t.Errorf("unexpected path %q", name)
 			continue
 		}
