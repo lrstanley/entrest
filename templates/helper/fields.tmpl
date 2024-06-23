@@ -1,0 +1,27 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{/* A template for setting the field comment. */}}
+{{- define "helper/rest/fields/comment" }}
+    {{- if $.Comment }}
+        {{- range $line := split $.Comment "\n" }}
+            // {{ $line }}
+        {{- end }}
+    {{- end }}
+{{- end }}
+
+{{/* A template for setting the field tags */}}
+{{- define "helper/rest/fields/tag" -}}
+{{- " " }}`
+{{- "" }}json:"{{ $.Name }}{{ if $.Optional }},omitempty{{ end }}"
+{{- "" }}`
+{{- end }}
+
+{{/* A template for setting the edge tags */}}
+{{- define "helper/rest/edge/tag" -}}
+{{- " " }}`
+{{- "" }}json:"{{ $.Name }}{{ if $.Optional }},omitempty{{ end }}"
+{{- "" }}`
+{{- end }}

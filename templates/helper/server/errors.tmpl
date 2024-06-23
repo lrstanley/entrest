@@ -1,0 +1,24 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/errors" }}
+type ErrBadRequest struct {
+    Err error
+}
+
+func (e ErrBadRequest) Error() string {
+    return fmt.Sprintf("bad request: %s", e.Err)
+}
+
+func (e ErrBadRequest) Unwrap() error {
+    return e.Err
+}
+
+// IsBadRequest returns true if the unwrapped/underlying error is of type ErrBadRequest.
+func IsBadRequest(err error) bool {
+    var target *ErrBadRequest
+    return errors.As(err, &target)
+}
+{{- end }}{{/* end template */}}

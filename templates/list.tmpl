@@ -1,0 +1,381 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "rest/list" }}
+{{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
+
+import (
+    "{{ $.Config.Package }}"
+    "{{ $.Config.Package }}/predicate"
+    {{- range $t := $.Nodes }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        "{{ $.Config.Package }}/{{ $t.Package }}"
+    {{- end }}
+)
+
+type PageConfig struct {
+    MinItemsPerPage int `json:"min_items_per_page"`
+    ItemsPerPage    int `json:"items_per_page"`
+    MaxItemsPerPage int `json:"max_items_per_page"`
+}
+
+var (
+    firstPage = 1
+    // DefaultPageConfig defines the page configuration for LIST-related endpoints
+    // for all entities by default. If the configuration is not overridden for a
+    // specific entity, this will be used.
+    DefaultPageConfig = &PageConfig{
+        MinItemsPerPage: {{ $.Annotations.RestConfig.MinItemsPerPage }},
+        ItemsPerPage:    {{ $.Annotations.RestConfig.ItemsPerPage }},
+        MaxItemsPerPage: {{ $.Annotations.RestConfig.MaxItemsPerPage }},
+    }
+    {{- range $t := $.Nodes }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
+
+        // {{ $t.Name|zsingular }}PageConfig defines the page configuration for LIST-related endpoints
+        // for {{ $t.Name|zsingular }}.
+        {{ $t.Name|zsingular }}PageConfig = &PageConfig{
+            MinItemsPerPage: {{ or $t.Annotations.Rest.MinItemsPerPage "DefaultPageConfig.MinItemsPerPage" }},
+            ItemsPerPage:    {{ or $t.Annotations.Rest.ItemsPerPage "DefaultPageConfig.ItemsPerPage" }},
+            MaxItemsPerPage: {{ or $t.Annotations.Rest.MaxItemsPerPage "DefaultPageConfig.MaxItemsPerPage" }},
+        }
+    {{- end }}
+)
+
+// PagableQuery is an interface for ent queries which support providing limit/offset.
+type PagableQuery[P any, T any] interface {
+    Limit(int) P
+    Offset(int) P
+    Count(ctx context.Context) (int, error)
+    All(ctx context.Context) ([]*T, error)
+}
+
+// PagedResponse is the JSON response structure for paged queries.
+type PagedResponse[T any] struct {
+    Page       int  `json:"page"`         // Current page number.
+    TotalCount int  `json:"total_count"`  // Total number of items.
+    LastPage   int  `json:"last_page"`    // Last page number.
+    IsLastPage bool `json:"is_last_page"` // Whether this is the last page.
+    Content    []*T `json:"content"`      // Paged data.
+}
+
+type Paginated[P PagableQuery[P, T], T any] struct {
+    Page         *int `json:"page"         form:"page,omitempty"`
+    ItemsPerPage *int `json:"itemsPerPage" form:"itemsPerPage,omitempty"`
+    ResultCount int `json:"-" form:"-"` // ResultCount is populated by the query execution inside of ApplyPagination.
+    LastPage    int `json:"-" form:"-"` // LastPage is populated by the query execution inside of ApplyPagination.
+
+    hasApplied bool `json:"-" form:"-"`
+}
+
+// ApplyPagination applies offsets and limits, and also runs a count query on the
+// provided query to calculate total results and what the last page number is.
+func (p *Paginated[P, T]) ApplyPagination(ctx context.Context, query P, pageConfig *PageConfig) (P, error) {
+    if pageConfig == nil {
+        pageConfig = DefaultPageConfig
+    }
+
+    if p.Page == nil {
+        p.Page = &firstPage
+    }
+
+    if p.ItemsPerPage == nil {
+        p.ItemsPerPage = &pageConfig.ItemsPerPage
+    }
+
+    if *p.ItemsPerPage < pageConfig.MinItemsPerPage {
+        return query, &ErrBadRequest{Err: fmt.Errorf("itemsPerPage %d is out of bounds, must be >= %d", *p.ItemsPerPage, pageConfig.MinItemsPerPage)}
+    }
+
+    if *p.ItemsPerPage > pageConfig.MaxItemsPerPage {
+        return query, &ErrBadRequest{Err: fmt.Errorf("itemsPerPage %d is out of bounds, must be <= %d", *p.ItemsPerPage, pageConfig.MaxItemsPerPage)}
+    }
+
+    if *p.Page < 1 {
+        return query, &ErrBadRequest{Err: fmt.Errorf("page %d is out of bounds, must be >= 1", *p.Page)}
+    }
+
+    var err error
+
+    p.ResultCount, err = query.Count(ctx)
+    if err != nil {
+        return query, err
+    }
+
+    // TODO: how to calculate this without knowing the total count?
+    p.LastPage = int(math.Ceil(float64(p.ResultCount) / float64(*p.ItemsPerPage)))
+
+    if p.LastPage < 1 {
+        p.LastPage = 1
+    }
+
+    if *p.Page > p.LastPage {
+        return query, &ErrBadRequest{Err: fmt.Errorf("page %d is out of bounds, last page is %d", *p.Page, p.LastPage)}
+    }
+
+    p.hasApplied = true
+    return query.Limit(*p.ItemsPerPage).Offset((*p.Page - 1) * *p.ItemsPerPage), nil
+}
+
+// ExecutePaginated executes the query and returns a paged response. If ApplyPagination
+// was not called before, it will be called here.
+func (p *Paginated[P, T]) ExecutePaginated(ctx context.Context, query P, pageConfig *PageConfig) (*PagedResponse[T], error) {
+    if !p.hasApplied {
+        var err error
+        query, err = p.ApplyPagination(ctx, query, pageConfig)
+        if err != nil {
+            return nil, err
+        }
+    }
+
+    data, err := query.All(ctx)
+    if err != nil {
+        return nil, err
+    }
+
+    return &PagedResponse[T]{
+        Page:       *p.Page,
+        TotalCount: p.ResultCount,
+        LastPage:   p.LastPage,
+        IsLastPage: *p.Page == p.LastPage,
+        Content:    data,
+    }, nil
+}
+
+type Sorted struct {
+    Sort  *string `json:"sort"  form:"sort,omitempty"`
+    Order *string `json:"order" form:"order,omitempty"`
+}
+
+// Validate validates the sorting fields and applies any necessary defaults.
+func (s *Sorted) Validate(fields SortableFields) error {
+    if s.Sort == nil {
+        return nil
+    }
+
+    if !slices.Contains(fields, *s.Sort) {
+        return &ErrBadRequest{Err: fmt.Errorf("invalid sort field: %s", *s.Sort)}
+    }
+
+    if s.Order == nil {
+        order := "desc"
+        s.Order = &order
+    }
+
+    if !slices.Contains(OrderDirections, *s.Order) {
+        return &ErrBadRequest{Err: fmt.Errorf("invalid order: %s", *s.Order)}
+    }
+
+    return nil
+}
+
+// SortOrderTerm returns the OrderTermOption (Asc/Desc) based on the Order field.
+func (s *Sorted) SortOrderTerm() sql.OrderTermOption {
+    if *s.Order == "asc" {
+        return sql.OrderAsc()
+    }
+    return sql.OrderDesc()
+}
+
+func (s *Sorted) SortFieldSelector() func(*sql.Selector) {
+    if s.Order == nil || s.Sort == nil {
+        panic("calling FieldSelector with nil sorting params")
+    }
+
+    if *s.Order == "asc" {
+        return ent.Asc(*s.Sort)
+    }
+
+    return ent.Desc(*s.Sort)
+}
+
+// SortableFields is a list of sortable fields for the given entity.
+type SortableFields []string
+
+var (
+    // OrderDirections are the allowed order directions that can be provided.
+    OrderDirections = []string{"asc", "desc"}
+    {{ range $t := $.Nodes }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
+
+        // {{ $t.Name|zsingular }}SortFields is a list of sortable fields for the {{ $t.Name|quote }} entity.
+        {{ $t.Name|zsingular }}SortFields = SortableFields{
+            {{- range getSortableFields $t false }}
+            "{{ . }}",
+            {{- end }}
+        }
+    {{ end }}{{/* end range nodes */}}
+)
+
+// FilterOperation represents if all or any (one or more) filters should be applied.
+type FilterOperation string
+
+const (
+    FilterOperationAnd FilterOperation = "and" // Represents the "and" predicate, applying against all filters combined.
+    FilterOperationOr FilterOperation = "or"   // Represents the "or" predicate, applying against any number of filters.
+)
+
+var (
+    // FilterOperations defines the available filter methods.
+    FilterOperations = []FilterOperation{FilterOperationAnd, FilterOperationOr}
+)
+
+type Filtered[P ~func(*sql.Selector)] struct {
+    // FilterOperation controls how multiple predicates are applied together.
+    FilterOperation *FilterOperation `json:"filter_op,omitempty" form:"filter_op,omitempty"`
+}
+
+// ApplyFilterOperation applies the requested filter operation (if provided) to the
+// provided predicates. If no filter operation is provided, the predicates are
+// returned with AND.
+func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
+    if f.FilterOperation == nil || *f.FilterOperation == FilterOperationAnd {
+        return sql.AndPredicates(predicates...), nil
+    }
+    if !slices.Contains(FilterOperations, *f.FilterOperation) {
+        return nil, &ErrBadRequest{Err: fmt.Errorf("invalid filter method: %s", *f.FilterOperation)}
+    }
+    return sql.OrPredicates(predicates...), nil
+}
+
+{{- range $t := $.Nodes }}
+    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
+
+    {{- $pagination := (($t|getAnnotation).GetPagination $.Annotations.RestConfig nil) }}
+    {{- $filters := getFilterableFields $t nil }}
+
+    // List{{ $t.Name|zsingular }}Params defines parameters for listing {{ $t.Name|zplural }} via a GET request.
+    type List{{ $t.Name|zsingular }}Params struct {
+        Sorted
+        {{- if $pagination }}
+            Paginated[*ent.{{ $t.Name }}Query, ent.{{ $t.Name }}]
+        {{- end }}
+        {{- if $filters }}
+            Filtered[predicate.{{ $t.Name }}]
+        {{- end }}
+
+        {{ if $filters }}
+            {{- range $f := $filters }}
+                // {{ $f.Description }}
+                {{ $f.ComponentName }} {{ $f.TypeString }} `{{ $f.StructTag }}`
+            {{- end }}
+        {{- end }}{{/* end filters */}}
+    }
+
+    {{ if $filters }}
+        // FilterPredicates returns the predicates for filter-related parameters in {{ $t.Name|singular }}.
+        func (l *List{{ $t.Name|zsingular }}Params) FilterPredicates() (predicate.{{ $t.Name }}, error) {
+            var predicates []predicate.{{ $t.Name }}
+
+            {{ range $f := $filters }}
+                if l.{{ $f.ComponentName }} != nil {
+                    {{- if $f.Operation.Niladic }}
+                        if *l.{{ $f.ComponentName }} {
+                            predicates = append(predicates, {{ $f.PredicateBuilder "l" }})
+                        } else {
+                            predicates = append(predicates, {{ $t.Package }}.Not({{ $f.PredicateBuilder "l" }}))
+                        }
+                    {{- else }}
+                        predicates = append(predicates, {{ $f.PredicateBuilder "l" }})
+                    {{- end }}{{/* end niladic */}}
+                }
+            {{- end }}{{/* end range filtering */}}
+            return l.ApplyFilterOperation(predicates...)
+        }
+    {{- end }}{{/* end filters */}}
+
+    // ApplySorting applies sorting to the query based on the provided sort and order fields.
+    func (l *List{{ $t.Name|zsingular }}Params) ApplySorting(query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}Query, error) {
+        {{- if not (getSortableFields $t false) }}
+            // {{ $t.Name }} has no sortable fields.
+            return query, nil
+        {{- else }}
+            if l.Sort == nil {
+                return query, nil
+            }
+            if err := l.Sorted.Validate({{ $t.Name|zsingular }}SortFields); err != nil {
+                return nil, err
+            }
+            {{- if $t.Edges }}
+            if parts := strings.Split(*l.Sort, "."); len(parts) > 1 {
+                dir := l.Sorted.SortOrderTerm()
+
+                {{- range $e := $t.Edges }}
+                    {{ if not $e.Unique }}
+                        var isCount, isSum bool
+                        if len(parts) > 2 {
+                            switch parts[2] {
+                            case "count":
+                                isCount = true
+                            case "sum":
+                                isSum = true
+                            }
+                        }
+                        {{ break }}
+                    {{ end }}
+                {{ end }}
+
+                switch parts[0] {
+                {{- range $e := $t.Edges }}
+                    case {{ $t.Package }}.Edge{{ $e.StructField }}:
+                        {{- if $e.Unique }}
+                            return query.Order({{ $t.Package }}.By{{ $e.StructField }}Field(parts[1], dir)), nil
+                        {{- else }}
+                            switch {
+                            case isCount:
+                                return query.Order({{ $t.Package }}.By{{ $e.StructField }}Count(dir)), nil
+                            case isSum:
+                                return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderBySum(parts[1], dir))), nil
+                            default:
+                                return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderByField(parts[1], dir))), nil
+                            }
+                        {{- end }}
+                {{- end }}
+                }
+            }
+            {{- end }}
+            return query.Order(l.Sorted.SortFieldSelector()), nil
+        {{- end }}
+    }
+
+    {{- if $pagination }}
+        // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
+        // executes all necessary queries, returning the results.
+        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, query *ent.{{ $t.Name }}Query) (results *PagedResponse[ent.{{ $t.Name }}], err error) {
+            {{- if $filters }}
+                predicates, err := l.FilterPredicates()
+                if err != nil {
+                    return nil, err
+                }
+                query = query.Where(predicates)
+            {{- end }}
+            query, err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(query))
+            if err != nil {
+                return nil, err
+            }
+            return l.ExecutePaginated(ctx, query, {{ $t.Name|zsingular }}PageConfig)
+        }
+    {{- else }}
+        // Exec wraps all logic (filtering, sorting, and eager loading) and
+        // executes all necessary queries, returning the results.
+        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, query *ent.{{ $t.Name }}Query) (results []*ent.{{ $t.Name }}, err error) {
+            {{- if $filters }}
+                predicates, err := l.FilterPredicates()
+                if err != nil {
+                    return nil, err
+                }
+                query = query.Where(predicates)
+            {{- end }}
+
+            query, err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(query))
+            if err != nil {
+                return nil, err
+            }
+
+            return query.All(ctx)
+        }
+    {{- end }}
+{{- end }}{{/* end range */}}
+{{- end }}{{/* end template */}}

@@ -1,0 +1,20 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "rest/server" }}
+{{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
+
+import "{{ $.Config.Package }}"
+
+{{- if $.Annotations.RestConfig.EnableSpecHandler }}
+import _ "embed"
+
+//go:embed openapi.json
+var OpenAPI []byte // OpenAPI contains the JSON schema of the API.
+{{- end }}
+
+{{ template "helper/rest/server/middleware" . }}
+{{ template "helper/rest/server/errors" . }}
+{{- end }}{{/* end template */}}

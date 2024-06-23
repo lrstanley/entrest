@@ -1,0 +1,24 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "rest/eagerload" }}
+{{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
+
+import "{{ $.Config.Package }}"
+
+{{- range $t := $.Nodes }}
+    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+
+    // EagerLoad{{ $t.Name|zsingular }} eager-loads the edges of a {{ $t.Name|zsingular }} entity, if any edges
+    // were requested to be eager-loaded, based off associated annotations.
+    func EagerLoad{{ $t.Name|zsingular }}(query *ent.{{ $t.Name }}Query) *ent.{{ $t.Name }}Query {
+        return query
+        {{- range $e := $t.Edges -}}
+            {{- if not (($e|getAnnotation).GetEagerLoad $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
+            .With{{ $e.StructField }}()
+        {{- end }}
+    }
+{{- end }}
+{{ end }}{{/* end template */}}

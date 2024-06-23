@@ -1,0 +1,147 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "rest/create" }}
+{{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
+
+import (
+    "{{ $.Config.Package }}"
+    {{- range $t := $.Nodes }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        "{{ $.Config.Package }}/{{ $t.Package }}"
+    {{- end }}
+)
+
+{{- range $t := $.Nodes }}
+    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+
+    // Create{{ $t.Name|zsingular }}Params defines parameters for creating a {{ $t.Name|zsingular }} via a POST request.
+    type Create{{ $t.Name|zsingular }}Params struct {
+        {{- range $f := $t.Fields }}
+            {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
+
+            {{- template "helper/rest/fields/comment" $f }}
+            {{- if or $f.Optional $f.Default }}
+                {{- if or (hasPrefix $f.Type.Ident "[]") $f.IsBytes }}
+                    {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+                {{- else }}
+                    {{ $f.StructField }} *{{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+                {{- end }}
+            {{- else }}
+                {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+            {{- end }}
+        {{- end }}
+
+        {{- range $e := $t.Edges }}
+            {{- if or
+                (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
+                $e.Annotations.Rest.ReadOnly
+                (not $e.Type.ID)
+            }}
+                {{- continue }}
+            {{ end -}}
+
+            {{- $f := $e.Field }}
+            {{- if $f }}
+                {{- if or (not (($f|getAnnotation).GetSkip $.Annotations.RestConfig)) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
+
+                {{- template "helper/rest/fields/comment" $f }}
+                {{- if $f.Nillable }}
+                    {{ $f.StructField }} Option[{{ $f.Type }}] {{ template "helper/rest/fields/tag" $f }}
+                {{- else if or $f.Default $f.Optional }}
+                    {{ $f.StructField }} *{{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+                {{- else }}
+                    {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+                {{- end }}
+            {{- else }}
+                {{- template "helper/rest/fields/comment" $e }}
+                {{- if $e.Optional }}
+                    {{ $e.StructField }} {{ if not $e.Unique }}[]{{else }}*{{ end }}{{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" $e }}
+                {{- else }}
+                    {{ $e.StructField }} {{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" $e }}
+                {{- end }}
+            {{- end }}
+        {{- end }}
+    }
+
+    func (c *Create{{ $t.Name|zsingular }}Params) ApplyInputs(builder *ent.{{ $t.Name }}Create) *ent.{{ $t.Name }}Create {
+        {{- range $f := $t.Fields }}
+            {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
+
+            {{- if or $f.Optional $f.Default }}
+                if c.{{ $f.StructField }} != nil {
+                {{- if or (hasPrefix $f.Type.Ident "[]") $f.IsBytes }}
+                    builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
+                {{- else }}
+                    builder.Set{{ $f.StructField }}(*c.{{ $f.StructField }})
+                {{- end }}
+                }
+            {{- else }}
+                builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
+            {{- end }}
+        {{- end }}
+
+        {{- range $e := $t.Edges }}
+            {{- if or
+                (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
+                $e.Annotations.Rest.ReadOnly
+                (not $e.Type.ID)
+            }}
+                {{- continue }}
+            {{ end -}}
+
+            {{- $f := $e.Field }}
+            {{- if $f }}
+                {{- if or (not (($f|getAnnotation).GetSkip $.Annotations.RestConfig)) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
+
+                {{- if $f.Nillable }}
+                    if c.{{ $f.StructField }} != nil {
+                        builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
+                    }
+                {{- else if or $f.Default $f.Optional }}
+                    if c.{{ $f.StructField }} != nil {
+                        builder.Set{{ $f.StructField }}(*c.{{ $f.StructField }})
+                    }
+                {{- else }}
+                    builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
+                {{- end }}
+            {{- else }}
+                {{- if not $e.Unique }}
+                    builder.Add{{ $e.StructField|zsingular }}IDs(c.{{ $e.StructField }}...)
+                {{- else if $e.Optional }}
+                    if c.{{ $e.StructField }} != nil {
+                        builder.Set{{ $e.StructField }}ID(*c.{{ $e.StructField }})
+                    }
+                {{- else }}
+                    builder.Set{{ $e.StructField }}ID(c.{{ $e.StructField }})
+                {{- end }}
+            {{- end }}
+        {{- end }}
+        return builder
+    }
+
+    // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
+    // and does another query (using provided query as base) to get the entity, with all eager
+    // loaded edges.
+    func (c *Create{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, builder *ent.{{ $t.Name }}Create, query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}, error) {
+        result, err := c.ApplyInputs(builder).Save(ctx)
+        if err != nil {
+            return nil, err
+        }
+        {{- if $t.ID }}
+            return EagerLoad{{ $t.Name|zsingular }}(query.Where({{ $t.Package }}.ID(result.ID))).Only(ctx)
+        {{- else }}
+            // Since {{ $t.Name|zsingular }} entities have a composite ID, we have to query by all known FK fields.
+            return EagerLoad{{ $t.Name|zsingular }}(query.Where(
+                {{ range $f := $t.Fields }}
+                    {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly $f.Optional }}{{ continue }}{{ end -}}
+
+                    {{ $t.Package }}.{{ $f.StructField }}EQ(result.{{ $f.StructField }}),
+                {{ end }}
+            )).Only(ctx)
+        {{- end }}
+    }
+{{- end }}{{/* end range */}}
+{{- end }}{{/* end template */}}

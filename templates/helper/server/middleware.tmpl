@@ -1,0 +1,16 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/middleware" }}
+// UseEntContext is an http middleware that injects the provided ent.Client into the
+// request context.
+func UseEntContext(client *ent.Client) func(http.Handler) http.Handler {
+    return func(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            next.ServeHTTP(w, r.WithContext(ent.NewContext(r.Context(), client)))
+        })
+    }
+}
+{{- end }}{{/* end template */}}

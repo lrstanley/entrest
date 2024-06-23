@@ -38,6 +38,12 @@ func NewExtension(config *Config) (*Extension, error) {
 	return &Extension{config: config}, nil
 }
 
+func (e *Extension) Templates() []*gen.Template {
+	return []*gen.Template{
+		baseTemplates,
+	}
+}
+
 func (e *Extension) Hooks() []gen.Hook {
 	return []gen.Hook{
 		func(next gen.Generator) gen.Generator {
