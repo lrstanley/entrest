@@ -238,42 +238,6 @@ func TestMergeMap(t *testing.T) {
 	}
 }
 
-func TestWithDefault(t *testing.T) {
-	// Can't use test tables here because an any field will cause withDefault to not have propr default values.
-
-	t.Run("string-zero", func(t *testing.T) {
-		assert.Equal(t, "foo", withDefault("", "foo", "bar"))
-	})
-
-	t.Run("string-zero-2", func(t *testing.T) {
-		assert.Equal(t, "foo", withDefault("", "", "foo"))
-	})
-
-	t.Run("string-single", func(t *testing.T) {
-		assert.Equal(t, "bar", withDefault("bar", "foo"))
-	})
-
-	t.Run("string-multiple", func(t *testing.T) {
-		assert.Equal(t, "baz", withDefault("baz", "foo", "bar"))
-	})
-
-	t.Run("number-zero", func(t *testing.T) {
-		assert.Equal(t, 1, withDefault(0, 0, 1))
-	})
-
-	t.Run("number", func(t *testing.T) {
-		assert.Equal(t, 1, withDefault(1, 2, 3))
-	})
-
-	t.Run("bool-zero", func(t *testing.T) {
-		assert.True(t, withDefault(false, true))
-	})
-
-	t.Run("bool", func(t *testing.T) {
-		assert.True(t, withDefault(true, false))
-	})
-}
-
 func TestWithDefaultSlice(t *testing.T) {
 	t.Run("string-zero", func(t *testing.T) {
 		assert.Equal(t, []string{"foo"}, withDefaultSlice([]string{}, []string{"foo"}))

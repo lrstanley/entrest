@@ -5,6 +5,7 @@
 package entrest
 
 import (
+	"cmp"
 	"fmt"
 	"net/http"
 	"slices"
@@ -48,9 +49,9 @@ func mergeOperation(overlap bool, orig, op *ogen.Operation) (*ogen.Operation, er
 	}
 
 	orig.Tags = appendIfNotContains(orig.Tags, op.Tags)
-	orig.Summary = withDefault(op.Summary, orig.Summary)
-	orig.Description = withDefault(op.Description, orig.Description)
-	orig.OperationID = withDefault(op.OperationID, orig.OperationID)
+	orig.Summary = cmp.Or(op.Summary, orig.Summary)
+	orig.Description = cmp.Or(op.Description, orig.Description)
+	orig.OperationID = cmp.Or(op.OperationID, orig.OperationID)
 	orig.Deprecated = orig.Deprecated || op.Deprecated
 
 	// Merge parameters.

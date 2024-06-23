@@ -6,6 +6,7 @@
 package entrest
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"math"
@@ -122,7 +123,7 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 		}
 	}
 
-	schema.Description = withDefault(fa.Description, f.Comment())
+	schema.Description = cmp.Or(fa.Description, f.Comment())
 	schema.Deprecated = fa.Deprecated
 
 	if fa.Example != nil {
@@ -153,7 +154,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 	switch op {
 	case OperationCreate, OperationUpdate:
 		schema := &ogen.Schema{
-			Description: withDefault(
+			Description: cmp.Or(
 				ta.GetOperationDescription(op),
 				ta.Description,
 				fmt.Sprintf("A single %s entity and the fields that can be created/updated.", entityName),
@@ -273,7 +274,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		dependencies = append(dependencies, OperationRead)
 	case OperationRead:
 		schema := &ogen.Schema{
-			Description: withDefault(ta.GetOperationDescription(op), ta.Description, fmt.Sprintf("A single %s entity.", entityName)),
+			Description: cmp.Or(ta.GetOperationDescription(op), ta.Description, fmt.Sprintf("A single %s entity.", entityName)),
 			Type:        "object",
 			Properties:  ogen.Properties{},
 			Required:    []string{},

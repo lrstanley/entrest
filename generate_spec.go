@@ -6,6 +6,7 @@
 package entrest
 
 import (
+	"cmp"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -168,15 +169,15 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 	case OperationCreate:
 		oper := &ogen.Operation{
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
-			Summary: withDefault(
+			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Create a new %s entity", entityName),
 			),
-			Description: withDefault(
+			Description: cmp.Or(
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Create a new %s entity. %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: withDefault(ta.GetOperationID(op), "create"+entityName),
+			OperationID: cmp.Or(ta.GetOperationID(op), "create"+entityName),
 			Deprecated:  ta.Deprecated,
 			RequestBody: ogen.NewRequestBody().
 				SetRequired(true).
@@ -199,15 +200,15 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 	case OperationUpdate:
 		oper := &ogen.Operation{
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
-			Summary: withDefault(
+			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Update an existing %s entity", entityName),
 			),
-			Description: withDefault(
+			Description: cmp.Or(
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Update an existing %s entity. %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: withDefault(ta.GetOperationID(op), fmt.Sprintf("update%sByID", entityName)),
+			OperationID: cmp.Or(ta.GetOperationID(op), fmt.Sprintf("update%sByID", entityName)),
 			Deprecated:  ta.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			RequestBody: ogen.NewRequestBody().
@@ -232,15 +233,15 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 	case OperationRead:
 		oper := &ogen.Operation{
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
-			Summary: withDefault(
+			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Retrieve a single %s entity", entityName),
 			),
-			Description: withDefault(
+			Description: cmp.Or(
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Retrieve a single %s entity by its ID. %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: withDefault(ta.GetOperationID(op), fmt.Sprintf("get%sByID", entityName)),
+			OperationID: cmp.Or(ta.GetOperationID(op), fmt.Sprintf("get%sByID", entityName)),
 			Deprecated:  ta.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
@@ -266,15 +267,15 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 	case OperationList:
 		oper := &ogen.Operation{
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
-			Summary: withDefault(
+			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Query all %s entities", entityName),
 			),
-			Description: withDefault(
+			Description: cmp.Or(
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Query all %s entities (including pagination, filtering, sorting, etc). %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: withDefault(ta.GetOperationID(op), "list"+Pluralize(t.Name)),
+			OperationID: cmp.Or(ta.GetOperationID(op), "list"+Pluralize(t.Name)),
 			Deprecated:  ta.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
@@ -345,15 +346,15 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 	case OperationDelete:
 		oper := &ogen.Operation{
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
-			Summary: withDefault(
+			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				fmt.Sprintf("Delete a single %s entity", entityName),
 			),
-			Description: withDefault(
+			Description: cmp.Or(
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Delete a single %s entity by its ID.", entityName),
 			),
-			OperationID: withDefault(ta.GetOperationID(op), fmt.Sprintf("delete%sByID", entityName)),
+			OperationID: cmp.Or(ta.GetOperationID(op), fmt.Sprintf("delete%sByID", entityName)),
 			Deprecated:  ta.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
@@ -437,12 +438,12 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 
 		oper := &ogen.Operation{
 			Tags: withDefaultSlice(ea.Tags, append([]string{rootEntityName, refEntityName}, ea.AdditionalTags...)),
-			Summary: withDefault(
+			Summary: cmp.Or(
 				ea.GetOperationSummary(op),
 				e.Comment(),
 				fmt.Sprintf("Get a %s associated %s", Pluralize(CamelCase(t.Name)), CamelCase(e.Name)),
 			),
-			Description: withDefault(
+			Description: cmp.Or(
 				ea.GetOperationDescription(op),
 				fmt.Sprintf(
 					"Get a %s associated %s (%s entity type). %s",
@@ -452,7 +453,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 					eagerLoadDepthMessage,
 				),
 			),
-			OperationID: withDefault(ea.GetOperationID(op), fmt.Sprintf("get%s%sByID", rootEntityName, entityName)),
+			OperationID: cmp.Or(ea.GetOperationID(op), fmt.Sprintf("get%s%sByID", rootEntityName, entityName)),
 			Deprecated:  ta.Deprecated || ea.Deprecated || ra.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
@@ -478,12 +479,12 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 
 		oper := &ogen.Operation{
 			Tags: withDefaultSlice(ea.Tags, append([]string{rootEntityName, refEntityName}, ea.AdditionalTags...)),
-			Summary: withDefault(
+			Summary: cmp.Or(
 				ea.GetOperationSummary(op),
 				e.Comment(),
 				fmt.Sprintf("List a %s associated %s", Pluralize(CamelCase(t.Name)), Pluralize(CamelCase(e.Name))),
 			),
-			Description: withDefault(
+			Description: cmp.Or(
 				ea.GetOperationDescription(op),
 				fmt.Sprintf(
 					"List a %s associated %s (%s entity type). %s",
@@ -493,7 +494,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 					eagerLoadDepthMessage,
 				),
 			),
-			OperationID: withDefault(ea.GetOperationID(op), fmt.Sprintf("list%s%s", rootEntityName, entityName)),
+			OperationID: cmp.Or(ea.GetOperationID(op), fmt.Sprintf("list%s%s", rootEntityName, entityName)),
 			Deprecated:  ta.Deprecated || ea.Deprecated || ra.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
