@@ -1,0 +1,166 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "rest/update" }}
+{{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
+
+import (
+    "{{ $.Config.Package }}"
+    {{- range $t := $.Nodes }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        "{{ $.Config.Package }}/{{ $t.Package }}"
+    {{- end }}
+)
+
+{{- range $t := $.Nodes }}
+    {{- if or
+        (($t|getAnnotation).GetSkip $.Annotations.RestConfig)
+        (not $t.ID)
+    }}
+        {{- continue }}
+    {{ end }}
+
+    // Update{{ $t.Name|zsingular }}Params defines parameters for updating a {{ $t.Name|zsingular }} via a PATCH request.
+    type Update{{ $t.Name|zsingular }}Params struct {
+        {{- range $f := $t.Fields }}
+            {{- if or
+                (($f|getAnnotation).GetSkip $.Annotations.RestConfig)
+                $f.Annotations.Rest.ReadOnly
+                $f.Immutable
+            }}
+                {{- continue }}
+            {{ end -}}
+
+            {{- template "helper/rest/fields/comment" $f }}
+            {{ $f.StructField }} Option[{{ if and $f.Nillable (not (hasPrefix $f.Type.Ident "[]")) }}*{{ end }}{{ $f.Type }}] {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
+        {{- end }}
+
+        {{- range $e := $t.Edges }}
+            {{- if or
+                (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
+                $e.Annotations.Rest.ReadOnly
+                $e.Immutable
+                (and $e.Field (or
+                    $e.Field.Immutable
+                    $e.Field.Annotations.Rest.ReadOnly
+                    (not (($e.Field|getAnnotation).GetSkip $.Annotations.RestConfig))
+                ))
+                (not $e.Type.ID)
+            }}
+                {{- continue }}
+            {{ end -}}
+
+            {{- if $e.Field }}
+                {{- template "helper/rest/fields/comment" $e.Field }}
+                {{ $e.Field.StructField }} Option[{{ if $e.Field.Nillable }}*{{ end }}{{ $e.Field.Type }}] {{ template "helper/rest/edge/tag" (dict "Field" $e.Field) }}
+            {{- else if $e.Unique }}
+                {{- template "helper/rest/fields/comment" $e }}
+                {{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ $e.Type.IDType.String }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
+            {{- else }}
+                {{- range $prefix := list "Add" "Remove" "" }}
+                    {{- if and (not $e.Annotations.Rest.EdgeUpdateBulk) (not $prefix) }}{{ continue }}{{ end }}
+                    {{- template "helper/rest/fields/comment" $e }}
+                    {{ $prefix }}{{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ $e.Type.IDType.String }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e "Prefix" $prefix) }}
+                {{- end }}
+            {{- end }}
+        {{- end }}
+    }
+
+    func (u *Update{{ $t.Name|zsingular }}Params) ApplyInputs(builder *ent.{{ $t.Name }}UpdateOne) *ent.{{ $t.Name }}UpdateOne {
+        {{- range $f := $t.Fields }}
+            {{- if or
+                (($f|getAnnotation).GetSkip $.Annotations.RestConfig)
+                $f.Annotations.Rest.ReadOnly
+                $f.Immutable
+            }}
+                {{- continue }}
+            {{ end -}}
+
+            if v, ok := u.{{ $f.StructField }}.Get(); ok {
+                {{- if $f.Nillable }}
+                    if v != nil {
+                        builder.Set{{ $f.StructField }}(*v)
+                    } else {
+                        builder.Clear{{ $f.StructField }}()
+                    }
+                {{- else }}
+                    builder.Set{{ $f.StructField }}(v)
+                {{- end }}
+            }
+        {{ end -}}
+
+        {{- range $e := $t.Edges }}
+            {{- if or
+                (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
+                $e.Annotations.Rest.ReadOnly
+                $e.Immutable
+                (and $e.Field (or
+                    $e.Field.Immutable
+                    $e.Field.Annotations.Rest.ReadOnly
+                    (not (($e.Field|getAnnotation).GetSkip $.Annotations.RestConfig))
+                ))
+                (not $e.Type.ID)
+            }}
+                {{- continue }}
+            {{ end -}}
+
+            {{- if $e.Field }}
+                if v, ok := u.{{ $e.Field.StructField }}.Get(); ok {
+                    {{- if $e.Field.Nillable }}
+                        if v != nil {
+                            builder.Set{{ $e.Field.StructField }}(v)
+                        } else {
+                            builder.Clear{{ $e.Field.StructField }}()
+                        }
+                    {{- else }}
+                        builder.Set{{ $e.Field.StructField }}(v)
+                    {{- end }}
+                }
+            {{- else }}
+                {{- if not $e.Unique }}
+                    {{- range $prefix := list "Add" "Remove" }}
+                        if v, ok := u.{{ $prefix }}{{ $e.StructField }}.Get(); ok && v != nil {
+                            builder.{{ $prefix }}{{ $e.StructField|singular }}IDs(v...)
+                        }
+                    {{- end }}
+                    {{- if $e.Annotations.Rest.EdgeUpdateBulk }}
+                        // If add_<edge> or remove_<edge> is provided, don't clear or use this field.
+                        if v, ok := u.{{ $e.StructField }}.Get(); ok && !u.Add{{ $e.StructField }}.Present() && !u.Remove{{ $e.StructField }}.Present() {
+                            builder.Clear{{ $e.StructField }}()
+                            if v != nil {
+                                builder.Add{{ $e.StructField|singular }}IDs(v...)
+                            }
+                        }
+                    {{- end }}
+                {{- else if $e.Optional }}
+                    if v, ok := u.{{ $e.StructField }}.Get(); ok {
+                        if v != nil {
+                            builder.Set{{ $e.StructField }}ID(*v)
+                        } else {
+                            builder.Clear{{ $e.StructField }}()
+                        }
+                    }
+                {{- else }}
+                    if v, ok := u.{{ $e.StructField }}.Get(); ok {
+                        builder.Set{{ $e.StructField }}ID(v)
+                    }
+                {{- end }}
+            {{- end }}
+        {{- end }}
+        return builder
+    }
+
+    // Exec wraps all logic (mapping all provided values to the build), updates the entity,
+    // and does another query (using provided query as base) to get the entity, with all eager
+    // loaded edges.
+    func (c *Update{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, builder *ent.{{ $t.Name }}UpdateOne, query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}, error) {
+        result, err := c.ApplyInputs(builder).Save(ctx)
+        if err != nil {
+            return nil, err
+        }
+        return EagerLoad{{ $t.Name|zsingular }}(query.Where({{ $t.Package }}.ID(result.ID))).Only(ctx)
+    }
+{{- end }}{{/* end range */}}
+{{- end }}{{/* end template */}}
