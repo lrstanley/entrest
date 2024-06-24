@@ -21,7 +21,7 @@ import (
 
 const eagerLoadDepthMessage = "If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -> edge, not entity -> edge -> edge -> etc)."
 
-func addPagination(spec *ogen.Spec, cfg *Config) {
+func addPagination(spec *ogen.Spec, _ *Config) {
 	if spec.Components == nil {
 		spec.Components = &ogen.Components{}
 	}

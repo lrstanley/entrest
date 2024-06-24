@@ -25,12 +25,12 @@ import (
             {{- template "helper/rest/fields/comment" $f }}
             {{- if or $f.Optional $f.Default }}
                 {{- if or (hasPrefix $f.Type.Ident "[]") $f.IsBytes }}
-                    {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+                    {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- else }}
-                    {{ $f.StructField }} *{{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+                    {{ $f.StructField }} *{{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- end }}
             {{- else }}
-                {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+                {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
             {{- end }}
         {{- end }}
 
@@ -49,18 +49,18 @@ import (
 
                 {{- template "helper/rest/fields/comment" $f }}
                 {{- if $f.Nillable }}
-                    {{ $f.StructField }} Option[{{ $f.Type }}] {{ template "helper/rest/fields/tag" $f }}
+                    {{ $f.StructField }} Option[{{ $f.Type }}] {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- else if or $f.Default $f.Optional }}
-                    {{ $f.StructField }} *{{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+                    {{ $f.StructField }} *{{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- else }}
-                    {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" $f }}
+                    {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- end }}
             {{- else }}
                 {{- template "helper/rest/fields/comment" $e }}
                 {{- if $e.Optional }}
-                    {{ $e.StructField }} {{ if not $e.Unique }}[]{{else }}*{{ end }}{{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" $e }}
+                    {{ $e.StructField }} {{ if not $e.Unique }}[]{{else }}*{{ end }}{{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
                 {{- else }}
-                    {{ $e.StructField }} {{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" $e }}
+                    {{ $e.StructField }} {{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
                 {{- end }}
             {{- end }}
         {{- end }}

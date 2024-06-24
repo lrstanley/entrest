@@ -3,7 +3,7 @@
   this source code is governed by the MIT license that can be found in
   the LICENSE file.
 */ -}}
-{{/* A template for setting the field comment. */}}
+{{/* A template for setting the field comment || input: *gen.Field */}}
 {{- define "helper/rest/fields/comment" }}
     {{- if $.Comment }}
         {{- range $line := split $.Comment "\n" }}
@@ -12,16 +12,16 @@
     {{- end }}
 {{- end }}
 
-{{/* A template for setting the field tags */}}
+{{/* A template for setting the field tags || input: map(Field, Prefix?) */}}
 {{- define "helper/rest/fields/tag" -}}
 {{- " " }}`
-{{- "" }}json:"{{ $.Name }}{{ if $.Optional }},omitempty{{ end }}"
+{{- "" }}json:"{{ if $.Prefix }}{{ $.Prefix|lower }}_{{ end }}{{ $.Field.Name }}{{ if $.Field.Optional }},omitempty{{ end }}"
 {{- "" }}`
 {{- end }}
 
-{{/* A template for setting the edge tags */}}
+{{/* A template for setting the edge tags || input: map(Edge, Prefix?) */}}
 {{- define "helper/rest/edge/tag" -}}
 {{- " " }}`
-{{- "" }}json:"{{ $.Name }}{{ if $.Optional }},omitempty{{ end }}"
+{{- "" }}json:"{{ if $.Prefix }}{{ $.Prefix|lower }}_{{ end }}{{ $.Edge.Name }}{{ if $.Edge.Optional }},omitempty{{ end }}"
 {{- "" }}`
 {{- end }}
