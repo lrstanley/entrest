@@ -85,8 +85,8 @@ github.com/mitchellh/go-wordwrap v1.0.1/go.mod h1:R62XHJLzvMFRBbcrT7m7WgmE1eOyTS
 github.com/nxadm/tail v1.4.4/go.mod h1:kenIhsEOeOJmVchQTgglprH7qJGnHDVpk1VPCcaMI8A=
 github.com/nxadm/tail v1.4.8 h1:nPr65rt6Y5JFSKQO7qToXr7pePgD6Gwiw05lkbyAQTE=
 github.com/nxadm/tail v1.4.8/go.mod h1:+ncqLTQzXmGhMZNUePPaPqPvBxHAIsmXswZKocGu+AU=
-github.com/ogen-go/ogen v1.2.1 h1:C5A0lvUMu2wl+eWIxnpXMWnuOJ26a2FyzR1CIC2qG0M=
-github.com/ogen-go/ogen v1.2.1/go.mod h1:P2zQdEu8UqaVRfD5GEFvl+9q63VjMLvDquq1wVbyInM=
+github.com/ogen-go/ogen v1.2.2 h1:fFqZzRacbdnOQeqep4efVeqj7/4hI1mlimrY8rn970A=
+github.com/ogen-go/ogen v1.2.2/go.mod h1:S8X2dBfTKlpy+pcGLXP+aLLzvUAXAvtONtuovrN3+gw=
 github.com/onsi/ginkgo v1.6.0/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.10.2/go.mod h1:lLunBs/Ym6LB5Z9jYTR76FiuTmxDTDusOGeTQH+WWjE=
 github.com/onsi/ginkgo v1.12.1/go.mod h1:zj2OWP4+oCPe1qIXoGWkgMRwljMUYCdkwsT2108oapk=
