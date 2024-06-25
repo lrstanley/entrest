@@ -11,14 +11,11 @@ prepare:
 	go mod tidy
 	cd _examples && go mod tidy
 
-simple: prepare
-	cd _examples/simple && go generate -x ./...
+kitchensink: prepare
+	cd _examples/kitchensink && go generate -x ./...
 
-debug: prepare
-	cd _examples/debug && go generate -x ./...
-
-dlv-debug:
-	cd _examples/debug && dlv debug \
+dlv-kitchensink:
+	cd _examples/kitchensink && dlv kitchensink \
 		--headless --listen=:2345 \
 		--api-version=2 --log \
 		--allow-non-terminal-interactive \

@@ -1,8 +1,9 @@
-*.test
-*.prof
-bin/*
-*.lock
-*.txt
-*.log
-.env
-_examples/*/ent
+**/*.test
+**/*.prof
+**/*.lock
+**/*.txt
+**/*.log
+**/.env*
+**/bin
+/TODO.md
+**/tmp

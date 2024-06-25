@@ -1,9 +1,8 @@
+//go:build ignore
+
 // Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
 // this source code is governed by the MIT license that can be found in
 // the LICENSE file.
-
-//go:generate sh -c "mkdir -p ./schema"
-//go:generate go run -mod=readonly generate.go
 
 package main
 
@@ -18,8 +17,9 @@ import (
 
 func main() {
 	ex, err := entrest.NewExtension(&entrest.Config{
-		Handler:           entrest.HandlerChi,
+		DefaultEagerLoad:  false,
 		EnableSpecHandler: true,
+		Handler:           entrest.HandlerChi,
 		GlobalRequestHeaders: map[string]*ogen.Header{
 			"X-Request-Id": {
 				Description: "A unique identifier for the request.",
@@ -52,9 +52,9 @@ func main() {
 	err = entc.Generate(
 		"./schema",
 		&gen.Config{
-			Target:   "./ent",
-			Schema:   "github.com/lrstanley/entrest/_examples/simple/schema",
-			Package:  "github.com/lrstanley/entrest/_examples/simple/ent",
+			Target:   "ent",
+			Schema:   "github.com/lrstanley/entrest/_examples/kitchensink/database/schema",
+			Package:  "github.com/lrstanley/entrest/_examples/kitchensink/database/ent",
 			Features: []gen.Feature{},
 		},
 		entc.Extensions(ex),

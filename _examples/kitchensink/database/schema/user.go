@@ -5,8 +5,6 @@
 package schema
 
 import (
-	"time"
-
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
@@ -48,9 +46,7 @@ func (User) Fields() []ent.Field {
 			).
 			Comment("Full name if USER, otherwise null."),
 		field.Bool("enabled").
-			Annotations(
-				entrest.WithFilter(entrest.FilterGroupEqualExact),
-			).
+			Annotations(entrest.WithFilter(entrest.FilterGroupEqualExact)).
 			Default(true).Comment("If the user is still in the source system."),
 		field.String("email").
 			MinLen(1).
@@ -70,25 +66,25 @@ func (User) Fields() []ent.Field {
 			Nillable().
 			StructTag(`json:"-"`).
 			Comment("Avatar data for the user. This should generally only apply to the USER user type."),
-		field.Time("created_at").
-			Immutable().
-			Default(time.Now).
-			Annotations(entrest.WithSortable(true)).
-			Comment("Time the user was created in the source system."),
-		field.Time("updated_at").
-			Immutable().
-			Default(time.Now).
-			Annotations(entrest.WithSortable(true)).
-			Comment("Last time the user was updated in the source system."),
 	}
 }
 
 func (User) Edges() []ent.Edge {
 	return []ent.Edge{
-		edge.To("pets", Pet.Type).Annotations(
-			entrest.WithEagerLoad(true),
-			entrest.WithFilter(entrest.FilterEdge),
-		),
+		edge.To("pets", Pet.Type).
+			Comment("Pets owned by the user.").
+			Annotations(
+				entrest.WithEagerLoad(true),
+				entrest.WithFilter(entrest.FilterEdge),
+			),
+		edge.To("followed_pets", Pet.Type).
+			Through("following", Follows.Type).
+			Comment("Pets that the user is following.").
+			Annotations(entrest.WithFilter(entrest.FilterEdge)),
+		edge.To("friends", User.Type).
+			Through("friendships", Friendship.Type).
+			Comment("Friends of the user.").
+			Annotations(entrest.WithFilter(entrest.FilterEdge)),
 	}
 }
 

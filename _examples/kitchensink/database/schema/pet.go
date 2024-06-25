@@ -21,7 +21,6 @@ func (Pet) Fields() []ent.Field {
 		field.Int("id"),
 		field.String("name").
 			Annotations(
-				entrest.WithReadOnly(true),
 				entrest.WithExample("Kuro"),
 				entrest.WithSortable(true),
 				entrest.WithFilter(entrest.FilterGroupEqual|entrest.FilterGroupArray),
@@ -41,22 +40,38 @@ func (Pet) Fields() []ent.Field {
 	}
 }
 
+func (User) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		AuditableTimestamp{},
+	}
+}
+
 func (Pet) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.From("categories", Category.Type).
 			Ref("pets").
+			Comment("Categories that the pet belongs to.").
 			Annotations(
 				entrest.WithEagerLoad(true),
 				entrest.WithFilter(entrest.FilterEdge),
+				entrest.WithEdgeUpdateBulk(true),
 			),
 		edge.From("owner", User.Type).
 			Ref("pets").
 			Unique().
+			Comment("The user that owns the pet.").
 			Annotations(
 				entrest.WithEagerLoad(true),
 				entrest.WithFilter(entrest.FilterEdge),
 			),
-		edge.To("friends", Pet.Type),
+		edge.To("friends", Pet.Type).
+			Comment("Pets that this pet is friends with.").
+			Annotations(entrest.WithFilter(entrest.FilterEdge)),
+		edge.From("followed_by", User.Type).
+			Ref("followed_pets").
+			Through("following", Follows.Type).
+			Comment("Users that this pet is followed by.").
+			Annotations(entrest.WithFilter(entrest.FilterEdge)),
 	}
 }
 

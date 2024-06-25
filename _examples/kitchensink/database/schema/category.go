@@ -20,12 +20,15 @@ func (Category) Fields() []ent.Field {
 	return []ent.Field{
 		field.String("name"),
 		field.String("readonly").
-			Annotations(
-				entrest.WithReadOnly(true),
-			),
-		field.String("skip_in_spec").Annotations(
-			entrest.WithSkip(true),
-		),
+			Annotations(entrest.WithReadOnly(true)),
+		field.String("skip_in_spec").
+			Annotations(entrest.WithSkip(true)),
+	}
+}
+
+func (Category) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		AuditableTimestamp{},
 	}
 }
 

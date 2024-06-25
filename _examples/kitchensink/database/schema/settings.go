@@ -28,7 +28,9 @@ func (Settings) Fields() []ent.Field {
 }
 
 func (Settings) Mixin() []ent.Mixin {
-	return []ent.Mixin{}
+	return []ent.Mixin{
+		AuditableTimestamp{},
+	}
 }
 
 func (Settings) Hooks() []ent.Hook {
@@ -38,9 +40,7 @@ func (Settings) Hooks() []ent.Hook {
 func (Settings) Edges() []ent.Edge {
 	return []ent.Edge{
 		edge.To("admins", User.Type).
-			Annotations(
-				entrest.WithEagerLoad(true),
-			).
+			Annotations(entrest.WithEagerLoad(true)).
 			Comment("Administrators for the platform."),
 	}
 }
