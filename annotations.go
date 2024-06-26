@@ -317,6 +317,16 @@ func (a *Annotation) GetEdgeEndpoint(config *Config) bool {
 	return true
 }
 
+// HasOperation returns if the operation is allowed on the given annotation.
+func (a *Annotation) HasOperation(config *Config, op Operation) bool {
+	for _, o := range a.GetOperations(config) {
+		if o == op {
+			return true
+		}
+	}
+	return false
+}
+
 // GetOperations returns the operations annotation (or defaults from
 // [Config.DefaultOperations]).
 func (a *Annotation) GetOperations(config *Config) []Operation {
