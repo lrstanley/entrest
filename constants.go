@@ -213,15 +213,15 @@ const (
 	defaultItemsPerPage    = 10
 )
 
-type SupportedHTTPHandler string
+type HTTPHandler string
 
 const (
-	HandlerNone    SupportedHTTPHandler = ""
-	HandlerGeneric SupportedHTTPHandler = "generic"
-	HandlerChi     SupportedHTTPHandler = "chi"
+	HandlerNone    HTTPHandler = ""
+	HandlerGeneric HTTPHandler = "generic"
+	HandlerChi     HTTPHandler = "chi"
 )
 
-var AllSupportedHTTPHandlers = []SupportedHTTPHandler{
+var AllSupportedHTTPHandlers = []HTTPHandler{
 	HandlerNone,
 	HandlerGeneric,
 	HandlerChi,

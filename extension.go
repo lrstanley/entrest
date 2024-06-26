@@ -39,9 +39,10 @@ func NewExtension(config *Config) (*Extension, error) {
 }
 
 func (e *Extension) Templates() []*gen.Template {
-	return []*gen.Template{
-		baseTemplates,
+	if e.config.Handler == HandlerNone {
+		return []*gen.Template{}
 	}
+	return []*gen.Template{baseTemplates}
 }
 
 func (e *Extension) Hooks() []gen.Hook {

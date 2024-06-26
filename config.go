@@ -108,9 +108,9 @@ type Config struct {
 	GlobalErrorResponses map[int]*ogen.Schema
 
 	// Handler enables the generation of HTTP handlers for the specified server/routing
-	// library. Use HandlerGeneric if yours isn't supported, which should allow you to
-	// wire up the handlers yourself.
-	Handler SupportedHTTPHandler
+	// library. If this is disabled, no Go code will be generated, and only the OpenAPI
+	// spec will be generated.
+	Handler HTTPHandler
 
 	// EnableDocsHandler enables the generation of an OpenAPI UI documentation handler.
 	// TODO: make this more configurable?
@@ -202,7 +202,7 @@ func (c *Config) Validate() error {
 		}
 	}
 
-	if c.Handler != "" && !slices.Contains(AllSupportedHTTPHandlers, c.Handler) {
+	if c.Handler != HandlerNone && !slices.Contains(AllSupportedHTTPHandlers, c.Handler) {
 		return fmt.Errorf("unsupported handler provided: %s", c.Handler)
 	}
 
