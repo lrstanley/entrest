@@ -205,10 +205,7 @@ func (s *Server) Handler() http.Handler {
     {{- if and $t.ID (($t|getAnnotation).HasOperation $.Annotations.RestConfig "read") }}
         // Read{{ $t.Name|zsingular }}ByID maps to "GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}".
         func (s *Server) Read{{ $t.Name|zsingular }}ByID(w http.ResponseWriter, r *http.Request) {
-            id, err := strconv.Atoi(r.PathValue("id"))
-            if s.error(w, r, err) {
-                return
-            }
+            {{ template "helper/rest/server/get_id" . }}
             results, err := EagerLoad{{ $t.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID(id))).Only(r.Context())
             if s.error(w, r, err) {
                 return
@@ -224,10 +221,7 @@ func (s *Server) Handler() http.Handler {
         {{- if and $e.Unique (($t|getAnnotation).HasOperation $.Annotations.RestConfig "read") }}
             // EdgeRead{{ $t.Name|zsingular }}{{ $e.StructField }}ByID maps to "GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}/{{ $e.StructField|zkebab }}".
             func (s *Server) EdgeRead{{ $t.Name|zsingular }}{{ $e.StructField }}ByID(w http.ResponseWriter, r *http.Request) {
-                id, err := strconv.Atoi(r.PathValue("id"))
-                if s.error(w, r, err) {
-                    return
-                }
+                {{ template "helper/rest/server/get_id" . }}
                 entity, err := s.db.{{ $t.Name }}.Get(r.Context(), id)
                 if s.error(w, r, err) {
                     return
@@ -244,10 +238,7 @@ func (s *Server) Handler() http.Handler {
         {{- if and (not $e.Unique) (($t|getAnnotation).HasOperation $.Annotations.RestConfig "list") }}
             // EdgeList{{ $t.Name|zsingular }}{{ $e.StructField }}ByID maps to "GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}/{{ $e.StructField|zkebab }}".
             func (s *Server) EdgeList{{ $t.Name|zsingular }}{{ $e.StructField }}ByID(w http.ResponseWriter, r *http.Request) {
-                id, err := strconv.Atoi(r.PathValue("id"))
-                if s.error(w, r, err) {
-                    return
-                }
+                {{ template "helper/rest/server/get_id" . }}
                 data := &List{{ $e.Type.Name|zsingular }}Params{}
                 if s.error(w, r, Bind(r, data)) {
                     return
@@ -286,10 +277,7 @@ func (s *Server) Handler() http.Handler {
     {{- if and $t.ID (($t|getAnnotation).HasOperation $.Annotations.RestConfig "update") }}
         // Update{{ $t.Name|zsingular }}ByID maps to "PATCH /{{ $t.Name|zkebab|zplural }}/{{ $id }}".
         func (s *Server) Update{{ $t.Name|zsingular }}ByID(w http.ResponseWriter, r *http.Request) {
-            id, err := strconv.Atoi(r.PathValue("id"))
-            if s.error(w, r, err) {
-                return
-            }
+            {{ template "helper/rest/server/get_id" . }}
             data := &Update{{ $t.Name|zsingular }}Params{}
             if s.error(w, r, Bind(r, data)) {
                 return
@@ -306,10 +294,7 @@ func (s *Server) Handler() http.Handler {
     {{- if and $t.ID (($t|getAnnotation).HasOperation $.Annotations.RestConfig "delete") }}
         // Delete{{ $t.Name|zsingular }}ByID maps to "DELETE /{{ $t.Name|zkebab|zplural }}/{{ $id }}".
         func (s *Server) Delete{{ $t.Name|zsingular }}ByID(w http.ResponseWriter, r *http.Request) {
-            id, err := strconv.Atoi(r.PathValue("id"))
-            if s.error(w, r, err) {
-                return
-            }
+            {{ template "helper/rest/server/get_id" . }}
             err = s.db.{{ $t.Name }}.DeleteOneID(id).Exec(r.Context())
             if s.error(w, r, err) {
                 return
