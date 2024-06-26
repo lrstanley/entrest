@@ -4,6 +4,15 @@
   the LICENSE file.
 */ -}}
 {{- define "helper/rest/server/errors" }}
+// ErrorResponse is the response structure for errors.
+type ErrorResponse struct {
+    Error string     `json:"error"`                // The underlying error, which may be masked when debugging is disabled.
+    Type  string     `json:"type"`                 // A summary of the error code based off the HTTP status code or application error code.
+    Code  int        `json:"code"`                 // The HTTP status code or other internal application error code.
+    RequestID string `json:"request_id,omitempty"` // The unique request ID for this error.
+    Timestamp string `json:"timestamp,omitempty"`  // The timestamp of the error, in RFC3339 format.
+}
+
 type ErrBadRequest struct {
     Err error
 }
@@ -20,5 +29,12 @@ func (e ErrBadRequest) Unwrap() error {
 func IsBadRequest(err error) bool {
     var target *ErrBadRequest
     return errors.As(err, &target)
+}
+
+var ErrNotFound = errors.New("endpoint not found")
+
+// IsNotFound returns true if the unwrapped/underlying error is of type ErrNotFound.
+func IsNotFound(err error) bool {
+    return errors.Is(err, ErrNotFound)
 }
 {{- end }}{{/* end template */}}

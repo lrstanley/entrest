@@ -162,6 +162,10 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 		}
 	}
 
+	if e.config.EnableSpecHandler {
+		specs = append(specs, addOpenAPIEndpoint("/openapi.json"))
+	}
+
 	err = MergeSpecOverlap(spec, specs...)
 	if err != nil {
 		panic(err)

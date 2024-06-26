@@ -262,9 +262,9 @@ func MergeSpecOverlap(orig *ogen.Spec, toMerge ...*ogen.Spec) error {
 	return mergeSpec(true, orig, toMerge...)
 }
 
-// AddOpenAPIEndpoint adds an endpoint to the OpenAPI spec that returns the OpenAPI
+// addOpenAPIEndpoint adds an endpoint to the OpenAPI spec that returns the OpenAPI
 // spec itself, as JSON.
-func AddOpenAPIEndpoint(path string) *ogen.Spec {
+func addOpenAPIEndpoint(path string) *ogen.Spec {
 	return ogen.NewSpec().AddPathItem(path, ogen.NewPathItem().
 		SetGet(
 			ogen.NewOperation().

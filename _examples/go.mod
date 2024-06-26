@@ -6,6 +6,7 @@ replace github.com/lrstanley/entrest => ../
 
 require (
 	entgo.io/ent v0.13.1
+	github.com/go-playground/form/v4 v4.2.1
 	github.com/lrstanley/entrest v0.0.0-20240616170051-f9922b538828
 	modernc.org/sqlite v1.30.1
 )
@@ -22,6 +23,7 @@ require (
 	github.com/go-faster/jx v1.1.0 // indirect
 	github.com/go-faster/yaml v0.4.6 // indirect
 	github.com/go-openapi/inflect v0.21.0 // indirect
+	github.com/go-playground/assert/v2 v2.2.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect

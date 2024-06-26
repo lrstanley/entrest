@@ -12,9 +12,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"net/http"
 
 	"entgo.io/ent/dialect/sql/schema"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent"
+	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/rest"
 	_ "github.com/lrstanley/entrest/_examples/kitchensink/database/ent/runtime" // Required by ent.
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/user"
 	"modernc.org/sqlite"
@@ -49,7 +51,7 @@ func main() {
 		SaveX(ctx)
 
 	oreo := db.Pet.Create().
-		SetName("Orea").
+		SetName("Oreo").
 		AddFollowedBy(john).
 		SaveX(ctx)
 
@@ -71,4 +73,9 @@ func main() {
 	printJSON(john)
 	printJSON(oreo)
 	printJSON(riley)
+
+	mux := http.NewServeMux()
+	mux.Handle("/", rest.NewServer(db, nil).Handler())
+
+	http.ListenAndServe(":8080", mux)
 }

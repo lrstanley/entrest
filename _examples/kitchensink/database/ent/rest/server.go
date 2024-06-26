@@ -4,24 +4,35 @@ package rest
 
 import (
 	_ "embed"
+	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"net/http"
+	"strconv"
+	"strings"
+	"time"
 
+	"github.com/go-playground/form/v4"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent"
+	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/category"
+	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/friendship"
+	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/pet"
+	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/privacy"
+	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/settings"
+	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/user"
 )
 
 //go:embed openapi.json
 var OpenAPI []byte // OpenAPI contains the JSON schema of the API.
 
-// UseEntContext is an http middleware that injects the provided ent.Client into the
-// request context.
-func UseEntContext(client *ent.Client) func(http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
-		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			next.ServeHTTP(w, r.WithContext(ent.NewContext(r.Context(), client)))
-		})
-	}
+// ErrorResponse is the response structure for errors.
+type ErrorResponse struct {
+	Error     string `json:"error"`                // The underlying error, which may be masked when debugging is disabled.
+	Type      string `json:"type"`                 // A summary of the error code based off the HTTP status code or application error code.
+	Code      int    `json:"code"`                 // The HTTP status code or other internal application error code.
+	RequestID string `json:"request_id,omitempty"` // The unique request ID for this error.
+	Timestamp string `json:"timestamp,omitempty"`  // The timestamp of the error, in RFC3339 format.
 }
 
 type ErrBadRequest struct {
@@ -40,4 +51,797 @@ func (e ErrBadRequest) Unwrap() error {
 func IsBadRequest(err error) bool {
 	var target *ErrBadRequest
 	return errors.As(err, &target)
+}
+
+var ErrNotFound = errors.New("endpoint not found")
+
+// IsNotFound returns true if the unwrapped/underlying error is of type ErrNotFound.
+func IsNotFound(err error) bool {
+	return errors.Is(err, ErrNotFound)
+}
+
+// JSON marshals 'v' to JSON, and setting the Content-Type as application/json.
+// Note that this does NOT auto-escape HTML. If 'v' cannot be marshalled to JSON,
+// this will panic.
+//
+// JSON also supports prettification when the origin request has a query parameter
+// of "pretty" set to true.
+func JSON(w http.ResponseWriter, r *http.Request, status int, v any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	enc := json.NewEncoder(w)
+
+	if pretty, _ := strconv.ParseBool(r.FormValue("pretty")); pretty {
+		enc.SetIndent("", "    ")
+	}
+
+	if err := enc.Encode(v); err != nil && err != io.EOF {
+		panic(fmt.Sprintf("failed to marshal response: %v", err))
+	}
+}
+
+var (
+	// DefaultDecoder is the default decoder used by Bind. You can either override
+	// this, or provide your own. Make sure it is set before Bind is called.
+	DefaultDecoder = form.NewDecoder()
+
+	// DefaultDecodeMaxMemory is the maximum amount of memory in bytes that will be
+	// used for decoding multipart/form-data requests.
+	DefaultDecodeMaxMemory int64 = 8 << 20
+)
+
+// Bind decodes the request body to the given struct. At this time the only supported
+// content-types are application/json, application/x-www-form-urlencoded, as well as
+// GET parameters.
+func Bind(r *http.Request, v any) error {
+	err := r.ParseForm()
+	if err != nil {
+		return &ErrBadRequest{Err: fmt.Errorf("parsing form parameters: %w", err)}
+	}
+
+	switch r.Method {
+	case http.MethodGet, http.MethodHead:
+		err = DefaultDecoder.Decode(v, r.Form)
+	case http.MethodPost, http.MethodPut, http.MethodPatch:
+		switch {
+		case strings.HasPrefix(r.Header.Get("Content-Type"), "application/json"):
+			dec := json.NewDecoder(r.Body)
+			defer r.Body.Close()
+			err = dec.Decode(v)
+		case strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data"):
+			err = r.ParseMultipartForm(DefaultDecodeMaxMemory)
+			if err == nil {
+				err = DefaultDecoder.Decode(v, r.MultipartForm.Value)
+			}
+		default:
+			err = DefaultDecoder.Decode(v, r.PostForm)
+		}
+	default:
+		return &ErrBadRequest{Err: fmt.Errorf("unsupported method %s", r.Method)}
+	}
+
+	if err != nil {
+		return &ErrBadRequest{Err: fmt.Errorf("error decoding %s request into required format (%T): %w", r.Method, v, err)}
+	}
+	return nil
+}
+
+type ServerConfig struct {
+	// MaskErrors if set to true, will mask the error message returned to the client,
+	// returning a generic error message based on the HTTP status code.
+	MaskErrors bool
+
+	// ErrorHandler is invoked when an error occurs. If not provided, the default
+	// error handling logic will be used. If you want to run logic on errors, but
+	// not actually handle the error yourself, you can still call [Server.DefaultErrorHandler]
+	// after your logic.
+	ErrorHandler func(w http.ResponseWriter, r *http.Request, err error)
+}
+
+type Server struct {
+	db     *ent.Client
+	config *ServerConfig
+}
+
+func NewServer(db *ent.Client, config *ServerConfig) *Server {
+	if config == nil {
+		config = &ServerConfig{}
+	}
+	return &Server{
+		db:     db,
+		config: config,
+	}
+}
+
+// DefaultErrorHandler is the default error handler for the Server.
+func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
+	ts := time.Now().UTC().Format(time.RFC3339)
+
+	resp := ErrorResponse{
+		Error:     err.Error(),
+		Timestamp: ts,
+	}
+
+	var numErr *strconv.NumError
+
+	switch {
+	case IsNotFound(err):
+		resp.Code = http.StatusNotFound
+	case IsBadRequest(err):
+		resp.Code = http.StatusBadRequest
+	case errors.Is(err, privacy.Deny):
+		resp.Code = http.StatusForbidden
+	case ent.IsNotFound(err):
+		// TODO: if LIST operation, give a different type.
+		resp.Code = http.StatusNotFound
+	case ent.IsConstraintError(err), ent.IsNotSingular(err):
+		resp.Code = http.StatusConflict
+	case ent.IsValidationError(err):
+		resp.Code = http.StatusBadRequest
+	// Check if strconv.Atoi's NumError.
+	case errors.As(err, &numErr):
+		resp.Code = http.StatusBadRequest
+		resp.Error = fmt.Sprintf("invalid ID provided: %v", err)
+	default:
+		resp.Code = http.StatusInternalServerError
+	}
+
+	if resp.Type == "" {
+		resp.Type = http.StatusText(resp.Code)
+	}
+
+	if s.config.MaskErrors {
+		resp.Error = http.StatusText(resp.Code)
+	}
+
+	JSON(w, r, resp.Code, resp)
+}
+
+func (s *Server) error(w http.ResponseWriter, r *http.Request, err error) bool {
+	if err == nil {
+		return false
+	}
+	if s.config.ErrorHandler != nil {
+		s.config.ErrorHandler(w, r, err)
+		return true
+	}
+	s.DefaultErrorHandler(w, r, err)
+	return true
+}
+
+func (s *Server) Handler() http.Handler {
+	mux := http.NewServeMux()
+	mux.HandleFunc("GET /categories", s.ListCategory)
+	mux.HandleFunc("GET /categories/{id}", s.ReadCategoryByID)
+	mux.HandleFunc("GET /categories/{id}/pets", s.EdgeListCategoryPetsByID)
+	mux.HandleFunc("POST /categories", s.CreateCategory)
+	mux.HandleFunc("PATCH /categories/{id}", s.UpdateCategoryByID)
+	mux.HandleFunc("DELETE /categories/{id}", s.DeleteCategoryByID)
+	mux.HandleFunc("GET /follows", s.ListFollow)
+	mux.HandleFunc("POST /follows", s.CreateFollow)
+	mux.HandleFunc("GET /friendships", s.ListFriendship)
+	mux.HandleFunc("GET /friendships/{id}", s.ReadFriendshipByID)
+	mux.HandleFunc("GET /friendships/{id}/user", s.EdgeReadFriendshipUserByID)
+	mux.HandleFunc("GET /friendships/{id}/friend", s.EdgeReadFriendshipFriendByID)
+	mux.HandleFunc("POST /friendships", s.CreateFriendship)
+	mux.HandleFunc("PATCH /friendships/{id}", s.UpdateFriendshipByID)
+	mux.HandleFunc("DELETE /friendships/{id}", s.DeleteFriendshipByID)
+	mux.HandleFunc("GET /pets", s.ListPet)
+	mux.HandleFunc("GET /pets/{id}", s.ReadPetByID)
+	mux.HandleFunc("GET /pets/{id}/categories", s.EdgeListPetCategoriesByID)
+	mux.HandleFunc("GET /pets/{id}/owner", s.EdgeReadPetOwnerByID)
+	mux.HandleFunc("GET /pets/{id}/friends", s.EdgeListPetFriendsByID)
+	mux.HandleFunc("GET /pets/{id}/followed-by", s.EdgeListPetFollowedByByID)
+	mux.HandleFunc("POST /pets", s.CreatePet)
+	mux.HandleFunc("PATCH /pets/{id}", s.UpdatePetByID)
+	mux.HandleFunc("DELETE /pets/{id}", s.DeletePetByID)
+	mux.HandleFunc("GET /settings", s.ListSetting)
+	mux.HandleFunc("GET /settings/{id}", s.ReadSettingByID)
+	mux.HandleFunc("GET /settings/{id}/admins", s.EdgeListSettingAdminsByID)
+	mux.HandleFunc("PATCH /settings/{id}", s.UpdateSettingByID)
+	mux.HandleFunc("GET /users", s.ListUser)
+	mux.HandleFunc("GET /users/{id}", s.ReadUserByID)
+	mux.HandleFunc("GET /users/{id}/pets", s.EdgeListUserPetsByID)
+	mux.HandleFunc("GET /users/{id}/followed-pets", s.EdgeListUserFollowedPetsByID)
+	mux.HandleFunc("GET /users/{id}/friends", s.EdgeListUserFriendsByID)
+	mux.HandleFunc("GET /users/{id}/friendships", s.EdgeListUserFriendshipsByID)
+	mux.HandleFunc("POST /users", s.CreateUser)
+	mux.HandleFunc("PATCH /users/{id}", s.UpdateUserByID)
+	mux.HandleFunc("DELETE /users/{id}", s.DeleteUserByID)
+	mux.HandleFunc("GET /openapi.json", s.Spec)
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		_ = s.error(w, r, ErrNotFound)
+	})
+	return mux
+}
+func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(OpenAPI)
+}
+
+// ListCategory maps to "GET /categories".
+func (s *Server) ListCategory(w http.ResponseWriter, r *http.Request) {
+	data := &ListCategoryParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Category.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// ReadCategoryByID maps to "GET /categories/{id}".
+func (s *Server) ReadCategoryByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := EagerLoadCategory(s.db.Category.Query().Where(category.ID(id))).Only(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeListCategoryPetsByID maps to "GET /categories/{id}/pets".
+func (s *Server) EdgeListCategoryPetsByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &ListPetParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	entity, err := s.db.Category.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := data.Exec(r.Context(), entity.QueryPets())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// CreateCategory maps to "POST /categories".
+func (s *Server) CreateCategory(w http.ResponseWriter, r *http.Request) {
+	data := &CreateCategoryParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Category.Create(), s.db.Category.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// UpdateCategoryByID maps to "PATCH /categories/{id}".
+func (s *Server) UpdateCategoryByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &UpdateCategoryParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Category.UpdateOneID(id), s.db.Category.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// DeleteCategoryByID maps to "DELETE /categories/{id}".
+func (s *Server) DeleteCategoryByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	err = s.db.Category.DeleteOneID(id).Exec(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// ListFollow maps to "GET /follows".
+func (s *Server) ListFollow(w http.ResponseWriter, r *http.Request) {
+	data := &ListFollowParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Follows.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// CreateFollow maps to "POST /follows".
+func (s *Server) CreateFollow(w http.ResponseWriter, r *http.Request) {
+	data := &CreateFollowParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Follows.Create(), s.db.Follows.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// ListFriendship maps to "GET /friendships".
+func (s *Server) ListFriendship(w http.ResponseWriter, r *http.Request) {
+	data := &ListFriendshipParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Friendship.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// ReadFriendshipByID maps to "GET /friendships/{id}".
+func (s *Server) ReadFriendshipByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := EagerLoadFriendship(s.db.Friendship.Query().Where(friendship.ID(id))).Only(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeReadFriendshipUserByID maps to "GET /friendships/{id}/user".
+func (s *Server) EdgeReadFriendshipUserByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	entity, err := s.db.Friendship.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := EagerLoadUser(entity.QueryUser()).Only(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeReadFriendshipFriendByID maps to "GET /friendships/{id}/friend".
+func (s *Server) EdgeReadFriendshipFriendByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	entity, err := s.db.Friendship.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := EagerLoadUser(entity.QueryFriend()).Only(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// CreateFriendship maps to "POST /friendships".
+func (s *Server) CreateFriendship(w http.ResponseWriter, r *http.Request) {
+	data := &CreateFriendshipParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Friendship.Create(), s.db.Friendship.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// UpdateFriendshipByID maps to "PATCH /friendships/{id}".
+func (s *Server) UpdateFriendshipByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &UpdateFriendshipParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Friendship.UpdateOneID(id), s.db.Friendship.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// DeleteFriendshipByID maps to "DELETE /friendships/{id}".
+func (s *Server) DeleteFriendshipByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	err = s.db.Friendship.DeleteOneID(id).Exec(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// ListPet maps to "GET /pets".
+func (s *Server) ListPet(w http.ResponseWriter, r *http.Request) {
+	data := &ListPetParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Pet.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// ReadPetByID maps to "GET /pets/{id}".
+func (s *Server) ReadPetByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := EagerLoadPet(s.db.Pet.Query().Where(pet.ID(id))).Only(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeListPetCategoriesByID maps to "GET /pets/{id}/categories".
+func (s *Server) EdgeListPetCategoriesByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &ListCategoryParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	entity, err := s.db.Pet.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := data.Exec(r.Context(), entity.QueryCategories())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeReadPetOwnerByID maps to "GET /pets/{id}/owner".
+func (s *Server) EdgeReadPetOwnerByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	entity, err := s.db.Pet.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := EagerLoadUser(entity.QueryOwner()).Only(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeListPetFriendsByID maps to "GET /pets/{id}/friends".
+func (s *Server) EdgeListPetFriendsByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &ListPetParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	entity, err := s.db.Pet.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := data.Exec(r.Context(), entity.QueryFriends())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeListPetFollowedByByID maps to "GET /pets/{id}/followed-by".
+func (s *Server) EdgeListPetFollowedByByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &ListUserParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	entity, err := s.db.Pet.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := data.Exec(r.Context(), entity.QueryFollowedBy())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// CreatePet maps to "POST /pets".
+func (s *Server) CreatePet(w http.ResponseWriter, r *http.Request) {
+	data := &CreatePetParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Pet.Create(), s.db.Pet.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// UpdatePetByID maps to "PATCH /pets/{id}".
+func (s *Server) UpdatePetByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &UpdatePetParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Pet.UpdateOneID(id), s.db.Pet.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// DeletePetByID maps to "DELETE /pets/{id}".
+func (s *Server) DeletePetByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	err = s.db.Pet.DeleteOneID(id).Exec(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
+}
+
+// ListSetting maps to "GET /settings".
+func (s *Server) ListSetting(w http.ResponseWriter, r *http.Request) {
+	data := &ListSettingParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Settings.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// ReadSettingByID maps to "GET /settings/{id}".
+func (s *Server) ReadSettingByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := EagerLoadSetting(s.db.Settings.Query().Where(settings.ID(id))).Only(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeListSettingAdminsByID maps to "GET /settings/{id}/admins".
+func (s *Server) EdgeListSettingAdminsByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &ListUserParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	entity, err := s.db.Settings.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := data.Exec(r.Context(), entity.QueryAdmins())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// UpdateSettingByID maps to "PATCH /settings/{id}".
+func (s *Server) UpdateSettingByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &UpdateSettingParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.Settings.UpdateOneID(id), s.db.Settings.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// ListUser maps to "GET /users".
+func (s *Server) ListUser(w http.ResponseWriter, r *http.Request) {
+	data := &ListUserParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.User.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// ReadUserByID maps to "GET /users/{id}".
+func (s *Server) ReadUserByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := EagerLoadUser(s.db.User.Query().Where(user.ID(id))).Only(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeListUserPetsByID maps to "GET /users/{id}/pets".
+func (s *Server) EdgeListUserPetsByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &ListPetParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	entity, err := s.db.User.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := data.Exec(r.Context(), entity.QueryPets())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeListUserFollowedPetsByID maps to "GET /users/{id}/followed-pets".
+func (s *Server) EdgeListUserFollowedPetsByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &ListPetParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	entity, err := s.db.User.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := data.Exec(r.Context(), entity.QueryFollowedPets())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeListUserFriendsByID maps to "GET /users/{id}/friends".
+func (s *Server) EdgeListUserFriendsByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &ListUserParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	entity, err := s.db.User.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := data.Exec(r.Context(), entity.QueryFriends())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// EdgeListUserFriendshipsByID maps to "GET /users/{id}/friendships".
+func (s *Server) EdgeListUserFriendshipsByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &ListFriendshipParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	entity, err := s.db.User.Get(r.Context(), id)
+	if s.error(w, r, err) {
+		return
+	}
+	results, err := data.Exec(r.Context(), entity.QueryFriendships())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// CreateUser maps to "POST /users".
+func (s *Server) CreateUser(w http.ResponseWriter, r *http.Request) {
+	data := &CreateUserParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.User.Create(), s.db.User.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// UpdateUserByID maps to "PATCH /users/{id}".
+func (s *Server) UpdateUserByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	data := &UpdateUserParams{}
+	if s.error(w, r, Bind(r, data)) {
+		return
+	}
+	results, err := data.Exec(r.Context(), s.db.User.UpdateOneID(id), s.db.User.Query())
+	if s.error(w, r, err) {
+		return
+	}
+	JSON(w, r, http.StatusOK, results)
+}
+
+// DeleteUserByID maps to "DELETE /users/{id}".
+func (s *Server) DeleteUserByID(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(r.PathValue("id"))
+	if s.error(w, r, err) {
+		return
+	}
+	err = s.db.User.DeleteOneID(id).Exec(r.Context())
+	if s.error(w, r, err) {
+		return
+	}
+	w.WriteHeader(http.StatusNoContent)
 }

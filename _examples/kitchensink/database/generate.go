@@ -19,7 +19,7 @@ func main() {
 	ex, err := entrest.NewExtension(&entrest.Config{
 		DefaultEagerLoad:  false,
 		EnableSpecHandler: true,
-		Handler:           entrest.HandlerChi,
+		Handler:           entrest.HandlerGeneric,
 		GlobalRequestHeaders: map[string]*ogen.Header{
 			"X-Request-Id": {
 				Description: "A unique identifier for the request.",
@@ -52,10 +52,12 @@ func main() {
 	err = entc.Generate(
 		"./schema",
 		&gen.Config{
-			Target:   "ent",
-			Schema:   "github.com/lrstanley/entrest/_examples/kitchensink/database/schema",
-			Package:  "github.com/lrstanley/entrest/_examples/kitchensink/database/ent",
-			Features: []gen.Feature{},
+			Target:  "ent",
+			Schema:  "github.com/lrstanley/entrest/_examples/kitchensink/database/schema",
+			Package: "github.com/lrstanley/entrest/_examples/kitchensink/database/ent",
+			Features: []gen.Feature{
+				gen.FeaturePrivacy,
+			},
 		},
 		entc.Extensions(ex),
 	)

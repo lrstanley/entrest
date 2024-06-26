@@ -1384,6 +1384,63 @@
                 }
             ]
         },
+        "/openapi.json": {
+            "get": {
+                "tags": [
+                    "Meta"
+                ],
+                "summary": "Get OpenAPI spec",
+                "description": "Get the OpenAPI specification for this service.",
+                "operationId": "getOpenAPI",
+                "responses": {
+                    "200": {
+                        "description": "OpenAPI specification was found",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "additionalProperties": true
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/X-Request-Id"
+                }
+            ]
+        },
         "/pets": {
             "summary": "Query all Pet entities",
             "description": "Query all Pet entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",

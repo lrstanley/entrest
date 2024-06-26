@@ -21,5 +21,5 @@ dlv-kitchensink:
 		--allow-non-terminal-interactive \
 		generate.go
 
-test: prepare
+test: prepare kitchensink
 	go test -v -race -timeout 3m -count 2 ./...
