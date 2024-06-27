@@ -1,0 +1,19 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/not-found" -}}
+{{- if eq $.Annotations.RestConfig.Handler "chi" }}
+    r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+        handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
+    })
+    r.MethodNotAllowed(func(w http.ResponseWriter, r *http.Request) {
+        handleResponse[struct{}](s, w, r, "", nil, ErrMethodNotAllowed)
+    })
+{{- else }}
+    mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+        handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
+    })
+{{- end }}
+{{- end }}{{/* end template */}}
