@@ -1,0 +1,26 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/json" -}}
+    // JSON marshals 'v' to JSON, and setting the Content-Type as application/json.
+    // Note that this does NOT auto-escape HTML. If 'v' cannot be marshalled to JSON,
+    // this will panic.
+    //
+    // JSON also supports prettification when the origin request has a query parameter
+    // of "pretty" set to true.
+    func JSON(w http.ResponseWriter, r *http.Request, status int, v any) {
+        w.Header().Set("Content-Type", "application/json")
+        w.WriteHeader(status)
+        enc := json.NewEncoder(w)
+
+        if pretty, _ := strconv.ParseBool(r.FormValue("pretty")); pretty {
+            enc.SetIndent("", "    ")
+        }
+
+        if err := enc.Encode(v); err != nil && err != io.EOF {
+            panic(fmt.Sprintf("failed to marshal response: %v", err))
+        }
+    }
+{{- end }}{{/* end template */}}

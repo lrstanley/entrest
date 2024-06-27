@@ -1,0 +1,64 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/req" -}}
+    // Req simplifies making an HTTP handler that returns a single result, and an error.
+    // The result, if not nil, must be JSON-marshalable. If result is nil, [http.StatusNoContent]
+    // will be returned.
+    func Req[Resp any](s *Server, op Operation, fn func(*http.Request) (*Resp, error)) http.HandlerFunc {
+        return func(w http.ResponseWriter, r *http.Request) {
+            results, err := fn(r)
+            handleResponse(s, w, r, op, results, err)
+        }
+    }
+
+    // ReqID is similar to Req, but also processes an "id" path parameter and provides it to the
+    // handler function.
+    func ReqID[Resp any](s *Server, op Operation, fn func(*http.Request, int) (*Resp, error)) http.HandlerFunc {
+        return func(w http.ResponseWriter, r *http.Request) {
+            id, err := strconv.Atoi(r.PathValue("id"))
+            if err != nil {
+                handleResponse[Resp](s, w, r, op, nil, err)
+                return
+            }
+            results, err := fn(r, id)
+            handleResponse(s, w, r, op, results, err)
+        }
+    }
+
+    // ReqParam is similar to Req, but also processes a request body/query params and provides it
+    // to the handler function.
+    func ReqParam[Params, Resp any](s *Server, op Operation, fn func(*http.Request, *Params) (*Resp, error)) http.HandlerFunc {
+        return func(w http.ResponseWriter, r *http.Request) {
+            params := new(Params)
+            if err := Bind(r, params); err != nil {
+                handleResponse[Resp](s, w, r, op, nil, err)
+                return
+            }
+            results, err := fn(r, params)
+            handleResponse(s, w, r, op, results, err)
+        }
+    }
+
+    // ReqIDParam is similar to ReqParam, but also processes an "id" path parameter and request
+    // body/query params, and provides it to the handler function.
+    func ReqIDParam[Params, Resp any](s *Server, op Operation, fn func(*http.Request, int, *Params) (*Resp, error)) http.HandlerFunc {
+        return func(w http.ResponseWriter, r *http.Request) {
+            id, err := strconv.Atoi(r.PathValue("id"))
+            if err != nil {
+                handleResponse[Resp](s, w, r, op, nil, err)
+                return
+            }
+            params := new(Params)
+            err = Bind(r, params)
+            if err != nil {
+                handleResponse[Resp](s, w, r, op, nil, err)
+                return
+            }
+            results, err := fn(r, id, params)
+            handleResponse(s, w, r, op, results, err)
+        }
+    }
+{{- end }}{{/* end template */}}

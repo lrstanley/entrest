@@ -17,13 +17,11 @@ import (
     "github.com/go-playground/form/v4"
 )
 
-{{- if $.Annotations.RestConfig.EnableSpecHandler }}
-//go:embed openapi.json
-var OpenAPI []byte // OpenAPI contains the JSON schema of the API.
-{{- end }}
-
+{{ template "helper/rest/server/constants" . }}
 {{ template "helper/rest/server/errors" . }}
-{{ template "helper/rest/server/helpers" . }}
+{{ template "helper/rest/server/json" . }}
+{{ template "helper/rest/server/bind" . }}
+{{ template "helper/rest/server/req" . }}
 
 type ServerConfig struct {
     // MaskErrors if set to true, will mask the error message returned to the client,
@@ -34,7 +32,7 @@ type ServerConfig struct {
     // error handling logic will be used. If you want to run logic on errors, but
     // not actually handle the error yourself, you can still call [Server.DefaultErrorHandler]
     // after your logic.
-    ErrorHandler func(w http.ResponseWriter, r *http.Request, err error)
+    ErrorHandler func(w http.ResponseWriter, r *http.Request, op Operation, err error)
 }
 
 type Server struct {
@@ -42,6 +40,9 @@ type Server struct {
     config *ServerConfig
 }
 
+// NewServer returns a new auto-generated server implementation for your ent schema.
+// [Server.Handler] returns a ready-to-use http.Handler that mounts all of the
+// necessary endpoints.
 func NewServer(db *ent.Client, config *ServerConfig) *Server {
     if config == nil {
         config = &ServerConfig{}
@@ -53,7 +54,7 @@ func NewServer(db *ent.Client, config *ServerConfig) *Server {
 }
 
 // DefaultErrorHandler is the default error handler for the Server.
-func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, err error) {
+func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op Operation, err error) {
     ts := time.Now().UTC().Format(time.RFC3339)
 
     resp := ErrorResponse{
@@ -64,7 +65,7 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, err
     var numErr *strconv.NumError
 
     switch {
-    case IsNotFound(err):
+    case IsEndpointNotFound(err):
         resp.Code = http.StatusNotFound
     case IsBadRequest(err):
         resp.Code = http.StatusBadRequest
@@ -73,13 +74,14 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, err
             resp.Code = http.StatusForbidden
     {{- end }}
     case ent.IsNotFound(err):
-        // TODO: if LIST operation, give a different type. otherwise, make the error more pretty?
+        if op == OperationList {
+            resp.Type = "No results found matching the given query"
+        }
         resp.Code = http.StatusNotFound
     case ent.IsConstraintError(err), ent.IsNotSingular(err):
         resp.Code = http.StatusConflict
     case ent.IsValidationError(err):
         resp.Code = http.StatusBadRequest
-    // Check if strconv.Atoi's NumError.
     case errors.As(err, &numErr):
         resp.Code = http.StatusBadRequest
         resp.Error = fmt.Sprintf("invalid ID provided: %v", err)
@@ -90,27 +92,32 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, err
     if resp.Type == "" {
         resp.Type = http.StatusText(resp.Code)
     }
-
     if s.config.MaskErrors {
         resp.Error = http.StatusText(resp.Code)
     }
-
     JSON(w, r, resp.Code, resp)
 }
 
-func (s *Server) error(w http.ResponseWriter, r *http.Request, err error) bool {
-    if err == nil {
-        return false
+func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, op Operation, resp *Resp, err error) {
+    if err != nil {
+        if s.config.ErrorHandler != nil {
+            s.config.ErrorHandler(w, r, op, err)
+            return
+        }
+        s.DefaultErrorHandler(w, r, op, err)
+        return
     }
-    if s.config.ErrorHandler != nil {
-        s.config.ErrorHandler(w, r, err)
-        return true
+    if resp != nil {
+        if r.Method == http.MethodPost {
+            JSON(w, r, http.StatusCreated, resp)
+            return
+        }
+        JSON(w, r, http.StatusOK, resp)
+        return
     }
-    s.DefaultErrorHandler(w, r, err)
-    return true
+    w.WriteHeader(http.StatusNoContent)
 }
 
-{{/* TODO: we do an ID matcher like this so we don't have to explicitly validate the ID in each child handler */}}
 {{- $id := "" }}
 {{- if eq $.Annotations.RestConfig.Handler "chi" }}
     {{- $id = "{id:^[0-9]{1,50}$}" }}
@@ -118,49 +125,50 @@ func (s *Server) error(w http.ResponseWriter, r *http.Request, err error) bool {
     {{- $id = "{id}" }}
 {{- end }}
 
+// Handler returns a ready-to-use http.Handler that mounts all of the necessary endpoints.
 func (s *Server) Handler() http.Handler {
     mux := http.NewServeMux()
 
     {{- range $t := $.Nodes }}
-        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        {{- if (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig) }}{{ continue }}{{ end }}
 
         {{- /* list nodes */}}
-        {{- if ($t|getAnnotation).HasOperation $.Annotations.RestConfig "list" }}
-            mux.HandleFunc("GET /{{ $t.Name|zkebab|zplural }}", s.List{{ $t.Name|zsingular }})
+        {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "list" }}
+            mux.HandleFunc("GET /{{ $t.Name|zkebab|zplural }}", ReqParam(s, OperationList, s.List{{ $t.Name|zsingular }}))
         {{- end }}
 
         {{- /* get single node */}}
-        {{- if and $t.ID (($t|getAnnotation).HasOperation $.Annotations.RestConfig "read") }}
-            mux.HandleFunc("GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}", s.Read{{ $t.Name|zsingular }}ByID)
+        {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
+            mux.HandleFunc("GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}", ReqID(s, OperationRead, s.Read{{ $t.Name|zsingular }}ByID))
         {{- end }}
 
         {{- range $e := $t.Edges }}
             {{- if or $e.Annotations.Rest.ReadOnly (not $e.Type.ID) (not $t.ID) }}{{ continue }}{{ end }}
 
             {{- /* get nodes edge (unique) */}}
-            {{- if and $e.Unique (($t|getAnnotation).HasOperation $.Annotations.RestConfig "read") }}
-                mux.HandleFunc("GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}/{{ $e.StructField|zkebab }}", s.EdgeRead{{ $t.Name|zsingular }}{{ $e.StructField }}ByID)
+            {{- if and $e.Unique (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
+                mux.HandleFunc("GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}/{{ $e.StructField|zkebab }}", ReqID(s, OperationRead, s.EdgeRead{{ $t.Name|zsingular }}{{ $e.StructField }}ByID))
             {{- end }}
 
             {{- /* list nodes edge (non-unique) */}}
-            {{- if and (not $e.Unique) (($t|getAnnotation).HasOperation $.Annotations.RestConfig "list") }}
-                mux.HandleFunc("GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}/{{ $e.StructField|zkebab }}", s.EdgeList{{ $t.Name|zsingular }}{{ $e.StructField }}ByID)
+            {{- if and (not $e.Unique) (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "list") }}
+                mux.HandleFunc("GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}/{{ $e.StructField|zkebab }}", ReqIDParam(s, OperationList, s.EdgeList{{ $t.Name|zsingular }}{{ $e.StructField }}ByID))
             {{- end }}
         {{- end }}
 
         {{- /* create nodes */}}
-        {{- if ($t|getAnnotation).HasOperation $.Annotations.RestConfig "create" }}
-            mux.HandleFunc("POST /{{ $t.Name|zkebab|zplural }}", s.Create{{ $t.Name|zsingular }})
+        {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "create" }}
+            mux.HandleFunc("POST /{{ $t.Name|zkebab|zplural }}", ReqParam(s, OperationCreate, s.Create{{ $t.Name|zsingular }}))
         {{- end }}
 
         {{- /* update nodes */}}
-        {{- if and $t.ID (($t|getAnnotation).HasOperation $.Annotations.RestConfig "update") }}
-            mux.HandleFunc("PATCH /{{ $t.Name|zkebab|zplural }}/{{ $id }}", s.Update{{ $t.Name|zsingular }}ByID)
+        {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "update") }}
+            mux.HandleFunc("PATCH /{{ $t.Name|zkebab|zplural }}/{{ $id }}", ReqIDParam(s, OperationUpdate, s.Update{{ $t.Name|zsingular }}ByID))
         {{- end }}
 
         {{- /* delete nodes */}}
-        {{- if and $t.ID (($t|getAnnotation).HasOperation $.Annotations.RestConfig "delete") }}
-            mux.HandleFunc("DELETE /{{ $t.Name|zkebab|zplural }}/{{ $id }}", s.Delete{{ $t.Name|zsingular }}ByID)
+        {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "delete") }}
+            mux.HandleFunc("DELETE /{{ $t.Name|zkebab|zplural }}/{{ $id }}", ReqID(s, OperationDelete, s.Delete{{ $t.Name|zsingular }}ByID))
         {{- end }}
     {{- end }}
 
@@ -169,12 +177,13 @@ func (s *Server) Handler() http.Handler {
     {{- end }}
 
     mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-        _ = s.error(w, r, ErrNotFound)
+        handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
     })
     return mux
 }
 
-{{- if $.Annotations.RestConfig.EnableSpecHandler }}
+{{ if $.Annotations.RestConfig.EnableSpecHandler }}
+    // Spec returns the OpenAPI spec for the server implementation.
     func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
         w.Header().Set("Content-Type", "application/json")
         w.WriteHeader(http.StatusOK)
@@ -183,34 +192,21 @@ func (s *Server) Handler() http.Handler {
 {{- end }}
 
 {{- range $t := $.Nodes }}
-    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+    {{- if (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig) }}{{ continue }}{{ end }}
 
     {{- /* list nodes */}}
-    {{- if ($t|getAnnotation).HasOperation $.Annotations.RestConfig "list" }}
+    {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "list" }}
         // List{{ $t.Name|zsingular }} maps to "GET /{{ $t.Name|zkebab|zplural }}".
-        func (s *Server) List{{ $t.Name|zsingular }}(w http.ResponseWriter, r *http.Request) {
-            data := &List{{ $t.Name|zsingular }}Params{}
-            if s.error(w, r, Bind(r, data)) {
-                return
-            }
-            results, err := data.Exec(r.Context(), s.db.{{ $t.Name }}.Query())
-            if s.error(w, r, err) {
-                return
-            }
-            JSON(w, r, http.StatusOK, results)
+        func (s *Server) List{{ $t.Name|zsingular }}(r *http.Request, params *List{{ $t.Name|zsingular }}Params) (*PagedResponse[ent.{{ $t.Name }}], error) {
+            return params.Exec(r.Context(), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
 
     {{- /* get single node */}}
-    {{- if and $t.ID (($t|getAnnotation).HasOperation $.Annotations.RestConfig "read") }}
+    {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
         // Read{{ $t.Name|zsingular }}ByID maps to "GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}".
-        func (s *Server) Read{{ $t.Name|zsingular }}ByID(w http.ResponseWriter, r *http.Request) {
-            {{ template "helper/rest/server/get_id" . }}
-            results, err := EagerLoad{{ $t.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID(id))).Only(r.Context())
-            if s.error(w, r, err) {
-                return
-            }
-            JSON(w, r, http.StatusOK, results)
+        func (s *Server) Read{{ $t.Name|zsingular }}ByID(r *http.Request, id int) (*ent.{{ $t.Name }}, error) {
+            return EagerLoad{{ $t.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID(id))).Only(r.Context())
         }
     {{- end }}
 
@@ -218,88 +214,52 @@ func (s *Server) Handler() http.Handler {
         {{- if or $e.Annotations.Rest.ReadOnly (not $e.Type.ID) (not $t.ID) }}{{ continue }}{{ end }}
 
         {{- /* get nodes edge (unique) */}}
-        {{- if and $e.Unique (($t|getAnnotation).HasOperation $.Annotations.RestConfig "read") }}
+        {{- if and $e.Unique (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
             // EdgeRead{{ $t.Name|zsingular }}{{ $e.StructField }}ByID maps to "GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}/{{ $e.StructField|zkebab }}".
-            func (s *Server) EdgeRead{{ $t.Name|zsingular }}{{ $e.StructField }}ByID(w http.ResponseWriter, r *http.Request) {
-                {{ template "helper/rest/server/get_id" . }}
+            func (s *Server) EdgeRead{{ $t.Name|zsingular }}{{ $e.StructField }}ByID(r *http.Request, id int) (*ent.{{ $e.Type.Name }}, error) {
                 entity, err := s.db.{{ $t.Name }}.Get(r.Context(), id)
-                if s.error(w, r, err) {
-                    return
+                if err != nil {
+                    return nil, err
                 }
-                results, err := EagerLoad{{ $e.Type.Name|zsingular }}(entity.Query{{ $e.StructField }}()).Only(r.Context())
-                if s.error(w, r, err) {
-                    return
-                }
-                JSON(w, r, http.StatusOK, results)
+                return EagerLoad{{ $e.Type.Name|zsingular }}(entity.Query{{ $e.StructField }}()).Only(r.Context())
             }
         {{- end }}
 
         {{- /* list nodes edge (non-unique) */}}
-        {{- if and (not $e.Unique) (($t|getAnnotation).HasOperation $.Annotations.RestConfig "list") }}
+        {{- if and (not $e.Unique) (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "list") }}
             // EdgeList{{ $t.Name|zsingular }}{{ $e.StructField }}ByID maps to "GET /{{ $t.Name|zkebab|zplural }}/{{ $id }}/{{ $e.StructField|zkebab }}".
-            func (s *Server) EdgeList{{ $t.Name|zsingular }}{{ $e.StructField }}ByID(w http.ResponseWriter, r *http.Request) {
-                {{ template "helper/rest/server/get_id" . }}
-                data := &List{{ $e.Type.Name|zsingular }}Params{}
-                if s.error(w, r, Bind(r, data)) {
-                    return
-                }
+            func (s *Server) EdgeList{{ $t.Name|zsingular }}{{ $e.StructField }}ByID(r *http.Request, id int, params *List{{ $e.Type.Name|zsingular }}Params) (*PagedResponse[ent.{{ $e.Type.Name }}], error) {
                 {{- /* TODO: figure out how to do this without first querying the original type. */}}
                 entity, err := s.db.{{ $t.Name }}.Get(r.Context(), id)
-                if s.error(w, r, err) {
-                    return
+                if err != nil {
+                    return nil, err
                 }
-                results, err := data.Exec(r.Context(), entity.Query{{ $e.StructField }}())
-                if s.error(w, r, err) {
-                    return
-                }
-                JSON(w, r, http.StatusOK, results)
+                return params.Exec(r.Context(), entity.Query{{ $e.StructField }}())
             }
         {{- end }}
     {{- end }}
 
     {{- /* create nodes */}}
-    {{- if ($t|getAnnotation).HasOperation $.Annotations.RestConfig "create" }}
+    {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "create" }}
         // Create{{ $t.Name|zsingular }} maps to "POST /{{ $t.Name|zkebab|zplural }}".
-        func (s *Server) Create{{ $t.Name|zsingular }}(w http.ResponseWriter, r *http.Request) {
-            data := &Create{{ $t.Name|zsingular }}Params{}
-            if s.error(w, r, Bind(r, data)) {
-                return
-            }
-            results, err := data.Exec(r.Context(), s.db.{{ $t.Name }}.Create(), s.db.{{ $t.Name }}.Query())
-            if s.error(w, r, err) {
-                return
-            }
-            JSON(w, r, http.StatusOK, results)
+        func (s *Server) Create{{ $t.Name|zsingular }}(r *http.Request, params *Create{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
+            return params.Exec(r.Context(), s.db.{{ $t.Name }}.Create(), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
 
     {{- /* update nodes */}}
-    {{- if and $t.ID (($t|getAnnotation).HasOperation $.Annotations.RestConfig "update") }}
+    {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "update") }}
         // Update{{ $t.Name|zsingular }}ByID maps to "PATCH /{{ $t.Name|zkebab|zplural }}/{{ $id }}".
-        func (s *Server) Update{{ $t.Name|zsingular }}ByID(w http.ResponseWriter, r *http.Request) {
-            {{ template "helper/rest/server/get_id" . }}
-            data := &Update{{ $t.Name|zsingular }}Params{}
-            if s.error(w, r, Bind(r, data)) {
-                return
-            }
-            results, err := data.Exec(r.Context(), s.db.{{ $t.Name }}.UpdateOneID(id), s.db.{{ $t.Name }}.Query())
-            if s.error(w, r, err) {
-                return
-            }
-            JSON(w, r, http.StatusOK, results)
+        func (s *Server) Update{{ $t.Name|zsingular }}ByID(r *http.Request, id int, params *Update{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
+            return params.Exec(r.Context(), s.db.{{ $t.Name }}.UpdateOneID(id), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
 
     {{- /* delete nodes */}}
-    {{- if and $t.ID (($t|getAnnotation).HasOperation $.Annotations.RestConfig "delete") }}
+    {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "delete") }}
         // Delete{{ $t.Name|zsingular }}ByID maps to "DELETE /{{ $t.Name|zkebab|zplural }}/{{ $id }}".
-        func (s *Server) Delete{{ $t.Name|zsingular }}ByID(w http.ResponseWriter, r *http.Request) {
-            {{ template "helper/rest/server/get_id" . }}
-            err = s.db.{{ $t.Name }}.DeleteOneID(id).Exec(r.Context())
-            if s.error(w, r, err) {
-                return
-            }
-            w.WriteHeader(http.StatusNoContent)
+        func (s *Server) Delete{{ $t.Name|zsingular }}ByID(r *http.Request, id int) (*struct{}, error) {
+            return nil, s.db.{{ $t.Name }}.DeleteOneID(id).Exec(r.Context())
         }
     {{- end }}
 {{ end }}
