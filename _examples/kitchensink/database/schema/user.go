@@ -6,6 +6,7 @@ package schema
 
 import (
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -76,15 +77,22 @@ func (User) Edges() []ent.Edge {
 			Annotations(
 				entrest.WithEagerLoad(true),
 				entrest.WithFilter(entrest.FilterEdge),
+				entsql.OnDelete(entsql.SetNull),
 			),
 		edge.To("followed_pets", Pet.Type).
 			Through("following", Follows.Type).
 			Comment("Pets that the user is following.").
-			Annotations(entrest.WithFilter(entrest.FilterEdge)),
+			Annotations(
+				entrest.WithFilter(entrest.FilterEdge),
+				entsql.OnDelete(entsql.Cascade),
+			),
 		edge.To("friends", User.Type).
 			Through("friendships", Friendship.Type).
 			Comment("Friends of the user.").
-			Annotations(entrest.WithFilter(entrest.FilterEdge)),
+			Annotations(
+				entrest.WithFilter(entrest.FilterEdge),
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }
 

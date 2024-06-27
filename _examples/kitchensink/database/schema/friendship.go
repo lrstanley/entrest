@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 )
@@ -30,10 +31,16 @@ func (Friendship) Edges() []ent.Edge {
 		edge.To("user", User.Type).
 			Required().
 			Unique().
-			Field("user_id"),
+			Field("user_id").
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 		edge.To("friend", User.Type).
 			Required().
 			Unique().
-			Field("friend_id"),
+			Field("friend_id").
+			Annotations(
+				entsql.OnDelete(entsql.Cascade),
+			),
 	}
 }

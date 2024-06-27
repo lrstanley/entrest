@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"entgo.io/ent"
+	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
@@ -41,6 +42,7 @@ func (Follows) Edges() []ent.Edge {
 			Annotations(
 				entrest.WithEagerLoad(true),
 				entrest.WithFilter(entrest.FilterGroupEqualExact),
+				entsql.OnDelete(entsql.Cascade),
 			),
 		edge.To("pet", Pet.Type).
 			Unique().
@@ -50,6 +52,7 @@ func (Follows) Edges() []ent.Edge {
 			Annotations(
 				entrest.WithEagerLoad(true),
 				entrest.WithFilter(entrest.FilterGroupEqualExact),
+				entsql.OnDelete(entsql.Cascade),
 			),
 	}
 }

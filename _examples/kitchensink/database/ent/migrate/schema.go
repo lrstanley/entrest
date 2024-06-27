@@ -39,13 +39,13 @@ var (
 				Symbol:     "follows_users_user",
 				Columns:    []*schema.Column{FollowsColumns[1]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "follows_pets_pet",
 				Columns:    []*schema.Column{FollowsColumns[2]},
 				RefColumns: []*schema.Column{PetsColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 	}
@@ -66,13 +66,13 @@ var (
 				Symbol:     "friendships_users_user",
 				Columns:    []*schema.Column{FriendshipsColumns[2]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 			{
 				Symbol:     "friendships_users_friend",
 				Columns:    []*schema.Column{FriendshipsColumns[3]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
-				OnDelete:   schema.NoAction,
+				OnDelete:   schema.Cascade,
 			},
 		},
 		Indexes: []*schema.Index{
