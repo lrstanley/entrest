@@ -136,7 +136,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
     // Handler returns a ready-to-use http.Handler that mounts all of the necessary endpoints.
     func (s *Server) Handler() http.Handler {
 {{- end }}
-    {{- if eq $.Annotations.RestConfig.Handler "generic" }}
+    {{- if eq $.Annotations.RestConfig.Handler "stdlib" }}
         mux := http.NewServeMux()
     {{ end }}
 
@@ -229,7 +229,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
 
     {{ template "helper/rest/server/not-found" . }}
 
-    {{- if eq $.Annotations.RestConfig.Handler "generic" }}
+    {{- if eq $.Annotations.RestConfig.Handler "stdlib" }}
         return mux
     {{- end }}
 }

@@ -219,11 +219,11 @@ type HTTPHandler string
 const (
 	// HandlerNone disables all code generation for the HTTP server implementation.
 	HandlerNone HTTPHandler = ""
-	// HandlerGeneric uses a net/http servemux, along with the Go 1.22 advanced
+	// HandlerStdlib uses a net/http servemux, along with the Go 1.22 advanced
 	// path matching functionality to map methods and URL parameters (e.g. {id}).
 	// Technically, this can be used with many other stdlib-compatible routers,
 	// as long as they support [http.Request.PathValue] for path parameters.
-	HandlerGeneric HTTPHandler = "generic"
+	HandlerStdlib HTTPHandler = "stdlib"
 	// HandlerChi uses the chi router, mounting each endpoint individually using
 	// the provided router. Note that you must use at least chi v5.0.12 or newer,
 	// which supports populating the requests path values, and accessing them via
@@ -234,6 +234,6 @@ const (
 // AllSupportedHTTPHandlers is a list of all supported HTTP handlers.
 var AllSupportedHTTPHandlers = []HTTPHandler{
 	HandlerNone,
-	HandlerGeneric,
+	HandlerStdlib,
 	HandlerChi,
 }
