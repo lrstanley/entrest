@@ -217,6 +217,11 @@ type ServerConfig struct {
 	// not actually handle the error yourself, you can still call [Server.DefaultErrorHandler]
 	// after your logic.
 	ErrorHandler func(w http.ResponseWriter, r *http.Request, op Operation, err error)
+
+	// GetReqID returns the request ID for the given request. If not provided, the
+	// default implementation will use the X-Request-Id header, otherwise an empty
+	// string will be returned. If using go-chi, middleware.GetReqID will be used.
+	GetReqID func(r *http.Request) string
 }
 
 type Server struct {
@@ -278,6 +283,11 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op 
 	}
 	if s.config.MaskErrors {
 		resp.Error = http.StatusText(resp.Code)
+	}
+	if s.config.GetReqID != nil {
+		resp.RequestID = s.config.GetReqID(r)
+	} else {
+		resp.RequestID = r.Header.Get("X-Request-Id")
 	}
 	JSON(w, r, resp.Code, resp)
 }
