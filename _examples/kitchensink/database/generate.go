@@ -19,7 +19,7 @@ func main() {
 	ex, err := entrest.NewExtension(&entrest.Config{
 		DefaultEagerLoad:  false,
 		EnableSpecHandler: true,
-		Handler:           entrest.HandlerGeneric,
+		Handler:           entrest.HandlerStdlib,
 		GlobalRequestHeaders: map[string]*ogen.Header{
 			"X-Request-Id": {
 				Description: "A unique identifier for the request.",
