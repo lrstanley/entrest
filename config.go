@@ -117,10 +117,10 @@ type Config struct {
 	EnableDocsHandler bool
 	DocsHandlerConfig map[string]string
 
-	// EnableSpecHandler enables the generation of an OpenAPI spec handler (e.g.
+	// DisableSpecHandler disables the generation of an OpenAPI spec handler (e.g.
 	// /openapi.json). Disabling this will also disable embedding the spec into the
 	// binary/rest generated library.
-	EnableSpecHandler bool
+	DisableSpecHandler bool
 
 	// AllowClientIDs, when enabled, allows the built-in "id" field as part of a "Create"
 	// payload for entity creation, allowing the client to supply UUIDs as primary keys

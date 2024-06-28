@@ -162,7 +162,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 		}
 	}
 
-	if e.config.EnableSpecHandler {
+	if !e.config.DisableSpecHandler {
 		specs = append(specs, addOpenAPIEndpoint("/openapi.json"))
 	}
 

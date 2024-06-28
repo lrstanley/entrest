@@ -14,7 +14,7 @@ import (
     {{- range $t := $.Nodes }}
         "{{ $.Config.Package }}/{{ $t.Package }}"
     {{- end }}
-    {{- if $.Annotations.RestConfig.EnableSpecHandler }}
+    {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
         _ "embed"
     {{- end }}
     {{- if eq $.Annotations.RestConfig.Handler "chi" }}
@@ -230,13 +230,15 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
         {{- end }}
     {{- end }}
 
-    {{- if $.Annotations.RestConfig.EnableSpecHandler }}
+    {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
+        if !s.config.DisableSpecHandler {
         {{- template "helper/rest/server/endpoint" (dict
             "Handler" $.Annotations.RestConfig.Handler
             "Method" "GET"
             "Path" "/openapi.json"
             "Func" "s.Spec"
         ) }}
+        }
     {{- end }}
 
     {{ template "helper/rest/server/not-found" . }}
@@ -246,7 +248,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
     {{- end }}
 }
 
-{{ if $.Annotations.RestConfig.EnableSpecHandler }}
+{{ if not $.Annotations.RestConfig.DisableSpecHandler }}
     // Spec returns the OpenAPI spec for the server implementation.
     func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
         w.Header().Set("Content-Type", "application/json")

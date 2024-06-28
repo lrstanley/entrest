@@ -4,7 +4,7 @@
   the LICENSE file.
 */ -}}
 {{- define "helper/rest/server/constants" -}}
-{{- if $.Annotations.RestConfig.EnableSpecHandler }}
+{{- if not $.Annotations.RestConfig.DisableSpecHandler }}
 //go:embed openapi.json
 var OpenAPI []byte // OpenAPI contains the JSON schema of the API.
 {{- end }}
