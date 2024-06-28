@@ -15,7 +15,7 @@ kitchensink: prepare
 	cd _examples/kitchensink && go generate -x ./...
 
 dlv-kitchensink:
-	cd _examples/kitchensink && dlv kitchensink \
+	cd _examples/kitchensink/database && dlv debug \
 		--headless --listen=:2345 \
 		--api-version=2 --log \
 		--allow-non-terminal-interactive \
