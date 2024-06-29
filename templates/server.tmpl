@@ -45,10 +45,7 @@ type ServerConfig struct {
         DisableSpecHandler bool
     {{- end }}
 
-    // EnableLinks if set to true, will enable the "Link" response header, which can be used to hint
-    // to clients about the location of the OpenAPI spec, API documentation, how to auto-paginate
-    // through results, and more.
-    EnableLinks bool
+    {{ template "helper/rest/server/links-config" . }}
 
     // MaskErrors if set to true, will mask the error message returned to the client,
     // returning a generic error message based on the HTTP status code.
@@ -156,42 +153,7 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op 
 }
 
 func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, op Operation, resp *Resp, err error) {
-    if s.config.EnableLinks {
-        links := Links{}
-
-        {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
-            if !s.config.DisableSpecHandler {
-                links["service-desc"] = s.config.BasePath + "/openapi.json"
-                links["describedby"] = s.config.BasePath + "/openapi.json"
-            }
-        {{- end }}
-
-        if err == nil && resp != nil && op == OperationList {
-            if lr, ok := any(resp).(linkablePagedResource); ok {
-                query := r.URL.Query()
-                if page := lr.GetPage(); page > 1 {
-                    query.Set("page", strconv.Itoa(page-1))
-                    r.URL.RawQuery = query.Encode()
-                    links["prev"] = r.URL.String()
-                    if !strings.HasPrefix(links["prev"], s.config.BasePath) {
-                        links["prev"] = s.config.BasePath + links["prev"]
-                    }
-                }
-                if !lr.GetIsLastPage() {
-                    query.Set("page", strconv.Itoa(lr.GetPage()+1))
-                    r.URL.RawQuery = query.Encode()
-                    links["next"] = r.URL.String()
-                    if !strings.HasPrefix(links["next"], s.config.BasePath) {
-                        links["next"] = s.config.BasePath + links["next"]
-                    }
-                }
-            }
-        }
-
-        if v := links.String(); v != "" {
-            w.Header().Set("Link", v)
-        }
-    }
+    {{- template "helper/rest/server/links-handler" . }}
 
     if err != nil {
         if s.config.ErrorHandler != nil {
