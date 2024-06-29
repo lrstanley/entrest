@@ -1,0 +1,61 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/spec/config" }}
+    {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
+        // BaseURL is similar to [ServerConfig.BasePath], however, only the path of the URL is used
+        // to prefill BasePath. This is not required if BasePath is provided.
+        BaseURL string
+
+        // BasePath if provided, and the /openapi.json endpoint is enabled, will allow annotating
+        // API responses with "Link" headers. See [ServerConfig.EnableLinks] for more information.
+        BasePath string
+
+        // DisableSpecHandler if set to true, will disable the /openapi.json endpoint.
+        DisableSpecHandler bool
+    {{ end }}
+{{ end }}{{/* end template */}}
+
+{{- define "helper/rest/server/spec/setup" }}
+    {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
+        if s.config.BaseURL != "" && s.config.BasePath == "" {
+            uri, err := url.Parse(s.config.BaseURL)
+            if err != nil {
+                return nil, fmt.Errorf("failed to parse BaseURL: %w", err)
+            }
+            s.config.BasePath = uri.Path
+        }
+        if s.config.BasePath != "" {
+            if !strings.HasPrefix(s.config.BasePath, "/") {
+                s.config.BasePath = "/" + s.config.BasePath
+            }
+            s.config.BasePath = strings.TrimRight(s.config.BasePath, "/")
+        }
+    {{- end }}
+{{- end }}{{/* end template */}}
+
+{{- define "helper/rest/server/spec/route" -}}
+    {{ if not $.Annotations.RestConfig.DisableSpecHandler }}
+        if !s.config.DisableSpecHandler {
+            {{- template "helper/rest/server/endpoint" (dict
+                "Handler" $.Annotations.RestConfig.Handler
+                "Method" "GET"
+                "Path" "/openapi.json"
+                "Func" "s.Spec"
+            ) }}
+        }
+    {{- end }}
+{{- end }}{{/* end template */}}
+
+{{- define "helper/rest/server/spec" -}}
+    {{ if not $.Annotations.RestConfig.DisableSpecHandler }}
+        // Spec returns the OpenAPI spec for the server implementation.
+        func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
+            w.Header().Set("Content-Type", "application/json")
+            w.WriteHeader(http.StatusOK)
+            _, _ = w.Write(OpenAPI)
+        }
+    {{- end }}
+{{- end }}{{/* end template */}}

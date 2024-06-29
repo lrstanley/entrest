@@ -273,25 +273,27 @@ type Server struct {
 // [Server.Handler] returns a ready-to-use http.Handler that mounts all of the
 // necessary endpoints.
 func NewServer(db *ent.Client, config *ServerConfig) (*Server, error) {
-	if config == nil {
-		config = &ServerConfig{}
+	s := &Server{
+		db:     db,
+		config: config,
 	}
-	if config.BaseURL != "" && config.BasePath == "" {
-		uri, err := url.Parse(config.BaseURL)
+	if s.config == nil {
+		s.config = &ServerConfig{}
+	}
+	if s.config.BaseURL != "" && s.config.BasePath == "" {
+		uri, err := url.Parse(s.config.BaseURL)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse BaseURL: %w", err)
 		}
-		config.BasePath = uri.Path
+		s.config.BasePath = uri.Path
 	}
-
-	if config.BasePath != "" {
-		if !strings.HasPrefix(config.BasePath, "/") {
-			config.BasePath = "/" + config.BasePath
+	if s.config.BasePath != "" {
+		if !strings.HasPrefix(s.config.BasePath, "/") {
+			s.config.BasePath = "/" + s.config.BasePath
 		}
-		config.BasePath = strings.TrimRight(config.BasePath, "/")
+		s.config.BasePath = strings.TrimRight(s.config.BasePath, "/")
 	}
-
-	return &Server{db: db, config: config}, nil
+	return s, nil
 }
 
 // DefaultErrorHandler is the default error handler for the Server.
@@ -378,7 +380,6 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
 			w.Header().Set("Link", v)
 		}
 	}
-
 	if err != nil {
 		if s.config.ErrorHandler != nil {
 			s.config.ErrorHandler(w, r, op, err)

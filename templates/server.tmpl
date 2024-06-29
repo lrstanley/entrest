@@ -32,20 +32,8 @@ import (
 {{ template "helper/rest/server/links" . }}
 
 type ServerConfig struct {
-    {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
-        // BaseURL is similar to [ServerConfig.BasePath], however, only the path of the URL is used
-        // to prefill BasePath. This is not required if BasePath is provided.
-        BaseURL string
-
-        // BasePath if provided, and the /openapi.json endpoint is enabled, will allow annotating
-        // API responses with "Link" headers. See [ServerConfig.EnableLinks] for more information.
-        BasePath string
-
-        // DisableSpecHandler if set to true, will disable the /openapi.json endpoint.
-        DisableSpecHandler bool
-    {{- end }}
-
-    {{ template "helper/rest/server/links-config" . }}
+    {{- template "helper/rest/server/spec/config" . }}
+    {{ template "helper/rest/server/links/config" . -}}
 
     // MaskErrors if set to true, will mask the error message returned to the client,
     // returning a generic error message based on the HTTP status code.
@@ -72,28 +60,15 @@ type Server struct {
 // [Server.Handler] returns a ready-to-use http.Handler that mounts all of the
 // necessary endpoints.
 func NewServer(db *ent.Client, config *ServerConfig) (*Server, error) {
-    if config == nil {
-        config = &ServerConfig{}
+    s := &Server{
+        db: db,
+        config: config,
     }
-
-    {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
-        if config.BaseURL != "" && config.BasePath == "" {
-            uri, err := url.Parse(config.BaseURL)
-            if err != nil {
-                return nil, fmt.Errorf("failed to parse BaseURL: %w", err)
-            }
-            config.BasePath = uri.Path
-        }
-
-        if config.BasePath != "" {
-            if !strings.HasPrefix(config.BasePath, "/") {
-                config.BasePath = "/" + config.BasePath
-            }
-            config.BasePath = strings.TrimRight(config.BasePath, "/")
-        }
-    {{- end }}
-
-    return &Server{db: db, config: config}, nil
+    if s.config == nil {
+        s.config = &ServerConfig{}
+    }
+    {{- template "helper/rest/server/spec/setup" . }}
+    return s, nil
 }
 
 // DefaultErrorHandler is the default error handler for the Server.
@@ -153,7 +128,7 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op 
 }
 
 func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, op Operation, resp *Resp, err error) {
-    {{- template "helper/rest/server/links-handler" . }}
+    {{- template "helper/rest/server/links/handler" . -}}
 
     if err != nil {
         if s.config.ErrorHandler != nil {
@@ -263,17 +238,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
         {{- end }}
     {{- end }}
 
-    {{ if not $.Annotations.RestConfig.DisableSpecHandler }}
-        if !s.config.DisableSpecHandler {
-            {{- template "helper/rest/server/endpoint" (dict
-                "Handler" $.Annotations.RestConfig.Handler
-                "Method" "GET"
-                "Path" "/openapi.json"
-                "Func" "s.Spec"
-            ) }}
-        }
-    {{- end }}
-
+    {{ template "helper/rest/server/spec/route" . }}
     {{ template "helper/rest/server/not-found" . }}
 
     {{- if eq $.Annotations.RestConfig.Handler "stdlib" }}
@@ -281,14 +246,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
     {{- end }}
 }
 
-{{ if not $.Annotations.RestConfig.DisableSpecHandler }}
-    // Spec returns the OpenAPI spec for the server implementation.
-    func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
-        w.Header().Set("Content-Type", "application/json")
-        w.WriteHeader(http.StatusOK)
-        _, _ = w.Write(OpenAPI)
-    }
-{{- end }}
+{{ template "helper/rest/server/spec" . }}
 
 {{- range $t := $.Nodes }}
     {{- if (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig) }}{{ continue }}{{ end }}
