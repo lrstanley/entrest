@@ -13,7 +13,9 @@
         // API responses with "Link" headers. See [ServerConfig.EnableLinks] for more information.
         BasePath string
 
-        // DisableSpecHandler if set to true, will disable the /openapi.json endpoint.
+        // DisableSpecHandler if set to true, will disable the /openapi.json endpoint. This will also
+        // disable the embedded API reference documentation, see [ServerConfig.DisableDocs] for more
+        // information.
         DisableSpecHandler bool
     {{ end }}
 {{ end }}{{/* end template */}}

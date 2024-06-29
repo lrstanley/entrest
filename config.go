@@ -112,11 +112,6 @@ type Config struct {
 	// spec will be generated.
 	Handler HTTPHandler
 
-	// EnableDocsHandler enables the generation of an OpenAPI UI documentation handler.
-	// TODO: make this more configurable?
-	EnableDocsHandler bool
-	DocsHandlerConfig map[string]string
-
 	// DisableSpecHandler disables the generation of an OpenAPI spec handler (e.g.
 	// /openapi.json). Disabling this will also disable embedding the spec into the
 	// binary/rest generated library.

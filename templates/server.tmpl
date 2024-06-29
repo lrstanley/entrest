@@ -17,6 +17,7 @@ import (
     {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
         _ "embed"
     {{- end }}
+    "html/template" {{/* make sure text/template doesn't get auto-imported */}}
     {{- if eq $.Annotations.RestConfig.Handler "chi" }}
         "github.com/go-chi/chi/v5"
         "github.com/go-chi/chi/v5/middleware"
@@ -30,10 +31,13 @@ import (
 {{ template "helper/rest/server/bind" . }}
 {{ template "helper/rest/server/req" . }}
 {{ template "helper/rest/server/links" . }}
+{{ template "helper/rest/server/spec" . }}
+{{ template "helper/rest/server/docs" . }}
 
 type ServerConfig struct {
     {{- template "helper/rest/server/spec/config" . }}
-    {{ template "helper/rest/server/links/config" . -}}
+    {{ template "helper/rest/server/docs/config" . }}
+    {{ template "helper/rest/server/links/config" . }}
 
     // MaskErrors if set to true, will mask the error message returned to the client,
     // returning a generic error message based on the HTTP status code.
@@ -239,14 +243,13 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
     {{- end }}
 
     {{ template "helper/rest/server/spec/route" . }}
+    {{ template "helper/rest/server/docs/route" . }}
     {{ template "helper/rest/server/not-found" . }}
 
     {{- if eq $.Annotations.RestConfig.Handler "stdlib" }}
         return mux
     {{- end }}
 }
-
-{{ template "helper/rest/server/spec" . }}
 
 {{- range $t := $.Nodes }}
     {{- if (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig) }}{{ continue }}{{ end }}

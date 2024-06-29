@@ -74,8 +74,12 @@ func main() {
 	printJSON(oreo)
 	printJSON(riley)
 
-	mux := http.NewServeMux()
-	mux.Handle("/", rest.NewServer(db, nil).Handler())
+	srv, err := rest.NewServer(db, nil)
+	if err != nil {
+		panic(err)
+	}
 
-	http.ListenAndServe(":8080", mux)
+	mux := http.NewServeMux()
+	mux.Handle("/", srv.Handler())
+	http.ListenAndServe(":8080", mux) //nolint:all
 }

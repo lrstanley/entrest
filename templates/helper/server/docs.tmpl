@@ -1,0 +1,75 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/docs/config" }}
+    {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
+        // DisableDocsHandler if set to true, will disable the embedded API reference documentation
+        // endpoint at /docs. Use this if you want to provide your own documentation functionality.
+        // This is disabled by default if [ServerConfig.DisableSpecHandler] is true.
+        DisableDocsHandler bool
+    {{ end }}
+{{ end }}{{/* end template */}}
+
+{{- define "helper/rest/server/docs/route" -}}
+    {{ if not $.Annotations.RestConfig.DisableSpecHandler }}
+        if !s.config.DisableSpecHandler && !s.config.DisableDocsHandler {
+            // If specs are enabled, it's safe to provide documentation, and if they don't override the
+            // root endpoint, we can redirect to the docs.
+            {{- template "helper/rest/server/endpoint" (dict
+                "Handler" $.Annotations.RestConfig.Handler
+                "Method" "GET"
+                "Path" "/"
+                "Func" "http.RedirectHandler(\"/docs\", http.StatusTemporaryRedirect).ServeHTTP"
+            ) }}
+            {{- template "helper/rest/server/endpoint" (dict
+                "Handler" $.Annotations.RestConfig.Handler
+                "Method" "GET"
+                "Path" "/docs"
+                "Func" "s.Docs"
+            ) }}
+        }
+    {{- end }}
+{{- end }}{{/* end template */}}
+
+{{- define "helper/rest/server/docs" }}
+var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Reference</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <script id="api-reference"></script>
+    <script>
+      document.getElementById("api-reference").dataset.configuration = JSON.stringify({
+        spec: {
+          url: "{{ "{{" }} . {{ "}}" }}",
+        },
+        theme: "kepler",
+        isEditable: false,
+        hideDownloadButton: true,
+        customCss: ".darklight-reference-promo { visibility: hidden !important; height: 0 !important; }",
+      });
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.24.26"
+      integrity="sha256-Zo2w7XQtgECsnom2xI33f5AFG1VFcuJm3gogYqlgeRA="
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>`))
+
+func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
+    var buf bytes.Buffer
+    if err := scalarTemplate.Execute(&buf, s.config.BasePath + "/openapi.json"); err != nil {
+        handleResponse[struct{}](s, w, r, "", nil, err)
+        return
+    }
+    w.Header().Set("Content-Type", "text/html")
+    w.WriteHeader(http.StatusOK)
+    _, _ = w.Write(buf.Bytes())
+}
+{{- end }}{{/* end template */}}

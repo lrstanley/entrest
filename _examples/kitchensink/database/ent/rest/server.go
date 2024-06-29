@@ -3,10 +3,12 @@
 package rest
 
 import (
+	"bytes"
 	_ "embed"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html/template"
 	"io"
 	"net/http"
 	"net/url"
@@ -231,6 +233,52 @@ type linkablePagedResource interface {
 	GetIsLastPage() bool
 }
 
+// Spec returns the OpenAPI spec for the server implementation.
+func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(OpenAPI)
+}
+
+var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Reference</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <script id="api-reference"></script>
+    <script>
+      document.getElementById("api-reference").dataset.configuration = JSON.stringify({
+        spec: {
+          url: "{{ . }}",
+        },
+        theme: "kepler",
+        isEditable: false,
+        hideDownloadButton: true,
+        customCss: ".darklight-reference-promo { visibility: hidden !important; height: 0 !important; }",
+      });
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.24.26"
+      integrity="sha256-Zo2w7XQtgECsnom2xI33f5AFG1VFcuJm3gogYqlgeRA="
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>`))
+
+func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
+	var buf bytes.Buffer
+	if err := scalarTemplate.Execute(&buf, s.config.BasePath+"/openapi.json"); err != nil {
+		handleResponse[struct{}](s, w, r, "", nil, err)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(buf.Bytes())
+}
+
 type ServerConfig struct {
 	// BaseURL is similar to [ServerConfig.BasePath], however, only the path of the URL is used
 	// to prefill BasePath. This is not required if BasePath is provided.
@@ -240,8 +288,15 @@ type ServerConfig struct {
 	// API responses with "Link" headers. See [ServerConfig.EnableLinks] for more information.
 	BasePath string
 
-	// DisableSpecHandler if set to true, will disable the /openapi.json endpoint.
+	// DisableSpecHandler if set to true, will disable the /openapi.json endpoint. This will also
+	// disable the embedded API reference documentation, see [ServerConfig.DisableDocs] for more
+	// information.
 	DisableSpecHandler bool
+
+	// DisableDocsHandler if set to true, will disable the embedded API reference documentation
+	// endpoint at /docs. Use this if you want to provide your own documentation functionality.
+	// This is disabled by default if [ServerConfig.DisableSpecHandler] is true.
+	DisableDocsHandler bool
 
 	// EnableLinks if set to true, will enable the "Link" response header, which can be used to hint
 	// to clients about the location of the OpenAPI spec, API documentation, how to auto-paginate
@@ -445,17 +500,17 @@ func (s *Server) Handler() http.Handler {
 		mux.HandleFunc("GET /openapi.json", s.Spec)
 	}
 
+	if !s.config.DisableSpecHandler && !s.config.DisableDocsHandler {
+		// If specs are enabled, it's safe to provide documentation, and if they don't override the
+		// root endpoint, we can redirect to the docs.
+		mux.HandleFunc("GET /", http.RedirectHandler("/docs", http.StatusTemporaryRedirect).ServeHTTP)
+		mux.HandleFunc("GET /docs", s.Docs)
+	}
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
 	})
 	return mux
-}
-
-// Spec returns the OpenAPI spec for the server implementation.
-func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(OpenAPI)
 }
 
 // ListCategory maps to "GET /categories".
