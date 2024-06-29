@@ -171,7 +171,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
-				fmt.Sprintf("Create a new %s entity", entityName),
+				"Create a new "+CamelCase(entityName),
 			),
 			Description: cmp.Or(
 				ta.GetOperationDescription(op),
@@ -202,7 +202,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
-				fmt.Sprintf("Update an existing %s entity", entityName),
+				"Update a "+CamelCase(entityName),
 			),
 			Description: cmp.Or(
 				ta.GetOperationDescription(op),
@@ -235,7 +235,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
-				fmt.Sprintf("Retrieve a single %s entity", entityName),
+				"Retrieve a "+CamelCase(entityName),
 			),
 			Description: cmp.Or(
 				ta.GetOperationDescription(op),
@@ -269,11 +269,11 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
-				fmt.Sprintf("Query all %s entities", entityName),
+				"List "+CamelCase(Pluralize(t.Name)),
 			),
 			Description: cmp.Or(
 				ta.GetOperationDescription(op),
-				fmt.Sprintf("Query all %s entities (including pagination, filtering, sorting, etc). %s", entityName, eagerLoadDepthMessage),
+				fmt.Sprintf("List %s entities (including pagination, filtering, sorting, etc). %s", entityName, eagerLoadDepthMessage),
 			),
 			OperationID: cmp.Or(ta.GetOperationID(op), "list"+Pluralize(t.Name)),
 			Deprecated:  ta.Deprecated,
@@ -348,7 +348,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			Tags: withDefaultSlice(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
-				fmt.Sprintf("Delete a single %s entity", entityName),
+				"Delete a "+CamelCase(entityName),
 			),
 			Description: cmp.Or(
 				ta.GetOperationDescription(op),

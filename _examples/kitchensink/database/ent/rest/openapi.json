@@ -6,14 +6,14 @@
     },
     "paths": {
         "/categories": {
-            "summary": "Query all Category entities",
-            "description": "Query all Category entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "summary": "List categories",
+            "description": "List Category entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
                     "Category"
                 ],
-                "summary": "Query all Category entities",
-                "description": "Query all Category entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "summary": "List categories",
+                "description": "List Category entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "listCategories",
                 "parameters": [
                     {
@@ -108,7 +108,7 @@
                 "tags": [
                     "Category"
                 ],
-                "summary": "Create a new Category entity",
+                "summary": "Create a new category",
                 "description": "Create a new Category entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "createCategory",
                 "requestBody": {
@@ -182,7 +182,7 @@
                 "tags": [
                     "Category"
                 ],
-                "summary": "Retrieve a single Category entity",
+                "summary": "Retrieve a category",
                 "description": "Retrieve a single Category entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "getCategoryByID",
                 "responses": {
@@ -231,7 +231,7 @@
                 "tags": [
                     "Category"
                 ],
-                "summary": "Delete a single Category entity",
+                "summary": "Delete a category",
                 "description": "Delete a single Category entity by its ID.",
                 "operationId": "deleteCategoryByID",
                 "responses": {
@@ -273,7 +273,7 @@
                 "tags": [
                     "Category"
                 ],
-                "summary": "Update an existing Category entity",
+                "summary": "Update a category",
                 "description": "Update an existing Category entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "updateCategoryByID",
                 "requestBody": {
@@ -767,14 +767,14 @@
             ]
         },
         "/follows": {
-            "summary": "Query all Follow entities",
-            "description": "Query all Follow entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "summary": "List follows",
+            "description": "List Follow entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
                     "Follow"
                 ],
-                "summary": "Query all Follow entities",
-                "description": "Query all Follow entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "summary": "List follows",
+                "description": "List Follow entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "listFollows",
                 "parameters": [
                     {
@@ -858,7 +858,7 @@
                 "tags": [
                     "Follow"
                 ],
-                "summary": "Create a new Follow entity",
+                "summary": "Create a new follow",
                 "description": "Create a new Follow entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "createFollow",
                 "requestBody": {
@@ -926,14 +926,14 @@
             ]
         },
         "/friendships": {
-            "summary": "Query all Friendship entities",
-            "description": "Query all Friendship entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "summary": "List friendships",
+            "description": "List Friendship entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
                     "Friendship"
                 ],
-                "summary": "Query all Friendship entities",
-                "description": "Query all Friendship entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "summary": "List friendships",
+                "description": "List Friendship entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "listFriendships",
                 "parameters": [
                     {
@@ -1019,7 +1019,7 @@
                 "tags": [
                     "Friendship"
                 ],
-                "summary": "Create a new Friendship entity",
+                "summary": "Create a new friendship",
                 "description": "Create a new Friendship entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "createFriendship",
                 "requestBody": {
@@ -1093,7 +1093,7 @@
                 "tags": [
                     "Friendship"
                 ],
-                "summary": "Retrieve a single Friendship entity",
+                "summary": "Retrieve a friendship",
                 "description": "Retrieve a single Friendship entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "getFriendshipByID",
                 "responses": {
@@ -1142,7 +1142,7 @@
                 "tags": [
                     "Friendship"
                 ],
-                "summary": "Delete a single Friendship entity",
+                "summary": "Delete a friendship",
                 "description": "Delete a single Friendship entity by its ID.",
                 "operationId": "deleteFriendshipByID",
                 "responses": {
@@ -1184,7 +1184,7 @@
                 "tags": [
                     "Friendship"
                 ],
-                "summary": "Update an existing Friendship entity",
+                "summary": "Update a friendship",
                 "description": "Update an existing Friendship entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "updateFriendshipByID",
                 "requestBody": {
@@ -1442,14 +1442,14 @@
             ]
         },
         "/pets": {
-            "summary": "Query all Pet entities",
-            "description": "Query all Pet entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "summary": "List pets",
+            "description": "List Pet entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
                     "Pet"
                 ],
-                "summary": "Query all Pet entities",
-                "description": "Query all Pet entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "summary": "List pets",
+                "description": "List Pet entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "listPets",
                 "parameters": [
                     {
@@ -1855,7 +1855,7 @@
                 "tags": [
                     "Pet"
                 ],
-                "summary": "Create a new Pet entity",
+                "summary": "Create a new pet",
                 "description": "Create a new Pet entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "createPet",
                 "requestBody": {
@@ -1929,7 +1929,7 @@
                 "tags": [
                     "Pet"
                 ],
-                "summary": "Retrieve a single Pet entity",
+                "summary": "Retrieve a pet",
                 "description": "Retrieve a single Pet entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "getPetByID",
                 "responses": {
@@ -1978,7 +1978,7 @@
                 "tags": [
                     "Pet"
                 ],
-                "summary": "Delete a single Pet entity",
+                "summary": "Delete a pet",
                 "description": "Delete a single Pet entity by its ID.",
                 "operationId": "deletePetByID",
                 "responses": {
@@ -2020,7 +2020,7 @@
                 "tags": [
                     "Pet"
                 ],
-                "summary": "Update an existing Pet entity",
+                "summary": "Update a pet",
                 "description": "Update an existing Pet entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "updatePetByID",
                 "requestBody": {
@@ -3087,14 +3087,14 @@
             ]
         },
         "/settings": {
-            "summary": "Query all Setting entities",
-            "description": "Query all Setting entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "summary": "List settings",
+            "description": "List Setting entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
                     "Setting"
                 ],
-                "summary": "Query all Setting entities",
-                "description": "Query all Setting entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "summary": "List settings",
+                "description": "List Setting entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "listSettings",
                 "parameters": [
                     {
@@ -3200,7 +3200,7 @@
                 "tags": [
                     "Setting"
                 ],
-                "summary": "Retrieve a single Setting entity",
+                "summary": "Retrieve a setting",
                 "description": "Retrieve a single Setting entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "getSettingByID",
                 "responses": {
@@ -3249,7 +3249,7 @@
                 "tags": [
                     "Setting"
                 ],
-                "summary": "Update an existing Setting entity",
+                "summary": "Update a setting",
                 "description": "Update an existing Setting entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "updateSettingByID",
                 "requestBody": {
@@ -3716,14 +3716,14 @@
             ]
         },
         "/users": {
-            "summary": "Query all User entities",
-            "description": "Query all User entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "summary": "List users",
+            "description": "List User entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
                     "User"
                 ],
-                "summary": "Query all User entities",
-                "description": "Query all User entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "summary": "List users",
+                "description": "List User entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "listUsers",
                 "parameters": [
                     {
@@ -4116,7 +4116,7 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Create a new User entity",
+                "summary": "Create a new user",
                 "description": "Create a new User entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "createUser",
                 "requestBody": {
@@ -4190,7 +4190,7 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Retrieve a single User entity",
+                "summary": "Retrieve a user",
                 "description": "Retrieve a single User entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "getUserByID",
                 "responses": {
@@ -4239,7 +4239,7 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Delete a single User entity",
+                "summary": "Delete a user",
                 "description": "Delete a single User entity by its ID.",
                 "operationId": "deleteUserByID",
                 "responses": {
@@ -4281,7 +4281,7 @@
                 "tags": [
                     "User"
                 ],
-                "summary": "Update an existing User entity",
+                "summary": "Update a user",
                 "description": "Update an existing User entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
                 "operationId": "updateUserByID",
                 "requestBody": {
