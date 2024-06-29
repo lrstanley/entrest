@@ -4,9 +4,9 @@
   the LICENSE file.
 */ -}}
 {{- define "helper/rest/server/endpoint" -}}
-{{- if eq $.Handler "chi" }}
-    r.{{ $.Method|lower|zpascal }}("{{ replace $.Path "{id}" "{id:^[0-9]{1,50}$}" }}", {{ $.Func }})
-{{- else }}
-    mux.HandleFunc("{{ $.Method }} {{ $.Path }}", {{ $.Func }})
-{{- end }}
+    {{- if eq $.Handler "chi" }}
+        r.{{ $.Method|lower|zpascal }}("{{ replace $.Path "{id}" "{id:^[0-9]{1,50}$}" }}", {{ $.Func }})
+    {{- else }}
+        mux.HandleFunc("{{ $.Method }} {{ $.Path }}", {{ $.Func }})
+    {{- end }}
 {{- end }}{{/* end template */}}

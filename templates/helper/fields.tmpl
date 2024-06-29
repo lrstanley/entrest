@@ -14,14 +14,14 @@
 
 {{/* A template for setting the field tags || input: map(Field, Prefix?) */}}
 {{- define "helper/rest/fields/tag" -}}
-{{- " " }}`
-{{- "" }}json:"{{ if $.Prefix }}{{ $.Prefix|lower }}_{{ end }}{{ $.Field.Name }}{{ if $.Field.Optional }},omitempty{{ end }}"
-{{- "" }}`
+    {{- " " }}`
+    {{- "" }}json:"{{ if $.Prefix }}{{ $.Prefix|lower }}_{{ end }}{{ $.Field.Name }}{{ if $.Field.Optional }},omitempty{{ end }}"
+    {{- "" }}`
 {{- end }}
 
 {{/* A template for setting the edge tags || input: map(Edge, Prefix?) */}}
 {{- define "helper/rest/edge/tag" -}}
-{{- " " }}`
-{{- "" }}json:"{{ if $.Prefix }}{{ $.Prefix|lower }}_{{ end }}{{ $.Edge.Name }}{{ if $.Edge.Optional }},omitempty{{ end }}"
-{{- "" }}`
+    {{- " " }}`
+    {{- "" }}json:"{{ if $.Prefix }}{{ $.Prefix|lower }}_{{ end }}{{ $.Edge.Name }}{{ if $.Edge.Optional }},omitempty{{ end }}"
+    {{- "" }}`
 {{- end }}

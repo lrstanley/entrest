@@ -4,24 +4,24 @@
   the LICENSE file.
 */ -}}
 {{- define "helper/rest/server/constants" -}}
-{{- if not $.Annotations.RestConfig.DisableSpecHandler }}
-//go:embed openapi.json
-var OpenAPI []byte // OpenAPI contains the JSON schema of the API.
-{{- end }}
+    {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
+    //go:embed openapi.json
+    var OpenAPI []byte // OpenAPI contains the JSON schema of the API.
+    {{- end }}
 
-// Operation represents the CRUD operation(s).
-type Operation string
+    // Operation represents the CRUD operation(s).
+    type Operation string
 
-const (
-    // OperationCreate represents the create operation (method: POST).
-    OperationCreate Operation = "create"
-    // OperationRead represents the read operation (method: GET).
-    OperationRead Operation = "read"
-    // OperationUpdate represents the update operation (method: PATCH).
-    OperationUpdate Operation = "update"
-    // OperationDelete represents the delete operation (method: DELETE).
-    OperationDelete Operation = "delete"
-    // OperationList represents the list operation (method: GET).
-    OperationList Operation = "list"
-)
+    const (
+        // OperationCreate represents the create operation (method: POST).
+        OperationCreate Operation = "create"
+        // OperationRead represents the read operation (method: GET).
+        OperationRead Operation = "read"
+        // OperationUpdate represents the update operation (method: PATCH).
+        OperationUpdate Operation = "update"
+        // OperationDelete represents the delete operation (method: DELETE).
+        OperationDelete Operation = "delete"
+        // OperationList represents the list operation (method: GET).
+        OperationList Operation = "list"
+    )
 {{- end }}{{/* end template */}}
