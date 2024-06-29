@@ -7,7 +7,7 @@ replace github.com/lrstanley/entrest => ../
 require (
 	entgo.io/ent v0.13.1
 	github.com/go-playground/form/v4 v4.2.1
-	github.com/lrstanley/entrest v0.0.0-20240627025416-8efaee1cf582
+	github.com/lrstanley/entrest v0.0.0-20240628044239-792f787df5b5
 	modernc.org/sqlite v1.30.1
 )
 

@@ -9,6 +9,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -207,7 +209,45 @@ func ReqIDParam[Params, Resp any](s *Server, op Operation, fn func(*http.Request
 	}
 }
 
+// Links represents a set of linkable-relationsips that can be represented through
+// the "Link" header. Note that all urls must be url-encoded already.
+type Links map[string]string
+
+func (l Links) String() string {
+	var links []string
+	var keys []string
+	for k := range l {
+		keys = append(keys, k)
+	}
+	slices.Sort(keys)
+	for _, k := range keys {
+		links = append(links, fmt.Sprintf(`<%s>; rel=%q`, l[k], k))
+	}
+	return strings.Join(links, ", ")
+}
+
+type linkablePagedResource interface {
+	GetPage() int
+	GetIsLastPage() bool
+}
+
 type ServerConfig struct {
+	// BaseURL is similar to [ServerConfig.BasePath], however, only the path of the URL is used
+	// to prefill BasePath. This is not required if BasePath is provided.
+	BaseURL string
+
+	// BasePath if provided, and the /openapi.json endpoint is enabled, will allow annotating
+	// API responses with "Link" headers. See [ServerConfig.EnableLinks] for more information.
+	BasePath string
+
+	// DisableSpecHandler if set to true, will disable the /openapi.json endpoint.
+	DisableSpecHandler bool
+
+	// EnableLinks if set to true, will enable the "Link" response header, which can be used to hint
+	// to clients about the location of the OpenAPI spec, API documentation, how to auto-paginate
+	// through results, and more.
+	EnableLinks bool
+
 	// MaskErrors if set to true, will mask the error message returned to the client,
 	// returning a generic error message based on the HTTP status code.
 	MaskErrors bool
@@ -232,14 +272,26 @@ type Server struct {
 // NewServer returns a new auto-generated server implementation for your ent schema.
 // [Server.Handler] returns a ready-to-use http.Handler that mounts all of the
 // necessary endpoints.
-func NewServer(db *ent.Client, config *ServerConfig) *Server {
+func NewServer(db *ent.Client, config *ServerConfig) (*Server, error) {
 	if config == nil {
 		config = &ServerConfig{}
 	}
-	return &Server{
-		db:     db,
-		config: config,
+	if config.BaseURL != "" && config.BasePath == "" {
+		uri, err := url.Parse(config.BaseURL)
+		if err != nil {
+			return nil, fmt.Errorf("failed to parse BaseURL: %w", err)
+		}
+		config.BasePath = uri.Path
 	}
+
+	if config.BasePath != "" {
+		if !strings.HasPrefix(config.BasePath, "/") {
+			config.BasePath = "/" + config.BasePath
+		}
+		config.BasePath = strings.TrimRight(config.BasePath, "/")
+	}
+
+	return &Server{db: db, config: config}, nil
 }
 
 // DefaultErrorHandler is the default error handler for the Server.
@@ -293,6 +345,40 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op 
 }
 
 func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, op Operation, resp *Resp, err error) {
+	if s.config.EnableLinks {
+		links := Links{}
+		if !s.config.DisableSpecHandler {
+			links["service-desc"] = s.config.BasePath + "/openapi.json"
+			links["describedby"] = s.config.BasePath + "/openapi.json"
+		}
+
+		if err == nil && resp != nil && op == OperationList {
+			if lr, ok := any(resp).(linkablePagedResource); ok {
+				query := r.URL.Query()
+				if page := lr.GetPage(); page > 1 {
+					query.Set("page", strconv.Itoa(page-1))
+					r.URL.RawQuery = query.Encode()
+					links["prev"] = r.URL.String()
+					if !strings.HasPrefix(links["prev"], s.config.BasePath) {
+						links["prev"] = s.config.BasePath + links["prev"]
+					}
+				}
+				if !lr.GetIsLastPage() {
+					query.Set("page", strconv.Itoa(lr.GetPage()+1))
+					r.URL.RawQuery = query.Encode()
+					links["next"] = r.URL.String()
+					if !strings.HasPrefix(links["next"], s.config.BasePath) {
+						links["next"] = s.config.BasePath + links["next"]
+					}
+				}
+			}
+		}
+
+		if v := links.String(); v != "" {
+			w.Header().Set("Link", v)
+		}
+	}
+
 	if err != nil {
 		if s.config.ErrorHandler != nil {
 			s.config.ErrorHandler(w, r, op, err)
@@ -353,7 +439,10 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /users", ReqParam(s, OperationCreate, s.CreateUser))
 	mux.HandleFunc("PATCH /users/{id}", ReqIDParam(s, OperationUpdate, s.UpdateUserByID))
 	mux.HandleFunc("DELETE /users/{id}", ReqID(s, OperationDelete, s.DeleteUserByID))
-	mux.HandleFunc("GET /openapi.json", s.Spec)
+
+	if !s.config.DisableSpecHandler {
+		mux.HandleFunc("GET /openapi.json", s.Spec)
+	}
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)

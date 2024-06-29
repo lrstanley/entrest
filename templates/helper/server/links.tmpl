@@ -1,0 +1,28 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/links" -}}
+    // Links represents a set of linkable-relationsips that can be represented through
+    // the "Link" header. Note that all urls must be url-encoded already.
+    type Links map[string]string
+
+    func (l Links) String() string {
+        var links []string
+        var keys []string
+        for k := range l {
+            keys = append(keys, k)
+        }
+        slices.Sort(keys)
+        for _, k := range keys {
+            links = append(links, fmt.Sprintf(`<%s>; rel=%q`, l[k], k))
+        }
+        return strings.Join(links, ", ")
+    }
+
+    type linkablePagedResource interface {
+        GetPage() int
+        GetIsLastPage() bool
+    }
+{{- end }}{{/* end template */}}

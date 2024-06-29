@@ -92,6 +92,26 @@ type PagedResponse[T any] struct {
 	Content    []*T `json:"content"`      // Paged data.
 }
 
+// GetPage returns the current page number.
+func (p *PagedResponse[T]) GetPage() int {
+	return p.Page
+}
+
+// GetTotalCount returns the total number of items.
+func (p *PagedResponse[T]) GetTotalCount() int {
+	return p.TotalCount
+}
+
+// GetLastPage returns the last page number.
+func (p *PagedResponse[T]) GetLastPage() int {
+	return p.LastPage
+}
+
+// GetIsLastPage returns whether this is the last page.
+func (p *PagedResponse[T]) GetIsLastPage() bool {
+	return p.IsLastPage
+}
+
 type Paginated[P PagableQuery[P, T], T any] struct {
 	Page         *int `json:"page"         form:"page,omitempty"`
 	ItemsPerPage *int `json:"itemsPerPage" form:"itemsPerPage,omitempty"`
