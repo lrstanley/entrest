@@ -173,7 +173,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "GET"
                 "Path" (printf "/%s" ($t.Name|zkebab|zplural))
-                "Func" (printf "ReqParam(s, OperationList, s.List%s)" ($t.Name|zsingular))
+                "Func" (printf "ReqParam(s, OperationList, s.%s)" (getOperationIDName "list" $t nil | zpascal))
             ) }}
         {{- end }}
 
@@ -183,7 +183,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "GET"
                 "Path" (printf "/%s/{id}" ($t.Name|zkebab|zplural))
-                "Func" (printf "ReqID(s, OperationRead, s.Read%sByID)" ($t.Name|zsingular))
+                "Func" (printf "ReqID(s, OperationRead, s.%s)" (getOperationIDName "read" $t nil | zpascal))
             ) }}
         {{- end }}
 
@@ -196,7 +196,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
                     "Handler" $.Annotations.RestConfig.Handler
                     "Method" "GET"
                     "Path" (printf "/%s/{id}/%s" ($t.Name|zkebab|zplural) ($e.StructField|zkebab))
-                    "Func" (printf "ReqID(s, OperationRead, s.EdgeRead%s%sByID)" ($t.Name|zsingular) ($e.StructField))
+                    "Func" (printf "ReqID(s, OperationRead, s.%s)" (getOperationIDName "read" $t $e | zpascal))
                 ) }}
             {{- end }}
 
@@ -206,7 +206,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
                     "Handler" $.Annotations.RestConfig.Handler
                     "Method" "GET"
                     "Path" (printf "/%s/{id}/%s" ($t.Name|zkebab|zplural) ($e.StructField|zkebab))
-                    "Func" (printf "ReqIDParam(s, OperationList, s.EdgeList%s%sByID)" ($t.Name|zsingular) ($e.StructField))
+                    "Func" (printf "ReqIDParam(s, OperationList, s.%s)" (getOperationIDName "list" $t $e | zpascal))
                 ) }}
             {{- end }}
         {{- end }}
@@ -217,7 +217,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "POST"
                 "Path" (printf "/%s" ($t.Name|zkebab|zplural))
-                "Func" (printf "ReqParam(s, OperationCreate, s.Create%s)" ($t.Name|zsingular))
+                "Func" (printf "ReqParam(s, OperationCreate, s.%s)" (getOperationIDName "create" $t nil | zpascal))
             ) }}
         {{- end }}
 
@@ -227,7 +227,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "PATCH"
                 "Path" (printf "/%s/{id}" ($t.Name|zkebab|zplural))
-                "Func" (printf "ReqIDParam(s, OperationUpdate, s.Update%sByID)" ($t.Name|zsingular))
+                "Func" (printf "ReqIDParam(s, OperationUpdate, s.%s)" (getOperationIDName "update" $t nil | zpascal))
             ) }}
         {{- end }}
 
@@ -237,7 +237,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "DELETE"
                 "Path" (printf "/%s/{id}" ($t.Name|zkebab|zplural))
-                "Func" (printf "ReqID(s, OperationDelete, s.Delete%sByID)" ($t.Name|zsingular))
+                "Func" (printf "ReqID(s, OperationDelete, s.%s)" (getOperationIDName "delete" $t nil | zpascal))
             ) }}
         {{- end }}
     {{- end }}
@@ -256,16 +256,18 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
 
     {{- /* list nodes */}}
     {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "list" }}
-        // List{{ $t.Name|zsingular }} maps to "GET /{{ $t.Name|zkebab|zplural }}".
-        func (s *Server) List{{ $t.Name|zsingular }}(r *http.Request, p *List{{ $t.Name|zsingular }}Params) (*PagedResponse[ent.{{ $t.Name }}], error) {
+        {{- $opID := getOperationIDName "list" $t nil | zpascal }}
+        // {{ $opID }} maps to "GET /{{ $t.Name|zkebab|zplural }}".
+        func (s *Server) {{ $opID }}(r *http.Request, p *List{{ $t.Name|zsingular }}Params) (*PagedResponse[ent.{{ $t.Name }}], error) {
             return p.Exec(r.Context(), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
 
     {{- /* get single node */}}
     {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
-        // Read{{ $t.Name|zsingular }}ByID maps to "GET /{{ $t.Name|zkebab|zplural }}/{id}".
-        func (s *Server) Read{{ $t.Name|zsingular }}ByID(r *http.Request, id int) (*ent.{{ $t.Name }}, error) {
+        {{- $opID := getOperationIDName "read" $t nil | zpascal }}
+        // {{ $opID }} maps to "GET /{{ $t.Name|zkebab|zplural }}/{id}".
+        func (s *Server) {{ $opID }}(r *http.Request, id int) (*ent.{{ $t.Name }}, error) {
             return EagerLoad{{ $t.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID(id))).Only(r.Context())
         }
     {{- end }}
@@ -275,16 +277,18 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
 
         {{- /* get nodes edge (unique) */}}
         {{- if and $e.Unique (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
-            // EdgeRead{{ $t.Name|zsingular }}{{ $e.StructField }}ByID maps to "GET /{{ $t.Name|zkebab|zplural }}/{id}/{{ $e.StructField|zkebab }}".
-            func (s *Server) EdgeRead{{ $t.Name|zsingular }}{{ $e.StructField }}ByID(r *http.Request, id int) (*ent.{{ $e.Type.Name }}, error) {
+            {{- $opID := getOperationIDName "read" $t $e | zpascal }}
+            // {{ $opID }} maps to "GET /{{ $t.Name|zkebab|zplural }}/{id}/{{ $e.StructField|zkebab }}".
+            func (s *Server) {{ $opID }}(r *http.Request, id int) (*ent.{{ $e.Type.Name }}, error) {
                 return EagerLoad{{ $e.Type.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID(id)).Query{{ $e.StructField }}()).Only(r.Context())
             }
         {{- end }}
 
         {{- /* list nodes edge (non-unique) */}}
         {{- if and (not $e.Unique) (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "list") }}
-            // EdgeList{{ $t.Name|zsingular }}{{ $e.StructField }}ByID maps to "GET /{{ $t.Name|zkebab|zplural }}/{id}/{{ $e.StructField|zkebab }}".
-            func (s *Server) EdgeList{{ $t.Name|zsingular }}{{ $e.StructField }}ByID(r *http.Request, id int, p *List{{ $e.Type.Name|zsingular }}Params) (*PagedResponse[ent.{{ $e.Type.Name }}], error) {
+            {{- $opID := getOperationIDName "list" $t $e | zpascal }}
+            // {{ $opID }} maps to "GET /{{ $t.Name|zkebab|zplural }}/{id}/{{ $e.StructField|zkebab }}".
+            func (s *Server) {{ $opID }}(r *http.Request, id int, p *List{{ $e.Type.Name|zsingular }}Params) (*PagedResponse[ent.{{ $e.Type.Name }}], error) {
                 return p.Exec(r.Context(), s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID(id)).Query{{ $e.StructField }}())
             }
         {{- end }}
@@ -292,24 +296,27 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
 
     {{- /* create nodes */}}
     {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "create" }}
-        // Create{{ $t.Name|zsingular }} maps to "POST /{{ $t.Name|zkebab|zplural }}".
-        func (s *Server) Create{{ $t.Name|zsingular }}(r *http.Request, p *Create{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
+        {{- $opID := getOperationIDName "create" $t nil | zpascal }}
+        // {{ $opID }} maps to "POST /{{ $t.Name|zkebab|zplural }}".
+        func (s *Server) {{ $opID }}(r *http.Request, p *Create{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
             return p.Exec(r.Context(), s.db.{{ $t.Name }}.Create(), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
 
     {{- /* update nodes */}}
     {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "update") }}
-        // Update{{ $t.Name|zsingular }}ByID maps to "PATCH /{{ $t.Name|zkebab|zplural }}/{id}".
-        func (s *Server) Update{{ $t.Name|zsingular }}ByID(r *http.Request, id int, p *Update{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
+        {{- $opID := getOperationIDName "update" $t nil | zpascal }}
+        // {{ $opID }} maps to "PATCH /{{ $t.Name|zkebab|zplural }}/{id}".
+        func (s *Server) {{ $opID }}(r *http.Request, id int, p *Update{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
             return p.Exec(r.Context(), s.db.{{ $t.Name }}.UpdateOneID(id), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
 
     {{- /* delete nodes */}}
     {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "delete") }}
-        // Delete{{ $t.Name|zsingular }}ByID maps to "DELETE /{{ $t.Name|zkebab|zplural }}/{id}".
-        func (s *Server) Delete{{ $t.Name|zsingular }}ByID(r *http.Request, id int) (*struct{}, error) {
+        {{- $opID := getOperationIDName "delete" $t nil | zpascal }}
+        // {{ $opID }} maps to "DELETE /{{ $t.Name|zkebab|zplural }}/{id}".
+        func (s *Server) {{ $opID }}(r *http.Request, id int) (*struct{}, error) {
             return nil, s.db.{{ $t.Name }}.DeleteOneID(id).Exec(r.Context())
         }
     {{- end }}
