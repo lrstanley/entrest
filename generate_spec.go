@@ -138,7 +138,6 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 	ta := GetAnnotation(t)
 
 	entityName := Singularize(t.Name)
-	root := "/" + Pluralize(KebabCase(t.Name))
 
 	spec := newBaseSpec(cfg)
 	spec.Tags = append(spec.Tags, ogen.Tag{
@@ -189,7 +188,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			},
 		}
 
-		spec.Paths[root] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
 			Summary:     oper.Summary,
 			Description: oper.Description,
 			Post:        oper,
@@ -221,7 +220,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			},
 		}
 
-		spec.Paths[root+"/{id}"] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
 			Summary:     fmt.Sprintf("Operate on a single %s entity", entityName),
 			Description: fmt.Sprintf("Operate on a single %s entity by its ID.", entityName),
 			Patch:       oper,
@@ -255,7 +254,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			oper.Tags = append(oper.Tags, edgesToTags(cfg, t)...)
 		}
 
-		spec.Paths[root+"/{id}"] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
 			Summary:     fmt.Sprintf("Operate on a single %s entity", entityName),
 			Description: fmt.Sprintf("Operate on a single %s entity by its ID.", entityName),
 			Get:         oper,
@@ -335,7 +334,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			oper.Tags = append(oper.Tags, edgesToTags(cfg, t)...)
 		}
 
-		spec.Paths[root] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
 			Summary:     oper.Summary,
 			Description: oper.Description,
 			Get:         oper,
@@ -363,7 +362,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			},
 		}
 
-		spec.Paths[root+"/{id}"] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
 			Summary:     fmt.Sprintf("Operate on a single %s entity", entityName),
 			Description: fmt.Sprintf("Operate on a single %s entity by its ID.", entityName),
 			Delete:      oper,
@@ -398,7 +397,6 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 	rootEntityName := Singularize(t.Name)
 	refEntityName := Singularize(e.Type.Name)
 	entityName := Singularize(PascalCase(e.Name))
-	root := "/" + Pluralize(KebabCase(t.Name)) + "/{id}/" + KebabCase(e.Name)
 
 	spec := newBaseSpec(cfg)
 	spec.Tags = append(
@@ -463,7 +461,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			},
 		}
 
-		spec.Paths[root] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, e)] = &ogen.PathItem{
 			Summary:     oper.Summary,     // Will probably always be the same.
 			Description: oper.Description, // Will probably always be the same.
 			Get:         oper,
@@ -568,7 +566,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			oper.Tags = append(oper.Tags, edgesToTags(cfg, e.Type)...)
 		}
 
-		spec.Paths[root] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, e)] = &ogen.PathItem{
 			Summary:     oper.Summary,
 			Description: oper.Description,
 			Get:         oper,
@@ -766,6 +764,8 @@ func DefaultErrorResponse(code int) *ogen.Schema {
 	}
 }
 
+// GetOperationIDName returns the operation ID for the given operation, type, and optional
+// edge, or the OperationID provided by the annotation if it exists.
 func GetOperationIDName(op Operation, t *gen.Type, e *gen.Edge) string {
 	if t == nil {
 		panic("provided type is nil")
@@ -801,6 +801,29 @@ func GetOperationIDName(op Operation, t *gen.Type, e *gen.Edge) string {
 		return "list" + Pluralize(t.Name)
 	case OperationDelete:
 		return "delete" + Singularize(t.Name) + "ByID"
+	default:
+		panic(fmt.Sprintf("unsupported operation %q", op))
+	}
+}
+
+// GetPathName returns the path name for the given operation, type, and optional edge,
+// or the OperationID provided by the annotation if it exists. Currently uses "{id}"
+// for the ID path parameter.
+func GetPathName(op Operation, t *gen.Type, e *gen.Edge) string {
+	if e != nil {
+		switch op {
+		case OperationRead, OperationList:
+			return "/" + Pluralize(KebabCase(t.Name)) + "/{id}/" + KebabCase(e.Name)
+		default:
+			panic(fmt.Sprintf("unsupported operation %q", op))
+		}
+	}
+
+	switch op {
+	case OperationRead, OperationUpdate, OperationDelete:
+		return "/" + Pluralize(KebabCase(t.Name)) + "/{id}"
+	case OperationCreate, OperationList:
+		return "/" + Pluralize(KebabCase(t.Name))
 	default:
 		panic(fmt.Sprintf("unsupported operation %q", op))
 	}
