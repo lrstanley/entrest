@@ -177,7 +177,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Create a new %s entity. %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: cmp.Or(ta.GetOperationID(op), "create"+entityName),
+			OperationID: GetOperationIDName(op, t, nil),
 			Deprecated:  ta.Deprecated,
 			RequestBody: ogen.NewRequestBody().
 				SetRequired(true).
@@ -208,7 +208,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Update an existing %s entity. %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: cmp.Or(ta.GetOperationID(op), fmt.Sprintf("update%sByID", entityName)),
+			OperationID: GetOperationIDName(op, t, nil),
 			Deprecated:  ta.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			RequestBody: ogen.NewRequestBody().
@@ -241,7 +241,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Retrieve a single %s entity by its ID. %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: cmp.Or(ta.GetOperationID(op), fmt.Sprintf("get%sByID", entityName)),
+			OperationID: GetOperationIDName(op, t, nil),
 			Deprecated:  ta.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
@@ -275,7 +275,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("List %s entities (including pagination, filtering, sorting, etc). %s", entityName, eagerLoadDepthMessage),
 			),
-			OperationID: cmp.Or(ta.GetOperationID(op), "list"+Pluralize(t.Name)),
+			OperationID: GetOperationIDName(op, t, nil),
 			Deprecated:  ta.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
@@ -354,7 +354,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				ta.GetOperationDescription(op),
 				fmt.Sprintf("Delete a single %s entity by its ID.", entityName),
 			),
-			OperationID: cmp.Or(ta.GetOperationID(op), fmt.Sprintf("delete%sByID", entityName)),
+			OperationID: GetOperationIDName(op, t, nil),
 			Deprecated:  ta.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
@@ -453,7 +453,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 					eagerLoadDepthMessage,
 				),
 			),
-			OperationID: cmp.Or(ea.GetOperationID(op), fmt.Sprintf("get%s%sByID", rootEntityName, entityName)),
+			OperationID: GetOperationIDName(op, t, e),
 			Deprecated:  ta.Deprecated || ea.Deprecated || ra.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
@@ -494,7 +494,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 					eagerLoadDepthMessage,
 				),
 			),
-			OperationID: cmp.Or(ea.GetOperationID(op), fmt.Sprintf("list%s%s", rootEntityName, entityName)),
+			OperationID: GetOperationIDName(op, t, e),
 			Deprecated:  ta.Deprecated || ea.Deprecated || ra.Deprecated,
 			Parameters:  []*ogen.Parameter{},
 			Responses: ogen.Responses{
@@ -763,5 +763,45 @@ func DefaultErrorResponse(code int) *ogen.Schema {
 			},
 		},
 		Required: []string{"error", "type", "code", "timestamp"},
+	}
+}
+
+func GetOperationIDName(op Operation, t *gen.Type, e *gen.Edge) string {
+	if t == nil {
+		panic("provided type is nil")
+	}
+
+	if e != nil {
+		if id := GetAnnotation(e).GetOperationID(op); id != "" {
+			return id
+		}
+
+		switch op {
+		case OperationRead:
+			return "get" + Singularize(t.Name) + Singularize(PascalCase(e.Name)) + "ByID"
+		case OperationList:
+			return "list" + Singularize(t.Name) + Pluralize(PascalCase(e.Name))
+		default:
+			panic(fmt.Sprintf("unsupported operation %q", op))
+		}
+	}
+
+	if id := GetAnnotation(t).GetOperationID(op); id != "" {
+		return id
+	}
+
+	switch op {
+	case OperationCreate:
+		return "create" + Singularize(t.Name)
+	case OperationUpdate:
+		return "update" + Singularize(t.Name) + "ByID"
+	case OperationRead:
+		return "get" + Singularize(t.Name) + "ByID"
+	case OperationList:
+		return "list" + Pluralize(t.Name)
+	case OperationDelete:
+		return "delete" + Singularize(t.Name) + "ByID"
+	default:
+		panic(fmt.Sprintf("unsupported operation %q", op))
 	}
 }

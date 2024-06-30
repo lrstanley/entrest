@@ -353,7 +353,7 @@
                 ],
                 "summary": "List a categories associated pets",
                 "description": "List a categories associated pets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "listCategoryPet",
+                "operationId": "listCategoryPets",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/Page"
@@ -2100,7 +2100,7 @@
                 ],
                 "summary": "Categories that the pet belongs to.",
                 "description": "List a pets associated categories (Category entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "listPetCategory",
+                "operationId": "listPetCategories",
                 "parameters": [
                     {
                         "name": "sort",
@@ -2198,7 +2198,7 @@
                 ],
                 "summary": "Users that this pet is followed by.",
                 "description": "List a pets associated followedBys (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "listPetFollowedBy",
+                "operationId": "listPetFollowedBys",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/Page"
@@ -2608,7 +2608,7 @@
                 ],
                 "summary": "Pets that this pet is friends with.",
                 "description": "List a pets associated friends (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "listPetFriend",
+                "operationId": "listPetFriends",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/Page"
@@ -3329,7 +3329,7 @@
                 ],
                 "summary": "Administrators for the platform.",
                 "description": "List a settings associated admins (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "listSettingAdmin",
+                "operationId": "listSettingAdmins",
                 "parameters": [
                     {
                         "name": "sort",
@@ -4361,7 +4361,7 @@
                 ],
                 "summary": "Pets that the user is following.",
                 "description": "List a users associated followedPets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "listUserFollowedPet",
+                "operationId": "listUserFollowedPets",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/Page"
@@ -4784,7 +4784,7 @@
                 ],
                 "summary": "Friends of the user.",
                 "description": "List a users associated friends (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "listUserFriend",
+                "operationId": "listUserFriends",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/Page"
@@ -5194,7 +5194,7 @@
                 ],
                 "summary": "List a users associated friendships",
                 "description": "List a users associated friendships (Friendship entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "listUserFriendship",
+                "operationId": "listUserFriendships",
                 "parameters": [
                     {
                         "$ref": "#/components/parameters/Page"
@@ -5297,7 +5297,7 @@
                 ],
                 "summary": "Pets owned by the user.",
                 "description": "List a users associated pets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "listUserPet",
+                "operationId": "listUserPets",
                 "parameters": [
                     {
                         "name": "sort",
