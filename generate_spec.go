@@ -167,7 +167,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 	switch op {
 	case OperationCreate:
 		oper := &ogen.Operation{
-			Tags: sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
+			Tags: sliceCompact(sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...))),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				"Create a new "+CamelCase(entityName),
@@ -198,7 +198,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	case OperationUpdate:
 		oper := &ogen.Operation{
-			Tags: sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
+			Tags: sliceCompact(sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...))),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				"Update a "+CamelCase(entityName),
@@ -231,7 +231,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	case OperationRead:
 		oper := &ogen.Operation{
-			Tags: sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
+			Tags: sliceCompact(sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...))),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				"Retrieve a "+CamelCase(entityName),
@@ -265,7 +265,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	case OperationList:
 		oper := &ogen.Operation{
-			Tags: sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
+			Tags: sliceCompact(sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...))),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				"List "+CamelCase(Pluralize(t.Name)),
@@ -344,7 +344,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	case OperationDelete:
 		oper := &ogen.Operation{
-			Tags: sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...)),
+			Tags: sliceCompact(sliceOr(ta.Tags, append([]string{entityName}, ta.AdditionalTags...))),
 			Summary: cmp.Or(
 				ta.GetOperationSummary(op),
 				"Delete a "+CamelCase(entityName),
@@ -435,7 +435,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		}
 
 		oper := &ogen.Operation{
-			Tags: sliceOr(ea.Tags, append([]string{rootEntityName, refEntityName}, ea.AdditionalTags...)),
+			Tags: sliceCompact(sliceOr(ea.Tags, append([]string{rootEntityName, refEntityName}, ea.AdditionalTags...))),
 			Summary: cmp.Or(
 				ea.GetOperationSummary(op),
 				e.Comment(),
@@ -476,7 +476,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		}
 
 		oper := &ogen.Operation{
-			Tags: sliceOr(ea.Tags, append([]string{rootEntityName, refEntityName}, ea.AdditionalTags...)),
+			Tags: sliceCompact(sliceOr(ea.Tags, append([]string{rootEntityName, refEntityName}, ea.AdditionalTags...))),
 			Summary: cmp.Or(
 				ea.GetOperationSummary(op),
 				e.Comment(),

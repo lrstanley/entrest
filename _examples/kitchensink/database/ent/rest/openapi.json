@@ -2603,7 +2603,6 @@
             "description": "List a pets associated friends (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Pet",
                     "Pet"
                 ],
                 "summary": "Pets that this pet is friends with.",
@@ -4779,7 +4778,6 @@
             "description": "List a users associated friends (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "User",
                     "User"
                 ],
                 "summary": "Friends of the user.",

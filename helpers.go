@@ -79,6 +79,12 @@ func appendCompact[T comparable](orig, newv []T) []T {
 	})
 }
 
+// sliceCompact is similasr to slices.Compact, but it keeps the original slice ordering.
+func sliceCompact[T comparable](orig []T) (compacted []T) {
+	// Start with an empty slice.
+	return appendCompact(compacted, orig)
+}
+
 // mergeMap returns a copy of orig with newv merged into it, but only if
 // newv does not already exist in orig. If orig is nil, this will panic, as we cannot
 // merge into a nil map without returning a new map.
