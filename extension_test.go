@@ -11,6 +11,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"slices"
 	"strings"
 	"sync"
 	"testing"
@@ -21,6 +22,7 @@ import (
 	"github.com/pb33f/libopenapi"
 	validator "github.com/pb33f/libopenapi-validator"
 	"github.com/spyzhov/ajson"
+	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
@@ -118,7 +120,7 @@ func (s *testSpecResult) json(jsonPath string) any {
 // buildSpec uses the shared schema cache, and invokes the extension to build the
 // spec. It also invokes the provided hook on the graph before executing the extension,
 // if provided. DOES NOT RUN SPEC VALIDATION.
-func buildSpec(_ *testing.T, config *Config, hook func(*gen.Graph)) (*testSpecResult, error) {
+func buildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) (*testSpecResult, error) {
 	if config == nil {
 		config = &Config{}
 	}
@@ -197,6 +199,20 @@ func buildSpec(_ *testing.T, config *Config, hook func(*gen.Graph)) (*testSpecRe
 			panic(fmt.Sprintf("failed to unmarshal spec: %v", err))
 		}
 	})
+
+	// Ensure that all operation IDs are unique, regardless of the test being ran.
+	var ids []string
+	for _, path := range result.spec.Paths {
+		PatchOperations(path, func(_ string, op *ogen.Operation) *ogen.Operation {
+			if op == nil {
+				return nil
+			}
+			ids = append(ids, op.OperationID)
+			return op
+		})
+	}
+	slices.Sort(ids)
+	assert.Equal(t, len(slices.Compact(ids)), len(ids), "operation IDs are not unique")
 
 	return result, nil
 }
