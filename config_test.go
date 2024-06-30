@@ -143,7 +143,7 @@ func TestConfig_DisablePagination(t *testing.T) {
 func TestConfig_ItemsPerPage(t *testing.T) {
 	t.Parallel()
 
-	base := `$.paths./pets..parameters[?(@.name == "itemsPerPage")].schema`
+	base := `$.paths./pets..parameters[?(@.name == "per_page")].schema`
 
 	t.Run("defaults", func(t *testing.T) {
 		t.Parallel()

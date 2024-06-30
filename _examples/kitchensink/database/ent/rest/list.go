@@ -113,10 +113,10 @@ func (p *PagedResponse[T]) GetIsLastPage() bool {
 }
 
 type Paginated[P PagableQuery[P, T], T any] struct {
-	Page         *int `json:"page"         form:"page,omitempty"`
-	ItemsPerPage *int `json:"itemsPerPage" form:"itemsPerPage,omitempty"`
-	ResultCount  int  `json:"-" form:"-"` // ResultCount is populated by the query execution inside of ApplyPagination.
-	LastPage     int  `json:"-" form:"-"` // LastPage is populated by the query execution inside of ApplyPagination.
+	Page         *int `json:"page"     form:"page,omitempty"`
+	ItemsPerPage *int `json:"per_page" form:"per_page,omitempty"`
+	ResultCount  int  `json:"-"        form:"-"` // ResultCount is populated by the query execution inside of ApplyPagination.
+	LastPage     int  `json:"-"        form:"-"` // LastPage is populated by the query execution inside of ApplyPagination.
 
 	hasApplied bool `json:"-" form:"-"`
 }
@@ -137,11 +137,11 @@ func (p *Paginated[P, T]) ApplyPagination(ctx context.Context, query P, pageConf
 	}
 
 	if *p.ItemsPerPage < pageConfig.MinItemsPerPage {
-		return query, &ErrBadRequest{Err: fmt.Errorf("itemsPerPage %d is out of bounds, must be >= %d", *p.ItemsPerPage, pageConfig.MinItemsPerPage)}
+		return query, &ErrBadRequest{Err: fmt.Errorf("per_page %d is out of bounds, must be >= %d", *p.ItemsPerPage, pageConfig.MinItemsPerPage)}
 	}
 
 	if *p.ItemsPerPage > pageConfig.MaxItemsPerPage {
-		return query, &ErrBadRequest{Err: fmt.Errorf("itemsPerPage %d is out of bounds, must be <= %d", *p.ItemsPerPage, pageConfig.MaxItemsPerPage)}
+		return query, &ErrBadRequest{Err: fmt.Errorf("per_page %d is out of bounds, must be <= %d", *p.ItemsPerPage, pageConfig.MaxItemsPerPage)}
 	}
 
 	if *p.Page < 1 {

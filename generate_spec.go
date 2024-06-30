@@ -291,7 +291,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				oper.Parameters,
 				&ogen.Parameter{Ref: "#/components/parameters/Page"},
 				&ogen.Parameter{
-					Name:        "itemsPerPage",
+					Name:        "per_page",
 					In:          "query",
 					Description: "The number of entities to retrieve per page.",
 					Schema: ogen.Int().
@@ -509,7 +509,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			oper.Parameters = append(oper.Parameters,
 				&ogen.Parameter{Ref: "#/components/parameters/Page"},
 				&ogen.Parameter{
-					Name:        "itemsPerPage",
+					Name:        "per_page",
 					In:          "query",
 					Description: "The number of entities to retrieve per page.",
 					Schema: ogen.Int().
