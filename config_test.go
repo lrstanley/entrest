@@ -281,9 +281,9 @@ func TestConfig_AddEdgesToTags(t *testing.T) {
 			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
 		})
 
-		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Pet")
-		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Category")
-		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "User")
+		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Pets")
+		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Categories")
+		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "Users")
 	})
 
 	t.Run("no-tags", func(t *testing.T) {
@@ -292,9 +292,9 @@ func TestConfig_AddEdgesToTags(t *testing.T) {
 			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
 		})
 
-		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Pet")
-		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "Category")
-		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "User")
+		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Pets")
+		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "Categories")
+		assert.NotContains(t, r.json(`$.paths./pets..tags.*`), "Users")
 	})
 }
 

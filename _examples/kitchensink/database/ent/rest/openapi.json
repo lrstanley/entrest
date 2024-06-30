@@ -10,7 +10,7 @@
             "description": "List Category entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "List categories",
                 "description": "List Category entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -106,7 +106,7 @@
             },
             "post": {
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Create a new category",
                 "description": "Create a new Category entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -180,7 +180,7 @@
             "description": "Operate on a single Category entity by its ID.",
             "get": {
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Retrieve a category",
                 "description": "Retrieve a single Category entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -229,7 +229,7 @@
             },
             "delete": {
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Delete a category",
                 "description": "Delete a single Category entity by its ID.",
@@ -271,7 +271,7 @@
             },
             "patch": {
                 "tags": [
-                    "Category"
+                    "Categories"
                 ],
                 "summary": "Update a category",
                 "description": "Update an existing Category entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -348,8 +348,8 @@
             "description": "List a categories associated pets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Category",
-                    "Pet"
+                    "Categories",
+                    "Pets"
                 ],
                 "summary": "List a categories associated pets",
                 "description": "List a categories associated pets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -771,7 +771,7 @@
             "description": "List Follow entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Follow"
+                    "Follows"
                 ],
                 "summary": "List follows",
                 "description": "List Follow entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -856,7 +856,7 @@
             },
             "post": {
                 "tags": [
-                    "Follow"
+                    "Follows"
                 ],
                 "summary": "Create a new follow",
                 "description": "Create a new Follow entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -930,7 +930,7 @@
             "description": "List Friendship entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Friendship"
+                    "Friendships"
                 ],
                 "summary": "List friendships",
                 "description": "List Friendship entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -1017,7 +1017,7 @@
             },
             "post": {
                 "tags": [
-                    "Friendship"
+                    "Friendships"
                 ],
                 "summary": "Create a new friendship",
                 "description": "Create a new Friendship entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -1091,7 +1091,7 @@
             "description": "Operate on a single Friendship entity by its ID.",
             "get": {
                 "tags": [
-                    "Friendship"
+                    "Friendships"
                 ],
                 "summary": "Retrieve a friendship",
                 "description": "Retrieve a single Friendship entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -1140,7 +1140,7 @@
             },
             "delete": {
                 "tags": [
-                    "Friendship"
+                    "Friendships"
                 ],
                 "summary": "Delete a friendship",
                 "description": "Delete a single Friendship entity by its ID.",
@@ -1182,7 +1182,7 @@
             },
             "patch": {
                 "tags": [
-                    "Friendship"
+                    "Friendships"
                 ],
                 "summary": "Update a friendship",
                 "description": "Update an existing Friendship entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -1259,8 +1259,8 @@
             "description": "Get a friendships associated friend (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Friendship",
-                    "User"
+                    "Friendships",
+                    "Users"
                 ],
                 "summary": "Get a friendships associated friend",
                 "description": "Get a friendships associated friend (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -1324,8 +1324,8 @@
             "description": "Get a friendships associated user (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Friendship",
-                    "User"
+                    "Friendships",
+                    "Users"
                 ],
                 "summary": "Get a friendships associated user",
                 "description": "Get a friendships associated user (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -1446,7 +1446,7 @@
             "description": "List Pet entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Pet"
+                    "Pets"
                 ],
                 "summary": "List pets",
                 "description": "List Pet entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -1853,7 +1853,7 @@
             },
             "post": {
                 "tags": [
-                    "Pet"
+                    "Pets"
                 ],
                 "summary": "Create a new pet",
                 "description": "Create a new Pet entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -1927,7 +1927,7 @@
             "description": "Operate on a single Pet entity by its ID.",
             "get": {
                 "tags": [
-                    "Pet"
+                    "Pets"
                 ],
                 "summary": "Retrieve a pet",
                 "description": "Retrieve a single Pet entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -1976,7 +1976,7 @@
             },
             "delete": {
                 "tags": [
-                    "Pet"
+                    "Pets"
                 ],
                 "summary": "Delete a pet",
                 "description": "Delete a single Pet entity by its ID.",
@@ -2018,7 +2018,7 @@
             },
             "patch": {
                 "tags": [
-                    "Pet"
+                    "Pets"
                 ],
                 "summary": "Update a pet",
                 "description": "Update an existing Pet entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -2095,8 +2095,8 @@
             "description": "List a pets associated categories (Category entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Pet",
-                    "Category"
+                    "Pets",
+                    "Categories"
                 ],
                 "summary": "Categories that the pet belongs to.",
                 "description": "List a pets associated categories (Category entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -2193,8 +2193,8 @@
             "description": "List a pets associated followedBys (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Pet",
-                    "User"
+                    "Pets",
+                    "Users"
                 ],
                 "summary": "Users that this pet is followed by.",
                 "description": "List a pets associated followedBys (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -2603,7 +2603,7 @@
             "description": "List a pets associated friends (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Pet"
+                    "Pets"
                 ],
                 "summary": "Pets that this pet is friends with.",
                 "description": "List a pets associated friends (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -3025,8 +3025,8 @@
             "description": "Get a pets associated owner (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Pet",
-                    "User"
+                    "Pets",
+                    "Users"
                 ],
                 "summary": "The user that owns the pet.",
                 "description": "Get a pets associated owner (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -3090,7 +3090,7 @@
             "description": "List Setting entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Setting"
+                    "Settings"
                 ],
                 "summary": "List settings",
                 "description": "List Setting entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -3197,7 +3197,7 @@
             "description": "Operate on a single Setting entity by its ID.",
             "get": {
                 "tags": [
-                    "Setting"
+                    "Settings"
                 ],
                 "summary": "Retrieve a setting",
                 "description": "Retrieve a single Setting entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -3246,7 +3246,7 @@
             },
             "patch": {
                 "tags": [
-                    "Setting"
+                    "Settings"
                 ],
                 "summary": "Update a setting",
                 "description": "Update an existing Setting entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -3323,8 +3323,8 @@
             "description": "List a settings associated admins (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "Setting",
-                    "User"
+                    "Settings",
+                    "Users"
                 ],
                 "summary": "Administrators for the platform.",
                 "description": "List a settings associated admins (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -3719,7 +3719,7 @@
             "description": "List User entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "List users",
                 "description": "List User entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -4113,7 +4113,7 @@
             },
             "post": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "Create a new user",
                 "description": "Create a new User entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -4187,7 +4187,7 @@
             "description": "Operate on a single User entity by its ID.",
             "get": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "Retrieve a user",
                 "description": "Retrieve a single User entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -4236,7 +4236,7 @@
             },
             "delete": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "Delete a user",
                 "description": "Delete a single User entity by its ID.",
@@ -4278,7 +4278,7 @@
             },
             "patch": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "Update a user",
                 "description": "Update an existing User entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -4355,8 +4355,8 @@
             "description": "List a users associated followedPets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "User",
-                    "Pet"
+                    "Users",
+                    "Pets"
                 ],
                 "summary": "Pets that the user is following.",
                 "description": "List a users associated followedPets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -4778,7 +4778,7 @@
             "description": "List a users associated friends (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "User"
+                    "Users"
                 ],
                 "summary": "Friends of the user.",
                 "description": "List a users associated friends (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -5187,8 +5187,8 @@
             "description": "List a users associated friendships (Friendship entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "User",
-                    "Friendship"
+                    "Users",
+                    "Friendships"
                 ],
                 "summary": "List a users associated friendships",
                 "description": "List a users associated friendships (Friendship entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -5290,8 +5290,8 @@
             "description": "List a users associated pets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
                 "tags": [
-                    "User",
-                    "Pet"
+                    "Users",
+                    "Pets"
                 ],
                 "summary": "Pets owned by the user.",
                 "description": "List a users associated pets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -8937,22 +8937,22 @@
             "description": "Includes various endpoints for meta information about the service, like the OpenAPI spec, version, health, etc."
         },
         {
-            "name": "Category"
+            "name": "Categories"
         },
         {
-            "name": "Pet"
+            "name": "Pets"
         },
         {
-            "name": "Follow"
+            "name": "Follows"
         },
         {
-            "name": "Friendship"
+            "name": "Friendships"
         },
         {
-            "name": "User"
+            "name": "Users"
         },
         {
-            "name": "Setting",
+            "name": "Settings",
             "description": "Settings contains the global settings for the platform. Generally only one should ever be returned."
         }
     ]
