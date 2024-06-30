@@ -175,7 +175,7 @@
                 }
             ]
         },
-        "/categories/{id}": {
+        "/categories/{categoryID}": {
             "summary": "Operate on a single Category entity",
             "description": "Operate on a single Category entity by its ID.",
             "get": {
@@ -343,7 +343,7 @@
                 }
             ]
         },
-        "/categories/{id}/pets": {
+        "/categories/{categoryID}/pets": {
             "summary": "List a categories associated pets",
             "description": "List a categories associated pets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -1086,7 +1086,7 @@
                 }
             ]
         },
-        "/friendships/{id}": {
+        "/friendships/{friendshipID}": {
             "summary": "Operate on a single Friendship entity",
             "description": "Operate on a single Friendship entity by its ID.",
             "get": {
@@ -1254,7 +1254,7 @@
                 }
             ]
         },
-        "/friendships/{id}/friend": {
+        "/friendships/{friendshipID}/friend": {
             "summary": "Get a friendships associated friend",
             "description": "Get a friendships associated friend (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -1319,7 +1319,7 @@
                 }
             ]
         },
-        "/friendships/{id}/user": {
+        "/friendships/{friendshipID}/user": {
             "summary": "Get a friendships associated user",
             "description": "Get a friendships associated user (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -1922,7 +1922,7 @@
                 }
             ]
         },
-        "/pets/{id}": {
+        "/pets/{petID}": {
             "summary": "Operate on a single Pet entity",
             "description": "Operate on a single Pet entity by its ID.",
             "get": {
@@ -2090,7 +2090,7 @@
                 }
             ]
         },
-        "/pets/{id}/categories": {
+        "/pets/{petID}/categories": {
             "summary": "Categories that the pet belongs to.",
             "description": "List a pets associated categories (Category entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -2188,7 +2188,7 @@
                 }
             ]
         },
-        "/pets/{id}/followed-by": {
+        "/pets/{petID}/followed-by": {
             "summary": "Users that this pet is followed by.",
             "description": "List a pets associated followedBys (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -2598,7 +2598,7 @@
                 }
             ]
         },
-        "/pets/{id}/friends": {
+        "/pets/{petID}/friends": {
             "summary": "Pets that this pet is friends with.",
             "description": "List a pets associated friends (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -3020,7 +3020,7 @@
                 }
             ]
         },
-        "/pets/{id}/owner": {
+        "/pets/{petID}/owner": {
             "summary": "The user that owns the pet.",
             "description": "Get a pets associated owner (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -3192,7 +3192,7 @@
                 }
             ]
         },
-        "/settings/{id}": {
+        "/settings/{settingID}": {
             "summary": "Operate on a single Setting entity",
             "description": "Operate on a single Setting entity by its ID.",
             "get": {
@@ -3318,7 +3318,7 @@
                 }
             ]
         },
-        "/settings/{id}/admins": {
+        "/settings/{settingID}/admins": {
             "summary": "Administrators for the platform.",
             "description": "List a settings associated admins (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -4182,7 +4182,7 @@
                 }
             ]
         },
-        "/users/{id}": {
+        "/users/{userID}": {
             "summary": "Operate on a single User entity",
             "description": "Operate on a single User entity by its ID.",
             "get": {
@@ -4350,7 +4350,7 @@
                 }
             ]
         },
-        "/users/{id}/followed-pets": {
+        "/users/{userID}/followed-pets": {
             "summary": "Pets that the user is following.",
             "description": "List a users associated followedPets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -4773,7 +4773,7 @@
                 }
             ]
         },
-        "/users/{id}/friends": {
+        "/users/{userID}/friends": {
             "summary": "Friends of the user.",
             "description": "List a users associated friends (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -5182,7 +5182,7 @@
                 }
             ]
         },
-        "/users/{id}/friendships": {
+        "/users/{userID}/friendships": {
             "summary": "List a users associated friendships",
             "description": "List a users associated friendships (Friendship entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -5285,7 +5285,7 @@
                 }
             ]
         },
-        "/users/{id}/pets": {
+        "/users/{userID}/pets": {
             "summary": "Pets owned by the user.",
             "description": "List a users associated pets (Pet entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
             "get": {
@@ -7012,7 +7012,7 @@
                 }
             },
             "CategoryID": {
-                "name": "id",
+                "name": "categoryID",
                 "in": "path",
                 "description": "The ID of the Category to act upon.",
                 "required": true,
@@ -8367,7 +8367,7 @@
                 }
             },
             "FriendshipID": {
-                "name": "id",
+                "name": "friendshipID",
                 "in": "path",
                 "description": "The ID of the Friendship to act upon.",
                 "required": true,
@@ -8448,7 +8448,7 @@
                 }
             },
             "PetID": {
-                "name": "id",
+                "name": "petID",
                 "in": "path",
                 "description": "The ID of the Pet to act upon.",
                 "required": true,
@@ -8554,7 +8554,7 @@
                 }
             },
             "SettingID": {
-                "name": "id",
+                "name": "settingID",
                 "in": "path",
                 "description": "The ID of the Setting to act upon.",
                 "required": true,
@@ -8742,7 +8742,7 @@
                 }
             },
             "UserID": {
-                "name": "id",
+                "name": "userID",
                 "in": "path",
                 "description": "The ID of the User to act upon.",
                 "required": true,

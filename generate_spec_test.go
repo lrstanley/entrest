@@ -29,8 +29,8 @@ func TestSpec_ThroughSchema_TwoTypes(t *testing.T) {
 
 	assert.NotNil(t, r.json(`$.paths./follows.get.responses.200`))
 	assert.NotNil(t, r.json(`$.paths./follows.post.responses.201`))
-	assert.NotNil(t, r.json(`$.paths./pets/{id}/followed-by.get.responses.200`))
-	assert.NotNil(t, r.json(`$.paths./users/{id}/followed-pets.get.responses.200`))
+	assert.NotNil(t, r.json(`$.paths./pets/{petID}/followed-by.get.responses.200`))
+	assert.NotNil(t, r.json(`$.paths./users/{userID}/followed-pets.get.responses.200`))
 	assert.NotNil(t, r.json(`$.components.schemas.FollowRead`))
 	assert.Equal(t, "object", r.json(`$.components.schemas.FollowCreate.type`))
 	assert.NotNil(t, r.json(`$.components.schemas.FollowList`))
@@ -38,13 +38,13 @@ func TestSpec_ThroughSchema_TwoTypes(t *testing.T) {
 	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.add_followed_by`))
 	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.remove_followed_by`))
 	assert.ElementsMatch(t, []string{http.MethodGet, http.MethodPost}, getPathMethods(t, r, "/follows"))
-	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/pets/{id}/followed-by"))
-	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/users/{id}/followed-pets"))
+	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/pets/{petID}/followed-by"))
+	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/users/{userID}/followed-pets"))
 
 	allowedPaths := []string{
 		"/follows",
-		"/pets/{id}/followed-by",
-		"/users/{id}/followed-pets",
+		"/pets/{petID}/followed-by",
+		"/users/{userID}/followed-pets",
 	}
 
 	for name := range r.spec.Paths {
@@ -65,17 +65,17 @@ func TestSpec_ThroughSchema_OneType(t *testing.T) {
 	assert.NotNil(t, r.json(`$.components.schemas.FriendshipRead`))
 	assert.NotNil(t, r.json(`$.components.schemas.FriendshipUpdate`))
 	assert.ElementsMatch(t, []string{http.MethodGet, http.MethodPost}, getPathMethods(t, r, "/friendships"))
-	assert.ElementsMatch(t, []string{http.MethodGet, http.MethodPatch, http.MethodDelete}, getPathMethods(t, r, "/friendships/{id}"))
-	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/friendships/{id}/friend"))
-	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/friendships/{id}/user"))
-	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/users/{id}/friendships"))
+	assert.ElementsMatch(t, []string{http.MethodGet, http.MethodPatch, http.MethodDelete}, getPathMethods(t, r, "/friendships/{friendshipID}"))
+	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/friendships/{friendshipID}/friend"))
+	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/friendships/{friendshipID}/user"))
+	assert.ElementsMatch(t, []string{http.MethodGet}, getPathMethods(t, r, "/users/{userID}/friendships"))
 
 	allowedPaths := []string{
 		"/friendships",
-		"/friendships/{id}",
-		"/friendships/{id}/friend", // TODO: do we want this endpoint?
-		"/friendships/{id}/user",   // TODO: do we want this endpoint?
-		"/users/{id}/friendships",
+		"/friendships/{friendshipID}",
+		"/friendships/{friendshipID}/friend", // TODO: do we want this endpoint?
+		"/friendships/{friendshipID}/user",   // TODO: do we want this endpoint?
+		"/users/{userID}/friendships",
 	}
 
 	for name := range r.spec.Paths {

@@ -100,7 +100,7 @@ func TestConfig_DisablePagination(t *testing.T) {
 		t.Parallel()
 		r := mustBuildSpec(t, &Config{DisablePagination: false}, nil)
 
-		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..responses..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/CategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
 	})
 
@@ -124,7 +124,7 @@ func TestConfig_DisablePagination(t *testing.T) {
 			injectAnnotations(t, g, "Pet.categories", WithPagination(true))
 		})
 
-		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..responses..schema.$ref`), "/PetCategoryList")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/PetCategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.PetCategoryList.allOf.*.$ref`), "/PagedResponse")
 	})
 
@@ -135,7 +135,7 @@ func TestConfig_DisablePagination(t *testing.T) {
 		r := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
 			injectAnnotations(t, g, "Category", WithPagination(true))
 		})
-		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..responses..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/CategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
 	})
 }
@@ -215,7 +215,7 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 
 		// The edge endpoint should point to the paged schema, despite us eager-loading
 		// it.
-		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..schema.$ref`), "/CategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
 	})
 
@@ -232,7 +232,7 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 
 		// The edge endpoint should also be non-paged, because we optimized away the
 		// need for pagination, given the edge is eager-loaded.
-		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..schema.$ref`), "/PetCategoryList")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..schema.$ref`), "/PetCategoryList")
 		assert.Equal(t, "array", r.json(`$.components.schemas.PetCategoryList.type`))
 	})
 
@@ -240,7 +240,7 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 		t.Parallel()
 		r := mustBuildSpec(t, &Config{DisableEagerLoadNonPagedOpt: true}, nil)
 
-		assert.Contains(t, r.json(`$.paths./pets/{id}/categories..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..schema.$ref`), "/CategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
 	})
 }
@@ -255,8 +255,8 @@ func TestConfig_DisableEagerLoadedEndpoints(t *testing.T) {
 			injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
 		})
 
-		assert.NotNil(t, r.json(`$.paths./pets/{id}/categories`))
-		assert.NotNil(t, r.json(`$.paths./pets/{id}/owner`))
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/categories`))
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/owner`))
 	})
 
 	t.Run("no-endpoints-with-eager-load", func(t *testing.T) {
@@ -267,8 +267,8 @@ func TestConfig_DisableEagerLoadedEndpoints(t *testing.T) {
 		})
 
 		// The endpoints should be nil, because we disabled them.
-		assert.Nil(t, r.json(`$.paths./pets/{id}/categories`))
-		assert.Nil(t, r.json(`$.paths./pets/{id}/owner`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/owner`))
 	})
 }
 
@@ -360,31 +360,31 @@ func TestConfig_DefaultOperations(t *testing.T) {
 			}
 
 			if slices.Contains(tt.ops, OperationRead) {
-				assert.NotNil(t, r.json(`$.paths./pets/{id}.get`))
-				assert.NotNil(t, r.json(`$.paths./pets/{id}/owner.get`))
+				assert.NotNil(t, r.json(`$.paths./pets/{petID}.get`))
+				assert.NotNil(t, r.json(`$.paths./pets/{petID}/owner.get`))
 			} else {
-				assert.Nil(t, r.json(`$.paths./pets/{id}.get`))
-				assert.Nil(t, r.json(`$.paths./pets/{id}/owner.get`))
+				assert.Nil(t, r.json(`$.paths./pets/{petID}.get`))
+				assert.Nil(t, r.json(`$.paths./pets/{petID}/owner.get`))
 			}
 
 			if slices.Contains(tt.ops, OperationUpdate) {
-				assert.NotNil(t, r.json(`$.paths./pets/{id}.patch`))
+				assert.NotNil(t, r.json(`$.paths./pets/{petID}.patch`))
 			} else {
-				assert.Nil(t, r.json(`$.paths./pets/{id}.patch`))
+				assert.Nil(t, r.json(`$.paths./pets/{petID}.patch`))
 			}
 
 			if slices.Contains(tt.ops, OperationDelete) {
-				assert.NotNil(t, r.json(`$.paths./pets/{id}.delete`))
+				assert.NotNil(t, r.json(`$.paths./pets/{petID}.delete`))
 			} else {
-				assert.Nil(t, r.json(`$.paths./pets/{id}.delete`))
+				assert.Nil(t, r.json(`$.paths./pets/{petID}.delete`))
 			}
 
 			if slices.Contains(tt.ops, OperationList) {
 				assert.NotNil(t, r.json(`$.paths./pets.get`))
-				assert.NotNil(t, r.json(`$.paths./pets/{id}/categories.get`))
+				assert.NotNil(t, r.json(`$.paths./pets/{petID}/categories.get`))
 			} else {
 				assert.Nil(t, r.json(`$.paths./pets.get`))
-				assert.Nil(t, r.json(`$.paths./pets/{id}/categories.get`))
+				assert.Nil(t, r.json(`$.paths./pets/{petID}/categories.get`))
 			}
 		})
 	}
@@ -428,17 +428,17 @@ func TestConfig_GlobalHeaders(t *testing.T) {
 
 	assert.Contains(t, r.json(`$.paths./pets.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
 	assert.Contains(t, r.json(`$.paths./pets.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
-	assert.Contains(t, r.json(`$.paths./pets/{id}.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
-	assert.Contains(t, r.json(`$.paths./pets/{id}.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
-	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
-	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}/categories.parameters.*.$ref`), "#/components/parameters/X-Request-ID")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}/categories.parameters.*.$ref`), "#/components/parameters/Foo-Bar")
 
 	assert.Contains(t, r.json(`$.paths./pets.get.responses.*.headers`), "X-Ratelimit-Limit")
 	assert.Contains(t, r.json(`$.paths./pets.get.responses.*.headers`), "X-Ratelimit-Remaining")
-	assert.Contains(t, r.json(`$.paths./pets/{id}.get.responses.*.headers`), "X-Ratelimit-Limit")
-	assert.Contains(t, r.json(`$.paths./pets/{id}.get.responses.*.headers`), "X-Ratelimit-Remaining")
-	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.get.responses.*.headers`), "X-Ratelimit-Limit")
-	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.get.responses.*.headers`), "X-Ratelimit-Remaining")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}.get.responses.*.headers`), "X-Ratelimit-Limit")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}.get.responses.*.headers`), "X-Ratelimit-Remaining")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}/categories.get.responses.*.headers`), "X-Ratelimit-Limit")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}/categories.get.responses.*.headers`), "X-Ratelimit-Remaining")
 
 	assert.Contains(t, r.json(`$.components.responses.ErrorConflict.headers`), "X-Ratelimit-Limit")
 	assert.Contains(t, r.json(`$.components.responses.ErrorConflict.headers`), "X-Ratelimit-Remaining")
@@ -487,20 +487,20 @@ func TestConfig_GlobalErrorResponses(t *testing.T) {
 
 		// ErrorConflict only exists on POST and PATCH related endpoints.
 		assert.Contains(t, r.json(`$.paths./pets.post.responses`), "409")
-		assert.Contains(t, r.json(`$.paths./pets/{id}.patch.responses`), "409")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}.patch.responses`), "409")
 		assert.NotContains(t, r.json(`$.paths./pets.get.responses`), "409")
-		assert.NotContains(t, r.json(`$.paths./pets/{id}.delete.responses`), "409")
-		assert.NotContains(t, r.json(`$.paths./pets/{id}.get.responses`), "409")
-		assert.NotContains(t, r.json(`$.paths./pets/{id}/owner.get.responses`), "409")
+		assert.NotContains(t, r.json(`$.paths./pets/{petID}.delete.responses`), "409")
+		assert.NotContains(t, r.json(`$.paths./pets/{petID}.get.responses`), "409")
+		assert.NotContains(t, r.json(`$.paths./pets/{petID}/owner.get.responses`), "409")
 
 		// ErrorNotFound doesn't exist on list related endpoints.
-		assert.Contains(t, r.json(`$.paths./pets/{id}.get.responses`), "404")
-		assert.Contains(t, r.json(`$.paths./pets/{id}.patch.responses`), "404")
-		assert.Contains(t, r.json(`$.paths./pets/{id}.delete.responses`), "404")
-		assert.Contains(t, r.json(`$.paths./pets/{id}/owner.get.responses`), "404")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}.get.responses`), "404")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}.patch.responses`), "404")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}.delete.responses`), "404")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/owner.get.responses`), "404")
 		assert.Contains(t, r.json(`$.paths./foo.get.responses`), "404")
 		assert.NotContains(t, r.json(`$.paths./pets.get.responses`), "404")
-		assert.NotContains(t, r.json(`$.paths./pets/{id}/categories.get.responses`), "404")
+		assert.NotContains(t, r.json(`$.paths./pets/{petID}/categories.get.responses`), "404")
 	})
 
 	t.Run("custom", func(t *testing.T) {
@@ -532,13 +532,13 @@ func TestConfig_GlobalErrorResponses(t *testing.T) {
 		assert.Equal(t, "object", r.json(`$.components.schemas.ErrorInternalServerError.type`))
 		assert.Equal(t, "string", r.json(`$.components.schemas.ErrorInternalServerError.properties.foo.type`))
 
-		assert.Contains(t, r.json(`$.paths./pets/{id}.get.responses`), "500")
-		assert.Contains(t, r.json(`$.paths./pets/{id}.patch.responses`), "500")
-		assert.Contains(t, r.json(`$.paths./pets/{id}.delete.responses`), "500")
-		assert.Contains(t, r.json(`$.paths./pets/{id}/owner.get.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}.get.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}.patch.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}.delete.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/owner.get.responses`), "500")
 		assert.Contains(t, r.json(`$.paths./foo.get.responses`), "500")
 		assert.Contains(t, r.json(`$.paths./pets.get.responses`), "500")
-		assert.Contains(t, r.json(`$.paths./pets/{id}/categories.get.responses`), "500")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories.get.responses`), "500")
 	})
 }
 

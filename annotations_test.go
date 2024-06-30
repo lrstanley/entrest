@@ -152,10 +152,10 @@ func TestAnnotation_AdditionalTags(t *testing.T) {
 
 	assert.Contains(t, r.json(`$.paths./pets.get.tags`), "Foo")
 	assert.Contains(t, r.json(`$.paths./pets.post.tags`), "Foo")
-	assert.Contains(t, r.json(`$.paths./pets/{id}.get.tags`), "Foo")
-	assert.Contains(t, r.json(`$.paths./pets/{id}.patch.tags`), "Foo")
-	assert.Contains(t, r.json(`$.paths./pets/{id}.delete.tags`), "Foo")
-	assert.Contains(t, r.json(`$.paths./pets/{id}/categories.get.tags`), "Bar")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}.get.tags`), "Foo")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}.patch.tags`), "Foo")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}.delete.tags`), "Foo")
+	assert.Contains(t, r.json(`$.paths./pets/{petID}/categories.get.tags`), "Bar")
 }
 
 func TestAnnotation_Tags(t *testing.T) {
@@ -168,10 +168,10 @@ func TestAnnotation_Tags(t *testing.T) {
 
 	assert.Equal(t, "Foo", r.json(`$.paths./pets.get.tags.*`))
 	assert.Equal(t, "Foo", r.json(`$.paths./pets.post.tags.*`))
-	assert.Equal(t, "Foo", r.json(`$.paths./pets/{id}.get.tags.*`))
-	assert.Equal(t, "Foo", r.json(`$.paths./pets/{id}.patch.tags.*`))
-	assert.Equal(t, "Foo", r.json(`$.paths./pets/{id}.delete.tags.*`))
-	assert.Equal(t, "Bar", r.json(`$.paths./pets/{id}/categories.get.tags.*`))
+	assert.Equal(t, "Foo", r.json(`$.paths./pets/{petID}.get.tags.*`))
+	assert.Equal(t, "Foo", r.json(`$.paths./pets/{petID}.patch.tags.*`))
+	assert.Equal(t, "Foo", r.json(`$.paths./pets/{petID}.delete.tags.*`))
+	assert.Equal(t, "Bar", r.json(`$.paths./pets/{petID}/categories.get.tags.*`))
 }
 
 func TestAnnotation_EdgeUpdateBulk(t *testing.T) {

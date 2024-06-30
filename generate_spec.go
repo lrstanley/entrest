@@ -151,8 +151,8 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			return nil, err
 		}
 
-		spec.Components.Parameters[entityName+"ID"] = &ogen.Parameter{
-			Name:        "id",
+		spec.Components.Parameters[Singularize(t.Name)+"ID"] = &ogen.Parameter{
+			Name:        CamelCase(Singularize(t.Name)) + "ID",
 			In:          "path",
 			Description: fmt.Sprintf("The ID of the %s to act upon.", entityName),
 			Required:    true,
@@ -188,7 +188,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			},
 		}
 
-		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil, true)] = &ogen.PathItem{
 			Summary:     oper.Summary,
 			Description: oper.Description,
 			Post:        oper,
@@ -220,13 +220,13 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			},
 		}
 
-		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil, true)] = &ogen.PathItem{
 			Summary:     fmt.Sprintf("Operate on a single %s entity", entityName),
 			Description: fmt.Sprintf("Operate on a single %s entity by its ID.", entityName),
 			Patch:       oper,
 			Parameters: []*ogen.Parameter{
 				{Ref: "#/components/parameters/PrettyResponse"},
-				{Ref: "#/components/parameters/" + entityName + "ID"},
+				{Ref: "#/components/parameters/" + Singularize(t.Name) + "ID"},
 			},
 		}
 	case OperationRead:
@@ -254,13 +254,13 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			oper.Tags = append(oper.Tags, edgesToTags(cfg, t)...)
 		}
 
-		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil, true)] = &ogen.PathItem{
 			Summary:     fmt.Sprintf("Operate on a single %s entity", entityName),
 			Description: fmt.Sprintf("Operate on a single %s entity by its ID.", entityName),
 			Get:         oper,
 			Parameters: []*ogen.Parameter{
 				{Ref: "#/components/parameters/PrettyResponse"},
-				{Ref: "#/components/parameters/" + entityName + "ID"},
+				{Ref: "#/components/parameters/" + Singularize(t.Name) + "ID"},
 			},
 		}
 	case OperationList:
@@ -334,7 +334,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			oper.Tags = append(oper.Tags, edgesToTags(cfg, t)...)
 		}
 
-		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil, true)] = &ogen.PathItem{
 			Summary:     oper.Summary,
 			Description: oper.Description,
 			Get:         oper,
@@ -362,12 +362,12 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			},
 		}
 
-		spec.Paths[GetPathName(op, t, nil)] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, nil, true)] = &ogen.PathItem{
 			Summary:     fmt.Sprintf("Operate on a single %s entity", entityName),
 			Description: fmt.Sprintf("Operate on a single %s entity by its ID.", entityName),
 			Delete:      oper,
 			Parameters: []*ogen.Parameter{
-				{Ref: "#/components/parameters/" + entityName + "ID"},
+				{Ref: "#/components/parameters/" + Singularize(t.Name) + "ID"},
 			},
 		}
 	default:
@@ -416,8 +416,8 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		return nil, err
 	}
 
-	spec.Components.Parameters[rootEntityName+"ID"] = &ogen.Parameter{
-		Name:        "id",
+	spec.Components.Parameters[Singularize(t.Name)+"ID"] = &ogen.Parameter{
+		Name:        CamelCase(Singularize(t.Name)) + "ID",
 		In:          "path",
 		Description: fmt.Sprintf("The ID of the %s to act upon.", rootEntityName),
 		Required:    true,
@@ -461,13 +461,13 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			},
 		}
 
-		spec.Paths[GetPathName(op, t, e)] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, e, true)] = &ogen.PathItem{
 			Summary:     oper.Summary,     // Will probably always be the same.
 			Description: oper.Description, // Will probably always be the same.
 			Get:         oper,
 			Parameters: []*ogen.Parameter{
 				{Ref: "#/components/parameters/PrettyResponse"},
-				{Ref: "#/components/parameters/" + rootEntityName + "ID"},
+				{Ref: "#/components/parameters/" + Singularize(t.Name) + "ID"},
 			},
 		}
 	case OperationList: // Not unique.
@@ -566,13 +566,13 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			oper.Tags = append(oper.Tags, edgesToTags(cfg, e.Type)...)
 		}
 
-		spec.Paths[GetPathName(op, t, e)] = &ogen.PathItem{
+		spec.Paths[GetPathName(op, t, e, true)] = &ogen.PathItem{
 			Summary:     oper.Summary,
 			Description: oper.Description,
 			Get:         oper,
 			Parameters: []*ogen.Parameter{
 				{Ref: "#/components/parameters/PrettyResponse"},
-				{Ref: "#/components/parameters/" + rootEntityName + "ID"},
+				{Ref: "#/components/parameters/" + Singularize(t.Name) + "ID"},
 			},
 		}
 	default:
@@ -807,13 +807,18 @@ func GetOperationIDName(op Operation, t *gen.Type, e *gen.Edge) string {
 }
 
 // GetPathName returns the path name for the given operation, type, and optional edge,
-// or the OperationID provided by the annotation if it exists. Currently uses "{id}"
-// for the ID path parameter.
-func GetPathName(op Operation, t *gen.Type, e *gen.Edge) string {
+// or the OperationID provided by the annotation if it exists. useUniqueID determines
+// if the ID path parameter should be "{id}" or "{type|camel}ID".
+func GetPathName(op Operation, t *gen.Type, e *gen.Edge, useUniqueID bool) string {
+	id := "{id}"
+	if useUniqueID {
+		id = "{" + CamelCase(Singularize(t.Name)) + "ID}"
+	}
+
 	if e != nil {
 		switch op {
 		case OperationRead, OperationList:
-			return "/" + Pluralize(KebabCase(t.Name)) + "/{id}/" + KebabCase(e.Name)
+			return "/" + Pluralize(KebabCase(t.Name)) + "/" + id + "/" + KebabCase(e.Name)
 		default:
 			panic(fmt.Sprintf("unsupported operation %q", op))
 		}
@@ -821,7 +826,7 @@ func GetPathName(op Operation, t *gen.Type, e *gen.Edge) string {
 
 	switch op {
 	case OperationRead, OperationUpdate, OperationDelete:
-		return "/" + Pluralize(KebabCase(t.Name)) + "/{id}"
+		return "/" + Pluralize(KebabCase(t.Name)) + "/" + id
 	case OperationCreate, OperationList:
 		return "/" + Pluralize(KebabCase(t.Name))
 	default:
