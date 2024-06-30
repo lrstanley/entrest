@@ -184,7 +184,7 @@
                 ],
                 "summary": "Retrieve a category",
                 "description": "Retrieve a single Category entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "getCategoryByID",
+                "operationId": "getCategory",
                 "responses": {
                     "200": {
                         "description": "The requested Category entity.",
@@ -233,7 +233,7 @@
                 ],
                 "summary": "Delete a category",
                 "description": "Delete a single Category entity by its ID.",
-                "operationId": "deleteCategoryByID",
+                "operationId": "deleteCategory",
                 "responses": {
                     "204": {
                         "description": "The requested Category entity.",
@@ -275,7 +275,7 @@
                 ],
                 "summary": "Update a category",
                 "description": "Update an existing Category entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "updateCategoryByID",
+                "operationId": "updateCategory",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1095,7 +1095,7 @@
                 ],
                 "summary": "Retrieve a friendship",
                 "description": "Retrieve a single Friendship entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "getFriendshipByID",
+                "operationId": "getFriendship",
                 "responses": {
                     "200": {
                         "description": "The requested Friendship entity.",
@@ -1144,7 +1144,7 @@
                 ],
                 "summary": "Delete a friendship",
                 "description": "Delete a single Friendship entity by its ID.",
-                "operationId": "deleteFriendshipByID",
+                "operationId": "deleteFriendship",
                 "responses": {
                     "204": {
                         "description": "The requested Friendship entity.",
@@ -1186,7 +1186,7 @@
                 ],
                 "summary": "Update a friendship",
                 "description": "Update an existing Friendship entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "updateFriendshipByID",
+                "operationId": "updateFriendship",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -1264,7 +1264,7 @@
                 ],
                 "summary": "Get a friendships associated friend",
                 "description": "Get a friendships associated friend (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "getFriendshipFriendByID",
+                "operationId": "getFriendshipFriend",
                 "responses": {
                     "200": {
                         "description": "The requested friend entity.",
@@ -1329,7 +1329,7 @@
                 ],
                 "summary": "Get a friendships associated user",
                 "description": "Get a friendships associated user (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "getFriendshipUserByID",
+                "operationId": "getFriendshipUser",
                 "responses": {
                     "200": {
                         "description": "The requested user entity.",
@@ -1931,7 +1931,7 @@
                 ],
                 "summary": "Retrieve a pet",
                 "description": "Retrieve a single Pet entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "getPetByID",
+                "operationId": "getPet",
                 "responses": {
                     "200": {
                         "description": "The requested Pet entity.",
@@ -1980,7 +1980,7 @@
                 ],
                 "summary": "Delete a pet",
                 "description": "Delete a single Pet entity by its ID.",
-                "operationId": "deletePetByID",
+                "operationId": "deletePet",
                 "responses": {
                     "204": {
                         "description": "The requested Pet entity.",
@@ -2022,7 +2022,7 @@
                 ],
                 "summary": "Update a pet",
                 "description": "Update an existing Pet entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "updatePetByID",
+                "operationId": "updatePet",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -3030,7 +3030,7 @@
                 ],
                 "summary": "The user that owns the pet.",
                 "description": "Get a pets associated owner (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "getPetOwnerByID",
+                "operationId": "getPetOwner",
                 "responses": {
                     "200": {
                         "description": "The requested owner entity.",
@@ -3201,7 +3201,7 @@
                 ],
                 "summary": "Retrieve a setting",
                 "description": "Retrieve a single Setting entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "getSettingByID",
+                "operationId": "getSetting",
                 "responses": {
                     "200": {
                         "description": "The requested Setting entity.",
@@ -3250,7 +3250,7 @@
                 ],
                 "summary": "Update a setting",
                 "description": "Update an existing Setting entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "updateSettingByID",
+                "operationId": "updateSetting",
                 "requestBody": {
                     "content": {
                         "application/json": {
@@ -4191,7 +4191,7 @@
                 ],
                 "summary": "Retrieve a user",
                 "description": "Retrieve a single User entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "getUserByID",
+                "operationId": "getUser",
                 "responses": {
                     "200": {
                         "description": "The requested User entity.",
@@ -4240,7 +4240,7 @@
                 ],
                 "summary": "Delete a user",
                 "description": "Delete a single User entity by its ID.",
-                "operationId": "deleteUserByID",
+                "operationId": "deleteUser",
                 "responses": {
                     "204": {
                         "description": "The requested User entity.",
@@ -4282,7 +4282,7 @@
                 ],
                 "summary": "Update a user",
                 "description": "Update an existing User entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
-                "operationId": "updateUserByID",
+                "operationId": "updateUser",
                 "requestBody": {
                     "content": {
                         "application/json": {

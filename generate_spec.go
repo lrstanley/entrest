@@ -778,7 +778,7 @@ func GetOperationIDName(op Operation, t *gen.Type, e *gen.Edge) string {
 
 		switch op {
 		case OperationRead:
-			return "get" + Singularize(t.Name) + Singularize(PascalCase(e.Name)) + "ByID"
+			return "get" + Singularize(t.Name) + Singularize(PascalCase(e.Name))
 		case OperationList:
 			return "list" + Singularize(t.Name) + Pluralize(PascalCase(e.Name))
 		default:
@@ -794,13 +794,13 @@ func GetOperationIDName(op Operation, t *gen.Type, e *gen.Edge) string {
 	case OperationCreate:
 		return "create" + Singularize(t.Name)
 	case OperationUpdate:
-		return "update" + Singularize(t.Name) + "ByID"
+		return "update" + Singularize(t.Name)
 	case OperationRead:
-		return "get" + Singularize(t.Name) + "ByID"
+		return "get" + Singularize(t.Name)
 	case OperationList:
 		return "list" + Pluralize(t.Name)
 	case OperationDelete:
-		return "delete" + Singularize(t.Name) + "ByID"
+		return "delete" + Singularize(t.Name)
 	default:
 		panic(fmt.Sprintf("unsupported operation %q", op))
 	}
