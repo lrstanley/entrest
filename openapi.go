@@ -48,14 +48,14 @@ func mergeOperation(overlap bool, orig, op *ogen.Operation) (*ogen.Operation, er
 		return orig, nil
 	}
 
-	orig.Tags = appendIfNotContains(orig.Tags, op.Tags)
+	orig.Tags = appendCompact(orig.Tags, op.Tags)
 	orig.Summary = cmp.Or(op.Summary, orig.Summary)
 	orig.Description = cmp.Or(op.Description, orig.Description)
 	orig.OperationID = cmp.Or(op.OperationID, orig.OperationID)
 	orig.Deprecated = orig.Deprecated || op.Deprecated
 
 	// Merge parameters.
-	orig.Parameters = appendIfNotContainsFunc(orig.Parameters, op.Parameters, func(oldParam, newParam *ogen.Parameter) bool {
+	orig.Parameters = appendCompactFunc(orig.Parameters, op.Parameters, func(oldParam, newParam *ogen.Parameter) bool {
 		return oldParam.Name == newParam.Name
 	})
 
@@ -90,7 +90,7 @@ func mergeSpec(overlap bool, orig *ogen.Spec, toMerge ...*ogen.Spec) error { //n
 			}
 		}
 
-		orig.Servers = appendIfNotContainsFunc(orig.Servers, spec.Servers, func(oldServer, newServer ogen.Server) bool {
+		orig.Servers = appendCompactFunc(orig.Servers, spec.Servers, func(oldServer, newServer ogen.Server) bool {
 			return oldServer.URL == newServer.URL
 		})
 
@@ -153,11 +153,11 @@ func mergeSpec(overlap bool, orig *ogen.Spec, toMerge ...*ogen.Spec) error { //n
 				return err
 			}
 
-			orig.Paths[k].Servers = appendIfNotContainsFunc(orig.Paths[k].Servers, v.Servers, func(oldServer, newServer ogen.Server) bool {
+			orig.Paths[k].Servers = appendCompactFunc(orig.Paths[k].Servers, v.Servers, func(oldServer, newServer ogen.Server) bool {
 				return oldServer.URL == newServer.URL
 			})
 
-			orig.Paths[k].Parameters = appendIfNotContainsFunc(orig.Paths[k].Parameters, v.Parameters, func(oldParam, newParam *ogen.Parameter) bool {
+			orig.Paths[k].Parameters = appendCompactFunc(orig.Paths[k].Parameters, v.Parameters, func(oldParam, newParam *ogen.Parameter) bool {
 				return oldParam.Name == newParam.Name
 			})
 		}
@@ -239,7 +239,7 @@ func mergeSpec(overlap bool, orig *ogen.Spec, toMerge ...*ogen.Spec) error { //n
 			}
 		}
 
-		orig.Tags = appendIfNotContainsFunc(orig.Tags, spec.Tags, func(oldTag, newTag ogen.Tag) bool {
+		orig.Tags = appendCompactFunc(orig.Tags, spec.Tags, func(oldTag, newTag ogen.Tag) bool {
 			return oldTag.Name == newTag.Name
 		})
 	}

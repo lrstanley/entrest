@@ -86,7 +86,7 @@ func TestSliceToRawMessage(t *testing.T) {
 	}
 }
 
-func TestAppendIfNotContainsFunc(t *testing.T) {
+func TestAppendCompactFunc(t *testing.T) {
 	tests := []struct {
 		name string
 		orig []string
@@ -133,12 +133,12 @@ func TestAppendIfNotContainsFunc(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.out, appendIfNotContainsFunc(tt.orig, tt.newv, tt.fn))
+			assert.Equal(t, tt.out, appendCompactFunc(tt.orig, tt.newv, tt.fn))
 		})
 	}
 }
 
-func TestAppendIfNotContains(t *testing.T) {
+func TestAppendCompact(t *testing.T) {
 	tests := []struct {
 		name string
 		orig []any
@@ -185,7 +185,7 @@ func TestAppendIfNotContains(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.out, appendIfNotContains(tt.orig, tt.newv))
+			assert.Equal(t, tt.out, appendCompact(tt.orig, tt.newv))
 		})
 	}
 }
@@ -238,21 +238,21 @@ func TestMergeMap(t *testing.T) {
 	}
 }
 
-func TestWithDefaultSlice(t *testing.T) {
+func TestSliceOr(t *testing.T) {
 	t.Run("string-zero", func(t *testing.T) {
-		assert.Equal(t, []string{"foo"}, withDefaultSlice([]string{}, []string{"foo"}))
+		assert.Equal(t, []string{"foo"}, sliceOr([]string{}, []string{"foo"}))
 	})
 
 	t.Run("string-zero-2", func(t *testing.T) {
-		assert.Equal(t, []string{"foo"}, withDefaultSlice([]string{}, []string{"foo"}, []string{}))
+		assert.Equal(t, []string{"foo"}, sliceOr([]string{}, []string{"foo"}, []string{}))
 	})
 
 	t.Run("string-single", func(t *testing.T) {
-		assert.Equal(t, []string{"bar"}, withDefaultSlice([]string{"bar"}, []string{"foo"}))
+		assert.Equal(t, []string{"bar"}, sliceOr([]string{"bar"}, []string{"foo"}))
 	})
 
 	t.Run("string-multiple", func(t *testing.T) {
-		assert.Equal(t, []string{"baz", "qux"}, withDefaultSlice([]string{"baz", "qux"}, []string{"foo"}, []string{"bar"}))
+		assert.Equal(t, []string{"baz", "qux"}, sliceOr([]string{"baz", "qux"}, []string{"foo"}, []string{"bar"}))
 	})
 }
 

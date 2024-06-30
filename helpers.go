@@ -53,9 +53,9 @@ func sliceToRawMessage[T any](v []T) []json.RawMessage {
 	return r
 }
 
-// appendIfNotContainsFunc returns a copy of orig with newv appended to it, but only if
-// newv does not already exist in orig. fn is used to determine if two values are equal.
-func appendIfNotContainsFunc[T any](orig, newv []T, fn func(oldv, newv T) (matches bool)) []T {
+// appendCompactFunc returns a copy of orig with newv appended to it, but only if newv does
+// not already exist in orig. fn is used to determine if two values are equal.
+func appendCompactFunc[T any](orig, newv []T, fn func(oldv, newv T) (matches bool)) []T {
 	for _, v := range newv {
 		var found bool
 		for _, ov := range orig {
@@ -71,10 +71,10 @@ func appendIfNotContainsFunc[T any](orig, newv []T, fn func(oldv, newv T) (match
 	return orig
 }
 
-// appendIfNotContains returns a copy of orig with newv appended to it, but only if
-// newv does not already exist in orig. T must be comparable.
-func appendIfNotContains[T comparable](orig, newv []T) []T {
-	return appendIfNotContainsFunc(orig, newv, func(oldv, newv T) bool {
+// appendCompact returns a copy of orig with newv appended to it, but only if newv does
+// not already exist in orig. T must be comparable.
+func appendCompact[T comparable](orig, newv []T) []T {
+	return appendCompactFunc(orig, newv, func(oldv, newv T) bool {
 		return oldv == newv
 	})
 }
@@ -104,8 +104,9 @@ func mergeMap[K comparable, V any](overlap bool, orig, newv map[K]V) error {
 	return nil
 }
 
-// withDefaultSlice returns the provided default value(s) if the given value is nil.
-func withDefaultSlice[T any](v []T, defaults ...[]T) []T {
+// sliceOr returns the provided default value(s) if the given value is nil. This is like
+// [cmp.Or] for slices.
+func sliceOr[T any](v []T, defaults ...[]T) []T {
 	if len(v) == 0 {
 		for i := range defaults {
 			if len(defaults[i]) > 0 {
