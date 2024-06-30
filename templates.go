@@ -26,6 +26,7 @@ var (
 		"getSortableFields":   GetSortableFields,
 		"getFilterableFields": GetFilterableFields,
 		"getOperationIDName":  GetOperationIDName,
+		"getPathName":         GetPathName,
 	}
 
 	//go:embed templates
