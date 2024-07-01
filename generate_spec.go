@@ -713,9 +713,8 @@ func addGlobalErrorResponses(spec *ogen.Spec, responses map[int]*ogen.Schema) {
 	}
 }
 
-// DefaultErrorResponse returns a default error schema for the provided HTTP
-// status code.
-func DefaultErrorResponse(code int) *ogen.Schema {
+// ErrorResponseObject returns a default error schema for the provided HTTP status code.
+func ErrorResponseObject(code int) *ogen.Schema {
 	return &ogen.Schema{
 		Type: "object",
 		Properties: []ogen.Property{

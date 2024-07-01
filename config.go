@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 	"slices"
 
 	"entgo.io/ent/entc"
@@ -82,30 +81,18 @@ type Config struct {
 	// (e.g. X-Request-Id or X-Correlation-ID), or required (e.g. API version). Note
 	// that these should not include anything related to authentication -- use the
 	// security schemes instead via [Config.Spec].
-	GlobalRequestHeaders map[string]*ogen.Parameter
+	GlobalRequestHeaders RequestHeaders
 
 	// GlobalResponseHeaders are headers to add to every response, recommended for headers
 	// like X-Ratelimit-Limit, X-Ratelimit-Remaining, X-Ratelimit-Reset, etc.
-	GlobalResponseHeaders map[string]*ogen.Header
+	GlobalResponseHeaders ResponseHeaders
 
 	// GlobalErrorResponses are status code -> response mappings for errors, which are
 	// added to all path operations. Note that some status codes are excluded on specific
 	// operations (e.g. 404 on list, 409 on non-create/update, etc). If not specified,
 	// a default set of responses will be generated which can be used with entrest's
-	// built-in auto-generated HTTP handlers (see below).
-	//
-	// Default responses (provided via [DefaultErrorResponse]) are:
-	//
-	//	map[int]*ogen.Schema{
-	//		http.StatusBadRequest:          DefaultErrorResponse(http.StatusBadRequest),
-	//		http.StatusUnauthorized:        DefaultErrorResponse(http.StatusUnauthorized),
-	//		http.StatusForbidden:           DefaultErrorResponse(http.StatusForbidden),
-	//		http.StatusNotFound:            DefaultErrorResponse(http.StatusNotFound),
-	//		http.StatusConflict:            DefaultErrorResponse(http.StatusConflict),
-	//		http.StatusTooManyRequests:     DefaultErrorResponse(http.StatusTooManyRequests),
-	//		http.StatusInternalServerError: DefaultErrorResponse(http.StatusInternalServerError),
-	//	}
-	GlobalErrorResponses map[int]*ogen.Schema
+	// built-in auto-generated HTTP handlers (see below). Defaults to [DefaultErrorResponses].
+	GlobalErrorResponses ErrorResponses
 
 	// Handler enables the generation of HTTP handlers for the specified server/routing
 	// library. If this is disabled, no Go code will be generated, and only the OpenAPI
@@ -182,15 +169,7 @@ func (c *Config) Validate() error {
 	}
 
 	if len(c.GlobalErrorResponses) == 0 {
-		c.GlobalErrorResponses = map[int]*ogen.Schema{
-			http.StatusBadRequest:          DefaultErrorResponse(http.StatusBadRequest),
-			http.StatusUnauthorized:        DefaultErrorResponse(http.StatusUnauthorized),
-			http.StatusForbidden:           DefaultErrorResponse(http.StatusForbidden),
-			http.StatusNotFound:            DefaultErrorResponse(http.StatusNotFound),
-			http.StatusConflict:            DefaultErrorResponse(http.StatusConflict),
-			http.StatusTooManyRequests:     DefaultErrorResponse(http.StatusTooManyRequests),
-			http.StatusInternalServerError: DefaultErrorResponse(http.StatusInternalServerError),
-		}
+		c.GlobalErrorResponses = DefaultErrorResponses
 	}
 
 	for k := range c.GlobalErrorResponses {

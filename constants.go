@@ -6,9 +6,11 @@ package entrest
 
 import (
 	"fmt"
+	"net/http"
 
 	"entgo.io/ent/entc/gen"
 	"github.com/go-openapi/inflect"
+	"github.com/ogen-go/ogen"
 	"github.com/stoewer/go-strcase"
 )
 
@@ -237,3 +239,96 @@ var AllSupportedHTTPHandlers = []HTTPHandler{
 	HandlerStdlib,
 	HandlerChi,
 }
+
+type RequestHeaders map[string]*ogen.Parameter
+
+// Append merges the provided request headers into the current request headers, returning
+// a new request headers map.
+func (r RequestHeaders) Append(toMerge ...RequestHeaders) RequestHeaders {
+	out := RequestHeaders{}
+	for k, v := range r {
+		out[k] = v
+	}
+	for _, m := range toMerge {
+		for k, v := range m {
+			out[k] = v
+		}
+	}
+	return out
+}
+
+type ResponseHeaders map[string]*ogen.Header
+
+// Append merges the provided response headers into the current response headers, returning
+// a new response headers map.
+func (r ResponseHeaders) Append(toMerge ...ResponseHeaders) ResponseHeaders {
+	out := ResponseHeaders{}
+	for k, v := range r {
+		out[k] = v
+	}
+	for _, m := range toMerge {
+		for k, v := range m {
+			out[k] = v
+		}
+	}
+	return out
+}
+
+type ErrorResponses map[int]*ogen.Schema
+
+// Append merges the provided error responses into the current error responses, returning
+// a new error responses map.
+func (r ErrorResponses) Append(toMerge ...ErrorResponses) ErrorResponses {
+	out := ErrorResponses{}
+	for k, v := range r {
+		out[k] = v
+	}
+	for _, m := range toMerge {
+		for k, v := range m {
+			out[k] = v
+		}
+	}
+	return out
+}
+
+var (
+	// RateLimitHeaders are standardized rate limit response headers.
+	RateLimitHeaders = ResponseHeaders{
+		"X-Ratelimit-Limit": {
+			Description: "The maximum number of requests that the consumer is permitted to make in a given period.",
+			Required:    true,
+			Schema:      &ogen.Schema{Type: "integer"},
+		},
+		"X-Ratelimit-Remaining": {
+			Description: "The number of requests remaining in the current rate limit window.",
+			Required:    true,
+			Schema:      &ogen.Schema{Type: "integer"},
+		},
+		"X-Ratelimit-Reset": {
+			Description: "The time at which the current rate limit window resets in UTC epoch seconds.",
+			Required:    true,
+			Schema:      &ogen.Schema{Type: "integer"},
+		},
+	}
+
+	// RequestIDHeader is a standardized request ID request header.
+	RequestIDHeader = RequestHeaders{
+		"X-Request-Id": {
+			Description: "A unique identifier for the request.",
+			Required:    false,
+			Schema:      &ogen.Schema{Type: "string"},
+		},
+	}
+
+	// DefaultErrorResponses are the default error responses for the HTTP status codes,
+	// which includes 400, 401, 403, 404, 409, 429, and 500.
+	DefaultErrorResponses = ErrorResponses{
+		http.StatusBadRequest:          ErrorResponseObject(http.StatusBadRequest),
+		http.StatusUnauthorized:        ErrorResponseObject(http.StatusUnauthorized),
+		http.StatusForbidden:           ErrorResponseObject(http.StatusForbidden),
+		http.StatusNotFound:            ErrorResponseObject(http.StatusNotFound),
+		http.StatusConflict:            ErrorResponseObject(http.StatusConflict),
+		http.StatusTooManyRequests:     ErrorResponseObject(http.StatusTooManyRequests),
+		http.StatusInternalServerError: ErrorResponseObject(http.StatusInternalServerError),
+	}
+)
