@@ -1,0 +1,109 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "resttest/request" }}
+{{- with extend $ "Package" "resttest" }}{{ template "header" . }}{{ end }}
+
+import (
+    "{{ $.Config.Package }}"
+    "{{ $.Config.Package }}/rest"
+    {{- if eq $.Annotations.RestConfig.Handler "chi" }}
+        "github.com/go-chi/chi/v5"
+    {{- end }}
+)
+
+type TestServer struct {
+    t            *testing.T
+    handler      http.Handler
+    logResponses bool
+}
+
+// NewServer instantiates a new TestServer and HTTP handler with the provided ent client
+// and configuration. If you want to load custom middleware or similar, you can use  [WithExisting]
+// instead, to pass in your own router/handler.
+func NewServer(t *testing.T, db *ent.Client, cfg *rest.ServerConfig) *TestServer {
+    srv, err := rest.NewServer(db, cfg)
+    if err != nil {
+        t.Fatalf("failed to create server: %v", err)
+        return nil
+    }
+    {{- if eq $.Annotations.RestConfig.Handler "chi" }}
+        r := chi.NewRouter()
+        r.Route("/", srv.Handler(r))
+        return WithExisting(t, r)
+    {{- else }}
+        return WithExisting(t, srv.Handler())
+    {{- end }}
+}
+
+// WithExisting returns a new TestServer using an existing http.Handler of your choice.
+func WithExisting(t *testing.T, r http.Handler) *TestServer {
+    return &TestServer{
+        t:       t,
+        handler: r,
+    }
+}
+
+// WithLogResponses enables logging of all responses to the internal handler.
+func (ts *TestServer) WithLogResponses(v bool) *TestServer {
+    ts.logResponses = v
+    return ts
+}
+
+// Request executes a request against the TestServer, and returns the response recorder and
+// response, auto-marshalling JSON to the provided type. If T is "string", the response body
+// is returned as-is.
+func Request[T any](ctx context.Context, ts *TestServer, method, path string, data any) (resp *httptest.ResponseRecorder, value *T) {
+    ts.t.Helper()
+
+    var body io.Reader
+
+    if data != nil {
+        buf := &bytes.Buffer{}
+        enc := json.NewEncoder(buf)
+        err := enc.Encode(data)
+        if err != nil {
+            ts.t.Fatalf("failed to encode request body: %v", err)
+            return nil, nil
+        }
+        body = buf
+    }
+
+    req := httptest.NewRequest(method, path, body).WithContext(ctx)
+
+    if data != nil {
+        req.Header.Set("Content-Type", "application/json")
+    }
+
+    rr := httptest.NewRecorder()
+    rr.Body = &bytes.Buffer{}
+
+    ts.handler.ServeHTTP(rr, req)
+
+    if ts.logResponses {
+        ts.t.Logf("request:\nmethod:%q\npath:%q\ncode:%d\nresponse:\n%s", method, path, rr.Code, rr.Body.String())
+    }
+
+    v := new(T)
+
+    if rr.Code == http.StatusNoContent || rr.Code < 200 || rr.Code >= 300 {
+        return rr, v
+    }
+
+    if _, ok := any(v).(string); ok {
+        *v = any(rr.Body.String()).(T) //nolint:errcheck
+        return rr, v
+    }
+
+    dec := json.NewDecoder(rr.Body)
+    err := dec.Decode(v)
+    if err != nil {
+        ts.t.Fatalf("failed to decode response: %v", err)
+        return nil, nil
+    }
+
+    return rr, v
+}
+{{ end }}

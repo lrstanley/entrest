@@ -42,4 +42,12 @@ var (
 				"templates/helper/**/*.tmpl",
 			),
 	)
+	testingTemplates = gen.MustParse(
+		gen.NewTemplate("resttest").Funcs(funcMap).
+			SkipIf(func(g *gen.Graph) bool { return !GetConfig(g.Config).WithTesting }).
+			ParseFS(
+				templateDir,
+				"templates/testing/*.tmpl",
+			),
+	)
 )

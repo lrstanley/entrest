@@ -115,6 +115,10 @@ type Config struct {
 	// bodies. Skips over fields which are json-excluded (e.g. sensitive data).
 	DisablePatchJSONTag bool
 
+	// WithTesting enables the generation of a resttest package, which contains a
+	// set of helpers for testing the generated REST API.
+	WithTesting bool
+
 	// PreHook is a hook that runs before the spec is generated. This is useful for
 	// things like adding global security schemes, or adding global request headers,
 	// if you're unable to provide the [Config.Spec] field for some reason.
@@ -180,6 +184,10 @@ func (c *Config) Validate() error {
 
 	if c.Handler != HandlerNone && !slices.Contains(AllSupportedHTTPHandlers, c.Handler) {
 		return fmt.Errorf("unsupported handler provided: %s", c.Handler)
+	}
+
+	if c.Handler == HandlerNone && c.WithTesting {
+		c.WithTesting = false
 	}
 
 	c.isValidated = true
