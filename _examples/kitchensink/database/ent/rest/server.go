@@ -375,9 +375,6 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op 
 	case errors.Is(err, privacy.Deny):
 		resp.Code = http.StatusForbidden
 	case ent.IsNotFound(err):
-		if op == OperationList {
-			resp.Type = "No results found matching the given query"
-		}
 		resp.Code = http.StatusNotFound
 	case ent.IsConstraintError(err), ent.IsNotSingular(err):
 		resp.Code = http.StatusConflict
@@ -447,6 +444,13 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
 		return
 	}
 	if resp != nil {
+		type pagedResp interface {
+			GetTotalCount() int
+		}
+		if v, ok := any(resp).(pagedResp); ok && v.GetTotalCount() == 0 && r.Method == http.MethodGet {
+			JSON(w, r, http.StatusNotFound, resp)
+			return
+		}
 		if r.Method == http.MethodPost {
 			JSON(w, r, http.StatusCreated, resp)
 			return
