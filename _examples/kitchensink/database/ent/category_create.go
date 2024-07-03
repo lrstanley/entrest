@@ -67,6 +67,14 @@ func (cc *CategoryCreate) SetSkipInSpec(s string) *CategoryCreate {
 	return cc
 }
 
+// SetNillableSkipInSpec sets the "skip_in_spec" field if the given value is not nil.
+func (cc *CategoryCreate) SetNillableSkipInSpec(s *string) *CategoryCreate {
+	if s != nil {
+		cc.SetSkipInSpec(*s)
+	}
+	return cc
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (cc *CategoryCreate) AddPetIDs(ids ...int) *CategoryCreate {
 	cc.mutation.AddPetIDs(ids...)
@@ -140,9 +148,6 @@ func (cc *CategoryCreate) check() error {
 	}
 	if _, ok := cc.mutation.Readonly(); !ok {
 		return &ValidationError{Name: "readonly", err: errors.New(`ent: missing required field "Category.readonly"`)}
-	}
-	if _, ok := cc.mutation.SkipInSpec(); !ok {
-		return &ValidationError{Name: "skip_in_spec", err: errors.New(`ent: missing required field "Category.skip_in_spec"`)}
 	}
 	return nil
 }

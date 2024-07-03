@@ -77,6 +77,12 @@ func (cu *CategoryUpdate) SetNillableSkipInSpec(s *string) *CategoryUpdate {
 	return cu
 }
 
+// ClearSkipInSpec clears the value of the "skip_in_spec" field.
+func (cu *CategoryUpdate) ClearSkipInSpec() *CategoryUpdate {
+	cu.mutation.ClearSkipInSpec()
+	return cu
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (cu *CategoryUpdate) AddPetIDs(ids ...int) *CategoryUpdate {
 	cu.mutation.AddPetIDs(ids...)
@@ -174,6 +180,9 @@ func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := cu.mutation.SkipInSpec(); ok {
 		_spec.SetField(category.FieldSkipInSpec, field.TypeString, value)
+	}
+	if cu.mutation.SkipInSpecCleared() {
+		_spec.ClearField(category.FieldSkipInSpec, field.TypeString)
 	}
 	if cu.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -285,6 +294,12 @@ func (cuo *CategoryUpdateOne) SetNillableSkipInSpec(s *string) *CategoryUpdateOn
 	if s != nil {
 		cuo.SetSkipInSpec(*s)
 	}
+	return cuo
+}
+
+// ClearSkipInSpec clears the value of the "skip_in_spec" field.
+func (cuo *CategoryUpdateOne) ClearSkipInSpec() *CategoryUpdateOne {
+	cuo.mutation.ClearSkipInSpec()
 	return cuo
 }
 
@@ -415,6 +430,9 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 	}
 	if value, ok := cuo.mutation.SkipInSpec(); ok {
 		_spec.SetField(category.FieldSkipInSpec, field.TypeString, value)
+	}
+	if cuo.mutation.SkipInSpecCleared() {
+		_spec.ClearField(category.FieldSkipInSpec, field.TypeString)
 	}
 	if cuo.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{

@@ -22,6 +22,7 @@ func (Category) Fields() []ent.Field {
 		field.String("readonly").
 			Annotations(entrest.WithReadOnly(true)),
 		field.String("skip_in_spec").
+			Optional().
 			Annotations(entrest.WithSkip(true)),
 	}
 }

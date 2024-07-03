@@ -10,11 +10,12 @@ package main
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"entgo.io/ent/dialect/sql/schema"
+	"github.com/brianvoe/gofakeit/v7"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/rest"
 	_ "github.com/lrstanley/entrest/_examples/kitchensink/database/ent/runtime" // Required by ent.
@@ -50,36 +51,41 @@ func main() {
 		SetEnabled(true).
 		SaveX(ctx)
 
+	for range 100 {
+		db.User.Create().
+			SetName(gofakeit.FirstName()).
+			SetEmail(gofakeit.Email()).
+			SetType(user.TypeUser).
+			SetEnabled(true).
+			ExecX(ctx)
+	}
+
 	oreo := db.Pet.Create().
-		SetName("Oreo").
+		SetName("Riley").
 		AddFollowedBy(john).
 		SaveX(ctx)
 
-	riley := db.Pet.Create().
-		SetName("Riley").
-		AddFriends(oreo).
-		SetOwner(john).
-		SaveX(ctx)
-
-	printJSON := func(v any) {
-		var b []byte
-		b, err = json.MarshalIndent(v, "", "    ")
-		if err != nil {
-			panic(err)
-		}
-		fmt.Println(string(b)) //nolint:all
+	for range 100 {
+		db.Pet.Create().
+			SetName(gofakeit.PetName()).
+			SetOwner(john).
+			AddFriends(oreo).
+			AddFollowedBy(john).
+			ExecX(ctx)
 	}
 
-	printJSON(john)
-	printJSON(oreo)
-	printJSON(riley)
-
-	srv, err := rest.NewServer(db, nil)
+	srv, err := rest.NewServer(db, &rest.ServerConfig{})
 	if err != nil {
 		panic(err)
 	}
 
-	mux := http.NewServeMux()
-	mux.Handle("/", srv.Handler())
-	http.ListenAndServe(":8080", mux) //nolint:all
+	// Example of using net/http serve-mux:
+	//	mux := http.NewServeMux()
+	//	mux.Handle("/", srv.Handler())
+	//	http.ListenAndServe(":8080", mux)
+
+	r := chi.NewRouter()
+	r.Use(middleware.Logger)
+	r.Mount("/", srv.Handler())
+	http.ListenAndServe(":8080", r) //nolint:all
 }

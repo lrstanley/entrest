@@ -345,6 +345,16 @@ func SkipInSpecHasSuffix(v string) predicate.Category {
 	return predicate.Category(sql.FieldHasSuffix(FieldSkipInSpec, v))
 }
 
+// SkipInSpecIsNil applies the IsNil predicate on the "skip_in_spec" field.
+func SkipInSpecIsNil() predicate.Category {
+	return predicate.Category(sql.FieldIsNull(FieldSkipInSpec))
+}
+
+// SkipInSpecNotNil applies the NotNil predicate on the "skip_in_spec" field.
+func SkipInSpecNotNil() predicate.Category {
+	return predicate.Category(sql.FieldNotNull(FieldSkipInSpec))
+}
+
 // SkipInSpecEqualFold applies the EqualFold predicate on the "skip_in_spec" field.
 func SkipInSpecEqualFold(v string) predicate.Category {
 	return predicate.Category(sql.FieldEqualFold(FieldSkipInSpec, v))
