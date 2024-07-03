@@ -469,6 +469,10 @@ func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 		fields = append([]*gen.Field{t.ID}, fields...)
 	}
 
+	if !isEdge {
+		sortable = append(sortable, "random")
+	}
+
 	for _, f := range fields {
 		fa := GetAnnotation(f)
 

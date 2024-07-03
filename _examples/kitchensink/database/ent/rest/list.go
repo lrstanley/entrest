@@ -254,6 +254,7 @@ var (
 		"id",
 		"pets.age.sum",
 		"pets.count",
+		"random",
 		"updated_at",
 	}
 	// FollowSortFields is a list of sortable fields for the "Follows" entity.
@@ -262,6 +263,7 @@ var (
 		"pet.age",
 		"pet.id",
 		"pet.name",
+		"random",
 		"user.created_at",
 		"user.email",
 		"user.id",
@@ -276,6 +278,7 @@ var (
 		"friend.name",
 		"friend.updated_at",
 		"id",
+		"random",
 		"user.created_at",
 		"user.email",
 		"user.id",
@@ -297,12 +300,14 @@ var (
 		"owner.id",
 		"owner.name",
 		"owner.updated_at",
+		"random",
 	}
 	// SettingSortFields is a list of sortable fields for the "Settings" entity.
 	SettingSortFields = SortableFields{
 		"admins.count",
 		"created_at",
 		"id",
+		"random",
 		"updated_at",
 	}
 	// UserSortFields is a list of sortable fields for the "User" entity.
@@ -318,6 +323,7 @@ var (
 		"name",
 		"pets.age.sum",
 		"pets.count",
+		"random",
 		"updated_at",
 	}
 )
@@ -421,6 +427,9 @@ func (l *ListCategoryParams) ApplySorting(query *ent.CategoryQuery) (*ent.Catego
 			}
 		}
 	}
+	if *l.Sort == "random" {
+		return query.Order(sql.OrderByRand()), nil
+	}
 	return query.Order(l.Sorted.SortFieldSelector()), nil
 }
 
@@ -463,6 +472,9 @@ func (l *ListFollowParams) ApplySorting(query *ent.FollowsQuery) (*ent.FollowsQu
 			return query.Order(follows.ByPetField(parts[1], dir)), nil
 		}
 	}
+	if *l.Sort == "random" {
+		return query.Order(sql.OrderByRand()), nil
+	}
 	return query.Order(l.Sorted.SortFieldSelector()), nil
 }
 
@@ -499,6 +511,9 @@ func (l *ListFriendshipParams) ApplySorting(query *ent.FriendshipQuery) (*ent.Fr
 		case friendship.EdgeFriend:
 			return query.Order(friendship.ByFriendField(parts[1], dir)), nil
 		}
+	}
+	if *l.Sort == "random" {
+		return query.Order(sql.OrderByRand()), nil
 	}
 	return query.Order(l.Sorted.SortFieldSelector()), nil
 }
@@ -1167,6 +1182,9 @@ func (l *ListPetParams) ApplySorting(query *ent.PetQuery) (*ent.PetQuery, error)
 			}
 		}
 	}
+	if *l.Sort == "random" {
+		return query.Order(sql.OrderByRand()), nil
+	}
 	return query.Order(l.Sorted.SortFieldSelector()), nil
 }
 
@@ -1252,6 +1270,9 @@ func (l *ListSettingParams) ApplySorting(query *ent.SettingsQuery) (*ent.Setting
 				return query.Order(settings.ByAdmins(sql.OrderByField(parts[1], dir))), nil
 			}
 		}
+	}
+	if *l.Sort == "random" {
+		return query.Order(sql.OrderByRand()), nil
 	}
 	return query.Order(l.Sorted.SortFieldSelector()), nil
 }
@@ -1911,6 +1932,9 @@ func (l *ListUserParams) ApplySorting(query *ent.UserQuery) (*ent.UserQuery, err
 				return query.Order(user.ByFriendships(sql.OrderByField(parts[1], dir))), nil
 			}
 		}
+	}
+	if *l.Sort == "random" {
+		return query.Order(sql.OrderByRand()), nil
 	}
 	return query.Order(l.Sorted.SortFieldSelector()), nil
 }

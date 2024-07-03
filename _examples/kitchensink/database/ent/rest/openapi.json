@@ -41,6 +41,7 @@
                                 "id",
                                 "pets.age.sum",
                                 "pets.count",
+                                "random",
                                 "updated_at"
                             ],
                             "default": "id"
@@ -388,7 +389,8 @@
                                 "owner.email",
                                 "owner.id",
                                 "owner.name",
-                                "owner.updated_at"
+                                "owner.updated_at",
+                                "random"
                             ],
                             "default": "id"
                         }
@@ -802,6 +804,7 @@
                                 "pet.age",
                                 "pet.id",
                                 "pet.name",
+                                "random",
                                 "user.created_at",
                                 "user.email",
                                 "user.id",
@@ -963,6 +966,7 @@
                                 "friend.name",
                                 "friend.updated_at",
                                 "id",
+                                "random",
                                 "user.created_at",
                                 "user.email",
                                 "user.id",
@@ -1485,7 +1489,8 @@
                                 "owner.email",
                                 "owner.id",
                                 "owner.name",
-                                "owner.updated_at"
+                                "owner.updated_at",
+                                "random"
                             ],
                             "default": "id"
                         }
@@ -2113,6 +2118,7 @@
                                 "id",
                                 "pets.age.sum",
                                 "pets.count",
+                                "random",
                                 "updated_at"
                             ],
                             "default": "id"
@@ -2232,6 +2238,7 @@
                                 "name",
                                 "pets.age.sum",
                                 "pets.count",
+                                "random",
                                 "updated_at"
                             ],
                             "default": "id"
@@ -2642,7 +2649,8 @@
                                 "owner.email",
                                 "owner.id",
                                 "owner.name",
-                                "owner.updated_at"
+                                "owner.updated_at",
+                                "random"
                             ],
                             "default": "id"
                         }
@@ -3120,6 +3128,7 @@
                                 "admins.count",
                                 "created_at",
                                 "id",
+                                "random",
                                 "updated_at"
                             ],
                             "default": "id"
@@ -3348,6 +3357,7 @@
                                 "name",
                                 "pets.age.sum",
                                 "pets.count",
+                                "random",
                                 "updated_at"
                             ],
                             "default": "id"
@@ -3757,6 +3767,7 @@
                                 "name",
                                 "pets.age.sum",
                                 "pets.count",
+                                "random",
                                 "updated_at"
                             ],
                             "default": "id"
@@ -4395,7 +4406,8 @@
                                 "owner.email",
                                 "owner.id",
                                 "owner.name",
-                                "owner.updated_at"
+                                "owner.updated_at",
+                                "random"
                             ],
                             "default": "id"
                         }
@@ -4816,6 +4828,7 @@
                                 "name",
                                 "pets.age.sum",
                                 "pets.count",
+                                "random",
                                 "updated_at"
                             ],
                             "default": "id"
@@ -5221,6 +5234,7 @@
                                 "friend.name",
                                 "friend.updated_at",
                                 "id",
+                                "random",
                                 "user.created_at",
                                 "user.email",
                                 "user.id",
@@ -5316,7 +5330,8 @@
                                 "owner.email",
                                 "owner.id",
                                 "owner.name",
-                                "owner.updated_at"
+                                "owner.updated_at",
+                                "random"
                             ],
                             "default": "id"
                         }

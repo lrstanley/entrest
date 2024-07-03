@@ -493,3 +493,27 @@ func TestHandler_Delete(t *testing.T) {
 	require.NotNil(t, resp.Error)
 	assert.Equal(t, http.StatusNotFound, resp.Data.Code)
 }
+
+func TestHandler_SortRandom(t *testing.T) {
+	ctx, db, s := newRestServer(t, nil)
+	t.Cleanup(func() { db.Close() })
+
+	db.Pet.CreateBulk(enttest.Multiple(newPet, db, 100)...).ExecX(ctx)
+
+	var results [][]*ent.Pet
+
+	for range 50 {
+		resp := enttest.Request[rest.PagedResponse[ent.Pet]](ctx, s, http.MethodGet, "/pets?page=1&per_page=100&sort=random", nil)
+		require.Equal(t, http.StatusOK, resp.Data.Code)
+		require.Len(t, resp.Value.Content, 100)
+		results = append(results, resp.Value.Content)
+	}
+
+	// Ensure that all results are different.
+	for i := range results {
+		if i == 0 {
+			continue
+		}
+		assert.NotEqual(t, results[i-1], results[i])
+	}
+}

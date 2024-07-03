@@ -356,6 +356,9 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
                 }
             }
             {{- end }}
+            if *l.Sort == "random" {
+                return query.Order(sql.OrderByRand()), nil
+            }
             return query.Order(l.Sorted.SortFieldSelector()), nil
         {{- end }}
     }
