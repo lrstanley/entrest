@@ -517,3 +517,26 @@ func TestHandler_SortRandom(t *testing.T) {
 		assert.NotEqual(t, results[i-1], results[i])
 	}
 }
+
+func TestHandler_StrictMutate(t *testing.T) {
+	ctx, db, s := newRestServer(t, nil)
+	t.Cleanup(func() { db.Close() })
+
+	data := map[string]any{
+		"name":        "foo",
+		"nonexistent": "bar",
+	}
+
+	// POST/create.
+	resp := enttest.Request[ent.Pet](ctx, s, http.MethodPost, "/pets", data)
+	require.Equal(t, http.StatusBadRequest, resp.Data.Code)
+	require.NotNil(t, resp.Error)
+	assert.Equal(t, http.StatusBadRequest, resp.Error.Code)
+
+	// PATCH/update.
+	pet1 := newPet(db).SaveX(ctx)
+	resp = enttest.Request[ent.Pet](ctx, s, http.MethodPatch, "/pets/"+strconv.Itoa(pet1.ID), data)
+	require.Equal(t, http.StatusBadRequest, resp.Data.Code)
+	require.NotNil(t, resp.Error)
+	assert.Equal(t, http.StatusBadRequest, resp.Error.Code)
+}
