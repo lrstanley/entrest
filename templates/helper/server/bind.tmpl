@@ -30,6 +30,9 @@
             switch {
             case strings.HasPrefix(r.Header.Get("Content-Type"), "application/json"):
                 dec := json.NewDecoder(r.Body)
+                {{- if $.Annotations.RestConfig.StrictMutate }}
+                    dec.DisallowUnknownFields()
+                {{- end }}
                 defer r.Body.Close()
                 err = dec.Decode(v)
             case strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data"):

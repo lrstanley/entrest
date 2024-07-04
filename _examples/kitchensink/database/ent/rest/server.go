@@ -133,6 +133,7 @@ func Bind(r *http.Request, v any) error {
 		switch {
 		case strings.HasPrefix(r.Header.Get("Content-Type"), "application/json"):
 			dec := json.NewDecoder(r.Body)
+			dec.DisallowUnknownFields()
 			defer r.Body.Close()
 			err = dec.Decode(v)
 		case strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data"):

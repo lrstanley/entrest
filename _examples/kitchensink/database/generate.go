@@ -18,6 +18,7 @@ func main() {
 	ex, err := entrest.NewExtension(&entrest.Config{
 		Handler:               entrest.HandlerStdlib,
 		WithTesting:           true,
+		StrictMutate:          true,
 		GlobalRequestHeaders:  entrest.RequestIDHeader,
 		GlobalResponseHeaders: entrest.RateLimitHeaders,
 	})

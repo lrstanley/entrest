@@ -99,6 +99,12 @@ type Config struct {
 	// spec will be generated.
 	Handler HTTPHandler
 
+	// StrictMutate if set to true, will cause a 400 "Bad Request" response if an unknown
+	// field is provided to the update/create/etc functions. This is useful for ensuring
+	// that all fields are provided, and that the client is not attempting to provide
+	// fields that are not defined in the schema.
+	StrictMutate bool
+
 	// DisableSpecHandler disables the generation of an OpenAPI spec handler (e.g.
 	// /openapi.json). Disabling this will also disable embedding the spec into the
 	// binary/rest generated library.
