@@ -66,10 +66,20 @@ func newUser(db *ent.Client) *ent.UserCreate {
 }
 
 func newPet(db *ent.Client) *ent.PetCreate {
+	types := []pet.Type{
+		pet.TypeDog,
+		pet.TypeCat,
+		pet.TypeBird,
+		pet.TypeFish,
+		pet.TypeAmphibian,
+		pet.TypeReptile,
+		pet.TypeOther,
+	}
 	return db.Pet.Create().
 		SetName(gofakeit.PetName()).
 		SetNicknames([]string{gofakeit.PetName(), gofakeit.PetName()}).
-		SetAge(gofakeit.Number(1, 15))
+		SetAge(gofakeit.Number(1, 15)).
+		SetType(types[gofakeit.Number(0, len(types)-1)])
 }
 
 func newCategory(db *ent.Client) *ent.CategoryCreate {
@@ -417,6 +427,7 @@ func TestHandler_Create(t *testing.T) {
 		"name":      gofakeit.FirstName(),
 		"nicknames": []string{gofakeit.FirstName(), gofakeit.FirstName()},
 		"age":       gofakeit.Number(1, 20),
+		"type":      pet.TypeDog,
 		"owner":     user1.ID,
 	}
 
@@ -429,6 +440,7 @@ func TestHandler_Create(t *testing.T) {
 	assert.Equal(t, data["name"], pet1.Name)
 	assert.Equal(t, data["nicknames"], pet1.Nicknames)
 	assert.Equal(t, data["age"], pet1.Age)
+	assert.Equal(t, data["type"], pet1.Type)
 	assert.Equal(t, user1.ID, pet1.Edges.Owner.ID)
 }
 
@@ -442,7 +454,8 @@ func TestHandler_Update(t *testing.T) {
 
 	data := map[string]any{
 		"name":           gofakeit.Regex("^[a-z][a-z-]{10,40}$"),
-		"age":            100,
+		"age":            25,
+		"type":           pet.TypeCat,
 		"add_categories": []int{categories[1].ID},
 	}
 
@@ -451,6 +464,7 @@ func TestHandler_Update(t *testing.T) {
 	assert.Equal(t, http.StatusOK, resp.Data.Code)
 	assert.Equal(t, data["name"], resp.Value.Name)
 	assert.Equal(t, data["age"], resp.Value.Age)
+	assert.Equal(t, data["type"], resp.Value.Type)
 	require.Len(t, resp.Value.Edges.Categories, 2)
 	assert.Equal(t, categories[0].ID, resp.Value.Edges.Categories[0].ID)
 	assert.Equal(t, categories[1].ID, resp.Value.Edges.Categories[1].ID)

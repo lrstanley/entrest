@@ -32,12 +32,26 @@ func (Pet) Fields() []ent.Field {
 				entrest.WithFilter(entrest.FilterGroupEqual | entrest.FilterGroupArray),
 			),
 		field.Int("age").
-			Optional().
+			Min(0).Max(50).
 			Annotations(
 				entrest.WithExample(2),
 				entrest.WithSortable(true),
 				entrest.WithFilter(entrest.FilterGroupEqualExact|entrest.FilterGroupArray|entrest.FilterGroupLength),
 			),
+		field.Enum("type").
+			NamedValues(
+				"Dog", "DOG",
+				"Cat", "CAT",
+				"Bird", "BIRD",
+				"Fish", "FISH",
+				"Amphibian", "AMPHIBIAN",
+				"Reptile", "REPTILE",
+				"Other", "OTHER",
+			).Annotations(
+			entrest.WithExample("DOG"),
+			entrest.WithSortable(true),
+			entrest.WithFilter(entrest.FilterGroupEqualExact|entrest.FilterGroupArray),
+		),
 	}
 }
 

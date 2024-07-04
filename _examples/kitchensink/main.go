@@ -17,6 +17,7 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent"
+	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/rest"
 	_ "github.com/lrstanley/entrest/_examples/kitchensink/database/ent/runtime" // Required by ent.
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/user"
@@ -63,14 +64,28 @@ func main() {
 	oreo := db.Pet.Create().
 		SetName("Riley").
 		AddFollowedBy(john).
+		SetAge(3).
+		SetType(pet.TypeDog).
 		SaveX(ctx)
 
 	for range 100 {
+		types := []pet.Type{
+			pet.TypeDog,
+			pet.TypeCat,
+			pet.TypeBird,
+			pet.TypeFish,
+			pet.TypeAmphibian,
+			pet.TypeReptile,
+			pet.TypeOther,
+		}
+
 		db.Pet.Create().
 			SetName(gofakeit.PetName()).
 			SetOwner(john).
 			AddFriends(oreo).
 			AddFollowedBy(john).
+			SetAge(gofakeit.Number(1, 15)).
+			SetType(types[gofakeit.Number(0, len(types)-1)]).
 			ExecX(ctx)
 	}
 
@@ -86,6 +101,7 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Mount("/debug", middleware.Profiler())
 	r.Mount("/", srv.Handler())
 	http.ListenAndServe(":8080", r) //nolint:all
 }

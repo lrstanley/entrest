@@ -8,6 +8,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/friendship"
+	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/user"
 	"github.com/lrstanley/entrest/_examples/kitchensink/database/schema"
@@ -44,6 +45,26 @@ func init() {
 	friendshipDescCreatedAt := friendshipFields[0].Descriptor()
 	// friendship.DefaultCreatedAt holds the default value on creation for the created_at field.
 	friendship.DefaultCreatedAt = friendshipDescCreatedAt.Default.(func() time.Time)
+	petFields := schema.Pet{}.Fields()
+	_ = petFields
+	// petDescAge is the schema descriptor for age field.
+	petDescAge := petFields[3].Descriptor()
+	// pet.AgeValidator is a validator for the "age" field. It is called by the builders before save.
+	pet.AgeValidator = func() func(int) error {
+		validators := petDescAge.Validators
+		fns := [...]func(int) error{
+			validators[0].(func(int) error),
+			validators[1].(func(int) error),
+		}
+		return func(age int) error {
+			for _, fn := range fns {
+				if err := fn(age); err != nil {
+					return err
+				}
+			}
+			return nil
+		}
+	}()
 	settingsMixin := schema.Settings{}.Mixin()
 	settingsMixinFields0 := settingsMixin[0].Fields()
 	_ = settingsMixinFields0

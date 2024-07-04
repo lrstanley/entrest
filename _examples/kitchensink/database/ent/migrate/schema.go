@@ -88,7 +88,8 @@ var (
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "name", Type: field.TypeString},
 		{Name: "nicknames", Type: field.TypeJSON, Nullable: true},
-		{Name: "age", Type: field.TypeInt, Nullable: true},
+		{Name: "age", Type: field.TypeInt},
+		{Name: "type", Type: field.TypeEnum, Enums: []string{"DOG", "CAT", "BIRD", "FISH", "AMPHIBIAN", "REPTILE", "OTHER"}},
 		{Name: "user_pets", Type: field.TypeInt, Nullable: true},
 	}
 	// PetsTable holds the schema information for the "pets" table.
@@ -99,7 +100,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "pets_users_pets",
-				Columns:    []*schema.Column{PetsColumns[4]},
+				Columns:    []*schema.Column{PetsColumns[5]},
 				RefColumns: []*schema.Column{UsersColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

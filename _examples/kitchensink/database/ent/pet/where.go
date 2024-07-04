@@ -178,14 +178,24 @@ func AgeLTE(v int) predicate.Pet {
 	return predicate.Pet(sql.FieldLTE(FieldAge, v))
 }
 
-// AgeIsNil applies the IsNil predicate on the "age" field.
-func AgeIsNil() predicate.Pet {
-	return predicate.Pet(sql.FieldIsNull(FieldAge))
+// TypeEQ applies the EQ predicate on the "type" field.
+func TypeEQ(v Type) predicate.Pet {
+	return predicate.Pet(sql.FieldEQ(FieldType, v))
 }
 
-// AgeNotNil applies the NotNil predicate on the "age" field.
-func AgeNotNil() predicate.Pet {
-	return predicate.Pet(sql.FieldNotNull(FieldAge))
+// TypeNEQ applies the NEQ predicate on the "type" field.
+func TypeNEQ(v Type) predicate.Pet {
+	return predicate.Pet(sql.FieldNEQ(FieldType, v))
+}
+
+// TypeIn applies the In predicate on the "type" field.
+func TypeIn(vs ...Type) predicate.Pet {
+	return predicate.Pet(sql.FieldIn(FieldType, vs...))
+}
+
+// TypeNotIn applies the NotIn predicate on the "type" field.
+func TypeNotIn(vs ...Type) predicate.Pet {
+	return predicate.Pet(sql.FieldNotIn(FieldType, vs...))
 }
 
 // HasCategories applies the HasEdge predicate on the "categories" edge.

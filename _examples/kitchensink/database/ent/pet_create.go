@@ -39,11 +39,9 @@ func (pc *PetCreate) SetAge(i int) *PetCreate {
 	return pc
 }
 
-// SetNillableAge sets the "age" field if the given value is not nil.
-func (pc *PetCreate) SetNillableAge(i *int) *PetCreate {
-	if i != nil {
-		pc.SetAge(*i)
-	}
+// SetType sets the "type" field.
+func (pc *PetCreate) SetType(pe pet.Type) *PetCreate {
+	pc.mutation.SetType(pe)
 	return pc
 }
 
@@ -154,6 +152,22 @@ func (pc *PetCreate) check() error {
 	if _, ok := pc.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Pet.name"`)}
 	}
+	if _, ok := pc.mutation.Age(); !ok {
+		return &ValidationError{Name: "age", err: errors.New(`ent: missing required field "Pet.age"`)}
+	}
+	if v, ok := pc.mutation.Age(); ok {
+		if err := pet.AgeValidator(v); err != nil {
+			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "Pet.age": %w`, err)}
+		}
+	}
+	if _, ok := pc.mutation.GetType(); !ok {
+		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "Pet.type"`)}
+	}
+	if v, ok := pc.mutation.GetType(); ok {
+		if err := pet.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Pet.type": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -197,6 +211,10 @@ func (pc *PetCreate) createSpec() (*Pet, *sqlgraph.CreateSpec) {
 	if value, ok := pc.mutation.Age(); ok {
 		_spec.SetField(pet.FieldAge, field.TypeInt, value)
 		_node.Age = value
+	}
+	if value, ok := pc.mutation.GetType(); ok {
+		_spec.SetField(pet.FieldType, field.TypeEnum, value)
+		_node.Type = value
 	}
 	if nodes := pc.mutation.CategoriesIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

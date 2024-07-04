@@ -450,7 +450,16 @@
                         "$ref": "#/components/parameters/PetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIsNil"
+                        "$ref": "#/components/parameters/PetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasCategory"
@@ -615,7 +624,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
@@ -1550,7 +1568,16 @@
                         "$ref": "#/components/parameters/PetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIsNil"
+                        "$ref": "#/components/parameters/PetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasCategory"
@@ -1715,7 +1742,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
@@ -2395,7 +2431,16 @@
                         "$ref": "#/components/parameters/EdgePetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgePetAgeIsNil"
+                        "$ref": "#/components/parameters/EdgePetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedPet"
@@ -2449,7 +2494,16 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIsNil"
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -2710,7 +2764,16 @@
                         "$ref": "#/components/parameters/PetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIsNil"
+                        "$ref": "#/components/parameters/PetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasCategory"
@@ -2875,7 +2938,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
@@ -3514,7 +3586,16 @@
                         "$ref": "#/components/parameters/EdgePetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgePetAgeIsNil"
+                        "$ref": "#/components/parameters/EdgePetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedPet"
@@ -3568,7 +3649,16 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIsNil"
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -3924,7 +4014,16 @@
                         "$ref": "#/components/parameters/EdgePetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgePetAgeIsNil"
+                        "$ref": "#/components/parameters/EdgePetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedPet"
@@ -3978,7 +4077,16 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIsNil"
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -4467,7 +4575,16 @@
                         "$ref": "#/components/parameters/PetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIsNil"
+                        "$ref": "#/components/parameters/PetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasCategory"
@@ -4632,7 +4749,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
@@ -4985,7 +5111,16 @@
                         "$ref": "#/components/parameters/EdgePetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgePetAgeIsNil"
+                        "$ref": "#/components/parameters/EdgePetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedPet"
@@ -5039,7 +5174,16 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIsNil"
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -5391,7 +5535,16 @@
                         "$ref": "#/components/parameters/PetAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIsNil"
+                        "$ref": "#/components/parameters/PetTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasCategory"
@@ -5556,7 +5709,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
@@ -6287,10 +6449,25 @@
                     "age": {
                         "type": "integer",
                         "example": 2
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "DOG",
+                            "CAT",
+                            "BIRD",
+                            "FISH",
+                            "AMPHIBIAN",
+                            "REPTILE",
+                            "OTHER"
+                        ],
+                        "example": "DOG"
                     }
                 },
                 "required": [
-                    "name"
+                    "name",
+                    "age",
+                    "type"
                 ]
             },
             "PetCategoryList": {
@@ -6318,6 +6495,19 @@
                         "type": "integer",
                         "example": 2
                     },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "DOG",
+                            "CAT",
+                            "BIRD",
+                            "FISH",
+                            "AMPHIBIAN",
+                            "REPTILE",
+                            "OTHER"
+                        ],
+                        "example": "DOG"
+                    },
                     "categories": {
                         "type": "array",
                         "items": {
@@ -6341,7 +6531,9 @@
                     }
                 },
                 "required": [
-                    "name"
+                    "name",
+                    "age",
+                    "type"
                 ]
             },
             "PetEdges": {
@@ -6416,6 +6608,19 @@
                     "age": {
                         "type": "integer",
                         "example": 2
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "DOG",
+                            "CAT",
+                            "BIRD",
+                            "FISH",
+                            "AMPHIBIAN",
+                            "REPTILE",
+                            "OTHER"
+                        ],
+                        "example": "DOG"
                     },
                     "add_categories": {
                         "type": "array",
@@ -7392,14 +7597,6 @@
                     }
                 }
             },
-            "EdgeFollowedPetAgeIsNil": {
-                "name": "followedPet.age.null",
-                "in": "query",
-                "description": "Filters field \"age\" to be null/nil.",
-                "schema": {
-                    "type": "boolean"
-                }
-            },
             "EdgeFollowedPetAgeLT": {
                 "name": "followedPet.age.lt",
                 "in": "query",
@@ -7516,6 +7713,80 @@
                     }
                 }
             },
+            "EdgeFollowedPetTypeEQ": {
+                "name": "followedPet.type.eq",
+                "in": "query",
+                "description": "Filters field \"type\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "DOG",
+                        "CAT",
+                        "BIRD",
+                        "FISH",
+                        "AMPHIBIAN",
+                        "REPTILE",
+                        "OTHER"
+                    ]
+                }
+            },
+            "EdgeFollowedPetTypeIn": {
+                "name": "followedPet.type.in",
+                "in": "query",
+                "description": "Filters field \"type\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "DOG",
+                            "CAT",
+                            "BIRD",
+                            "FISH",
+                            "AMPHIBIAN",
+                            "REPTILE",
+                            "OTHER"
+                        ]
+                    }
+                }
+            },
+            "EdgeFollowedPetTypeNEQ": {
+                "name": "followedPet.type.neq",
+                "in": "query",
+                "description": "Filters field \"type\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "DOG",
+                        "CAT",
+                        "BIRD",
+                        "FISH",
+                        "AMPHIBIAN",
+                        "REPTILE",
+                        "OTHER"
+                    ]
+                }
+            },
+            "EdgeFollowedPetTypeNotIn": {
+                "name": "followedPet.type.notIn",
+                "in": "query",
+                "description": "Filters field \"type\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "DOG",
+                            "CAT",
+                            "BIRD",
+                            "FISH",
+                            "AMPHIBIAN",
+                            "REPTILE",
+                            "OTHER"
+                        ]
+                    }
+                }
+            },
             "EdgeFriendAgeEQ": {
                 "name": "friend.age.eq",
                 "in": "query",
@@ -7541,14 +7812,6 @@
                     "items": {
                         "type": "integer"
                     }
-                }
-            },
-            "EdgeFriendAgeIsNil": {
-                "name": "friend.age.null",
-                "in": "query",
-                "description": "Filters field \"age\" to be null/nil.",
-                "schema": {
-                    "type": "boolean"
                 }
             },
             "EdgeFriendAgeLT": {
@@ -8244,14 +8507,6 @@
                     }
                 }
             },
-            "EdgePetAgeIsNil": {
-                "name": "pet.age.null",
-                "in": "query",
-                "description": "Filters field \"age\" to be null/nil.",
-                "schema": {
-                    "type": "boolean"
-                }
-            },
             "EdgePetAgeLT": {
                 "name": "pet.age.lt",
                 "in": "query",
@@ -8368,6 +8623,80 @@
                     }
                 }
             },
+            "EdgePetTypeEQ": {
+                "name": "pet.type.eq",
+                "in": "query",
+                "description": "Filters field \"type\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "DOG",
+                        "CAT",
+                        "BIRD",
+                        "FISH",
+                        "AMPHIBIAN",
+                        "REPTILE",
+                        "OTHER"
+                    ]
+                }
+            },
+            "EdgePetTypeIn": {
+                "name": "pet.type.in",
+                "in": "query",
+                "description": "Filters field \"type\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "DOG",
+                            "CAT",
+                            "BIRD",
+                            "FISH",
+                            "AMPHIBIAN",
+                            "REPTILE",
+                            "OTHER"
+                        ]
+                    }
+                }
+            },
+            "EdgePetTypeNEQ": {
+                "name": "pet.type.neq",
+                "in": "query",
+                "description": "Filters field \"type\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "DOG",
+                        "CAT",
+                        "BIRD",
+                        "FISH",
+                        "AMPHIBIAN",
+                        "REPTILE",
+                        "OTHER"
+                    ]
+                }
+            },
+            "EdgePetTypeNotIn": {
+                "name": "pet.type.notIn",
+                "in": "query",
+                "description": "Filters field \"type\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "DOG",
+                            "CAT",
+                            "BIRD",
+                            "FISH",
+                            "AMPHIBIAN",
+                            "REPTILE",
+                            "OTHER"
+                        ]
+                    }
+                }
+            },
             "FilterOperation": {
                 "name": "filter_op",
                 "in": "query",
@@ -8425,14 +8754,6 @@
                     "items": {
                         "type": "integer"
                     }
-                }
-            },
-            "PetAgeIsNil": {
-                "name": "age.null",
-                "in": "query",
-                "description": "Filters field \"age\" to be null/nil.",
-                "schema": {
-                    "type": "boolean"
                 }
             },
             "PetAgeLT": {
@@ -8557,6 +8878,80 @@
                     "type": "array",
                     "items": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "PetTypeEQ": {
+                "name": "type.eq",
+                "in": "query",
+                "description": "Filters field \"type\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "DOG",
+                        "CAT",
+                        "BIRD",
+                        "FISH",
+                        "AMPHIBIAN",
+                        "REPTILE",
+                        "OTHER"
+                    ]
+                }
+            },
+            "PetTypeIn": {
+                "name": "type.in",
+                "in": "query",
+                "description": "Filters field \"type\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "DOG",
+                            "CAT",
+                            "BIRD",
+                            "FISH",
+                            "AMPHIBIAN",
+                            "REPTILE",
+                            "OTHER"
+                        ]
+                    }
+                }
+            },
+            "PetTypeNEQ": {
+                "name": "type.neq",
+                "in": "query",
+                "description": "Filters field \"type\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "enum": [
+                        "DOG",
+                        "CAT",
+                        "BIRD",
+                        "FISH",
+                        "AMPHIBIAN",
+                        "REPTILE",
+                        "OTHER"
+                    ]
+                }
+            },
+            "PetTypeNotIn": {
+                "name": "type.notIn",
+                "in": "query",
+                "description": "Filters field \"type\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "DOG",
+                            "CAT",
+                            "BIRD",
+                            "FISH",
+                            "AMPHIBIAN",
+                            "REPTILE",
+                            "OTHER"
+                        ]
                     }
                 }
             },

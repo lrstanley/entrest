@@ -96,7 +96,8 @@ func (c *CreateFriendshipParams) Exec(ctx context.Context, builder *ent.Friendsh
 type CreatePetParams struct {
 	Name      string   `json:"name"`
 	Nicknames []string `json:"nicknames,omitempty"`
-	Age       *int     `json:"age,omitempty"`
+	Age       int      `json:"age"`
+	Type      pet.Type `json:"type"`
 	// Categories that the pet belongs to.
 	Categories []int `json:"categories,omitempty"`
 	// The user that owns the pet.
@@ -112,9 +113,8 @@ func (c *CreatePetParams) ApplyInputs(builder *ent.PetCreate) *ent.PetCreate {
 	if c.Nicknames != nil {
 		builder.SetNicknames(c.Nicknames)
 	}
-	if c.Age != nil {
-		builder.SetAge(*c.Age)
-	}
+	builder.SetAge(c.Age)
+	builder.SetType(c.Type)
 	builder.AddCategoryIDs(c.Categories...)
 	if c.Owner != nil {
 		builder.SetOwnerID(*c.Owner)

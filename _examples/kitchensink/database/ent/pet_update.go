@@ -83,9 +83,17 @@ func (pu *PetUpdate) AddAge(i int) *PetUpdate {
 	return pu
 }
 
-// ClearAge clears the value of the "age" field.
-func (pu *PetUpdate) ClearAge() *PetUpdate {
-	pu.mutation.ClearAge()
+// SetType sets the "type" field.
+func (pu *PetUpdate) SetType(pe pet.Type) *PetUpdate {
+	pu.mutation.SetType(pe)
+	return pu
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (pu *PetUpdate) SetNillableType(pe *pet.Type) *PetUpdate {
+	if pe != nil {
+		pu.SetType(*pe)
+	}
 	return pu
 }
 
@@ -254,7 +262,25 @@ func (pu *PetUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (pu *PetUpdate) check() error {
+	if v, ok := pu.mutation.Age(); ok {
+		if err := pet.AgeValidator(v); err != nil {
+			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "Pet.age": %w`, err)}
+		}
+	}
+	if v, ok := pu.mutation.GetType(); ok {
+		if err := pet.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Pet.type": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (pu *PetUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := pu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(pet.Table, pet.Columns, sqlgraph.NewFieldSpec(pet.FieldID, field.TypeInt))
 	if ps := pu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -283,8 +309,8 @@ func (pu *PetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := pu.mutation.AddedAge(); ok {
 		_spec.AddField(pet.FieldAge, field.TypeInt, value)
 	}
-	if pu.mutation.AgeCleared() {
-		_spec.ClearField(pet.FieldAge, field.TypeInt)
+	if value, ok := pu.mutation.GetType(); ok {
+		_spec.SetField(pet.FieldType, field.TypeEnum, value)
 	}
 	if pu.mutation.CategoriesCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -535,9 +561,17 @@ func (puo *PetUpdateOne) AddAge(i int) *PetUpdateOne {
 	return puo
 }
 
-// ClearAge clears the value of the "age" field.
-func (puo *PetUpdateOne) ClearAge() *PetUpdateOne {
-	puo.mutation.ClearAge()
+// SetType sets the "type" field.
+func (puo *PetUpdateOne) SetType(pe pet.Type) *PetUpdateOne {
+	puo.mutation.SetType(pe)
+	return puo
+}
+
+// SetNillableType sets the "type" field if the given value is not nil.
+func (puo *PetUpdateOne) SetNillableType(pe *pet.Type) *PetUpdateOne {
+	if pe != nil {
+		puo.SetType(*pe)
+	}
 	return puo
 }
 
@@ -719,7 +753,25 @@ func (puo *PetUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (puo *PetUpdateOne) check() error {
+	if v, ok := puo.mutation.Age(); ok {
+		if err := pet.AgeValidator(v); err != nil {
+			return &ValidationError{Name: "age", err: fmt.Errorf(`ent: validator failed for field "Pet.age": %w`, err)}
+		}
+	}
+	if v, ok := puo.mutation.GetType(); ok {
+		if err := pet.TypeValidator(v); err != nil {
+			return &ValidationError{Name: "type", err: fmt.Errorf(`ent: validator failed for field "Pet.type": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (puo *PetUpdateOne) sqlSave(ctx context.Context) (_node *Pet, err error) {
+	if err := puo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(pet.Table, pet.Columns, sqlgraph.NewFieldSpec(pet.FieldID, field.TypeInt))
 	id, ok := puo.mutation.ID()
 	if !ok {
@@ -765,8 +817,8 @@ func (puo *PetUpdateOne) sqlSave(ctx context.Context) (_node *Pet, err error) {
 	if value, ok := puo.mutation.AddedAge(); ok {
 		_spec.AddField(pet.FieldAge, field.TypeInt, value)
 	}
-	if puo.mutation.AgeCleared() {
-		_spec.ClearField(pet.FieldAge, field.TypeInt)
+	if value, ok := puo.mutation.GetType(); ok {
+		_spec.SetField(pet.FieldType, field.TypeEnum, value)
 	}
 	if puo.mutation.CategoriesCleared() {
 		edge := &sqlgraph.EdgeSpec{

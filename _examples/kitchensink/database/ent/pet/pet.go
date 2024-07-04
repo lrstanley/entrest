@@ -3,6 +3,8 @@
 package pet
 
 import (
+	"fmt"
+
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 )
@@ -18,6 +20,8 @@ const (
 	FieldNicknames = "nicknames"
 	// FieldAge holds the string denoting the age field in the database.
 	FieldAge = "age"
+	// FieldType holds the string denoting the type field in the database.
+	FieldType = "type"
 	// EdgeCategories holds the string denoting the categories edge name in mutations.
 	EdgeCategories = "categories"
 	// EdgeOwner holds the string denoting the owner edge name in mutations.
@@ -64,6 +68,7 @@ var Columns = []string{
 	FieldName,
 	FieldNicknames,
 	FieldAge,
+	FieldType,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "pets"
@@ -99,6 +104,39 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+var (
+	// AgeValidator is a validator for the "age" field. It is called by the builders before save.
+	AgeValidator func(int) error
+)
+
+// Type defines the type for the "type" enum field.
+type Type string
+
+// Type values.
+const (
+	TypeDog       Type = "DOG"
+	TypeCat       Type = "CAT"
+	TypeBird      Type = "BIRD"
+	TypeFish      Type = "FISH"
+	TypeAmphibian Type = "AMPHIBIAN"
+	TypeReptile   Type = "REPTILE"
+	TypeOther     Type = "OTHER"
+)
+
+func (_type Type) String() string {
+	return string(_type)
+}
+
+// TypeValidator is a validator for the "type" field enum values. It is called by the builders before save.
+func TypeValidator(_type Type) error {
+	switch _type {
+	case TypeDog, TypeCat, TypeBird, TypeFish, TypeAmphibian, TypeReptile, TypeOther:
+		return nil
+	default:
+		return fmt.Errorf("pet: invalid enum value for type field: %q", _type)
+	}
+}
+
 // OrderOption defines the ordering options for the Pet queries.
 type OrderOption func(*sql.Selector)
 
@@ -115,6 +153,11 @@ func ByName(opts ...sql.OrderTermOption) OrderOption {
 // ByAge orders the results by the age field.
 func ByAge(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldAge, opts...).ToFunc()
+}
+
+// ByType orders the results by the type field.
+func ByType(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldType, opts...).ToFunc()
 }
 
 // ByCategoriesCount orders the results by categories count.

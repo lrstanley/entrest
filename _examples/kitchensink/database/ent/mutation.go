@@ -1661,6 +1661,7 @@ type PetMutation struct {
 	appendnicknames    []string
 	age                *int
 	addage             *int
+	_type              *pet.Type
 	clearedFields      map[string]struct{}
 	categories         map[int]struct{}
 	removedcategories  map[int]struct{}
@@ -1933,24 +1934,46 @@ func (m *PetMutation) AddedAge() (r int, exists bool) {
 	return *v, true
 }
 
-// ClearAge clears the value of the "age" field.
-func (m *PetMutation) ClearAge() {
-	m.age = nil
-	m.addage = nil
-	m.clearedFields[pet.FieldAge] = struct{}{}
-}
-
-// AgeCleared returns if the "age" field was cleared in this mutation.
-func (m *PetMutation) AgeCleared() bool {
-	_, ok := m.clearedFields[pet.FieldAge]
-	return ok
-}
-
 // ResetAge resets all changes to the "age" field.
 func (m *PetMutation) ResetAge() {
 	m.age = nil
 	m.addage = nil
-	delete(m.clearedFields, pet.FieldAge)
+}
+
+// SetType sets the "type" field.
+func (m *PetMutation) SetType(pe pet.Type) {
+	m._type = &pe
+}
+
+// GetType returns the value of the "type" field in the mutation.
+func (m *PetMutation) GetType() (r pet.Type, exists bool) {
+	v := m._type
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldType returns the old "type" field's value of the Pet entity.
+// If the Pet object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *PetMutation) OldType(ctx context.Context) (v pet.Type, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldType is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldType requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldType: %w", err)
+	}
+	return oldValue.Type, nil
+}
+
+// ResetType resets all changes to the "type" field.
+func (m *PetMutation) ResetType() {
+	m._type = nil
 }
 
 // AddCategoryIDs adds the "categories" edge to the Category entity by ids.
@@ -2188,7 +2211,7 @@ func (m *PetMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *PetMutation) Fields() []string {
-	fields := make([]string, 0, 3)
+	fields := make([]string, 0, 4)
 	if m.name != nil {
 		fields = append(fields, pet.FieldName)
 	}
@@ -2197,6 +2220,9 @@ func (m *PetMutation) Fields() []string {
 	}
 	if m.age != nil {
 		fields = append(fields, pet.FieldAge)
+	}
+	if m._type != nil {
+		fields = append(fields, pet.FieldType)
 	}
 	return fields
 }
@@ -2212,6 +2238,8 @@ func (m *PetMutation) Field(name string) (ent.Value, bool) {
 		return m.Nicknames()
 	case pet.FieldAge:
 		return m.Age()
+	case pet.FieldType:
+		return m.GetType()
 	}
 	return nil, false
 }
@@ -2227,6 +2255,8 @@ func (m *PetMutation) OldField(ctx context.Context, name string) (ent.Value, err
 		return m.OldNicknames(ctx)
 	case pet.FieldAge:
 		return m.OldAge(ctx)
+	case pet.FieldType:
+		return m.OldType(ctx)
 	}
 	return nil, fmt.Errorf("unknown Pet field %s", name)
 }
@@ -2256,6 +2286,13 @@ func (m *PetMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAge(v)
+		return nil
+	case pet.FieldType:
+		v, ok := value.(pet.Type)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetType(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Pet field %s", name)
@@ -2305,9 +2342,6 @@ func (m *PetMutation) ClearedFields() []string {
 	if m.FieldCleared(pet.FieldNicknames) {
 		fields = append(fields, pet.FieldNicknames)
 	}
-	if m.FieldCleared(pet.FieldAge) {
-		fields = append(fields, pet.FieldAge)
-	}
 	return fields
 }
 
@@ -2325,9 +2359,6 @@ func (m *PetMutation) ClearField(name string) error {
 	case pet.FieldNicknames:
 		m.ClearNicknames()
 		return nil
-	case pet.FieldAge:
-		m.ClearAge()
-		return nil
 	}
 	return fmt.Errorf("unknown Pet nullable field %s", name)
 }
@@ -2344,6 +2375,9 @@ func (m *PetMutation) ResetField(name string) error {
 		return nil
 	case pet.FieldAge:
 		m.ResetAge()
+		return nil
+	case pet.FieldType:
+		m.ResetType()
 		return nil
 	}
 	return fmt.Errorf("unknown Pet field %s", name)

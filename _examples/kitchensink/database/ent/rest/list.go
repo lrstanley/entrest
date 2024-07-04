@@ -566,8 +566,14 @@ type ListPetParams struct {
 	PetAgeGT *int `form:"age.gt,omitempty" json:"pet_age_gt,omitempty"`
 	// Filters field "age" to be less than the provided value.
 	PetAgeLT *int `form:"age.lt,omitempty" json:"pet_age_lt,omitempty"`
-	// Filters field "age" to be null/nil.
-	PetAgeIsNil *bool `form:"age.null,omitempty" json:"pet_age_is_nil,omitempty"`
+	// Filters field "type" to be equal to the provided value.
+	PetTypeEQ *pet.Type `form:"type.eq,omitempty" json:"pet_type_eq,omitempty"`
+	// Filters field "type" to be not equal to the provided value.
+	PetTypeNEQ *pet.Type `form:"type.neq,omitempty" json:"pet_type_neq,omitempty"`
+	// Filters field "type" to be within the provided values.
+	PetTypeIn []pet.Type `form:"type.in,omitempty" json:"pet_type_in,omitempty"`
+	// Filters field "type" to be not within the provided values.
+	PetTypeNotIn []pet.Type `form:"type.notIn,omitempty" json:"pet_type_not_in,omitempty"`
 	// If true, only return entities that have a category edge.
 	EdgeHasCategory *bool `form:"has.category,omitempty" json:"edge_has_category,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
@@ -676,8 +682,14 @@ type ListPetParams struct {
 	EdgeFriendAgeGT *int `form:"friend.age.gt,omitempty" json:"edge_friend_age_gt,omitempty"`
 	// Filters field "age" to be less than the provided value.
 	EdgeFriendAgeLT *int `form:"friend.age.lt,omitempty" json:"edge_friend_age_lt,omitempty"`
-	// Filters field "age" to be null/nil.
-	EdgeFriendAgeIsNil *bool `form:"friend.age.null,omitempty" json:"edge_friend_age_is_nil,omitempty"`
+	// Filters field "type" to be equal to the provided value.
+	EdgeFriendTypeEQ *pet.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitempty"`
+	// Filters field "type" to be not equal to the provided value.
+	EdgeFriendTypeNEQ *pet.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitempty"`
+	// Filters field "type" to be within the provided values.
+	EdgeFriendTypeIn []pet.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitempty"`
+	// Filters field "type" to be not within the provided values.
+	EdgeFriendTypeNotIn []pet.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitempty"`
 	// If true, only return entities that have a followed_by edge.
 	EdgeHasFollowedBy *bool `form:"has.followedBy,omitempty" json:"edge_has_followed_by,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
@@ -802,12 +814,17 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.PetAgeLT != nil {
 		predicates = append(predicates, pet.AgeLT(*l.PetAgeLT))
 	}
-	if l.PetAgeIsNil != nil {
-		if *l.PetAgeIsNil {
-			predicates = append(predicates, pet.AgeIsNil())
-		} else {
-			predicates = append(predicates, pet.Not(pet.AgeIsNil()))
-		}
+	if l.PetTypeEQ != nil {
+		predicates = append(predicates, pet.TypeEQ(*l.PetTypeEQ))
+	}
+	if l.PetTypeNEQ != nil {
+		predicates = append(predicates, pet.TypeNEQ(*l.PetTypeNEQ))
+	}
+	if l.PetTypeIn != nil {
+		predicates = append(predicates, pet.TypeIn(l.PetTypeIn...))
+	}
+	if l.PetTypeNotIn != nil {
+		predicates = append(predicates, pet.TypeNotIn(l.PetTypeNotIn...))
 	}
 	if l.EdgeHasCategory != nil {
 		if *l.EdgeHasCategory {
@@ -995,12 +1012,17 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeFriendAgeLT != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.AgeLT(*l.EdgeFriendAgeLT)))
 	}
-	if l.EdgeFriendAgeIsNil != nil {
-		if *l.EdgeFriendAgeIsNil {
-			predicates = append(predicates, pet.HasFriendsWith(pet.AgeIsNil()))
-		} else {
-			predicates = append(predicates, pet.Not(pet.HasFriendsWith(pet.AgeIsNil())))
-		}
+	if l.EdgeFriendTypeEQ != nil {
+		predicates = append(predicates, pet.HasFriendsWith(pet.TypeEQ(*l.EdgeFriendTypeEQ)))
+	}
+	if l.EdgeFriendTypeNEQ != nil {
+		predicates = append(predicates, pet.HasFriendsWith(pet.TypeNEQ(*l.EdgeFriendTypeNEQ)))
+	}
+	if l.EdgeFriendTypeIn != nil {
+		predicates = append(predicates, pet.HasFriendsWith(pet.TypeIn(l.EdgeFriendTypeIn...)))
+	}
+	if l.EdgeFriendTypeNotIn != nil {
+		predicates = append(predicates, pet.HasFriendsWith(pet.TypeNotIn(l.EdgeFriendTypeNotIn...)))
 	}
 	if l.EdgeHasFollowedBy != nil {
 		if *l.EdgeHasFollowedBy {
@@ -1394,8 +1416,14 @@ type ListUserParams struct {
 	EdgePetAgeGT *int `form:"pet.age.gt,omitempty" json:"edge_pet_age_gt,omitempty"`
 	// Filters field "age" to be less than the provided value.
 	EdgePetAgeLT *int `form:"pet.age.lt,omitempty" json:"edge_pet_age_lt,omitempty"`
-	// Filters field "age" to be null/nil.
-	EdgePetAgeIsNil *bool `form:"pet.age.null,omitempty" json:"edge_pet_age_is_nil,omitempty"`
+	// Filters field "type" to be equal to the provided value.
+	EdgePetTypeEQ *pet.Type `form:"pet.type.eq,omitempty" json:"edge_pet_type_eq,omitempty"`
+	// Filters field "type" to be not equal to the provided value.
+	EdgePetTypeNEQ *pet.Type `form:"pet.type.neq,omitempty" json:"edge_pet_type_neq,omitempty"`
+	// Filters field "type" to be within the provided values.
+	EdgePetTypeIn []pet.Type `form:"pet.type.in,omitempty" json:"edge_pet_type_in,omitempty"`
+	// Filters field "type" to be not within the provided values.
+	EdgePetTypeNotIn []pet.Type `form:"pet.type.notIn,omitempty" json:"edge_pet_type_not_in,omitempty"`
 	// If true, only return entities that have a followed_pet edge.
 	EdgeHasFollowedPet *bool `form:"has.followedPet,omitempty" json:"edge_has_followed_pet,omitempty"`
 	// Filters field "name" to be equal to the provided value.
@@ -1430,8 +1458,14 @@ type ListUserParams struct {
 	EdgeFollowedPetAgeGT *int `form:"followedPet.age.gt,omitempty" json:"edge_followed_pet_age_gt,omitempty"`
 	// Filters field "age" to be less than the provided value.
 	EdgeFollowedPetAgeLT *int `form:"followedPet.age.lt,omitempty" json:"edge_followed_pet_age_lt,omitempty"`
-	// Filters field "age" to be null/nil.
-	EdgeFollowedPetAgeIsNil *bool `form:"followedPet.age.null,omitempty" json:"edge_followed_pet_age_is_nil,omitempty"`
+	// Filters field "type" to be equal to the provided value.
+	EdgeFollowedPetTypeEQ *pet.Type `form:"followedPet.type.eq,omitempty" json:"edge_followed_pet_type_eq,omitempty"`
+	// Filters field "type" to be not equal to the provided value.
+	EdgeFollowedPetTypeNEQ *pet.Type `form:"followedPet.type.neq,omitempty" json:"edge_followed_pet_type_neq,omitempty"`
+	// Filters field "type" to be within the provided values.
+	EdgeFollowedPetTypeIn []pet.Type `form:"followedPet.type.in,omitempty" json:"edge_followed_pet_type_in,omitempty"`
+	// Filters field "type" to be not within the provided values.
+	EdgeFollowedPetTypeNotIn []pet.Type `form:"followedPet.type.notIn,omitempty" json:"edge_followed_pet_type_not_in,omitempty"`
 	// If true, only return entities that have a friend edge.
 	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
@@ -1666,12 +1700,17 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgePetAgeLT != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.AgeLT(*l.EdgePetAgeLT)))
 	}
-	if l.EdgePetAgeIsNil != nil {
-		if *l.EdgePetAgeIsNil {
-			predicates = append(predicates, user.HasPetsWith(pet.AgeIsNil()))
-		} else {
-			predicates = append(predicates, user.Not(user.HasPetsWith(pet.AgeIsNil())))
-		}
+	if l.EdgePetTypeEQ != nil {
+		predicates = append(predicates, user.HasPetsWith(pet.TypeEQ(*l.EdgePetTypeEQ)))
+	}
+	if l.EdgePetTypeNEQ != nil {
+		predicates = append(predicates, user.HasPetsWith(pet.TypeNEQ(*l.EdgePetTypeNEQ)))
+	}
+	if l.EdgePetTypeIn != nil {
+		predicates = append(predicates, user.HasPetsWith(pet.TypeIn(l.EdgePetTypeIn...)))
+	}
+	if l.EdgePetTypeNotIn != nil {
+		predicates = append(predicates, user.HasPetsWith(pet.TypeNotIn(l.EdgePetTypeNotIn...)))
 	}
 	if l.EdgeHasFollowedPet != nil {
 		if *l.EdgeHasFollowedPet {
@@ -1732,12 +1771,17 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgeFollowedPetAgeLT != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeLT(*l.EdgeFollowedPetAgeLT)))
 	}
-	if l.EdgeFollowedPetAgeIsNil != nil {
-		if *l.EdgeFollowedPetAgeIsNil {
-			predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeIsNil()))
-		} else {
-			predicates = append(predicates, user.Not(user.HasFollowedPetsWith(pet.AgeIsNil())))
-		}
+	if l.EdgeFollowedPetTypeEQ != nil {
+		predicates = append(predicates, user.HasFollowedPetsWith(pet.TypeEQ(*l.EdgeFollowedPetTypeEQ)))
+	}
+	if l.EdgeFollowedPetTypeNEQ != nil {
+		predicates = append(predicates, user.HasFollowedPetsWith(pet.TypeNEQ(*l.EdgeFollowedPetTypeNEQ)))
+	}
+	if l.EdgeFollowedPetTypeIn != nil {
+		predicates = append(predicates, user.HasFollowedPetsWith(pet.TypeIn(l.EdgeFollowedPetTypeIn...)))
+	}
+	if l.EdgeFollowedPetTypeNotIn != nil {
+		predicates = append(predicates, user.HasFollowedPetsWith(pet.TypeNotIn(l.EdgeFollowedPetTypeNotIn...)))
 	}
 	if l.EdgeHasFriend != nil {
 		if *l.EdgeHasFriend {

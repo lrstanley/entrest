@@ -24,6 +24,8 @@ type Pet struct {
 	Nicknames []string `json:"nicknames"`
 	// Age holds the value of the "age" field.
 	Age int `json:"age"`
+	// Type holds the value of the "type" field.
+	Type pet.Type `json:"type"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PetQuery when eager-loading is set.
 	Edges        PetEdges `json:"edges"`
@@ -104,7 +106,7 @@ func (*Pet) scanValues(columns []string) ([]any, error) {
 			values[i] = new([]byte)
 		case pet.FieldID, pet.FieldAge:
 			values[i] = new(sql.NullInt64)
-		case pet.FieldName:
+		case pet.FieldName, pet.FieldType:
 			values[i] = new(sql.NullString)
 		case pet.ForeignKeys[0]: // user_pets
 			values[i] = new(sql.NullInt64)
@@ -148,6 +150,12 @@ func (pe *Pet) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field age", values[i])
 			} else if value.Valid {
 				pe.Age = int(value.Int64)
+			}
+		case pet.FieldType:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field type", values[i])
+			} else if value.Valid {
+				pe.Type = pet.Type(value.String)
 			}
 		case pet.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -225,6 +233,9 @@ func (pe *Pet) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("age=")
 	builder.WriteString(fmt.Sprintf("%v", pe.Age))
+	builder.WriteString(", ")
+	builder.WriteString("type=")
+	builder.WriteString(fmt.Sprintf("%v", pe.Type))
 	builder.WriteByte(')')
 	return builder.String()
 }
