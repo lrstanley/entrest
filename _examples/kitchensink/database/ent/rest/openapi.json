@@ -35,16 +35,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "created_at",
-                                "id",
-                                "pets.age.sum",
-                                "pets.count",
-                                "random",
-                                "updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/CategorySortableFields"
                         }
                     },
                     {
@@ -375,24 +366,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "age",
-                                "categories.count",
-                                "followed_by.count",
-                                "following.count",
-                                "friends.age.sum",
-                                "friends.count",
-                                "id",
-                                "name",
-                                "owner.created_at",
-                                "owner.email",
-                                "owner.id",
-                                "owner.name",
-                                "owner.updated_at",
-                                "random"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/PetSortableFields"
                         }
                     },
                     {
@@ -816,20 +790,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "followed_at",
-                                "pet.age",
-                                "pet.id",
-                                "pet.name",
-                                "random",
-                                "user.created_at",
-                                "user.email",
-                                "user.id",
-                                "user.name",
-                                "user.updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/FollowSortableFields"
                         }
                     },
                     {
@@ -976,22 +937,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "friend.created_at",
-                                "friend.email",
-                                "friend.id",
-                                "friend.name",
-                                "friend.updated_at",
-                                "id",
-                                "random",
-                                "user.created_at",
-                                "user.email",
-                                "user.id",
-                                "user.name",
-                                "user.updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/FriendshipSortableFields"
                         }
                     },
                     {
@@ -1493,24 +1439,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "age",
-                                "categories.count",
-                                "followed_by.count",
-                                "following.count",
-                                "friends.age.sum",
-                                "friends.count",
-                                "id",
-                                "name",
-                                "owner.created_at",
-                                "owner.email",
-                                "owner.id",
-                                "owner.name",
-                                "owner.updated_at",
-                                "random"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/PetSortableFields"
                         }
                     },
                     {
@@ -2148,16 +2077,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "created_at",
-                                "id",
-                                "pets.age.sum",
-                                "pets.count",
-                                "random",
-                                "updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/CategorySortableFields"
                         }
                     },
                     {
@@ -2261,23 +2181,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "created_at",
-                                "email",
-                                "followed_pets.age.sum",
-                                "followed_pets.count",
-                                "following.count",
-                                "friends.count",
-                                "friendships.count",
-                                "id",
-                                "name",
-                                "pets.age.sum",
-                                "pets.count",
-                                "random",
-                                "updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/UserSortableFields"
                         }
                     },
                     {
@@ -2689,24 +2593,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "age",
-                                "categories.count",
-                                "followed_by.count",
-                                "following.count",
-                                "friends.age.sum",
-                                "friends.count",
-                                "id",
-                                "name",
-                                "owner.created_at",
-                                "owner.email",
-                                "owner.id",
-                                "owner.name",
-                                "owner.updated_at",
-                                "random"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/PetSortableFields"
                         }
                     },
                     {
@@ -3195,15 +3082,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "admins.count",
-                                "created_at",
-                                "id",
-                                "random",
-                                "updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/SettingSortableFields"
                         }
                     },
                     {
@@ -3416,23 +3295,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "created_at",
-                                "email",
-                                "followed_pets.age.sum",
-                                "followed_pets.count",
-                                "following.count",
-                                "friends.count",
-                                "friendships.count",
-                                "id",
-                                "name",
-                                "pets.age.sum",
-                                "pets.count",
-                                "random",
-                                "updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/UserSortableFields"
                         }
                     },
                     {
@@ -3844,23 +3707,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "created_at",
-                                "email",
-                                "followed_pets.age.sum",
-                                "followed_pets.count",
-                                "following.count",
-                                "friends.count",
-                                "friendships.count",
-                                "id",
-                                "name",
-                                "pets.age.sum",
-                                "pets.count",
-                                "random",
-                                "updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/UserSortableFields"
                         }
                     },
                     {
@@ -4500,24 +4347,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "age",
-                                "categories.count",
-                                "followed_by.count",
-                                "following.count",
-                                "friends.age.sum",
-                                "friends.count",
-                                "id",
-                                "name",
-                                "owner.created_at",
-                                "owner.email",
-                                "owner.id",
-                                "owner.name",
-                                "owner.updated_at",
-                                "random"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/PetSortableFields"
                         }
                     },
                     {
@@ -4941,23 +4771,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "created_at",
-                                "email",
-                                "followed_pets.age.sum",
-                                "followed_pets.count",
-                                "following.count",
-                                "friends.count",
-                                "friendships.count",
-                                "id",
-                                "name",
-                                "pets.age.sum",
-                                "pets.count",
-                                "random",
-                                "updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/UserSortableFields"
                         }
                     },
                     {
@@ -5370,22 +5184,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "friend.created_at",
-                                "friend.email",
-                                "friend.id",
-                                "friend.name",
-                                "friend.updated_at",
-                                "id",
-                                "random",
-                                "user.created_at",
-                                "user.email",
-                                "user.id",
-                                "user.name",
-                                "user.updated_at"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/FriendshipSortableFields"
                         }
                     },
                     {
@@ -5460,24 +5259,7 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "type": "string",
-                            "enum": [
-                                "age",
-                                "categories.count",
-                                "followed_by.count",
-                                "following.count",
-                                "friends.age.sum",
-                                "friends.count",
-                                "id",
-                                "name",
-                                "owner.created_at",
-                                "owner.email",
-                                "owner.id",
-                                "owner.name",
-                                "owner.updated_at",
-                                "random"
-                            ],
-                            "default": "id"
+                            "$ref": "#/components/schemas/PetSortableFields"
                         }
                     },
                     {
@@ -5949,6 +5731,19 @@
             "CategoryRead": {
                 "$ref": "#/components/schemas/Category"
             },
+            "CategorySortableFields": {
+                "description": "All potential sortable fields for Category entities.",
+                "type": "string",
+                "enum": [
+                    "created_at",
+                    "id",
+                    "pets.age.sum",
+                    "pets.count",
+                    "random",
+                    "updated_at"
+                ],
+                "default": "id"
+            },
             "CategoryUpdate": {
                 "description": "A single Category entity and the fields that can be created/updated.",
                 "type": "object",
@@ -6222,6 +6017,15 @@
                     "timestamp"
                 ]
             },
+            "FilterOperation": {
+                "description": "Specifies how to combine multiple filters.",
+                "type": "string",
+                "enum": [
+                    "and",
+                    "or"
+                ],
+                "default": "and"
+            },
             "Follow": {
                 "description": "A single Follow entity.",
                 "type": "object",
@@ -6315,6 +6119,22 @@
                     }
                 ]
             },
+            "FollowSortableFields": {
+                "description": "All potential sortable fields for Follow entities.",
+                "type": "string",
+                "enum": [
+                    "followed_at",
+                    "pet.age",
+                    "pet.id",
+                    "pet.name",
+                    "random",
+                    "user.created_at",
+                    "user.email",
+                    "user.id",
+                    "user.name",
+                    "user.updated_at"
+                ]
+            },
             "Friendship": {
                 "description": "A single Friendship entity.",
                 "type": "object",
@@ -6384,6 +6204,25 @@
             },
             "FriendshipRead": {
                 "$ref": "#/components/schemas/Friendship"
+            },
+            "FriendshipSortableFields": {
+                "description": "All potential sortable fields for Friendship entities.",
+                "type": "string",
+                "enum": [
+                    "friend.created_at",
+                    "friend.email",
+                    "friend.id",
+                    "friend.name",
+                    "friend.updated_at",
+                    "id",
+                    "random",
+                    "user.created_at",
+                    "user.email",
+                    "user.id",
+                    "user.name",
+                    "user.updated_at"
+                ],
+                "default": "id"
             },
             "FriendshipUpdate": {
                 "description": "A single Friendship entity and the fields that can be created/updated.",
@@ -6591,6 +6430,27 @@
                     }
                 ]
             },
+            "PetSortableFields": {
+                "description": "All potential sortable fields for Pet entities.",
+                "type": "string",
+                "enum": [
+                    "age",
+                    "categories.count",
+                    "followed_by.count",
+                    "following.count",
+                    "friends.age.sum",
+                    "friends.count",
+                    "id",
+                    "name",
+                    "owner.created_at",
+                    "owner.email",
+                    "owner.id",
+                    "owner.name",
+                    "owner.updated_at",
+                    "random"
+                ],
+                "default": "id"
+            },
             "PetUpdate": {
                 "description": "A single Pet entity and the fields that can be created/updated.",
                 "type": "object",
@@ -6757,6 +6617,18 @@
                     }
                 ]
             },
+            "SettingSortableFields": {
+                "description": "All potential sortable fields for Setting entities.",
+                "type": "string",
+                "enum": [
+                    "admins.count",
+                    "created_at",
+                    "id",
+                    "random",
+                    "updated_at"
+                ],
+                "default": "id"
+            },
             "SettingUpdate": {
                 "description": "Settings contains the global settings for the platform. Generally only one should ever be returned.",
                 "type": "object",
@@ -6779,6 +6651,15 @@
                         }
                     }
                 }
+            },
+            "SortOrder": {
+                "description": "Sort order/direction.",
+                "type": "string",
+                "enum": [
+                    "asc",
+                    "desc"
+                ],
+                "default": "desc"
             },
             "User": {
                 "description": "A single User entity.",
@@ -6972,6 +6853,26 @@
                         ]
                     }
                 ]
+            },
+            "UserSortableFields": {
+                "description": "All potential sortable fields for User entities.",
+                "type": "string",
+                "enum": [
+                    "created_at",
+                    "email",
+                    "followed_pets.age.sum",
+                    "followed_pets.count",
+                    "following.count",
+                    "friends.count",
+                    "friendships.count",
+                    "id",
+                    "name",
+                    "pets.age.sum",
+                    "pets.count",
+                    "random",
+                    "updated_at"
+                ],
+                "default": "id"
             },
             "UserUpdate": {
                 "description": "A single User entity and the fields that can be created/updated.",
@@ -8702,12 +8603,7 @@
                 "in": "query",
                 "description": "Filter operation to use.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "and",
-                        "or"
-                    ],
-                    "default": "and"
+                    "$ref": "#/components/schemas/FilterOperation"
                 }
             },
             "FriendshipID": {
@@ -9009,12 +8905,7 @@
                 "in": "query",
                 "description": "Order the results in ascending or descending order.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "asc",
-                        "desc"
-                    ],
-                    "default": "desc"
+                    "$ref": "#/components/schemas/SortOrder"
                 }
             },
             "UserCreatedAtGT": {

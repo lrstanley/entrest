@@ -215,7 +215,7 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 
 		// The edge endpoint should point to the paged schema, despite us eager-loading
 		// it.
-		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/CategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
 	})
 
@@ -232,7 +232,7 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 
 		// The edge endpoint should also be non-paged, because we optimized away the
 		// need for pagination, given the edge is eager-loaded.
-		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..schema.$ref`), "/PetCategoryList")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/PetCategoryList")
 		assert.Equal(t, "array", r.json(`$.components.schemas.PetCategoryList.type`))
 	})
 
@@ -240,7 +240,7 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 		t.Parallel()
 		r := mustBuildSpec(t, &Config{DisableEagerLoadNonPagedOpt: true}, nil)
 
-		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..schema.$ref`), "/CategoryList")
+		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/CategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
 	})
 }

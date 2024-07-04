@@ -89,7 +89,20 @@ func newBaseSpec(_ *Config) *ogen.Spec {
 	spec := &ogen.Spec{
 		Paths: ogen.Paths{},
 		Components: &ogen.Components{
-			Schemas: map[string]*ogen.Schema{},
+			Schemas: map[string]*ogen.Schema{
+				"SortOrder": {
+					Description: "Sort order/direction.",
+					Type:        "string",
+					Enum:        sliceToRawMessage([]string{"asc", "desc"}),
+					Default:     jsonschema.RawValue(`"desc"`),
+				},
+				"FilterOperation": {
+					Description: "Specifies how to combine multiple filters.",
+					Type:        "string",
+					Enum:        sliceToRawMessage([]string{"and", "or"}),
+					Default:     jsonschema.RawValue(`"and"`),
+				},
+			},
 			Parameters: map[string]*ogen.Parameter{
 				"PrettyResponse": {
 					Name:        "pretty",
@@ -101,21 +114,13 @@ func newBaseSpec(_ *Config) *ogen.Spec {
 					Name:        "order",
 					In:          "query",
 					Description: "Order the results in ascending or descending order.",
-					Schema: &ogen.Schema{
-						Type:    "string",
-						Enum:    sliceToRawMessage([]string{"asc", "desc"}),
-						Default: jsonschema.RawValue(`"desc"`),
-					},
+					Schema:      &ogen.Schema{Ref: "#/components/schemas/SortOrder"},
 				},
 				"FilterOperation": {
 					Name:        "filter_op",
 					In:          "query",
 					Description: "Filter operation to use.",
-					Schema: &ogen.Schema{
-						Type:    "string",
-						Enum:    sliceToRawMessage([]string{"and", "or"}),
-						Default: jsonschema.RawValue(`"and"`),
-					},
+					Schema:      &ogen.Schema{Ref: "#/components/schemas/FilterOperation"},
 				},
 			},
 		},
@@ -302,19 +307,15 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			)
 		}
 
-		// Greater than 1 because we want to sort by id by default.
-		if sortable := GetSortableFields(t, false); len(sortable) > 1 {
+		// Greater than 2 because we want to sort by id by default, and random is always included for non-edges.
+		if sortable := GetSortableFields(t, false); len(sortable) > 2 {
 			oper.Parameters = append(
 				oper.Parameters,
 				&ogen.Parameter{
 					Name:        "sort",
 					In:          "query",
 					Description: "Sort entity results by the given field.",
-					Schema: &ogen.Schema{
-						Type:    "string",
-						Enum:    sliceToRawMessage(sortable),
-						Default: jsonschema.RawValue(`"id"`),
-					},
+					Schema:      &ogen.Schema{Ref: "#/components/schemas/" + addSortableFields(spec, t, sortable)},
 				},
 				&ogen.Parameter{Ref: "#/components/parameters/SortOrder"},
 			)
@@ -534,19 +535,15 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			})
 		}
 
-		// Greater than 1 because we want to sort by id by default.
-		if sortable := GetSortableFields(e.Type, false); len(sortable) > 1 {
+		// Greater than 2 because we want to sort by id by default, and random is always included for non-edges.
+		if sortable := GetSortableFields(e.Type, false); len(sortable) > 2 {
 			oper.Parameters = append(
 				oper.Parameters,
 				&ogen.Parameter{
 					Name:        "sort",
 					In:          "query",
 					Description: "Sort entity results by the given field.",
-					Schema: &ogen.Schema{
-						Type:    "string",
-						Enum:    sliceToRawMessage(sortable),
-						Default: jsonschema.RawValue(`"id"`),
-					},
+					Schema:      &ogen.Schema{Ref: "#/components/schemas/" + addSortableFields(spec, e.Type, sortable)},
 				},
 				&ogen.Parameter{Ref: "#/components/parameters/SortOrder"},
 			)
@@ -592,6 +589,23 @@ func edgesToTags(cfg *Config, t *gen.Type) (tags []string) {
 		}
 	}
 	return tags
+}
+
+// addSortableFields adds a schema entry for the provided type into the spec, returning
+// the name of the schema entry.
+func addSortableFields(spec *ogen.Spec, t *gen.Type, fields []string) (ref string) {
+	ref = Singularize(t.Name) + "SortableFields"
+
+	s := &ogen.Schema{
+		Description: "All potential sortable fields for " + Singularize(t.Name) + " entities.",
+		Type:        "string",
+		Enum:        sliceToRawMessage(fields),
+	}
+	if t.ID != nil {
+		s.Default = jsonschema.RawValue(`"id"`)
+	}
+	spec.Components.Schemas[ref] = s
+	return ref
 }
 
 // addGlobalRequestHeaders adds the given headers to shared component parameters,
