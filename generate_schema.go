@@ -76,13 +76,16 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 	baseType := f.Type.String()
 
 	if f.IsEnum() {
-		var d json.RawMessage
-		if f.Default {
-			d, err = json.Marshal(f.DefaultValue().(string))
-			if err != nil {
-				return nil, err
-			}
-		}
+		// TODO: sharing enum schemas between parameters and component schemas,
+		// means that the default is used for both, even if the parameter version
+		// shouldn't have a default.
+		// var d json.RawMessage
+		// if f.Default {
+		// 	d, err = json.Marshal(f.DefaultValue().(string))
+		// 	if err != nil {
+		// 		return nil, err
+		// 	}
+		// }
 		values := make([]json.RawMessage, len(f.EnumValues()))
 		for i, e := range f.EnumValues() {
 			values[i], err = json.Marshal(e)
@@ -90,7 +93,7 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 				return nil, err
 			}
 		}
-		schema = ogen.String().AsEnum(d, values...)
+		schema = &ogen.Schema{Type: "string", Enum: values}
 	}
 
 	if schema == nil {
@@ -116,7 +119,7 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 		// schema = ogen.NewSchema().SetOneOf([]*ogen.Schema{schema, {Type: "null"}})
 	}
 
-	if v := f.DefaultValue(); f.Default && v != nil {
+	if v := f.DefaultValue(); f.Default && v != nil && !f.IsEnum() {
 		schema.Default, err = json.Marshal(f.DefaultValue())
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal default value for field %s: %w", f.StructField(), err)

@@ -6855,7 +6855,6 @@
                     "SYSTEM",
                     "USER"
                 ],
-                "default": "USER",
                 "example": "USER"
             },
             "UserUpdate": {
