@@ -5,6 +5,7 @@
 package entrest
 
 import (
+	"encoding/json"
 	"net/http"
 	"slices"
 	"strings"
@@ -12,6 +13,7 @@ import (
 
 	"entgo.io/ent/entc/gen"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestSpec_ThroughSchema_TwoTypes(t *testing.T) {
@@ -106,4 +108,19 @@ func TestSpec_HoistedEnums(t *testing.T) {
 	assert.Contains(t, r.json(`$.components.parameters.UserTypeNEQ.schema.$ref`), "/UserTypeEnum")
 	assert.Contains(t, r.json(`$.components.parameters.UserTypeIn.schema.items.$ref`), "/UserTypeEnum")
 	assert.Contains(t, r.json(`$.components.parameters.UserTypeNotIn.schema.items.$ref`), "/UserTypeEnum")
+}
+
+func TestSpec_Sensitive(t *testing.T) {
+	t.Parallel()
+
+	r := mustBuildSpec(t, &Config{}, nil)
+
+	assert.Nil(t, r.json(`$.components.schemas.User.properties.password_hashed`))
+	assert.NotNil(t, r.json(`$.components.schemas.UserCreate.properties.password_hashed`))
+	assert.NotNil(t, r.json(`$.components.schemas.UserUpdate.properties.password_hashed`))
+
+	// convert all of the parameters to json, and see if the field exists anywhere in those.
+	b, err := json.Marshal(r.spec.Components.Parameters)
+	require.NoError(t, err)
+	assert.NotContains(t, string(b), `"password_hashed"`)
 }

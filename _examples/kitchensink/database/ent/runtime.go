@@ -171,4 +171,8 @@ func init() {
 			return nil
 		}
 	}()
+	// userDescPasswordHashed is the schema descriptor for password_hashed field.
+	userDescPasswordHashed := userFields[6].Descriptor()
+	// user.PasswordHashedValidator is a validator for the "password_hashed" field. It is called by the builders before save.
+	user.PasswordHashedValidator = userDescPasswordHashed.Validators[0].(func(string) error)
 }

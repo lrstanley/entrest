@@ -31,6 +31,8 @@ const (
 	FieldEmail = "email"
 	// FieldAvatar holds the string denoting the avatar field in the database.
 	FieldAvatar = "avatar"
+	// FieldPasswordHashed holds the string denoting the password_hashed field in the database.
+	FieldPasswordHashed = "password_hashed"
 	// EdgePets holds the string denoting the pets edge name in mutations.
 	EdgePets = "pets"
 	// EdgeFollowedPets holds the string denoting the followed_pets edge name in mutations.
@@ -84,6 +86,7 @@ var Columns = []string{
 	FieldEnabled,
 	FieldEmail,
 	FieldAvatar,
+	FieldPasswordHashed,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "users"
@@ -131,6 +134,8 @@ var (
 	EmailValidator func(string) error
 	// AvatarValidator is a validator for the "avatar" field. It is called by the builders before save.
 	AvatarValidator func([]byte) error
+	// PasswordHashedValidator is a validator for the "password_hashed" field. It is called by the builders before save.
+	PasswordHashedValidator func(string) error
 )
 
 // Type defines the type for the "type" enum field.
@@ -200,6 +205,11 @@ func ByEnabled(opts ...sql.OrderTermOption) OrderOption {
 // ByEmail orders the results by the email field.
 func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldEmail, opts...).ToFunc()
+}
+
+// ByPasswordHashed orders the results by the password_hashed field.
+func ByPasswordHashed(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldPasswordHashed, opts...).ToFunc()
 }
 
 // ByPetsCount orders the results by pets count.

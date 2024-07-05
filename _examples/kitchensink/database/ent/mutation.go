@@ -3426,6 +3426,7 @@ type UserMutation struct {
 	enabled              *bool
 	email                *string
 	avatar               *[]byte
+	password_hashed      *string
 	clearedFields        map[string]struct{}
 	pets                 map[int]struct{}
 	removedpets          map[int]struct{}
@@ -3869,6 +3870,42 @@ func (m *UserMutation) ResetAvatar() {
 	delete(m.clearedFields, user.FieldAvatar)
 }
 
+// SetPasswordHashed sets the "password_hashed" field.
+func (m *UserMutation) SetPasswordHashed(s string) {
+	m.password_hashed = &s
+}
+
+// PasswordHashed returns the value of the "password_hashed" field in the mutation.
+func (m *UserMutation) PasswordHashed() (r string, exists bool) {
+	v := m.password_hashed
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldPasswordHashed returns the old "password_hashed" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldPasswordHashed(ctx context.Context) (v string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldPasswordHashed is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldPasswordHashed requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldPasswordHashed: %w", err)
+	}
+	return oldValue.PasswordHashed, nil
+}
+
+// ResetPasswordHashed resets all changes to the "password_hashed" field.
+func (m *UserMutation) ResetPasswordHashed() {
+	m.password_hashed = nil
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by ids.
 func (m *UserMutation) AddPetIDs(ids ...int) {
 	if m.pets == nil {
@@ -4119,7 +4156,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -4143,6 +4180,9 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.avatar != nil {
 		fields = append(fields, user.FieldAvatar)
+	}
+	if m.password_hashed != nil {
+		fields = append(fields, user.FieldPasswordHashed)
 	}
 	return fields
 }
@@ -4168,6 +4208,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Email()
 	case user.FieldAvatar:
 		return m.Avatar()
+	case user.FieldPasswordHashed:
+		return m.PasswordHashed()
 	}
 	return nil, false
 }
@@ -4193,6 +4235,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldEmail(ctx)
 	case user.FieldAvatar:
 		return m.OldAvatar(ctx)
+	case user.FieldPasswordHashed:
+		return m.OldPasswordHashed(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -4257,6 +4301,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetAvatar(v)
+		return nil
+	case user.FieldPasswordHashed:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetPasswordHashed(v)
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
@@ -4351,6 +4402,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldAvatar:
 		m.ResetAvatar()
+		return nil
+	case user.FieldPasswordHashed:
+		m.ResetPasswordHashed()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

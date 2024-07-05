@@ -62,7 +62,8 @@ func newUser(db *ent.Client) *ent.UserCreate {
 		SetName(first + " " + last).
 		SetEmail(first + "." + last + "@example.com").
 		SetEnabled(true).
-		SetType(user.TypeUser)
+		SetType(user.TypeUser).
+		SetPasswordHashed(gofakeit.Password(true, true, true, true, true, 15)) // Not actually used.
 }
 
 func newPet(db *ent.Client) *ent.PetCreate {

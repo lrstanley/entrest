@@ -176,6 +176,8 @@ type CreateUserParams struct {
 	Email *string `json:"email,omitempty"`
 	// Avatar data for the user. This should generally only apply to the USER user type.
 	Avatar []byte `json:"avatar,omitempty"`
+	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
+	PasswordHashed string `json:"password_hashed"`
 	// Pets owned by the user.
 	Pets []int `json:"pets,omitempty"`
 	// Pets that the user is following.
@@ -202,6 +204,7 @@ func (c *CreateUserParams) ApplyInputs(builder *ent.UserCreate) *ent.UserCreate 
 	if c.Avatar != nil {
 		builder.SetAvatar(c.Avatar)
 	}
+	builder.SetPasswordHashed(c.PasswordHashed)
 	builder.AddPetIDs(c.Pets...)
 	builder.AddFollowedPetIDs(c.FollowedPets...)
 	builder.AddFriendIDs(c.Friends...)

@@ -6735,6 +6735,10 @@
                         "format": "byte",
                         "nullable": true
                     },
+                    "password_hashed": {
+                        "description": "Hashed password for the user, this shouldn't be readable in the spec anywhere.",
+                        "type": "string"
+                    },
                     "pets": {
                         "type": "array",
                         "items": {
@@ -6761,7 +6765,8 @@
                     }
                 },
                 "required": [
-                    "name"
+                    "name",
+                    "password_hashed"
                 ]
             },
             "UserEdges": {
@@ -6886,6 +6891,10 @@
                         "type": "string",
                         "format": "byte",
                         "nullable": true
+                    },
+                    "password_hashed": {
+                        "description": "Hashed password for the user, this shouldn't be readable in the spec anywhere.",
+                        "type": "string"
                     },
                     "add_pets": {
                         "type": "array",

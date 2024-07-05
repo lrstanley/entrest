@@ -67,6 +67,14 @@ func (User) Fields() []ent.Field {
 			Nillable().
 			StructTag(`json:"-"`).
 			Comment("Avatar data for the user. This should generally only apply to the USER user type."),
+		field.String("password_hashed").
+			Sensitive().
+			NotEmpty().
+			Annotations(
+				// These should theoretically have no impact.
+				entrest.WithFilter(entrest.FilterGroupEqual | entrest.FilterGroupArray),
+			).
+			Comment("Hashed password for the user, this shouldn't be readable in the spec anywhere."),
 	}
 }
 

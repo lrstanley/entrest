@@ -53,6 +53,10 @@ func (User) Fields() []ent.Field {
 			Immutable().
 			Default(time.Now).
 			Comment("Last time the identity was updated in the source system."),
+		field.String("password_hashed").
+			Sensitive().
+			NotEmpty().
+			Comment("Hashed password for the user, this shouldn't be readable in the spec anywhere."),
 	}
 }
 

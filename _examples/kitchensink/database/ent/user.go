@@ -33,6 +33,8 @@ type User struct {
 	Email *string `json:"email"`
 	// Avatar data for the user. This should generally only apply to the USER user type.
 	Avatar *[]byte `json:"-"`
+	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
+	PasswordHashed string `json:"-"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges           UserEdges `json:"edges"`
@@ -113,7 +115,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case user.FieldID:
 			values[i] = new(sql.NullInt64)
-		case user.FieldName, user.FieldType, user.FieldDescription, user.FieldEmail:
+		case user.FieldName, user.FieldType, user.FieldDescription, user.FieldEmail, user.FieldPasswordHashed:
 			values[i] = new(sql.NullString)
 		case user.FieldCreatedAt, user.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -189,6 +191,12 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field avatar", values[i])
 			} else if value != nil {
 				u.Avatar = value
+			}
+		case user.FieldPasswordHashed:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field password_hashed", values[i])
+			} else if value.Valid {
+				u.PasswordHashed = value.String
 			}
 		case user.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -287,6 +295,8 @@ func (u *User) String() string {
 		builder.WriteString("avatar=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
+	builder.WriteString(", ")
+	builder.WriteString("password_hashed=<sensitive>")
 	builder.WriteByte(')')
 	return builder.String()
 }

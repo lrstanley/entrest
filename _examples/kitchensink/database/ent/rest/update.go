@@ -215,6 +215,8 @@ type UpdateUserParams struct {
 	Email Option[*string] `json:"email,omitempty"`
 	// Avatar data for the user. This should generally only apply to the USER user type.
 	Avatar Option[*[]byte] `json:"avatar,omitempty"`
+	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
+	PasswordHashed Option[string] `json:"password_hashed"`
 	// Pets owned by the user.
 	AddPets Option[[]int] `json:"add_pets,omitempty"`
 	// Pets owned by the user.
@@ -261,6 +263,9 @@ func (u *UpdateUserParams) ApplyInputs(builder *ent.UserUpdateOne) *ent.UserUpda
 		} else {
 			builder.ClearAvatar()
 		}
+	}
+	if v, ok := u.PasswordHashed.Get(); ok {
+		builder.SetPasswordHashed(v)
 	}
 
 	if v, ok := u.AddPets.Get(); ok && v != nil {

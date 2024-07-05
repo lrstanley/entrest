@@ -118,6 +118,12 @@ func (uc *UserCreate) SetAvatar(b []byte) *UserCreate {
 	return uc
 }
 
+// SetPasswordHashed sets the "password_hashed" field.
+func (uc *UserCreate) SetPasswordHashed(s string) *UserCreate {
+	uc.mutation.SetPasswordHashed(s)
+	return uc
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (uc *UserCreate) AddPetIDs(ids ...int) *UserCreate {
 	uc.mutation.AddPetIDs(ids...)
@@ -268,6 +274,14 @@ func (uc *UserCreate) check() error {
 			return &ValidationError{Name: "avatar", err: fmt.Errorf(`ent: validator failed for field "User.avatar": %w`, err)}
 		}
 	}
+	if _, ok := uc.mutation.PasswordHashed(); !ok {
+		return &ValidationError{Name: "password_hashed", err: errors.New(`ent: missing required field "User.password_hashed"`)}
+	}
+	if v, ok := uc.mutation.PasswordHashed(); ok {
+		if err := user.PasswordHashedValidator(v); err != nil {
+			return &ValidationError{Name: "password_hashed", err: fmt.Errorf(`ent: validator failed for field "User.password_hashed": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -325,6 +339,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.Avatar(); ok {
 		_spec.SetField(user.FieldAvatar, field.TypeBytes, value)
 		_node.Avatar = &value
+	}
+	if value, ok := uc.mutation.PasswordHashed(); ok {
+		_spec.SetField(user.FieldPasswordHashed, field.TypeString, value)
+		_node.PasswordHashed = value
 	}
 	if nodes := uc.mutation.PetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

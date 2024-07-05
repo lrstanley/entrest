@@ -47,9 +47,10 @@ func main() {
 
 	john := db.User.Create().
 		SetName("john").
-		SetEmail("john@example.com").
+		SetEmail(gofakeit.Email()).
 		SetType(user.TypeUser).
 		SetEnabled(true).
+		SetPasswordHashed(gofakeit.Password(true, true, true, true, true, 15)). // Not actually used.
 		SaveX(ctx)
 
 	for range 100 {
@@ -58,6 +59,7 @@ func main() {
 			SetEmail(gofakeit.Email()).
 			SetType(user.TypeUser).
 			SetEnabled(true).
+			SetPasswordHashed(gofakeit.Password(true, true, true, true, true, 15)). // Not actually used.
 			ExecX(ctx)
 	}
 

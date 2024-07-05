@@ -130,6 +130,20 @@ func (uu *UserUpdate) ClearAvatar() *UserUpdate {
 	return uu
 }
 
+// SetPasswordHashed sets the "password_hashed" field.
+func (uu *UserUpdate) SetPasswordHashed(s string) *UserUpdate {
+	uu.mutation.SetPasswordHashed(s)
+	return uu
+}
+
+// SetNillablePasswordHashed sets the "password_hashed" field if the given value is not nil.
+func (uu *UserUpdate) SetNillablePasswordHashed(s *string) *UserUpdate {
+	if s != nil {
+		uu.SetPasswordHashed(*s)
+	}
+	return uu
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (uu *UserUpdate) AddPetIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddPetIDs(ids...)
@@ -337,6 +351,11 @@ func (uu *UserUpdate) check() error {
 			return &ValidationError{Name: "avatar", err: fmt.Errorf(`ent: validator failed for field "User.avatar": %w`, err)}
 		}
 	}
+	if v, ok := uu.mutation.PasswordHashed(); ok {
+		if err := user.PasswordHashedValidator(v); err != nil {
+			return &ValidationError{Name: "password_hashed", err: fmt.Errorf(`ent: validator failed for field "User.password_hashed": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -381,6 +400,9 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.AvatarCleared() {
 		_spec.ClearField(user.FieldAvatar, field.TypeBytes)
+	}
+	if value, ok := uu.mutation.PasswordHashed(); ok {
+		_spec.SetField(user.FieldPasswordHashed, field.TypeString, value)
 	}
 	if uu.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -706,6 +728,20 @@ func (uuo *UserUpdateOne) ClearAvatar() *UserUpdateOne {
 	return uuo
 }
 
+// SetPasswordHashed sets the "password_hashed" field.
+func (uuo *UserUpdateOne) SetPasswordHashed(s string) *UserUpdateOne {
+	uuo.mutation.SetPasswordHashed(s)
+	return uuo
+}
+
+// SetNillablePasswordHashed sets the "password_hashed" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillablePasswordHashed(s *string) *UserUpdateOne {
+	if s != nil {
+		uuo.SetPasswordHashed(*s)
+	}
+	return uuo
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (uuo *UserUpdateOne) AddPetIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddPetIDs(ids...)
@@ -926,6 +962,11 @@ func (uuo *UserUpdateOne) check() error {
 			return &ValidationError{Name: "avatar", err: fmt.Errorf(`ent: validator failed for field "User.avatar": %w`, err)}
 		}
 	}
+	if v, ok := uuo.mutation.PasswordHashed(); ok {
+		if err := user.PasswordHashedValidator(v); err != nil {
+			return &ValidationError{Name: "password_hashed", err: fmt.Errorf(`ent: validator failed for field "User.password_hashed": %w`, err)}
+		}
+	}
 	return nil
 }
 
@@ -987,6 +1028,9 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if uuo.mutation.AvatarCleared() {
 		_spec.ClearField(user.FieldAvatar, field.TypeBytes)
+	}
+	if value, ok := uuo.mutation.PasswordHashed(); ok {
+		_spec.SetField(user.FieldPasswordHashed, field.TypeString, value)
 	}
 	if uuo.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{

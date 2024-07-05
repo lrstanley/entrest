@@ -182,6 +182,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, f := range t.Fields {
 			fa := GetAnnotation(f)
 
+			// Sensitive fields are allowed to be set in create/update by default.
 			if fa.GetSkip(cfg) || fa.ReadOnly {
 				continue
 			}
@@ -304,7 +305,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, f := range t.Fields {
 			fa := GetAnnotation(f)
 
-			if fa.GetSkip(cfg) {
+			if fa.GetSkip(cfg) || f.Sensitive() {
 				continue
 			}
 
@@ -748,7 +749,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 	for _, f := range t.Fields {
 		fa := GetAnnotation(f)
 
-		if fa.Filter == 0 {
+		if fa.Filter == 0 || fa.GetSkip(cfg) || f.Sensitive() {
 			continue
 		}
 
