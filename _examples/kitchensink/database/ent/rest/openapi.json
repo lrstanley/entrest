@@ -6290,17 +6290,7 @@
                         "example": 2
                     },
                     "type": {
-                        "type": "string",
-                        "enum": [
-                            "DOG",
-                            "CAT",
-                            "BIRD",
-                            "FISH",
-                            "AMPHIBIAN",
-                            "REPTILE",
-                            "OTHER"
-                        ],
-                        "example": "DOG"
+                        "$ref": "#/components/schemas/PetTypeEnum"
                     }
                 },
                 "required": [
@@ -6335,17 +6325,7 @@
                         "example": 2
                     },
                     "type": {
-                        "type": "string",
-                        "enum": [
-                            "DOG",
-                            "CAT",
-                            "BIRD",
-                            "FISH",
-                            "AMPHIBIAN",
-                            "REPTILE",
-                            "OTHER"
-                        ],
-                        "example": "DOG"
+                        "$ref": "#/components/schemas/PetTypeEnum"
                     },
                     "categories": {
                         "type": "array",
@@ -6451,6 +6431,19 @@
                 ],
                 "default": "id"
             },
+            "PetTypeEnum": {
+                "type": "string",
+                "enum": [
+                    "DOG",
+                    "CAT",
+                    "BIRD",
+                    "FISH",
+                    "AMPHIBIAN",
+                    "REPTILE",
+                    "OTHER"
+                ],
+                "example": "DOG"
+            },
             "PetUpdate": {
                 "description": "A single Pet entity and the fields that can be created/updated.",
                 "type": "object",
@@ -6470,17 +6463,7 @@
                         "example": 2
                     },
                     "type": {
-                        "type": "string",
-                        "enum": [
-                            "DOG",
-                            "CAT",
-                            "BIRD",
-                            "FISH",
-                            "AMPHIBIAN",
-                            "REPTILE",
-                            "OTHER"
-                        ],
-                        "example": "DOG"
+                        "$ref": "#/components/schemas/PetTypeEnum"
                     },
                     "add_categories": {
                         "type": "array",
@@ -6684,14 +6667,7 @@
                         "type": "string"
                     },
                     "type": {
-                        "description": "Type of object being defined (user or system which is for internal usecases).",
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ],
-                        "default": "USER",
-                        "example": "USER"
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     },
                     "description": {
                         "description": "Full name if USER, otherwise null.",
@@ -6734,14 +6710,7 @@
                         "type": "string"
                     },
                     "type": {
-                        "description": "Type of object being defined (user or system which is for internal usecases).",
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ],
-                        "default": "USER",
-                        "example": "USER"
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     },
                     "description": {
                         "description": "Full name if USER, otherwise null.",
@@ -6874,6 +6843,16 @@
                 ],
                 "default": "id"
             },
+            "UserTypeEnum": {
+                "description": "Type of object being defined (user or system which is for internal usecases).",
+                "type": "string",
+                "enum": [
+                    "SYSTEM",
+                    "USER"
+                ],
+                "default": "USER",
+                "example": "USER"
+            },
             "UserUpdate": {
                 "description": "A single User entity and the fields that can be created/updated.",
                 "type": "object",
@@ -6883,14 +6862,7 @@
                         "type": "string"
                     },
                     "type": {
-                        "description": "Type of object being defined (user or system which is for internal usecases).",
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ],
-                        "default": "USER",
-                        "example": "USER"
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     },
                     "description": {
                         "description": "Full name if USER, otherwise null.",
@@ -7406,11 +7378,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "SYSTEM",
-                        "USER"
-                    ]
+                    "$ref": "#/components/schemas/UserTypeEnum"
                 }
             },
             "EdgeFollowedByTypeIn": {
@@ -7420,11 +7388,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ]
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     }
                 }
             },
@@ -7433,11 +7397,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "SYSTEM",
-                        "USER"
-                    ]
+                    "$ref": "#/components/schemas/UserTypeEnum"
                 }
             },
             "EdgeFollowedByTypeNotIn": {
@@ -7447,11 +7407,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ]
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     }
                 }
             },
@@ -7619,16 +7575,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "DOG",
-                        "CAT",
-                        "BIRD",
-                        "FISH",
-                        "AMPHIBIAN",
-                        "REPTILE",
-                        "OTHER"
-                    ]
+                    "$ref": "#/components/schemas/PetTypeEnum"
                 }
             },
             "EdgeFollowedPetTypeIn": {
@@ -7638,16 +7585,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "DOG",
-                            "CAT",
-                            "BIRD",
-                            "FISH",
-                            "AMPHIBIAN",
-                            "REPTILE",
-                            "OTHER"
-                        ]
+                        "$ref": "#/components/schemas/PetTypeEnum"
                     }
                 }
             },
@@ -7656,16 +7594,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "DOG",
-                        "CAT",
-                        "BIRD",
-                        "FISH",
-                        "AMPHIBIAN",
-                        "REPTILE",
-                        "OTHER"
-                    ]
+                    "$ref": "#/components/schemas/PetTypeEnum"
                 }
             },
             "EdgeFollowedPetTypeNotIn": {
@@ -7675,16 +7604,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "DOG",
-                            "CAT",
-                            "BIRD",
-                            "FISH",
-                            "AMPHIBIAN",
-                            "REPTILE",
-                            "OTHER"
-                        ]
+                        "$ref": "#/components/schemas/PetTypeEnum"
                     }
                 }
             },
@@ -7970,11 +7890,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "SYSTEM",
-                        "USER"
-                    ]
+                    "$ref": "#/components/schemas/UserTypeEnum"
                 }
             },
             "EdgeFriendTypeIn": {
@@ -7984,11 +7900,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ]
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     }
                 }
             },
@@ -7997,11 +7909,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "SYSTEM",
-                        "USER"
-                    ]
+                    "$ref": "#/components/schemas/UserTypeEnum"
                 }
             },
             "EdgeFriendTypeNotIn": {
@@ -8011,11 +7919,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ]
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     }
                 }
             },
@@ -8316,11 +8220,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "SYSTEM",
-                        "USER"
-                    ]
+                    "$ref": "#/components/schemas/UserTypeEnum"
                 }
             },
             "EdgeOwnerTypeIn": {
@@ -8330,11 +8230,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ]
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     }
                 }
             },
@@ -8343,11 +8239,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "SYSTEM",
-                        "USER"
-                    ]
+                    "$ref": "#/components/schemas/UserTypeEnum"
                 }
             },
             "EdgeOwnerTypeNotIn": {
@@ -8357,11 +8249,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ]
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     }
                 }
             },
@@ -8529,16 +8417,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "DOG",
-                        "CAT",
-                        "BIRD",
-                        "FISH",
-                        "AMPHIBIAN",
-                        "REPTILE",
-                        "OTHER"
-                    ]
+                    "$ref": "#/components/schemas/PetTypeEnum"
                 }
             },
             "EdgePetTypeIn": {
@@ -8548,16 +8427,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "DOG",
-                            "CAT",
-                            "BIRD",
-                            "FISH",
-                            "AMPHIBIAN",
-                            "REPTILE",
-                            "OTHER"
-                        ]
+                        "$ref": "#/components/schemas/PetTypeEnum"
                     }
                 }
             },
@@ -8566,16 +8436,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "DOG",
-                        "CAT",
-                        "BIRD",
-                        "FISH",
-                        "AMPHIBIAN",
-                        "REPTILE",
-                        "OTHER"
-                    ]
+                    "$ref": "#/components/schemas/PetTypeEnum"
                 }
             },
             "EdgePetTypeNotIn": {
@@ -8585,16 +8446,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "DOG",
-                            "CAT",
-                            "BIRD",
-                            "FISH",
-                            "AMPHIBIAN",
-                            "REPTILE",
-                            "OTHER"
-                        ]
+                        "$ref": "#/components/schemas/PetTypeEnum"
                     }
                 }
             },
@@ -8782,16 +8634,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "DOG",
-                        "CAT",
-                        "BIRD",
-                        "FISH",
-                        "AMPHIBIAN",
-                        "REPTILE",
-                        "OTHER"
-                    ]
+                    "$ref": "#/components/schemas/PetTypeEnum"
                 }
             },
             "PetTypeIn": {
@@ -8801,16 +8644,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "DOG",
-                            "CAT",
-                            "BIRD",
-                            "FISH",
-                            "AMPHIBIAN",
-                            "REPTILE",
-                            "OTHER"
-                        ]
+                        "$ref": "#/components/schemas/PetTypeEnum"
                     }
                 }
             },
@@ -8819,16 +8653,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "DOG",
-                        "CAT",
-                        "BIRD",
-                        "FISH",
-                        "AMPHIBIAN",
-                        "REPTILE",
-                        "OTHER"
-                    ]
+                    "$ref": "#/components/schemas/PetTypeEnum"
                 }
             },
             "PetTypeNotIn": {
@@ -8838,16 +8663,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "DOG",
-                            "CAT",
-                            "BIRD",
-                            "FISH",
-                            "AMPHIBIAN",
-                            "REPTILE",
-                            "OTHER"
-                        ]
+                        "$ref": "#/components/schemas/PetTypeEnum"
                     }
                 }
             },
@@ -9134,11 +8950,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "SYSTEM",
-                        "USER"
-                    ]
+                    "$ref": "#/components/schemas/UserTypeEnum"
                 }
             },
             "UserTypeIn": {
@@ -9148,11 +8960,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ]
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     }
                 }
             },
@@ -9161,11 +8969,7 @@
                 "in": "query",
                 "description": "Filters field \"type\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string",
-                    "enum": [
-                        "SYSTEM",
-                        "USER"
-                    ]
+                    "$ref": "#/components/schemas/UserTypeEnum"
                 }
             },
             "UserTypeNotIn": {
@@ -9175,11 +8979,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string",
-                        "enum": [
-                            "SYSTEM",
-                            "USER"
-                        ]
+                        "$ref": "#/components/schemas/UserTypeEnum"
                     }
                 }
             },

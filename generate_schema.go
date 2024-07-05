@@ -191,7 +191,17 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 				if err != nil {
 					panic(fmt.Sprintf("failed to generate schema for field %s: %v", f.StructField(), err))
 				}
-				schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(f.Name))
+
+				// Hoist enums into components to reduce duplication where possible.
+				if updated, ref, ok := hoistEnums(t, f, fieldSchema); ok {
+					schemas[ref] = fieldSchema
+					schema.Properties = append(schema.Properties, ogen.Property{
+						Name:   f.Name,
+						Schema: updated,
+					})
+				} else {
+					schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(f.Name))
+				}
 
 				if op == OperationCreate && !f.Optional && !f.Default {
 					schema.Required = append(schema.Required, f.Name)
@@ -307,7 +317,16 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 				panic(fmt.Sprintf("failed to generate schema for field %s: %v", f.StructField(), err))
 			}
 
-			schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(f.Name))
+			// Hoist enums into components to reduce duplication where possible.
+			if updated, ref, ok := hoistEnums(t, f, fieldSchema); ok {
+				schemas[ref] = fieldSchema
+				schema.Properties = append(schema.Properties, ogen.Property{
+					Name:   f.Name,
+					Schema: updated,
+				})
+			} else {
+				schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(f.Name))
+			}
 		}
 
 		edgeSchema := &ogen.Schema{
@@ -431,6 +450,37 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 	}
 
 	return schemas
+}
+
+// hoistEnums helps hoist field enums into components to reduce duplication where possible.
+// If the existing schema is pointing to an enum, a new schema is returned which points to the
+// provided component schema ref name.
+func hoistEnums(t *gen.Type, f *gen.Field, existing *ogen.Schema) (updated *ogen.Schema, ref string, ok bool) {
+	if existing == nil {
+		return nil, "", false
+	}
+
+	name := Singularize(t.Name) + PascalCase(f.Name) + "Enum"
+
+	if existing.Type == "array" {
+		isEnum := existing.Items.Item != nil && existing.Items.Item.Enum != nil
+		if !isEnum {
+			for i := range existing.Items.Items {
+				if len(existing.Items.Items[i].Enum) > 0 {
+					isEnum = true
+					break
+				}
+			}
+		}
+		if isEnum {
+			updated = &ogen.Schema{Ref: "#/components/schemas/" + name}
+			return updated.AsArray(), name, true
+		}
+	}
+	if len(existing.Enum) > 0 {
+		return &ogen.Schema{Ref: "#/components/schemas/" + name}, name, true
+	}
+	return existing, "", false
 }
 
 // toPagedSchema converts a response schema to a paged response schema, hoisting the
@@ -645,6 +695,7 @@ func (f *FilterableFieldOp) Parameter() *ogen.Parameter {
 	}
 
 	schema := &ogen.Schema{
+		Ref:        f.fieldSchema.Ref,
 		Type:       f.fieldSchema.Type,
 		Items:      f.fieldSchema.Items,
 		Minimum:    f.fieldSchema.Minimum,
@@ -719,6 +770,10 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 			fieldSchema, err := GetSchemaField(f)
 			if err != nil {
 				continue // Just skip things that can't be generated/easily mapped.
+			}
+
+			if updated, _, ok := hoistEnums(t, f, fieldSchema); ok {
+				fieldSchema = updated
 			}
 
 			filters = append(filters, &FilterableFieldOp{

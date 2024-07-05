@@ -10,6 +10,7 @@ import (
 	"strings"
 	"testing"
 
+	"entgo.io/ent/entc/gen"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -84,4 +85,25 @@ func TestSpec_ThroughSchema_OneType(t *testing.T) {
 			continue
 		}
 	}
+}
+
+func TestSpec_HoistedEnums(t *testing.T) {
+	t.Parallel()
+
+	r := mustBuildSpec(t, &Config{}, func(g *gen.Graph) {
+		injectAnnotations(t, g, "User.type", WithFilter(FilterGroupEqualExact|FilterGroupArray))
+	})
+
+	assert.NotNil(t, r.json(`$.components.schemas.UserTypeEnum`))
+	assert.Equal(t, "string", r.json(`$.components.schemas.UserTypeEnum.type`))
+	assert.Contains(t, r.json(`$.components.schemas.UserTypeEnum.enum`), "USER")
+	assert.Contains(t, r.json(`$.components.schemas.UserTypeEnum.enum`), "SYSTEM")
+
+	assert.Contains(t, r.json(`$.components.schemas.User.properties.type.$ref`), "/UserTypeEnum")
+	assert.Contains(t, r.json(`$.components.schemas.UserCreate.properties.type.$ref`), "/UserTypeEnum")
+	assert.Contains(t, r.json(`$.components.schemas.UserUpdate.properties.type.$ref`), "/UserTypeEnum")
+	assert.Contains(t, r.json(`$.components.parameters.UserTypeEQ.schema.$ref`), "/UserTypeEnum")
+	assert.Contains(t, r.json(`$.components.parameters.UserTypeNEQ.schema.$ref`), "/UserTypeEnum")
+	assert.Contains(t, r.json(`$.components.parameters.UserTypeIn.schema.items.$ref`), "/UserTypeEnum")
+	assert.Contains(t, r.json(`$.components.parameters.UserTypeNotIn.schema.items.$ref`), "/UserTypeEnum")
 }
