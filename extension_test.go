@@ -169,6 +169,12 @@ func buildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) (*testSpecRe
 	if gconfig.Package == "" {
 		gconfig.Package = path.Dir(schema.PkgPath)
 	}
+
+	gconfig.Storage, err = gen.NewStorage("sql")
+	if err != nil {
+		return nil, err
+	}
+
 	result.graph, err = gen.NewGraph(gconfig, schema.Schemas...)
 	if err != nil {
 		return nil, err
