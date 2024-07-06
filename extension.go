@@ -86,8 +86,27 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	}
 
 	spec := e.config.Spec
+
 	if spec == nil {
-		spec = ogen.NewSpec()
+		if e.config.SpecFromPath != "" {
+			var f *os.File
+			f, err = os.Open(e.config.SpecFromPath)
+			if err != nil {
+				return nil, fmt.Errorf("failed to open spec from path %q: %w", e.config.SpecFromPath, err)
+			}
+
+			spec = ogen.NewSpec()
+			dec := json.NewDecoder(f)
+
+			err = dec.Decode(spec)
+			if err != nil {
+				f.Close()
+				return nil, fmt.Errorf("failed to decode spec from path %q: %w", e.config.SpecFromPath, err)
+			}
+			f.Close()
+		} else {
+			spec = ogen.NewSpec()
+		}
 	}
 
 	if e.config.PreGenerateHook != nil {

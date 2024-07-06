@@ -13,6 +13,7 @@ prepare:
 
 kitchensink: prepare
 	cd _examples/kitchensink && go generate -x ./...
+	cd _examples/kitchensink && go test -v -race -timeout 3m -count 2 ./...
 
 dlv-kitchensink:
 	cd _examples/kitchensink/database && dlv debug \

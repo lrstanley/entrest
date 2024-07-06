@@ -1,0 +1,70 @@
+{
+    "info": {
+        "title": "Kitchen Sink EntGo Rest API",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/version": {
+            "get": {
+                "tags": [
+                    "Meta"
+                ],
+                "summary": "Get service version",
+                "description": "Get the version of the service.",
+                "operationId": "getServiceVersion",
+                "responses": {
+                    "200": {
+                        "description": "Service version information was found.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "name": {
+                                            "description": "Name of cli tool.",
+                                            "type": "string"
+                                        },
+                                        "build_version": {
+                                            "description": "Build version.",
+                                            "type": "string"
+                                        },
+                                        "build_commit": {
+                                            "description": "VCS commit SHA.",
+                                            "type": "string"
+                                        },
+                                        "build_date": {
+                                            "description": "VCS commit date.",
+                                            "type": "string"
+                                        },
+                                        "command": {
+                                            "description": "Executable name where the command was called from.",
+                                            "type": "string"
+                                        },
+                                        "go_version": {
+                                            "description": "Version of Go that produced this binary.",
+                                            "type": "string"
+                                        },
+                                        "os": {
+                                            "description": "Operating system for this build.",
+                                            "type": "string"
+                                        },
+                                        "arch": {
+                                            "description": "CPU Architecture for this build.",
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "name",
+                                        "go_version",
+                                        "os",
+                                        "arch"
+                                    ]
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

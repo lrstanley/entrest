@@ -16,6 +16,7 @@ import (
 
 func main() {
 	ex, err := entrest.NewExtension(&entrest.Config{
+		SpecFromPath:          "../base-openapi.json", // Using a base spec to start with, not required.
 		Handler:               entrest.HandlerStdlib,
 		WithTesting:           true,
 		StrictMutate:          true,

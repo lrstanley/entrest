@@ -6,6 +6,7 @@ package entrest
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"slices"
@@ -24,6 +25,13 @@ type Config struct {
 	// Spec is an optional default spec to merge all generated endpoints/schemas/etc
 	// into, which will allow you to specify API info, servers, security schemes, etc.
 	Spec *ogen.Spec
+
+	// SpecFromPath is similar to [Config.Spec], but instead of providing a spec directly,
+	// it will read the spec (json) from the provided path. If you have a combination
+	// of auto-generated endpoints from this extension, plus a bunch of your own endpoints,
+	// this can make it very easy to layer each of the specs on top of each other, as it
+	// can be a bit tedious to use [Config.Spec] directly.
+	SpecFromPath string
 
 	// DisablePagination disables pagination support for all schemas by default.
 	// It scan still be enabled on a per-schema basis with annotations.
@@ -148,6 +156,10 @@ type Config struct {
 func (c *Config) Validate() error {
 	if c.isValidated {
 		return nil
+	}
+
+	if c.Spec != nil && c.SpecFromPath != "" {
+		return errors.New("Config.Spec and Config.SpecFromPath cannot be provided at the same time")
 	}
 
 	if c.MinItemsPerPage < 1 {
