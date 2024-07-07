@@ -16,7 +16,7 @@ kitchensink: prepare
 	cd _examples/kitchensink && go test -v -race -timeout 3m -count 2 ./...
 
 dlv-kitchensink:
-	cd _examples/kitchensink/database && dlv debug \
+	cd _examples/kitchensink/internal/database && dlv debug \
 		--headless --listen=:2345 \
 		--api-version=2 --log \
 		--allow-non-terminal-interactive \

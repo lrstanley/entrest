@@ -1,10 +1,3 @@
-// Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
-// this source code is governed by the MIT license that can be found in
-// the LICENSE file.
-
-//go:generate sh -c "mkdir -p ./database/schema"
-//go:generate sh -c "cd database && go run -mod=readonly generate.go"
-
 package main
 
 import (
@@ -16,11 +9,11 @@ import (
 	"github.com/brianvoe/gofakeit/v7"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
-	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent"
-	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/pet"
-	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/rest"
-	_ "github.com/lrstanley/entrest/_examples/kitchensink/database/ent/runtime" // Required by ent.
-	"github.com/lrstanley/entrest/_examples/kitchensink/database/ent/user"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/rest"
+	_ "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/runtime" // Required by ent.
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 	"modernc.org/sqlite"
 )
 
