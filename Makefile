@@ -1,9 +1,12 @@
 .DEFAULT_GOAL := generate
 
-docs-debug:
+docs-prepare:
+	cd docs && pnpm install
+
+docs-debug: docs-prepare
 	cd docs && pnpm dev
 
-docs-build:
+docs-build: docs-prepare
 	cd docs && pnpm build
 
 docs-preview: docs-build
