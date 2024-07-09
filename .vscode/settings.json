@@ -10,6 +10,7 @@
         "**/.golangci.yml": true,
         "**/LICENSE": true,
         "**/tmp": true,
+        "**/.astro": true,
     },
     "go.lintTool": "golangci-lint",
     "go.lintFlags": [
@@ -17,5 +18,14 @@
     ],
     "gopls": {
         "formatting.gofumpt": true
+    },
+    "excalidraw.theme": "dark",
+    "excalidraw.image": {
+        "exportScale": 1,
+        "exportWithBackground": true,
+        "exportWithDarkMode": true
+    },
+    "[mdx]": {
+        "editor.defaultFormatter": "unifiedjs.vscode-mdx"
     }
 }

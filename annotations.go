@@ -77,31 +77,31 @@ type Annotation struct {
 
 	// Fields that map directly to the OpenAPI schema.
 
-	AdditionalTags       []string             `json:",omitempty" ent:"schema,edge"`
-	Tags                 []string             `json:",omitempty" ent:"schema,edge"`
-	OperationSummary     map[Operation]string `json:",omitempty" ent:"schema,edge"`
-	OperationDescription map[Operation]string `json:",omitempty" ent:"schema,edge"`
-	OperationID          map[Operation]string `json:",omitempty" ent:"schema,edge"`
-	Description          string               `json:",omitempty" ent:"schema,edge,field"`
-	Example              any                  `json:",omitempty" ent:"field"`
-	Deprecated           bool                 `json:",omitempty" ent:"schema,edge,field"`
-	Schema               *ogen.Schema         `json:",omitempty" ent:"field"`
+	AdditionalTags       []string             `json:",omitempty" ent:"schema,edge"       builders:"WithAdditionalTags"`
+	Tags                 []string             `json:",omitempty" ent:"schema,edge"       builders:"WithTags"`
+	OperationSummary     map[Operation]string `json:",omitempty" ent:"schema,edge"       builders:"WithOperationSummary"`
+	OperationDescription map[Operation]string `json:",omitempty" ent:"schema,edge"       builders:"WithOperationDescription"`
+	OperationID          map[Operation]string `json:",omitempty" ent:"schema,edge"       builders:"WithOperationID"`
+	Description          string               `json:",omitempty" ent:"schema,edge,field" builders:"WithDescription"`
+	Example              any                  `json:",omitempty" ent:"field"             builders:"WithExample"`
+	Deprecated           bool                 `json:",omitempty" ent:"schema,edge,field" builders:"WithDeprecated"`
+	Schema               *ogen.Schema         `json:",omitempty" ent:"field"             builders:"WithSchema"`
 
 	// All others.
 
-	Pagination      *bool       `json:",omitempty" ent:"schema,edge"`
-	MinItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
-	MaxItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
-	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
-	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
-	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
-	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
-	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
-	Handler         *bool       `json:",omitempty" ent:"schema,edge"`
-	Sortable        bool        `json:",omitempty" ent:"field"`
-	Skip            bool        `json:",omitempty" ent:"schema,edge,field"`
-	ReadOnly        bool        `json:",omitempty" ent:"field"`
-	Operations      []Operation `json:",omitempty" ent:"schema,edge"`
+	Pagination      *bool       `json:",omitempty" ent:"schema,edge"       builders:"WithPagination"`
+	MinItemsPerPage int         `json:",omitempty" ent:"schema,edge"       builders:"WithMinItemsPerPage"`
+	MaxItemsPerPage int         `json:",omitempty" ent:"schema,edge"       builders:"WithMaxItemsPerPage"`
+	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"       builders:"WithItemsPerPage"`
+	EagerLoad       *bool       `json:",omitempty" ent:"edge"              builders:"WithEagerLoad"`
+	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"              builders:"WithEdgeEndpoint"`
+	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"              builders:"WithEdgeUpdateBulk"`
+	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field" builders:"WithFilter"`
+	Handler         *bool       `json:",omitempty" ent:"schema,edge"       builders:"WithHandler"`
+	Sortable        bool        `json:",omitempty" ent:"field"             builders:"WithSortable"`
+	Skip            bool        `json:",omitempty" ent:"schema,edge,field" builders:"WithSkip"`
+	ReadOnly        bool        `json:",omitempty" ent:"field"             builders:"WithReadOnly"`
+	Operations      []Operation `json:",omitempty" ent:"schema,edge"       builders:"WithIncludeOperations,WithExcludeOperations"`
 }
 
 // getSupportedType uses reflection to check if the annotation is supported on the
@@ -485,6 +485,11 @@ func WithReadOnly(v bool) Annotation {
 // WithExample sets the OpenAPI Specification example value for a field.
 func WithExample(v any) Annotation {
 	return Annotation{Example: v}
+}
+
+// WithDeprecated sets the field to be deprecated in the REST API.
+func WithDeprecated(v bool) Annotation {
+	return Annotation{Deprecated: v}
 }
 
 // WithSchema sets the OpenAPI schema for a field.

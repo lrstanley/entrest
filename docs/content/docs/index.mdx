@@ -1,0 +1,44 @@
+---
+title: ent.rest
+description: Get started building your docs site with Starlight.
+template: splash
+head:
+  - tag: title
+    content: ent.rest - Generated OpenAPI specs and HTTP handlers for EntGo
+banner:
+  content: |
+    Documentation is a work in progress. Check out the <a href="https://github.com/lrstanley/entrest" target="_blank">GitHub Project</a> to contribute.
+hero:
+  tagline: |
+    <code class="ent">ent.</code><code class="rest">rest</code> is an <a href="https://entgo.io/" target="_blank">EntGo</a>
+    extension for generating compliant OpenAPI specs and an HTTP handler implementation that matches that spec.
+  image:
+    html: '<img src="/entrest/images/docs/hero.png" alt="API Docs" />'
+  actions:
+    - text: Getting Started
+      link: guides/getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View the source
+      link: https://github.com/lrstanley/entrest
+      icon: github
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Next steps
+
+<CardGrid stagger>
+  <Card title="Update content" icon="pencil">
+    Edit `src/content/docs/index.mdx` to see this page change.
+  </Card>
+  <Card title="Add new content" icon="add-document">
+    Add Markdown or MDX files to `src/content/docs` to create new pages.
+  </Card>
+  <Card title="Configure your site" icon="setting">
+    Edit your `sidebar` and other config in `astro.config.mjs`.
+  </Card>
+  <Card title="Read the docs" icon="open-book">
+    Learn more in [the Starlight Docs](https://starlight.astro.build/).
+  </Card>
+</CardGrid>

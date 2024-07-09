@@ -1,0 +1,20 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "host": "127.0.0.1",
+      "mode": "remote",
+      "name": "dlv server",
+      "port": 2345,
+      "remotePath": "${workspaceFolder}",
+      "request": "attach",
+      "type": "go"
+    },
+    {
+      "command": "./docs/node_modules/.bin/astro dev",
+      "name": "docs server",
+      "request": "launch",
+      "type": "node-terminal"
+    }
+  ]
+}

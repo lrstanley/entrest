@@ -1,0 +1,38 @@
+---
+title: Annotation Reference
+sidebar:
+  order: 2
+---
+
+import annotationData from '../../../assets/data/annotations.json';
+
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Applies to</th>
+            <th>Builders</th>
+        </tr>
+    </thead>
+    <tbody>
+        {
+            Object.entries(annotationData.annotations).map(([name, annotation]) => (
+                <tr>
+                    <td>{name}</td>
+                    <td>{annotation.tags?.ent.join(', ') || 'n/a'}</td>
+                    <td>
+                        {
+                            annotation.tags?.builders.map((builder) => (
+                                <a
+                                    href={`https://pkg.go.dev/github.com/lrstanley/entrest#${builder}`}
+                                    title={annotationData.builders[builder].comment.join('\n')}
+                                    style="margin-right: 1ch"
+                                >{builder}</a>
+                            ))
+                        }
+                    </td>
+                </tr>
+            ))
+        }
+    </tbody>
+</table>

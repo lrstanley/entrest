@@ -1,6 +1,10 @@
 {
     "recommendations": [
+        "astro-build.astro-vscode",
         "golang.go",
-        "jinliming2.vscode-go-template"
-    ]
+        "jinliming2.vscode-go-template",
+        "pomdtr.excalidraw-editor",
+        "unifiedjs.vscode-mdx"
+    ],
+    "unwantedRecommendations": []
 }

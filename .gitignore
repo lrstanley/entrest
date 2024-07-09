@@ -3,8 +3,15 @@
 **/*.lock
 **/*.txt
 **/*.log
+**/*.db
 **/.env*
 **/bin
-/TODO.md
 **/tmp
 /_examples/simple/internal/database/ent
+
+# docs related
+/docs/.astro
+/docs/**/*.d.ts
+/docs/dist
+/docs/node_modules
+/docs/assets/data
