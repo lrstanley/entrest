@@ -45,6 +45,7 @@ jobs:
         with:
           node-version: "20.x"
           cache: "pnpm"
+          cache-dependency-path: docs/pnpm-lock.yaml
       - run: make docs-build
       - if: ${{ github.event_name != 'pull_request' }}
         uses: actions/upload-pages-artifact@v3
