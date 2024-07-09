@@ -19,10 +19,10 @@ up:
 
 prepare:
 	go mod tidy
-	cd _examples && go mod tidy
 
 examples: prepare
 	cd _examples/ && go generate -x ./...
+	cd _examples/ && go mod tidy
 	cd _examples/kitchensink && go test -v -race -timeout 3m -count 2 ./...
 	cd _examples/simple && go test -v -race -timeout 3m -count 2 ./...
 
