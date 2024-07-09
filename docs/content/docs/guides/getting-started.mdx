@@ -19,7 +19,19 @@ import FileEntC from "/../_examples/simple/internal/database/entc.go?raw";
 import FileGenerate from "/../_examples/simple/internal/generate.go?raw";
 import FileMain from "/../_examples/simple/main.go?raw";
 
-entrest is an [EntGo](https://entgo.io/) extension for generating compliant OpenAPI specs and an HTTP handler implementation that matches that spec. It expands upon the approach used by [entoas](https://github.com/ent/contrib/tree/master/entoas#entoas), with additional functionality, and pairs the generated specification with a fully-functional HTTP handler implementation.
+**entrest** is an [EntGo](https://entgo.io/) extension for generating compliant OpenAPI
+specs and an HTTP handler implementation that matches that spec. It expands upon the
+approach used by [entoas](https://github.com/ent/contrib/tree/master/entoas#entoas),
+with additional functionality, and pairs the generated specification with a
+fully-functional HTTP handler implementation.
+
+- ✨ Generates OpenAPI specs for your EntGo schema.
+- ✨ Generates a fully functional HTTP handler implementation that matches the OpenAPI spec.
+- ✨ Supports automatic pagination (where applicable).
+- ✨ Supports advanced filtering (using query parameters, `AND`/`OR` predicates, etc).
+- ✨ Supports eager-loading edges, so you don't have to make additional calls unnecessarily.
+- ✨ Supports various forms of sorting.
+- ✨ And more!
 
 :::tip
 It is recommended to read through the [EntGo getting started guide](https://entgo.io/docs/getting-started/) before proceeding to get a better understanding of EntGo.

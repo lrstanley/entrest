@@ -16,11 +16,9 @@
     <img title="Last commit" src="https://img.shields.io/github/last-commit/lrstanley/entrest?style=flat-square">
   </a>
 
-
   <a href="https://github.com/lrstanley/entrest/actions?query=workflow%3Atest+event%3Apush">
     <img title="GitHub Workflow Status (test @ master)" src="https://img.shields.io/github/actions/workflow/status/lrstanley/entrest/test.yml?branch=master&label=test&style=flat-square">
   </a>
-
 
   <a href="https://codecov.io/gh/lrstanley/entrest">
     <img title="Code Coverage" src="https://img.shields.io/codecov/c/github/lrstanley/entrest/master?style=flat-square">
@@ -54,21 +52,34 @@
 <!-- do not edit anything in this "template" block, its auto-generated -->
 ## :link: Table of Contents
 
-  - [Features](#sparkles-features)
-  - [Usage](#gear-usage)
-  - [Examples](#clap-examples)
-  - [Support &amp; Assistance](#raising_hand_man-support--assistance)
-  - [Contributing](#handshake-contributing)
-  - [License](#balance_scale-license)
+- [Features](#sparkles-features)
+- [Usage](#gear-usage)
+- [Support &amp; Assistance](#raising_hand_man-support--assistance)
+- [Contributing](#handshake-contributing)
+- [License](#balance_scale-license)
 <!-- template:end:toc -->
 
 ## :sparkles: Features
 
-TODO
+**entrest** is an [EntGo](https://entgo.io/) extension for generating compliant OpenAPI
+specs and an HTTP handler implementation that matches that spec. It expands upon the
+approach used by [entoas](https://github.com/ent/contrib/tree/master/entoas#entoas),
+with additional functionality, and pairs the generated specification with a
+fully-functional HTTP handler implementation.
+
+- :sparkles: Generates OpenAPI specs for your EntGo schema.
+- :sparkles: Generates a fully functional HTTP handler implementation that matches the OpenAPI spec.
+- :sparkles: Supports automatic pagination (where applicable).
+- :sparkles: Supports advanced filtering (using query parameters, `AND`/`OR` predicates, etc).
+- :sparkles: Supports eager-loading edges, so you don't have to make additional calls unnecessarily.
+- :sparkles: Supports various forms of sorting.
+- :sparkles: And more!
 
 ---
 
 ## :gear: Usage
+
+Take a look at the [official documentation](https://lrstanley.github.io/entrest/) for guides, examples, and more.
 
 <!-- template:begin:goget -->
 <!-- do not edit anything in this "template" block, its auto-generated -->
@@ -77,34 +88,30 @@ go get -u github.com/lrstanley/entrest@latest
 ```
 <!-- template:end:goget -->
 
-## :clap: Examples
-
-TODO
-
 ---
 
 <!-- template:begin:support -->
 <!-- do not edit anything in this "template" block, its auto-generated -->
 ## :raising_hand_man: Support & Assistance
 
-* :heart: Please review the [Code of Conduct](.github/CODE_OF_CONDUCT.md) for
+- :heart: Please review the [Code of Conduct](.github/CODE_OF_CONDUCT.md) for
      guidelines on ensuring everyone has the best experience interacting with
      the community.
-* :raising_hand_man: Take a look at the [support](.github/SUPPORT.md) document on
+- :raising_hand_man: Take a look at the [support](.github/SUPPORT.md) document on
      guidelines for tips on how to ask the right questions.
-* :lady_beetle: For all features/bugs/issues/questions/etc, [head over here](https://github.com/lrstanley/entrest/issues/new/choose).
+- :lady_beetle: For all features/bugs/issues/questions/etc, [head over here](https://github.com/lrstanley/entrest/issues/new/choose).
 <!-- template:end:support -->
 
 <!-- template:begin:contributing -->
 <!-- do not edit anything in this "template" block, its auto-generated -->
 ## :handshake: Contributing
 
-* :heart: Please review the [Code of Conduct](.github/CODE_OF_CONDUCT.md) for guidelines
+- :heart: Please review the [Code of Conduct](.github/CODE_OF_CONDUCT.md) for guidelines
      on ensuring everyone has the best experience interacting with the
     community.
-* :clipboard: Please review the [contributing](.github/CONTRIBUTING.md) doc for submitting
+- :clipboard: Please review the [contributing](.github/CONTRIBUTING.md) doc for submitting
      issues/a guide on submitting pull requests and helping out.
-* :old_key: For anything security related, please review this repositories [security policy](https://github.com/lrstanley/entrest/security/policy).
+- :old_key: For anything security related, please review this repositories [security policy](https://github.com/lrstanley/entrest/security/policy).
 <!-- template:end:contributing -->
 
 <!-- template:begin:license -->
