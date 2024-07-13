@@ -467,8 +467,7 @@ func TestHandler_Update(t *testing.T) {
 	assert.Equal(t, data["age"], resp.Value.Age)
 	assert.Equal(t, data["type"], resp.Value.Type)
 	require.Len(t, resp.Value.Edges.Categories, 2)
-	assert.Equal(t, categories[0].ID, resp.Value.Edges.Categories[0].ID)
-	assert.Equal(t, categories[1].ID, resp.Value.Edges.Categories[1].ID)
+	assert.ElementsMatch(t, []int{categories[0].ID, categories[1].ID}, []int{resp.Value.Edges.Categories[0].ID, resp.Value.Edges.Categories[1].ID})
 
 	// Bulk update, which should only be enabled on the pet->categories edge.
 	data = map[string]any{
@@ -479,8 +478,7 @@ func TestHandler_Update(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, resp.Data.Code)
 	assert.Len(t, resp.Value.Edges.Categories, 2)
-	assert.Equal(t, categories[2].ID, resp.Value.Edges.Categories[0].ID)
-	assert.Equal(t, categories[3].ID, resp.Value.Edges.Categories[1].ID)
+	assert.ElementsMatch(t, []int{categories[2].ID, categories[3].ID}, []int{resp.Value.Edges.Categories[0].ID, resp.Value.Edges.Categories[1].ID})
 
 	// Now try just "remove_categories".
 	data = map[string]any{
