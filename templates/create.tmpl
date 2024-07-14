@@ -7,11 +7,8 @@
 {{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
 
 import (
-    "{{ $.Config.Package }}"
-    {{- range $t := $.Nodes }}
-        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
-        "{{ $.Config.Package }}/{{ $t.Package }}"
-    {{- end }}
+    {{- template "helper/rest/standard-imports" . }}
+    {{- template "helper/rest/schema-imports" . }}
 )
 
 {{- range $t := $.Nodes }}

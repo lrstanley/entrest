@@ -6,6 +6,7 @@ import (
 	"context"
 	"time"
 
+	github "github.com/google/go-github/v63/github"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
@@ -217,6 +218,8 @@ type UpdateUserParams struct {
 	Avatar Option[*[]byte] `json:"avatar,omitempty"`
 	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
 	PasswordHashed Option[string] `json:"password_hashed"`
+	// The github user raw JSON data.
+	GithubData Option[*github.User] `json:"github_data,omitempty"`
 	// Pets owned by the user.
 	AddPets Option[[]int] `json:"add_pets,omitempty"`
 	// Pets owned by the user.
@@ -266,6 +269,9 @@ func (u *UpdateUserParams) ApplyInputs(builder *ent.UserUpdateOne) *ent.UserUpda
 	}
 	if v, ok := u.PasswordHashed.Get(); ok {
 		builder.SetPasswordHashed(v)
+	}
+	if v, ok := u.GithubData.Get(); ok {
+		builder.SetGithubData(v)
 	}
 
 	if v, ok := u.AddPets.Get(); ok && v != nil {

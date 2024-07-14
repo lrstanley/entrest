@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/google/go-github/v63/github"
 	"github.com/lrstanley/entrest"
 )
 
@@ -75,6 +76,13 @@ func (User) Fields() []ent.Field {
 				entrest.WithFilter(entrest.FilterGroupEqual | entrest.FilterGroupArray),
 			).
 			Comment("Hashed password for the user, this shouldn't be readable in the spec anywhere."),
+		// Make sure it imports the right github package version into the generated code.
+		field.JSON("github_data", &github.User{}).
+			Optional().
+			Annotations(
+				entrest.WithSchema(entrest.SchemaObjectAny),
+			).
+			Comment("The github user raw JSON data."),
 	}
 }
 

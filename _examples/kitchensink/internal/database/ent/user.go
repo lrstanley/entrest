@@ -3,12 +3,14 @@
 package ent
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/go-github/v63/github"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 )
 
@@ -35,6 +37,8 @@ type User struct {
 	Avatar *[]byte `json:"-"`
 	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
 	PasswordHashed string `json:"-"`
+	// The github user raw JSON data.
+	GithubData *github.User `json:"github_data"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges           UserEdges `json:"edges"`
@@ -109,7 +113,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldAvatar:
+		case user.FieldAvatar, user.FieldGithubData:
 			values[i] = new([]byte)
 		case user.FieldEnabled:
 			values[i] = new(sql.NullBool)
@@ -197,6 +201,14 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field password_hashed", values[i])
 			} else if value.Valid {
 				u.PasswordHashed = value.String
+			}
+		case user.FieldGithubData:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field github_data", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &u.GithubData); err != nil {
+					return fmt.Errorf("unmarshal field github_data: %w", err)
+				}
 			}
 		case user.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -297,6 +309,9 @@ func (u *User) String() string {
 	}
 	builder.WriteString(", ")
 	builder.WriteString("password_hashed=<sensitive>")
+	builder.WriteString(", ")
+	builder.WriteString("github_data=")
+	builder.WriteString(fmt.Sprintf("%v", u.GithubData))
 	builder.WriteByte(')')
 	return builder.String()
 }

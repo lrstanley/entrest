@@ -2,7 +2,9 @@
 
 package rest
 
-import "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+import (
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+)
 
 // EagerLoadCategory eager-loads the edges of a Category entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.

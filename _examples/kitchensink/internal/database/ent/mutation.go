@@ -11,6 +11,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/go-github/v63/github"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
@@ -3427,6 +3428,7 @@ type UserMutation struct {
 	email                *string
 	avatar               *[]byte
 	password_hashed      *string
+	github_data          **github.User
 	clearedFields        map[string]struct{}
 	pets                 map[int]struct{}
 	removedpets          map[int]struct{}
@@ -3906,6 +3908,55 @@ func (m *UserMutation) ResetPasswordHashed() {
 	m.password_hashed = nil
 }
 
+// SetGithubData sets the "github_data" field.
+func (m *UserMutation) SetGithubData(gi *github.User) {
+	m.github_data = &gi
+}
+
+// GithubData returns the value of the "github_data" field in the mutation.
+func (m *UserMutation) GithubData() (r *github.User, exists bool) {
+	v := m.github_data
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldGithubData returns the old "github_data" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldGithubData(ctx context.Context) (v *github.User, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldGithubData is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldGithubData requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldGithubData: %w", err)
+	}
+	return oldValue.GithubData, nil
+}
+
+// ClearGithubData clears the value of the "github_data" field.
+func (m *UserMutation) ClearGithubData() {
+	m.github_data = nil
+	m.clearedFields[user.FieldGithubData] = struct{}{}
+}
+
+// GithubDataCleared returns if the "github_data" field was cleared in this mutation.
+func (m *UserMutation) GithubDataCleared() bool {
+	_, ok := m.clearedFields[user.FieldGithubData]
+	return ok
+}
+
+// ResetGithubData resets all changes to the "github_data" field.
+func (m *UserMutation) ResetGithubData() {
+	m.github_data = nil
+	delete(m.clearedFields, user.FieldGithubData)
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by ids.
 func (m *UserMutation) AddPetIDs(ids ...int) {
 	if m.pets == nil {
@@ -4156,7 +4207,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 9)
+	fields := make([]string, 0, 10)
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -4184,6 +4235,9 @@ func (m *UserMutation) Fields() []string {
 	if m.password_hashed != nil {
 		fields = append(fields, user.FieldPasswordHashed)
 	}
+	if m.github_data != nil {
+		fields = append(fields, user.FieldGithubData)
+	}
 	return fields
 }
 
@@ -4210,6 +4264,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.Avatar()
 	case user.FieldPasswordHashed:
 		return m.PasswordHashed()
+	case user.FieldGithubData:
+		return m.GithubData()
 	}
 	return nil, false
 }
@@ -4237,6 +4293,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldAvatar(ctx)
 	case user.FieldPasswordHashed:
 		return m.OldPasswordHashed(ctx)
+	case user.FieldGithubData:
+		return m.OldGithubData(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -4309,6 +4367,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetPasswordHashed(v)
 		return nil
+	case user.FieldGithubData:
+		v, ok := value.(*github.User)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetGithubData(v)
+		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -4348,6 +4413,9 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldAvatar) {
 		fields = append(fields, user.FieldAvatar)
 	}
+	if m.FieldCleared(user.FieldGithubData) {
+		fields = append(fields, user.FieldGithubData)
+	}
 	return fields
 }
 
@@ -4370,6 +4438,9 @@ func (m *UserMutation) ClearField(name string) error {
 		return nil
 	case user.FieldAvatar:
 		m.ClearAvatar()
+		return nil
+	case user.FieldGithubData:
+		m.ClearGithubData()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -4405,6 +4476,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldPasswordHashed:
 		m.ResetPasswordHashed()
+		return nil
+	case user.FieldGithubData:
+		m.ResetGithubData()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

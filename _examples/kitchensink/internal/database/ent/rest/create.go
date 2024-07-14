@@ -6,6 +6,7 @@ import (
 	"context"
 	"time"
 
+	github "github.com/google/go-github/v63/github"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
@@ -178,6 +179,8 @@ type CreateUserParams struct {
 	Avatar []byte `json:"avatar,omitempty"`
 	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
 	PasswordHashed string `json:"password_hashed"`
+	// The github user raw JSON data.
+	GithubData **github.User `json:"github_data,omitempty"`
 	// Pets owned by the user.
 	Pets []int `json:"pets,omitempty"`
 	// Pets that the user is following.
@@ -205,6 +208,9 @@ func (c *CreateUserParams) ApplyInputs(builder *ent.UserCreate) *ent.UserCreate 
 		builder.SetAvatar(c.Avatar)
 	}
 	builder.SetPasswordHashed(c.PasswordHashed)
+	if c.GithubData != nil {
+		builder.SetGithubData(*c.GithubData)
+	}
 	builder.AddPetIDs(c.Pets...)
 	builder.AddFollowedPetIDs(c.FollowedPets...)
 	builder.AddFriendIDs(c.Friends...)

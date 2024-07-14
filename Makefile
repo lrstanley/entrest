@@ -27,11 +27,11 @@ examples: prepare
 	cd _examples/simple && go test -v -race -timeout 3m -count 2 ./...
 
 dlv-kitchensink:
-	cd _examples/kitchensink/internal/database && dlv debug \
+	cd _examples/kitchensink/internal && dlv debug \
 		--headless --listen=:2345 \
 		--api-version=2 --log \
 		--allow-non-terminal-interactive \
-		generate.go
+		database/entc.go
 
 test: prepare examples
 	go test -v -race -timeout 3m -count 2 ./...

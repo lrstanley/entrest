@@ -6787,6 +6787,10 @@
                         "type": "string",
                         "format": "byte",
                         "nullable": true
+                    },
+                    "github_data": {
+                        "type": "object",
+                        "additionalProperties": true
                     }
                 },
                 "required": [
@@ -6834,6 +6838,10 @@
                     "password_hashed": {
                         "description": "Hashed password for the user, this shouldn't be readable in the spec anywhere.",
                         "type": "string"
+                    },
+                    "github_data": {
+                        "type": "object",
+                        "additionalProperties": true
                     },
                     "pets": {
                         "type": "array",
@@ -6990,6 +6998,10 @@
                     "password_hashed": {
                         "description": "Hashed password for the user, this shouldn't be readable in the spec anywhere.",
                         "type": "string"
+                    },
+                    "github_data": {
+                        "type": "object",
+                        "additionalProperties": true
                     },
                     "add_pets": {
                         "type": "array",

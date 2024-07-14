@@ -535,6 +535,16 @@ func PasswordHashedContainsFold(v string) predicate.User {
 	return predicate.User(sql.FieldContainsFold(FieldPasswordHashed, v))
 }
 
+// GithubDataIsNil applies the IsNil predicate on the "github_data" field.
+func GithubDataIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldGithubData))
+}
+
+// GithubDataNotNil applies the NotNil predicate on the "github_data" field.
+func GithubDataNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldGithubData))
+}
+
 // HasPets applies the HasEdge predicate on the "pets" edge.
 func HasPets() predicate.User {
 	return predicate.User(func(s *sql.Selector) {

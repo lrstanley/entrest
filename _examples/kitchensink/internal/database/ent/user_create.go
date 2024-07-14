@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/go-github/v63/github"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
@@ -121,6 +122,12 @@ func (uc *UserCreate) SetAvatar(b []byte) *UserCreate {
 // SetPasswordHashed sets the "password_hashed" field.
 func (uc *UserCreate) SetPasswordHashed(s string) *UserCreate {
 	uc.mutation.SetPasswordHashed(s)
+	return uc
+}
+
+// SetGithubData sets the "github_data" field.
+func (uc *UserCreate) SetGithubData(gi *github.User) *UserCreate {
+	uc.mutation.SetGithubData(gi)
 	return uc
 }
 
@@ -343,6 +350,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.PasswordHashed(); ok {
 		_spec.SetField(user.FieldPasswordHashed, field.TypeString, value)
 		_node.PasswordHashed = value
+	}
+	if value, ok := uc.mutation.GithubData(); ok {
+		_spec.SetField(user.FieldGithubData, field.TypeJSON, value)
+		_node.GithubData = value
 	}
 	if nodes := uc.mutation.PetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

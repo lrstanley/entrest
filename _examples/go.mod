@@ -9,6 +9,7 @@ require (
 	github.com/brianvoe/gofakeit/v7 v7.0.4
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-playground/form/v4 v4.2.1
+	github.com/google/go-github/v63 v63.0.0
 	github.com/lrstanley/entrest v0.0.0-20240709042859-e054e98a2b50
 	github.com/ogen-go/ogen v1.2.2
 	github.com/stretchr/testify v1.9.0
@@ -29,6 +30,7 @@ require (
 	github.com/go-faster/yaml v0.4.6 // indirect
 	github.com/go-openapi/inflect v0.21.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
+	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/hashicorp/hcl/v2 v2.21.0 // indirect

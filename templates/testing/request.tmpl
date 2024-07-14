@@ -7,7 +7,7 @@
 {{- with extend $ "Package" "enttest" }}{{ template "header" . }}{{ end }}
 
 import (
-    "{{ $.Config.Package }}"
+    {{- template "helper/rest/standard-imports" . }}
     "{{ $.Config.Package }}/rest"
     {{- if eq $.Annotations.RestConfig.Handler "chi" }}
         "github.com/go-chi/chi/v5"

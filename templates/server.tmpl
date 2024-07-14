@@ -7,13 +7,8 @@
 {{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
 
 import (
-    "{{ $.Config.Package }}"
-    {{- with $.Config.FeatureEnabled "privacy" }}
-        "{{ $.Config.Package }}/privacy"
-    {{- end }}
-    {{- range $t := $.Nodes }}
-        "{{ $.Config.Package }}/{{ $t.Package }}"
-    {{- end }}
+    {{- template "helper/rest/standard-imports" . }}
+    {{- template "helper/rest/schema-imports" . }}
     {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
         _ "embed"
     {{- end }}

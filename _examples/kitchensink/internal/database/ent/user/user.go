@@ -33,6 +33,8 @@ const (
 	FieldAvatar = "avatar"
 	// FieldPasswordHashed holds the string denoting the password_hashed field in the database.
 	FieldPasswordHashed = "password_hashed"
+	// FieldGithubData holds the string denoting the github_data field in the database.
+	FieldGithubData = "github_data"
 	// EdgePets holds the string denoting the pets edge name in mutations.
 	EdgePets = "pets"
 	// EdgeFollowedPets holds the string denoting the followed_pets edge name in mutations.
@@ -87,6 +89,7 @@ var Columns = []string{
 	FieldEmail,
 	FieldAvatar,
 	FieldPasswordHashed,
+	FieldGithubData,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "users"

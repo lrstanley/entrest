@@ -7,12 +7,8 @@
 {{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
 
 import (
-    "{{ $.Config.Package }}"
-    "{{ $.Config.Package }}/predicate"
-    {{- range $t := $.Nodes }}
-        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
-        "{{ $.Config.Package }}/{{ $t.Package }}"
-    {{- end }}
+    {{- template "helper/rest/standard-imports" . }}
+    {{- template "helper/rest/schema-imports" . }}
 )
 
 type PageConfig struct {

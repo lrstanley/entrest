@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/go-github/v63/github"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
@@ -141,6 +142,18 @@ func (uu *UserUpdate) SetNillablePasswordHashed(s *string) *UserUpdate {
 	if s != nil {
 		uu.SetPasswordHashed(*s)
 	}
+	return uu
+}
+
+// SetGithubData sets the "github_data" field.
+func (uu *UserUpdate) SetGithubData(gi *github.User) *UserUpdate {
+	uu.mutation.SetGithubData(gi)
+	return uu
+}
+
+// ClearGithubData clears the value of the "github_data" field.
+func (uu *UserUpdate) ClearGithubData() *UserUpdate {
+	uu.mutation.ClearGithubData()
 	return uu
 }
 
@@ -403,6 +416,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := uu.mutation.PasswordHashed(); ok {
 		_spec.SetField(user.FieldPasswordHashed, field.TypeString, value)
+	}
+	if value, ok := uu.mutation.GithubData(); ok {
+		_spec.SetField(user.FieldGithubData, field.TypeJSON, value)
+	}
+	if uu.mutation.GithubDataCleared() {
+		_spec.ClearField(user.FieldGithubData, field.TypeJSON)
 	}
 	if uu.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -742,6 +761,18 @@ func (uuo *UserUpdateOne) SetNillablePasswordHashed(s *string) *UserUpdateOne {
 	return uuo
 }
 
+// SetGithubData sets the "github_data" field.
+func (uuo *UserUpdateOne) SetGithubData(gi *github.User) *UserUpdateOne {
+	uuo.mutation.SetGithubData(gi)
+	return uuo
+}
+
+// ClearGithubData clears the value of the "github_data" field.
+func (uuo *UserUpdateOne) ClearGithubData() *UserUpdateOne {
+	uuo.mutation.ClearGithubData()
+	return uuo
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (uuo *UserUpdateOne) AddPetIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddPetIDs(ids...)
@@ -1031,6 +1062,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if value, ok := uuo.mutation.PasswordHashed(); ok {
 		_spec.SetField(user.FieldPasswordHashed, field.TypeString, value)
+	}
+	if value, ok := uuo.mutation.GithubData(); ok {
+		_spec.SetField(user.FieldGithubData, field.TypeJSON, value)
+	}
+	if uuo.mutation.GithubDataCleared() {
+		_spec.ClearField(user.FieldGithubData, field.TypeJSON)
 	}
 	if uuo.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{

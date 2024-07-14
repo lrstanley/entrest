@@ -6,7 +6,10 @@
 {{- define "rest/eagerload" }}
 {{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
 
-import "{{ $.Config.Package }}"
+import (
+    {{- template "helper/rest/standard-imports" . }}
+    {{- template "helper/rest/schema-imports" . }}
+)
 
 {{- range $t := $.Nodes }}
     {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}

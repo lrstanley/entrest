@@ -1,0 +1,16 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/schema-imports" }}
+    {{- range $t := $.Nodes }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        "{{ $.Config.Package }}/{{ $t.Package }}"
+        {{- range $f := $t.Fields }}
+            {{- if $f.Type.PkgPath }}
+                {{ $f.Type.PkgName }} "{{ $f.Type.PkgPath }}"
+            {{- end }}
+        {{- end }}
+    {{- end }}
+{{- end }}
