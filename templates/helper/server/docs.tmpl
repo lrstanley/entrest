@@ -51,6 +51,9 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
         spec: {
           url: "{{ "{{" }} . {{ "}}" }}",
         },
+        servers: [
+            {url: window.location.origin + window.location.pathname.replace(/\/docs$/g, "")}
+        ],
         theme: "kepler",
         isEditable: false,
         hideDownloadButton: true,
