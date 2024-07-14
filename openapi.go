@@ -275,12 +275,7 @@ func addOpenAPIEndpoint(path string) *ogen.Spec {
 				SetResponses(map[string]*ogen.Response{
 					strconv.Itoa(http.StatusOK): ogen.NewResponse().
 						SetDescription("OpenAPI specification was found").
-						SetJSONContent(&ogen.Schema{
-							Type: "object",
-							AdditionalProperties: &ogen.AdditionalProperties{
-								Bool: ptr(true), // https://github.com/ogen-go/ogen/issues/1221
-							},
-						}),
+						SetJSONContent(SchemaObjectAny),
 				}),
 		),
 	)

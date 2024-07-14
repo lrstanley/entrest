@@ -332,3 +332,11 @@ var (
 		http.StatusInternalServerError: ErrorResponseObject(http.StatusInternalServerError),
 	}
 )
+
+// SchemaObjectAny can be used to define an object which may contain any properties.
+var SchemaObjectAny = &ogen.Schema{
+	Type: "object",
+	AdditionalProperties: &ogen.AdditionalProperties{
+		Bool: ptr(true), // https://github.com/ogen-go/ogen/issues/1221
+	},
+}
