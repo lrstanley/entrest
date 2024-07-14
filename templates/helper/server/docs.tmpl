@@ -72,6 +72,7 @@ func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
         return
     }
     w.Header().Set("Content-Type", "text/html")
+    w.Header().Set("Content-Security-Policy", "default-src 'self' cdn.jsdelivr.net fonts.scalar.com 'unsafe-inline' 'unsafe-eval' data: blob:")
     w.WriteHeader(http.StatusOK)
     _, _ = w.Write(buf.Bytes())
 }
