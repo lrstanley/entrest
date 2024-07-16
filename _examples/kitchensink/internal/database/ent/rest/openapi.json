@@ -6738,7 +6738,7 @@
                     "asc",
                     "desc"
                 ],
-                "default": "desc"
+                "default": "asc"
             },
             "User": {
                 "description": "A single User entity.",

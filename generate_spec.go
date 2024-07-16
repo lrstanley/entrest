@@ -94,7 +94,7 @@ func newBaseSpec(_ *Config) *ogen.Spec {
 					Description: "Sort order/direction.",
 					Type:        "string",
 					Enum:        sliceToRawMessage([]string{"asc", "desc"}),
-					Default:     jsonschema.RawValue(`"desc"`),
+					Default:     jsonschema.RawValue(`"asc"`),
 				},
 				"FilterOperation": {
 					Description: "Specifies how to combine multiple filters.",

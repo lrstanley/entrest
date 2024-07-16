@@ -258,6 +258,9 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
         spec: {
           url: "{{ . }}",
         },
+        servers: [
+            {url: window.location.origin + window.location.pathname.replace(/\/docs$/g, "")}
+        ],
         theme: "kepler",
         isEditable: false,
         hideDownloadButton: true,
@@ -265,8 +268,8 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
       });
     </script>
     <script
-      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.24.36"
-      integrity="sha256-kuB+Io19rAYuT6o2uM/RwnMnMKYDHmA3mVQhQ4RSONg="
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.24.27"
+      integrity="sha256-PkPtL+Xq87aeKc1J/6VbkP6WBkMjdgnNmwGwYZj+r+4="
       crossorigin="anonymous"
     ></script>
   </body>
@@ -279,6 +282,11 @@ func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "text/html")
+	w.Header().Set("Content-Security-Policy", "default-src 'self' cdn.jsdelivr.net fonts.scalar.com 'unsafe-inline' 'unsafe-eval' data: blob:")
+	w.Header().Set("X-Frame-Options", "DENY")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
+	w.Header().Set("Referrer-Policy", "no-referrer-when-downgrade")
+	w.Header().Set("Permissions-Policy", "clipboard-write=(self)")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(buf.Bytes())
 }

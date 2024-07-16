@@ -211,7 +211,7 @@ func (s *Sorted) Validate(fields SortableFields) error {
 	}
 
 	if s.Order == nil {
-		order := "desc"
+		order := "asc"
 		s.Order = &order
 	}
 
