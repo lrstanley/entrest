@@ -22,6 +22,7 @@
   </a>
 
 
+
   <a href="https://codecov.io/gh/lrstanley/entrest">
     <img title="Code Coverage" src="https://img.shields.io/codecov/c/github/lrstanley/entrest/master?style=flat-square">
   </a>
