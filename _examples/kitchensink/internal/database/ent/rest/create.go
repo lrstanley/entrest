@@ -181,8 +181,8 @@ type CreateUserParams struct {
 	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
 	PasswordHashed string `json:"password_hashed"`
 	// The github user raw JSON data.
-	GithubData **github.User          `json:"github_data,omitempty"`
-	ProfileURL **schema.ExampleValuer `json:"profile_url,omitempty"`
+	GithubData *github.User          `json:"github_data,omitempty"`
+	ProfileURL *schema.ExampleValuer `json:"profile_url,omitempty"`
 	// Pets owned by the user.
 	Pets []int `json:"pets,omitempty"`
 	// Pets that the user is following.
@@ -211,10 +211,10 @@ func (c *CreateUserParams) ApplyInputs(builder *ent.UserCreate) *ent.UserCreate 
 	}
 	builder.SetPasswordHashed(c.PasswordHashed)
 	if c.GithubData != nil {
-		builder.SetGithubData(*c.GithubData)
+		builder.SetGithubData(c.GithubData)
 	}
 	if c.ProfileURL != nil {
-		builder.SetProfileURL(*c.ProfileURL)
+		builder.SetProfileURL(c.ProfileURL)
 	}
 	builder.AddPetIDs(c.Pets...)
 	builder.AddFollowedPetIDs(c.FollowedPets...)

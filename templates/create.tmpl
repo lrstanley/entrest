@@ -21,7 +21,7 @@ import (
 
             {{- template "helper/rest/fields/comment" $f }}
             {{- if or $f.Optional $f.Default }}
-                {{- if or (hasPrefix $f.Type.Ident "[]") $f.IsBytes }}
+                {{- if or (hasPrefix $f.Type.Ident "[]") (hasPrefix $f.Type.Ident "*") $f.IsBytes }}
                     {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- else }}
                     {{ $f.StructField }} *{{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
@@ -69,7 +69,7 @@ import (
 
             {{- if or $f.Optional $f.Default }}
                 if c.{{ $f.StructField }} != nil {
-                {{- if or (hasPrefix $f.Type.Ident "[]") $f.IsBytes }}
+                {{- if or (hasPrefix $f.Type.Ident "[]") (hasPrefix $f.Type.Ident "*") $f.IsBytes }}
                     builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
                 {{- else }}
                     builder.Set{{ $f.StructField }}(*c.{{ $f.StructField }})
