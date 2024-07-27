@@ -553,3 +553,21 @@ func TestHandler_StrictMutate(t *testing.T) {
 	require.NotNil(t, resp.Error)
 	assert.Equal(t, http.StatusBadRequest, resp.Error.Code)
 }
+
+func TestHandler_Valuer(t *testing.T) {
+	ctx, db, s := newRestServer(t, nil)
+	t.Cleanup(func() { db.Close() })
+
+	data := map[string]any{
+		"name":            "John Smith",
+		"email":           "john.smith@example.com",
+		"enabled":         true,
+		"type":            user.TypeUser,
+		"password_hashed": gofakeit.Password(true, true, true, true, true, 15),
+		"profile_url":     "https://test.example.com/some-path",
+	}
+
+	resp := enttest.Request[ent.User](ctx, s, http.MethodPost, "/users", data).Must(t)
+	assert.Equal(t, http.StatusCreated, resp.Data.Code)
+	assert.Equal(t, data["profile_url"], resp.Value.ProfileURL.String())
+}

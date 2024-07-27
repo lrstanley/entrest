@@ -14,6 +14,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
 
 // UserCreate is the builder for creating a User entity.
@@ -131,6 +132,12 @@ func (uc *UserCreate) SetGithubData(gi *github.User) *UserCreate {
 	return uc
 }
 
+// SetProfileURL sets the "profile_url" field.
+func (uc *UserCreate) SetProfileURL(sv *schema.ExampleValuer) *UserCreate {
+	uc.mutation.SetProfileURL(sv)
+	return uc
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (uc *UserCreate) AddPetIDs(ids ...int) *UserCreate {
 	uc.mutation.AddPetIDs(ids...)
@@ -241,6 +248,10 @@ func (uc *UserCreate) defaults() {
 	if _, ok := uc.mutation.Enabled(); !ok {
 		v := user.DefaultEnabled
 		uc.mutation.SetEnabled(v)
+	}
+	if _, ok := uc.mutation.ProfileURL(); !ok {
+		v := user.DefaultProfileURL
+		uc.mutation.SetProfileURL(v)
 	}
 }
 
@@ -354,6 +365,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.GithubData(); ok {
 		_spec.SetField(user.FieldGithubData, field.TypeJSON, value)
 		_node.GithubData = value
+	}
+	if value, ok := uc.mutation.ProfileURL(); ok {
+		_spec.SetField(user.FieldProfileURL, field.TypeOther, value)
+		_node.ProfileURL = value
 	}
 	if nodes := uc.mutation.PetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

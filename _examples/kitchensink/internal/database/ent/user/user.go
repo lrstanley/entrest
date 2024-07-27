@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
 
 const (
@@ -35,6 +36,8 @@ const (
 	FieldPasswordHashed = "password_hashed"
 	// FieldGithubData holds the string denoting the github_data field in the database.
 	FieldGithubData = "github_data"
+	// FieldProfileURL holds the string denoting the profile_url field in the database.
+	FieldProfileURL = "profile_url"
 	// EdgePets holds the string denoting the pets edge name in mutations.
 	EdgePets = "pets"
 	// EdgeFollowedPets holds the string denoting the followed_pets edge name in mutations.
@@ -90,6 +93,7 @@ var Columns = []string{
 	FieldAvatar,
 	FieldPasswordHashed,
 	FieldGithubData,
+	FieldProfileURL,
 }
 
 // ForeignKeys holds the SQL foreign-keys that are owned by the "users"
@@ -139,6 +143,8 @@ var (
 	AvatarValidator func([]byte) error
 	// PasswordHashedValidator is a validator for the "password_hashed" field. It is called by the builders before save.
 	PasswordHashedValidator func(string) error
+	// DefaultProfileURL holds the default value on creation for the "profile_url" field.
+	DefaultProfileURL *schema.ExampleValuer
 )
 
 // Type defines the type for the "type" enum field.
@@ -213,6 +219,11 @@ func ByEmail(opts ...sql.OrderTermOption) OrderOption {
 // ByPasswordHashed orders the results by the password_hashed field.
 func ByPasswordHashed(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldPasswordHashed, opts...).ToFunc()
+}
+
+// ByProfileURL orders the results by the profile_url field.
+func ByProfileURL(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldProfileURL, opts...).ToFunc()
 }
 
 // ByPetsCount orders the results by pets count.

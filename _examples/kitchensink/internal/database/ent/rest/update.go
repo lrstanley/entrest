@@ -13,6 +13,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
+	schema "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
 
 // UpdateCategoryParams defines parameters for updating a Category via a PATCH request.
@@ -219,7 +220,8 @@ type UpdateUserParams struct {
 	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
 	PasswordHashed Option[string] `json:"password_hashed"`
 	// The github user raw JSON data.
-	GithubData Option[*github.User] `json:"github_data,omitempty"`
+	GithubData Option[*github.User]          `json:"github_data,omitempty"`
+	ProfileURL Option[*schema.ExampleValuer] `json:"profile_url,omitempty"`
 	// Pets owned by the user.
 	AddPets Option[[]int] `json:"add_pets,omitempty"`
 	// Pets owned by the user.
@@ -272,6 +274,9 @@ func (u *UpdateUserParams) ApplyInputs(builder *ent.UserUpdateOne) *ent.UserUpda
 	}
 	if v, ok := u.GithubData.Get(); ok {
 		builder.SetGithubData(v)
+	}
+	if v, ok := u.ProfileURL.Get(); ok {
+		builder.SetProfileURL(v)
 	}
 
 	if v, ok := u.AddPets.Get(); ok && v != nil {

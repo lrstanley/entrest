@@ -20,6 +20,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/skipped"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
 
 const (
@@ -3429,6 +3430,7 @@ type UserMutation struct {
 	avatar               *[]byte
 	password_hashed      *string
 	github_data          **github.User
+	profile_url          **schema.ExampleValuer
 	clearedFields        map[string]struct{}
 	pets                 map[int]struct{}
 	removedpets          map[int]struct{}
@@ -3957,6 +3959,55 @@ func (m *UserMutation) ResetGithubData() {
 	delete(m.clearedFields, user.FieldGithubData)
 }
 
+// SetProfileURL sets the "profile_url" field.
+func (m *UserMutation) SetProfileURL(sv *schema.ExampleValuer) {
+	m.profile_url = &sv
+}
+
+// ProfileURL returns the value of the "profile_url" field in the mutation.
+func (m *UserMutation) ProfileURL() (r *schema.ExampleValuer, exists bool) {
+	v := m.profile_url
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldProfileURL returns the old "profile_url" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldProfileURL(ctx context.Context) (v *schema.ExampleValuer, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldProfileURL is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldProfileURL requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldProfileURL: %w", err)
+	}
+	return oldValue.ProfileURL, nil
+}
+
+// ClearProfileURL clears the value of the "profile_url" field.
+func (m *UserMutation) ClearProfileURL() {
+	m.profile_url = nil
+	m.clearedFields[user.FieldProfileURL] = struct{}{}
+}
+
+// ProfileURLCleared returns if the "profile_url" field was cleared in this mutation.
+func (m *UserMutation) ProfileURLCleared() bool {
+	_, ok := m.clearedFields[user.FieldProfileURL]
+	return ok
+}
+
+// ResetProfileURL resets all changes to the "profile_url" field.
+func (m *UserMutation) ResetProfileURL() {
+	m.profile_url = nil
+	delete(m.clearedFields, user.FieldProfileURL)
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by ids.
 func (m *UserMutation) AddPetIDs(ids ...int) {
 	if m.pets == nil {
@@ -4207,7 +4258,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 10)
+	fields := make([]string, 0, 11)
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -4238,6 +4289,9 @@ func (m *UserMutation) Fields() []string {
 	if m.github_data != nil {
 		fields = append(fields, user.FieldGithubData)
 	}
+	if m.profile_url != nil {
+		fields = append(fields, user.FieldProfileURL)
+	}
 	return fields
 }
 
@@ -4266,6 +4320,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.PasswordHashed()
 	case user.FieldGithubData:
 		return m.GithubData()
+	case user.FieldProfileURL:
+		return m.ProfileURL()
 	}
 	return nil, false
 }
@@ -4295,6 +4351,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldPasswordHashed(ctx)
 	case user.FieldGithubData:
 		return m.OldGithubData(ctx)
+	case user.FieldProfileURL:
+		return m.OldProfileURL(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -4374,6 +4432,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetGithubData(v)
 		return nil
+	case user.FieldProfileURL:
+		v, ok := value.(*schema.ExampleValuer)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetProfileURL(v)
+		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -4416,6 +4481,9 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldGithubData) {
 		fields = append(fields, user.FieldGithubData)
 	}
+	if m.FieldCleared(user.FieldProfileURL) {
+		fields = append(fields, user.FieldProfileURL)
+	}
 	return fields
 }
 
@@ -4441,6 +4509,9 @@ func (m *UserMutation) ClearField(name string) error {
 		return nil
 	case user.FieldGithubData:
 		m.ClearGithubData()
+		return nil
+	case user.FieldProfileURL:
+		m.ClearProfileURL()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -4479,6 +4550,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldGithubData:
 		m.ResetGithubData()
+		return nil
+	case user.FieldProfileURL:
+		m.ResetProfileURL()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

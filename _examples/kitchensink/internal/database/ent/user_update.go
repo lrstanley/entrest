@@ -16,6 +16,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
 
 // UserUpdate is the builder for updating User entities.
@@ -154,6 +155,18 @@ func (uu *UserUpdate) SetGithubData(gi *github.User) *UserUpdate {
 // ClearGithubData clears the value of the "github_data" field.
 func (uu *UserUpdate) ClearGithubData() *UserUpdate {
 	uu.mutation.ClearGithubData()
+	return uu
+}
+
+// SetProfileURL sets the "profile_url" field.
+func (uu *UserUpdate) SetProfileURL(sv *schema.ExampleValuer) *UserUpdate {
+	uu.mutation.SetProfileURL(sv)
+	return uu
+}
+
+// ClearProfileURL clears the value of the "profile_url" field.
+func (uu *UserUpdate) ClearProfileURL() *UserUpdate {
+	uu.mutation.ClearProfileURL()
 	return uu
 }
 
@@ -422,6 +435,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.GithubDataCleared() {
 		_spec.ClearField(user.FieldGithubData, field.TypeJSON)
+	}
+	if value, ok := uu.mutation.ProfileURL(); ok {
+		_spec.SetField(user.FieldProfileURL, field.TypeOther, value)
+	}
+	if uu.mutation.ProfileURLCleared() {
+		_spec.ClearField(user.FieldProfileURL, field.TypeOther)
 	}
 	if uu.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -773,6 +792,18 @@ func (uuo *UserUpdateOne) ClearGithubData() *UserUpdateOne {
 	return uuo
 }
 
+// SetProfileURL sets the "profile_url" field.
+func (uuo *UserUpdateOne) SetProfileURL(sv *schema.ExampleValuer) *UserUpdateOne {
+	uuo.mutation.SetProfileURL(sv)
+	return uuo
+}
+
+// ClearProfileURL clears the value of the "profile_url" field.
+func (uuo *UserUpdateOne) ClearProfileURL() *UserUpdateOne {
+	uuo.mutation.ClearProfileURL()
+	return uuo
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (uuo *UserUpdateOne) AddPetIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddPetIDs(ids...)
@@ -1068,6 +1099,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if uuo.mutation.GithubDataCleared() {
 		_spec.ClearField(user.FieldGithubData, field.TypeJSON)
+	}
+	if value, ok := uuo.mutation.ProfileURL(); ok {
+		_spec.SetField(user.FieldProfileURL, field.TypeOther, value)
+	}
+	if uuo.mutation.ProfileURLCleared() {
+		_spec.ClearField(user.FieldProfileURL, field.TypeOther)
 	}
 	if uuo.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{

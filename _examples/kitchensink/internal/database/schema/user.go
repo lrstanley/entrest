@@ -5,13 +5,19 @@
 package schema
 
 import (
+	"database/sql/driver"
+	"fmt"
+	"net/url"
+
 	"entgo.io/ent"
+	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/google/go-github/v63/github"
 	"github.com/lrstanley/entrest"
+	"github.com/ogen-go/ogen"
 )
 
 type User struct {
@@ -83,6 +89,14 @@ func (User) Fields() []ent.Field {
 				entrest.WithSchema(entrest.SchemaObjectAny),
 			).
 			Comment("The github user raw JSON data."),
+		field.Other("profile_url", &ExampleValuer{}).
+			Optional().
+			SchemaType(map[string]string{
+				dialect.Postgres: "varchar",
+				dialect.SQLite:   "text",
+			}).
+			Default(DefaultExampleValuer()).
+			Annotations(entrest.WithSchema(ogen.String())),
 	}
 }
 
@@ -114,4 +128,48 @@ func (User) Edges() []ent.Edge {
 
 func (User) Annotations() []schema.Annotation {
 	return []schema.Annotation{}
+}
+
+type ExampleValuer struct {
+	*url.URL
+}
+
+func DefaultExampleValuer() *ExampleValuer {
+	u, _ := url.Parse("127.0.0.1")
+	return &ExampleValuer{URL: u}
+}
+
+func (l *ExampleValuer) Scan(value any) (err error) {
+	switch v := value.(type) {
+	case nil:
+	case []byte:
+		l.URL, err = url.Parse(string(v))
+	case string:
+		l.URL, err = url.Parse(v)
+	default:
+		err = fmt.Errorf("unexpected type %T", v)
+	}
+	return err
+}
+
+func (l ExampleValuer) Value() (driver.Value, error) {
+	if l.URL == nil {
+		return nil, nil //nolint:nilnil
+	}
+	return l.URL.String(), nil
+}
+
+func (l ExampleValuer) MarshalText() ([]byte, error) {
+	if l.URL == nil {
+		return nil, nil //nolint:nilnil
+	}
+	return []byte(l.URL.String()), nil
+}
+
+func (l *ExampleValuer) UnmarshalText(data []byte) (err error) {
+	if len(data) == 0 {
+		return nil
+	}
+	l.URL, err = url.Parse(string(data))
+	return err
 }

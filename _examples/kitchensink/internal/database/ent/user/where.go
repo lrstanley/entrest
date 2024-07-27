@@ -8,6 +8,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
 
 // ID filters vertices based on their ID field.
@@ -93,6 +94,11 @@ func Avatar(v []byte) predicate.User {
 // PasswordHashed applies equality check predicate on the "password_hashed" field. It's identical to PasswordHashedEQ.
 func PasswordHashed(v string) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldPasswordHashed, v))
+}
+
+// ProfileURL applies equality check predicate on the "profile_url" field. It's identical to ProfileURLEQ.
+func ProfileURL(v *schema.ExampleValuer) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldProfileURL, v))
 }
 
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
@@ -543,6 +549,56 @@ func GithubDataIsNil() predicate.User {
 // GithubDataNotNil applies the NotNil predicate on the "github_data" field.
 func GithubDataNotNil() predicate.User {
 	return predicate.User(sql.FieldNotNull(FieldGithubData))
+}
+
+// ProfileURLEQ applies the EQ predicate on the "profile_url" field.
+func ProfileURLEQ(v *schema.ExampleValuer) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldProfileURL, v))
+}
+
+// ProfileURLNEQ applies the NEQ predicate on the "profile_url" field.
+func ProfileURLNEQ(v *schema.ExampleValuer) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldProfileURL, v))
+}
+
+// ProfileURLIn applies the In predicate on the "profile_url" field.
+func ProfileURLIn(vs ...*schema.ExampleValuer) predicate.User {
+	return predicate.User(sql.FieldIn(FieldProfileURL, vs...))
+}
+
+// ProfileURLNotIn applies the NotIn predicate on the "profile_url" field.
+func ProfileURLNotIn(vs ...*schema.ExampleValuer) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldProfileURL, vs...))
+}
+
+// ProfileURLGT applies the GT predicate on the "profile_url" field.
+func ProfileURLGT(v *schema.ExampleValuer) predicate.User {
+	return predicate.User(sql.FieldGT(FieldProfileURL, v))
+}
+
+// ProfileURLGTE applies the GTE predicate on the "profile_url" field.
+func ProfileURLGTE(v *schema.ExampleValuer) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldProfileURL, v))
+}
+
+// ProfileURLLT applies the LT predicate on the "profile_url" field.
+func ProfileURLLT(v *schema.ExampleValuer) predicate.User {
+	return predicate.User(sql.FieldLT(FieldProfileURL, v))
+}
+
+// ProfileURLLTE applies the LTE predicate on the "profile_url" field.
+func ProfileURLLTE(v *schema.ExampleValuer) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldProfileURL, v))
+}
+
+// ProfileURLIsNil applies the IsNil predicate on the "profile_url" field.
+func ProfileURLIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldProfileURL))
+}
+
+// ProfileURLNotNil applies the NotNil predicate on the "profile_url" field.
+func ProfileURLNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldProfileURL))
 }
 
 // HasPets applies the HasEdge predicate on the "pets" edge.

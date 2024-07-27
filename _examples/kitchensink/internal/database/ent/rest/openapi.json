@@ -6355,12 +6355,19 @@
                         "description": "If true, the current results are the last page of results.",
                         "type": "boolean",
                         "example": false
+                    },
+                    "total_count": {
+                        "description": "The total number of results based on the provided query.",
+                        "type": "integer",
+                        "minimum": 0,
+                        "example": 123
                     }
                 },
                 "required": [
                     "page",
                     "last_page",
-                    "is_last_page"
+                    "is_last_page",
+                    "total_count"
                 ]
             },
             "Pet": {
@@ -6791,6 +6798,9 @@
                     "github_data": {
                         "type": "object",
                         "additionalProperties": true
+                    },
+                    "profile_url": {
+                        "type": "string"
                     }
                 },
                 "required": [
@@ -6842,6 +6852,9 @@
                     "github_data": {
                         "type": "object",
                         "additionalProperties": true
+                    },
+                    "profile_url": {
+                        "type": "string"
                     },
                     "pets": {
                         "type": "array",
@@ -7002,6 +7015,9 @@
                     "github_data": {
                         "type": "object",
                         "additionalProperties": true
+                    },
+                    "profile_url": {
+                        "type": "string"
                     },
                     "add_pets": {
                         "type": "array",

@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"github.com/google/go-github/v63/github"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
 
 // User is the model entity for the User schema.
@@ -39,6 +40,8 @@ type User struct {
 	PasswordHashed string `json:"-"`
 	// The github user raw JSON data.
 	GithubData *github.User `json:"github_data"`
+	// ProfileURL holds the value of the "profile_url" field.
+	ProfileURL *schema.ExampleValuer `json:"profile_url"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges           UserEdges `json:"edges"`
@@ -115,6 +118,8 @@ func (*User) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case user.FieldAvatar, user.FieldGithubData:
 			values[i] = new([]byte)
+		case user.FieldProfileURL:
+			values[i] = new(schema.ExampleValuer)
 		case user.FieldEnabled:
 			values[i] = new(sql.NullBool)
 		case user.FieldID:
@@ -209,6 +214,12 @@ func (u *User) assignValues(columns []string, values []any) error {
 				if err := json.Unmarshal(*value, &u.GithubData); err != nil {
 					return fmt.Errorf("unmarshal field github_data: %w", err)
 				}
+			}
+		case user.FieldProfileURL:
+			if value, ok := values[i].(*schema.ExampleValuer); !ok {
+				return fmt.Errorf("unexpected type %T for field profile_url", values[i])
+			} else if value != nil {
+				u.ProfileURL = value
 			}
 		case user.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -312,6 +323,9 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("github_data=")
 	builder.WriteString(fmt.Sprintf("%v", u.GithubData))
+	builder.WriteString(", ")
+	builder.WriteString("profile_url=")
+	builder.WriteString(fmt.Sprintf("%v", u.ProfileURL))
 	builder.WriteByte(')')
 	return builder.String()
 }
