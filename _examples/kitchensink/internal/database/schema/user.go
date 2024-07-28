@@ -26,6 +26,13 @@ type User struct {
 
 func (User) Fields() []ent.Field {
 	return []ent.Field{
+		field.Int("id").
+			Unique().
+			Immutable().
+			Annotations(
+				entrest.WithSortable(true),
+				entrest.WithFilter(entrest.FilterGroupEqual|entrest.FilterGroupArray),
+			),
 		field.String("name").
 			Annotations(
 				entrest.WithSortable(true),

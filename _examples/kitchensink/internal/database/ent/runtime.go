@@ -114,7 +114,7 @@ func init() {
 	// user.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	user.UpdateDefaultUpdatedAt = userDescUpdatedAt.UpdateDefault.(func() time.Time)
 	// userDescDescription is the schema descriptor for description field.
-	userDescDescription := userFields[2].Descriptor()
+	userDescDescription := userFields[3].Descriptor()
 	// user.DescriptionValidator is a validator for the "description" field. It is called by the builders before save.
 	user.DescriptionValidator = func() func(string) error {
 		validators := userDescDescription.Validators
@@ -132,11 +132,11 @@ func init() {
 		}
 	}()
 	// userDescEnabled is the schema descriptor for enabled field.
-	userDescEnabled := userFields[3].Descriptor()
+	userDescEnabled := userFields[4].Descriptor()
 	// user.DefaultEnabled holds the default value on creation for the enabled field.
 	user.DefaultEnabled = userDescEnabled.Default.(bool)
 	// userDescEmail is the schema descriptor for email field.
-	userDescEmail := userFields[4].Descriptor()
+	userDescEmail := userFields[5].Descriptor()
 	// user.EmailValidator is a validator for the "email" field. It is called by the builders before save.
 	user.EmailValidator = func() func(string) error {
 		validators := userDescEmail.Validators
@@ -154,7 +154,7 @@ func init() {
 		}
 	}()
 	// userDescAvatar is the schema descriptor for avatar field.
-	userDescAvatar := userFields[5].Descriptor()
+	userDescAvatar := userFields[6].Descriptor()
 	// user.AvatarValidator is a validator for the "avatar" field. It is called by the builders before save.
 	user.AvatarValidator = func() func([]byte) error {
 		validators := userDescAvatar.Validators
@@ -172,11 +172,11 @@ func init() {
 		}
 	}()
 	// userDescPasswordHashed is the schema descriptor for password_hashed field.
-	userDescPasswordHashed := userFields[6].Descriptor()
+	userDescPasswordHashed := userFields[7].Descriptor()
 	// user.PasswordHashedValidator is a validator for the "password_hashed" field. It is called by the builders before save.
 	user.PasswordHashedValidator = userDescPasswordHashed.Validators[0].(func(string) error)
 	// userDescProfileURL is the schema descriptor for profile_url field.
-	userDescProfileURL := userFields[8].Descriptor()
+	userDescProfileURL := userFields[9].Descriptor()
 	// user.DefaultProfileURL holds the default value on creation for the profile_url field.
 	user.DefaultProfileURL = userDescProfileURL.Default.(*schema.ExampleValuer)
 }
