@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"math"
 
+	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
@@ -107,7 +108,7 @@ func (fq *FollowsQuery) QueryPet() *PetQuery {
 // First returns the first Follows entity from the query.
 // Returns a *NotFoundError when no Follows was found.
 func (fq *FollowsQuery) First(ctx context.Context) (*Follows, error) {
-	nodes, err := fq.Limit(1).All(setContextOp(ctx, fq.ctx, "First"))
+	nodes, err := fq.Limit(1).All(setContextOp(ctx, fq.ctx, ent.OpQueryFirst))
 	if err != nil {
 		return nil, err
 	}
@@ -130,7 +131,7 @@ func (fq *FollowsQuery) FirstX(ctx context.Context) *Follows {
 // Returns a *NotSingularError when more than one Follows entity is found.
 // Returns a *NotFoundError when no Follows entities are found.
 func (fq *FollowsQuery) Only(ctx context.Context) (*Follows, error) {
-	nodes, err := fq.Limit(2).All(setContextOp(ctx, fq.ctx, "Only"))
+	nodes, err := fq.Limit(2).All(setContextOp(ctx, fq.ctx, ent.OpQueryOnly))
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +156,7 @@ func (fq *FollowsQuery) OnlyX(ctx context.Context) *Follows {
 
 // All executes the query and returns a list of FollowsSlice.
 func (fq *FollowsQuery) All(ctx context.Context) ([]*Follows, error) {
-	ctx = setContextOp(ctx, fq.ctx, "All")
+	ctx = setContextOp(ctx, fq.ctx, ent.OpQueryAll)
 	if err := fq.prepareQuery(ctx); err != nil {
 		return nil, err
 	}
@@ -174,7 +175,7 @@ func (fq *FollowsQuery) AllX(ctx context.Context) []*Follows {
 
 // Count returns the count of the given query.
 func (fq *FollowsQuery) Count(ctx context.Context) (int, error) {
-	ctx = setContextOp(ctx, fq.ctx, "Count")
+	ctx = setContextOp(ctx, fq.ctx, ent.OpQueryCount)
 	if err := fq.prepareQuery(ctx); err != nil {
 		return 0, err
 	}
@@ -192,7 +193,7 @@ func (fq *FollowsQuery) CountX(ctx context.Context) int {
 
 // Exist returns true if the query has elements in the graph.
 func (fq *FollowsQuery) Exist(ctx context.Context) (bool, error) {
-	ctx = setContextOp(ctx, fq.ctx, "Exist")
+	ctx = setContextOp(ctx, fq.ctx, ent.OpQueryExist)
 	switch _, err := fq.First(ctx); {
 	case IsNotFound(err):
 		return false, nil
@@ -525,7 +526,7 @@ func (fgb *FollowsGroupBy) Aggregate(fns ...AggregateFunc) *FollowsGroupBy {
 
 // Scan applies the selector query and scans the result into the given value.
 func (fgb *FollowsGroupBy) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fgb.build.ctx, "GroupBy")
+	ctx = setContextOp(ctx, fgb.build.ctx, ent.OpQueryGroupBy)
 	if err := fgb.build.prepareQuery(ctx); err != nil {
 		return err
 	}
@@ -573,7 +574,7 @@ func (fs *FollowsSelect) Aggregate(fns ...AggregateFunc) *FollowsSelect {
 
 // Scan applies the selector query and scans the result into the given value.
 func (fs *FollowsSelect) Scan(ctx context.Context, v any) error {
-	ctx = setContextOp(ctx, fs.ctx, "Select")
+	ctx = setContextOp(ctx, fs.ctx, ent.OpQuerySelect)
 	if err := fs.prepareQuery(ctx); err != nil {
 		return err
 	}

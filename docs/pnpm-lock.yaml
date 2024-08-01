@@ -9,20 +9,20 @@ importers:
   .:
     dependencies:
       '@astrojs/check':
-        specifier: ^0.8.3
-        version: 0.8.3(typescript@5.5.2)
+        specifier: ^0.9.1
+        version: 0.9.1(typescript@5.5.2)
       '@astrojs/starlight':
-        specifier: ^0.25.2
-        version: 0.25.2(astro@4.12.2(typescript@5.5.2))
+        specifier: ^0.25.3
+        version: 0.25.3(astro@4.12.3(typescript@5.5.2))
       astro:
-        specifier: ^4.12.2
-        version: 4.12.2(typescript@5.5.2)
+        specifier: ^4.12.3
+        version: 4.12.3(typescript@5.5.2)
       sharp:
         specifier: ^0.32.5
         version: 0.32.6
       starlight-links-validator:
         specifier: ^0.9.0
-        version: 0.9.0(@astrojs/starlight@0.25.2(astro@4.12.2(typescript@5.5.2)))(astro@4.12.2(typescript@5.5.2))
+        version: 0.9.0(@astrojs/starlight@0.25.3(astro@4.12.3(typescript@5.5.2)))(astro@4.12.3(typescript@5.5.2))
       typescript:
         specifier: ^5.5.2
         version: 5.5.2
@@ -33,11 +33,14 @@ packages:
     resolution: {integrity: sha512-30iZtAPgz+LTIYoeivqYo853f02jBYSd5uGnGpkFV0M3xOt9aN73erkgYAmZU43x4VfqcnLxW9Kpg3R5LC4YYw==}
     engines: {node: '>=6.0.0'}
 
-  '@astrojs/check@0.8.3':
-    resolution: {integrity: sha512-ajcSe+ezX5jCc3dreQlWzbknzXgSGnDETNe3C1mawUOtGpO4t5z2YGaD0y+wzB84lmgPWaWZa0fKSPwLq/wUHw==}
+  '@astrojs/check@0.9.1':
+    resolution: {integrity: sha512-VvN5ukVzg0IccKuZlI/pdsp4MSpHxWf9a36eOmS8Wpp+NM0MhJLYv3yvQC+qa472Kdf8DHEt/wmVZYwJUMFW+w==}
     hasBin: true
     peerDependencies:
       typescript: ^5.0.0
+
+  '@astrojs/compiler@2.10.1':
+    resolution: {integrity: sha512-XmM4j6BjvOVMag2xELq0JuG2yKOW8wgIu6dvb9BsjbGYmnvoStJn/pqEzVqc1EBszf2xYT7onIkftIOUz9AwrQ==}
 
   '@astrojs/compiler@2.9.2':
     resolution: {integrity: sha512-Vpu0Ffsj8SoV+N0DFHlxxOMKHwSC9059Xy/OlG1t6uFYSoJXxkBC2WyF6igO7x10V+8uJrhOxaXr3nA90kJXow==}
@@ -45,8 +48,8 @@ packages:
   '@astrojs/internal-helpers@0.4.1':
     resolution: {integrity: sha512-bMf9jFihO8YP940uD70SI/RDzIhUHJAolWVcO1v5PUivxGKvfLZTLTVVxEYzGYyPsA3ivdLNqMnL5VgmQySa+g==}
 
-  '@astrojs/language-server@2.12.8':
-    resolution: {integrity: sha512-aUppjqbCdFkd2Cdr8tDtd9id7lAZAmpwpYTQrOm69z8P4NaGUE/ksMIhd0Q99zXfSBjDVC7HlxSjPg8Y7xakfg==}
+  '@astrojs/language-server@2.13.1':
+    resolution: {integrity: sha512-Cl9ynfnge6+MaCpehYn7w9WrAE+sVS7onhxhMzCdqzPtIt/Yo5zIaiGZdu4QgvmOV/mdNBZCZgaTpAIeGjWwsQ==}
     hasBin: true
     peerDependencies:
       prettier: ^3.0.0
@@ -76,8 +79,8 @@ packages:
   '@astrojs/sitemap@3.1.6':
     resolution: {integrity: sha512-1Qp2NvAzVImqA6y+LubKi1DVhve/hXXgFvB0szxiipzh7BvtuKe4oJJ9dXSqaubaTkt4nMa6dv6RCCAYeB6xaQ==}
 
-  '@astrojs/starlight@0.25.2':
-    resolution: {integrity: sha512-VcFe9yXB0oUIoEU0lLdDA3jnbtjVzSXXpX/oI8OW4ofEHCt8L9V27f+NzRjB0A1+2D6FxAEoAw3NKoP06PLRQA==}
+  '@astrojs/starlight@0.25.3':
+    resolution: {integrity: sha512-XNpGbZ54ungtzen4wQkPXn50D1ZquB51paWrZftA0jWxUkj4b/pP8PijAFrGFypydhvu7Dhl0DjD07lrnSSUhQ==}
     peerDependencies:
       astro: ^4.8.6
 
@@ -163,10 +166,6 @@ packages:
     engines: {node: '>=6.9.0'}
     peerDependencies:
       '@babel/core': ^7.0.0-0
-
-  '@babel/template@7.24.7':
-    resolution: {integrity: sha512-jYqfPrU9JTF0PmPy1tLYHW4Mp4KlgxJD9l2nP9fD6yT/ICi554DmrWBAEYpIelzjHf1msDP3PxJIRt/nFNfBig==}
-    engines: {node: '>=6.9.0'}
 
   '@babel/template@7.25.0':
     resolution: {integrity: sha512-aOOgh1/5XzKvg1jvVz7AVrx2piJ2XBi227DHmbY6y+bM9H2FlN+IfecYu4Xl0cNiiVejlsCri89LUsbj8vJD9Q==}
@@ -612,9 +611,6 @@ packages:
     cpu: [x64]
     os: [win32]
 
-  '@shikijs/core@1.10.1':
-    resolution: {integrity: sha512-qdiJS5a/QGCff7VUFIqd0hDdWly9rDp8lhVmXVrS11aazX8LOTRLHAXkkEeONNsS43EcCd7gax9LLoOz4vlFQA==}
-
   '@shikijs/core@1.12.0':
     resolution: {integrity: sha512-mc1cLbm6UQ8RxLc0dZES7v5rkH+99LxQp/ZvTqV3NLyYsO/fD6JhEflP1H5b2SDq9gI0+0G36AVZWxvounfR9w==}
 
@@ -712,11 +708,6 @@ packages:
     peerDependencies:
       acorn: ^6.0.0 || ^7.0.0 || ^8.0.0
 
-  acorn@8.12.0:
-    resolution: {integrity: sha512-RTvkC4w+KNXrM39/lWCUaG0IbRkWdCv7W/IOW9oU6SawyxulvkQy5HQPVTKxEjczcUvapcrw3cFx/60VN/NRNw==}
-    engines: {node: '>=0.4.0'}
-    hasBin: true
-
   acorn@8.12.1:
     resolution: {integrity: sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==}
     engines: {node: '>=0.4.0'}
@@ -773,8 +764,8 @@ packages:
     peerDependencies:
       astro: ^4.0.0-beta || ^3.3.0
 
-  astro@4.12.2:
-    resolution: {integrity: sha512-l6OmqlL+FiuSi9x6F+EGZitteOznq1JffOil7st7cdqeMCTEIym4oagI1a6zp6QekliKWEEZWdplGhgh1k1f7Q==}
+  astro@4.12.3:
+    resolution: {integrity: sha512-rFcRktbZk8CsHufLOB51gYAia3RTuOyaBD8iZXRHP7Oqo6QviquNaa/5U6RoUqyF5KS8vyq/ldJ5jfboJzxuuw==}
     engines: {node: ^18.17.1 || ^20.3.0 || >=21.0.0, npm: '>=9.6.5', pnpm: '>=7.1.0'}
     hasBin: true
 
@@ -1841,10 +1832,6 @@ packages:
     resolution: {integrity: sha512-qoF6Vz3BjU2tP6OfZqHOvCU0ACmu/6jhGaINSQRI9mM7wCxNQTKB3JUAN4SVoN2ybElEDTxBIABRep7e569iJw==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
 
-  remark-smartypants@3.0.1:
-    resolution: {integrity: sha512-qyshfCl2eLO0i0558e79ZJsfojC5wjnYLByjt0FmjJQN6aYwcRxpoj784LZJSoWCdnA2ubh5rLNGb8Uur/wDng==}
-    engines: {node: '>=16.0.0'}
-
   remark-smartypants@3.0.2:
     resolution: {integrity: sha512-ILTWeOriIluwEvPjv67v7Blgrcx+LZOkAUVtKI3putuhlZm84FnqDORNXPPm+HY3NdZOMhyDwZ1E+eZB/Df5dA==}
     engines: {node: '>=16.0.0'}
@@ -1918,6 +1905,11 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
+  semver@7.6.3:
+    resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
+    engines: {node: '>=10'}
+    hasBin: true
+
   sharp@0.32.6:
     resolution: {integrity: sha512-KyLTWwgcR9Oe4d9HwCwNM2l7+J0dUQwn/yf7S0EnTtb0eVS4RxO0eUSvxPtzT4F3SY+C4K6fqdv/DO27sJ/v/w==}
     engines: {node: '>=14.15.0'}
@@ -1933,9 +1925,6 @@ packages:
   shebang-regex@3.0.0:
     resolution: {integrity: sha512-7++dFhtcx3353uBaq8DDR4NuxBetBzC7ZQOhmTQInHEd6bSrXdiEyzCvG07Z44UYdLShWUyXt5M/yhz8ekcb1A==}
     engines: {node: '>=8'}
-
-  shiki@1.10.1:
-    resolution: {integrity: sha512-uafV7WCgN4YYrccH6yxpnps6k38sSTlFRrwc4jycWmhWxJIm9dPrk+XkY1hZ2t0I7jmacMNb15Lf2fspa/Y3lg==}
 
   shiki@1.12.0:
     resolution: {integrity: sha512-BuAxWOm5JhRcbSOl7XCei8wGjgJJonnV0oipUupPY58iULxUGyHhW5CF+9FRMuM1pcJ5cGEJGll1LusX6FwpPA==}
@@ -2379,9 +2368,9 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@astrojs/check@0.8.3(typescript@5.5.2)':
+  '@astrojs/check@0.9.1(typescript@5.5.2)':
     dependencies:
-      '@astrojs/language-server': 2.12.8(typescript@5.5.2)
+      '@astrojs/language-server': 2.13.1(typescript@5.5.2)
       chokidar: 3.6.0
       fast-glob: 3.3.2
       kleur: 4.1.5
@@ -2391,13 +2380,15 @@ snapshots:
       - prettier
       - prettier-plugin-astro
 
+  '@astrojs/compiler@2.10.1': {}
+
   '@astrojs/compiler@2.9.2': {}
 
   '@astrojs/internal-helpers@0.4.1': {}
 
-  '@astrojs/language-server@2.12.8(typescript@5.5.2)':
+  '@astrojs/language-server@2.13.1(typescript@5.5.2)':
     dependencies:
-      '@astrojs/compiler': 2.9.2
+      '@astrojs/compiler': 2.10.1
       '@jridgewell/sourcemap-codec': 1.4.15
       '@volar/kit': 2.4.0-alpha.15(typescript@5.5.2)
       '@volar/language-core': 2.4.0-alpha.15
@@ -2431,12 +2422,12 @@ snapshots:
       remark-parse: 11.0.0
       remark-rehype: 11.1.0
       remark-smartypants: 2.1.0
-      shiki: 1.10.1
+      shiki: 1.12.0
       unified: 11.0.5
       unist-util-remove-position: 5.0.0
       unist-util-visit: 5.0.0
       unist-util-visit-parents: 6.0.1
-      vfile: 6.0.1
+      vfile: 6.0.2
     transitivePeerDependencies:
       - supports-color
 
@@ -2463,12 +2454,12 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@astrojs/mdx@3.1.1(astro@4.12.2(typescript@5.5.2))':
+  '@astrojs/mdx@3.1.1(astro@4.12.3(typescript@5.5.2))':
     dependencies:
       '@astrojs/markdown-remark': 5.1.0
       '@mdx-js/mdx': 3.0.1
-      acorn: 8.12.0
-      astro: 4.12.2(typescript@5.5.2)
+      acorn: 8.12.1
+      astro: 4.12.3(typescript@5.5.2)
       es-module-lexer: 1.5.4
       estree-util-visit: 2.0.0
       github-slugger: 2.0.0
@@ -2477,10 +2468,10 @@ snapshots:
       kleur: 4.1.5
       rehype-raw: 7.0.0
       remark-gfm: 4.0.0
-      remark-smartypants: 3.0.1
+      remark-smartypants: 3.0.2
       source-map: 0.7.4
       unist-util-visit: 5.0.0
-      vfile: 6.0.1
+      vfile: 6.0.2
     transitivePeerDependencies:
       - supports-color
 
@@ -2494,15 +2485,15 @@ snapshots:
       stream-replace-string: 2.0.0
       zod: 3.23.8
 
-  '@astrojs/starlight@0.25.2(astro@4.12.2(typescript@5.5.2))':
+  '@astrojs/starlight@0.25.3(astro@4.12.3(typescript@5.5.2))':
     dependencies:
-      '@astrojs/mdx': 3.1.1(astro@4.12.2(typescript@5.5.2))
+      '@astrojs/mdx': 3.1.1(astro@4.12.3(typescript@5.5.2))
       '@astrojs/sitemap': 3.1.6
       '@pagefind/default-ui': 1.1.0
       '@types/hast': 3.0.4
       '@types/mdast': 4.0.4
-      astro: 4.12.2(typescript@5.5.2)
-      astro-expressive-code: 0.35.3(astro@4.12.2(typescript@5.5.2))
+      astro: 4.12.3(typescript@5.5.2)
+      astro-expressive-code: 0.35.3(astro@4.12.3(typescript@5.5.2))
       bcp-47: 2.1.0
       hast-util-from-html: 2.0.1
       hast-util-select: 6.0.2
@@ -2517,7 +2508,7 @@ snapshots:
       remark-directive: 3.0.0
       unified: 11.0.5
       unist-util-visit: 5.0.0
-      vfile: 6.0.1
+      vfile: 6.0.2
     transitivePeerDependencies:
       - supports-color
 
@@ -2549,7 +2540,7 @@ snapshots:
       '@babel/helper-module-transforms': 7.25.0(@babel/core@7.24.9)
       '@babel/helpers': 7.25.0
       '@babel/parser': 7.25.0
-      '@babel/template': 7.24.7
+      '@babel/template': 7.25.0
       '@babel/traverse': 7.25.0
       '@babel/types': 7.25.0
       convert-source-map: 2.0.0
@@ -2642,12 +2633,6 @@ snapshots:
       '@babel/types': 7.25.0
     transitivePeerDependencies:
       - supports-color
-
-  '@babel/template@7.24.7':
-    dependencies:
-      '@babel/code-frame': 7.24.7
-      '@babel/parser': 7.25.0
-      '@babel/types': 7.25.0
 
   '@babel/template@7.25.0':
     dependencies:
@@ -2791,7 +2776,7 @@ snapshots:
   '@expressive-code/plugin-shiki@0.35.3':
     dependencies:
       '@expressive-code/core': 0.35.3
-      shiki: 1.10.1
+      shiki: 1.12.0
 
   '@expressive-code/plugin-text-markers@0.35.3':
     dependencies:
@@ -2913,7 +2898,7 @@ snapshots:
       unist-util-position-from-estree: 2.0.0
       unist-util-stringify-position: 4.0.0
       unist-util-visit: 5.0.0
-      vfile: 6.0.1
+      vfile: 6.0.2
     transitivePeerDependencies:
       - supports-color
 
@@ -2993,8 +2978,6 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.18.0':
     optional: true
-
-  '@shikijs/core@1.10.1': {}
 
   '@shikijs/core@1.12.0':
     dependencies:
@@ -3125,11 +3108,9 @@ snapshots:
 
   '@vscode/l10n@0.0.18': {}
 
-  acorn-jsx@5.3.2(acorn@8.12.0):
+  acorn-jsx@5.3.2(acorn@8.12.1):
     dependencies:
-      acorn: 8.12.0
-
-  acorn@8.12.0: {}
+      acorn: 8.12.1
 
   acorn@8.12.1: {}
 
@@ -3172,12 +3153,12 @@ snapshots:
 
   astring@1.8.6: {}
 
-  astro-expressive-code@0.35.3(astro@4.12.2(typescript@5.5.2)):
+  astro-expressive-code@0.35.3(astro@4.12.3(typescript@5.5.2)):
     dependencies:
-      astro: 4.12.2(typescript@5.5.2)
+      astro: 4.12.3(typescript@5.5.2)
       rehype-expressive-code: 0.35.3
 
-  astro@4.12.2(typescript@5.5.2):
+  astro@4.12.3(typescript@5.5.2):
     dependencies:
       '@astrojs/compiler': 2.9.2
       '@astrojs/internal-helpers': 0.4.1
@@ -3228,7 +3209,7 @@ snapshots:
       preferred-pm: 4.0.0
       prompts: 2.4.2
       rehype: 13.0.1
-      semver: 7.6.2
+      semver: 7.6.3
       shiki: 1.12.0
       string-width: 7.2.0
       strip-ansi: 7.1.0
@@ -3705,7 +3686,7 @@ snapshots:
       parse5: 7.1.2
       unist-util-position: 5.0.0
       unist-util-visit: 5.0.0
-      vfile: 6.0.1
+      vfile: 6.0.2
       web-namespaces: 2.0.1
       zwitch: 2.0.4
 
@@ -4124,7 +4105,7 @@ snapshots:
       trim-lines: 3.0.1
       unist-util-position: 5.0.0
       unist-util-visit: 5.0.0
-      vfile: 6.0.1
+      vfile: 6.0.2
 
   mdast-util-to-markdown@2.1.0:
     dependencies:
@@ -4274,8 +4255,8 @@ snapshots:
 
   micromark-extension-mdxjs@3.0.0:
     dependencies:
-      acorn: 8.12.0
-      acorn-jsx: 5.3.2(acorn@8.12.0)
+      acorn: 8.12.1
+      acorn-jsx: 5.3.2(acorn@8.12.1)
       micromark-extension-mdx-expression: 3.0.0
       micromark-extension-mdx-jsx: 3.0.0
       micromark-extension-mdx-md: 2.0.0
@@ -4549,7 +4530,7 @@ snapshots:
       nlcst-to-string: 4.0.0
       unist-util-modify-children: 4.0.0
       unist-util-visit-children: 3.0.0
-      vfile: 6.0.1
+      vfile: 6.0.2
 
   parse5@7.1.2:
     dependencies:
@@ -4688,7 +4669,7 @@ snapshots:
     dependencies:
       '@types/hast': 3.0.4
       hast-util-raw: 9.0.4
-      vfile: 6.0.1
+      vfile: 6.0.2
 
   rehype-stringify@10.0.0:
     dependencies:
@@ -4751,13 +4732,6 @@ snapshots:
     dependencies:
       retext: 8.1.0
       retext-smartypants: 5.2.0
-      unist-util-visit: 5.0.0
-
-  remark-smartypants@3.0.1:
-    dependencies:
-      retext: 9.0.0
-      retext-smartypants: 6.1.0
-      unified: 11.0.5
       unist-util-visit: 5.0.0
 
   remark-smartypants@3.0.2:
@@ -4875,6 +4849,8 @@ snapshots:
 
   semver@7.6.2: {}
 
+  semver@7.6.3: {}
+
   sharp@0.32.6:
     dependencies:
       color: 4.2.3
@@ -4890,7 +4866,7 @@ snapshots:
     dependencies:
       color: 4.2.3
       detect-libc: 2.0.3
-      semver: 7.6.2
+      semver: 7.6.3
     optionalDependencies:
       '@img/sharp-darwin-arm64': 0.33.4
       '@img/sharp-darwin-x64': 0.33.4
@@ -4918,10 +4894,6 @@ snapshots:
       shebang-regex: 3.0.0
 
   shebang-regex@3.0.0: {}
-
-  shiki@1.10.1:
-    dependencies:
-      '@shikijs/core': 1.10.1
 
   shiki@1.12.0:
     dependencies:
@@ -4961,10 +4933,10 @@ snapshots:
 
   sprintf-js@1.0.3: {}
 
-  starlight-links-validator@0.9.0(@astrojs/starlight@0.25.2(astro@4.12.2(typescript@5.5.2)))(astro@4.12.2(typescript@5.5.2)):
+  starlight-links-validator@0.9.0(@astrojs/starlight@0.25.3(astro@4.12.3(typescript@5.5.2)))(astro@4.12.3(typescript@5.5.2)):
     dependencies:
-      '@astrojs/starlight': 0.25.2(astro@4.12.2(typescript@5.5.2))
-      astro: 4.12.2(typescript@5.5.2)
+      '@astrojs/starlight': 0.25.3(astro@4.12.3(typescript@5.5.2))
+      astro: 4.12.3(typescript@5.5.2)
       github-slugger: 2.0.0
       hast-util-from-html: 2.0.1
       hast-util-has-property: 3.0.0
@@ -5125,7 +5097,7 @@ snapshots:
       extend: 3.0.2
       is-plain-obj: 4.1.0
       trough: 2.2.0
-      vfile: 6.0.1
+      vfile: 6.0.2
 
   unist-util-find-after@5.0.0:
     dependencies:

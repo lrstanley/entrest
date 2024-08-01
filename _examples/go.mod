@@ -5,12 +5,12 @@ go 1.22.5
 replace github.com/lrstanley/entrest => ../
 
 require (
-	entgo.io/ent v0.13.1
+	entgo.io/ent v0.14.0
 	github.com/brianvoe/gofakeit/v7 v7.0.4
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-playground/form/v4 v4.2.1
 	github.com/google/go-github/v63 v63.0.0
-	github.com/lrstanley/entrest v0.0.0-20240723130420-dfbe5a62d2a9
+	github.com/lrstanley/entrest v0.0.0-20240727222147-79471992a71d
 	github.com/ogen-go/ogen v1.2.2
 	github.com/stretchr/testify v1.9.0
 	modernc.org/sqlite v1.31.1
@@ -54,7 +54,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	modernc.org/gc/v3 v3.0.0-20240722195230-4a140ff9c08e // indirect
-	modernc.org/libc v1.55.5 // indirect
+	modernc.org/libc v1.55.7 // indirect
 	modernc.org/mathutil v1.6.0 // indirect
 	modernc.org/memory v1.8.0 // indirect
 	modernc.org/strutil v1.2.0 // indirect

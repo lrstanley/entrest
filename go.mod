@@ -3,7 +3,7 @@ module github.com/lrstanley/entrest
 go 1.22.5
 
 require (
-	entgo.io/ent v0.13.1
+	entgo.io/ent v0.14.0
 	github.com/go-openapi/inflect v0.21.0
 	github.com/ogen-go/ogen v1.2.2
 	github.com/stoewer/go-strcase v1.3.0
@@ -45,7 +45,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dprotaso/go-yit v0.0.0-20240618133044-5a0af90af097 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/pb33f/libopenapi v0.16.10
+	github.com/pb33f/libopenapi v0.16.11
 	github.com/pb33f/libopenapi-validator v0.1.0
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect

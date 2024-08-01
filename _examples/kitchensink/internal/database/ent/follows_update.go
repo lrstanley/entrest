@@ -128,10 +128,10 @@ func (fu *FollowsUpdate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (fu *FollowsUpdate) check() error {
-	if _, ok := fu.mutation.UserID(); fu.mutation.UserCleared() && !ok {
+	if fu.mutation.UserCleared() && len(fu.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Follows.user"`)
 	}
-	if _, ok := fu.mutation.PetID(); fu.mutation.PetCleared() && !ok {
+	if fu.mutation.PetCleared() && len(fu.mutation.PetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Follows.pet"`)
 	}
 	return nil
@@ -341,10 +341,10 @@ func (fuo *FollowsUpdateOne) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (fuo *FollowsUpdateOne) check() error {
-	if _, ok := fuo.mutation.UserID(); fuo.mutation.UserCleared() && !ok {
+	if fuo.mutation.UserCleared() && len(fuo.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Follows.user"`)
 	}
-	if _, ok := fuo.mutation.PetID(); fuo.mutation.PetCleared() && !ok {
+	if fuo.mutation.PetCleared() && len(fuo.mutation.PetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Follows.pet"`)
 	}
 	return nil

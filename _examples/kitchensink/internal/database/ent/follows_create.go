@@ -110,10 +110,10 @@ func (fc *FollowsCreate) check() error {
 	if _, ok := fc.mutation.PetID(); !ok {
 		return &ValidationError{Name: "pet_id", err: errors.New(`ent: missing required field "Follows.pet_id"`)}
 	}
-	if _, ok := fc.mutation.UserID(); !ok {
+	if len(fc.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Follows.user"`)}
 	}
-	if _, ok := fc.mutation.PetID(); !ok {
+	if len(fc.mutation.PetIDs()) == 0 {
 		return &ValidationError{Name: "pet", err: errors.New(`ent: missing required edge "Follows.pet"`)}
 	}
 	return nil
