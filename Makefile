@@ -37,6 +37,7 @@ dlv-kitchensink:
 ensure-clean:
 	@if [ "${CI}" = "true" ] && [ "$(shell git status --porcelain | grep -v 'coverage')" != "" ]; then \
 		echo "ERROR: git working directory is not clean. Make sure to run 'make test' and re-commit any changes."; \
+		git status --porcelain; \
 		exit 1; \
 	fi
 
