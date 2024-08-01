@@ -77,33 +77,33 @@ type Annotation struct {
 
 	// Fields that map directly to the OpenAPI schema.
 
-	AdditionalTags       []string             `json:",omitempty" ent:"schema,edge"       builders:"WithAdditionalTags"`
-	Tags                 []string             `json:",omitempty" ent:"schema,edge"       builders:"WithTags"`
-	OperationSummary     map[Operation]string `json:",omitempty" ent:"schema,edge"       builders:"WithOperationSummary"`
-	OperationDescription map[Operation]string `json:",omitempty" ent:"schema,edge"       builders:"WithOperationDescription"`
-	OperationID          map[Operation]string `json:",omitempty" ent:"schema,edge"       builders:"WithOperationID"`
-	Description          string               `json:",omitempty" ent:"schema,edge,field" builders:"WithDescription"`
-	Example              any                  `json:",omitempty" ent:"field"             builders:"WithExample"`
-	Deprecated           bool                 `json:",omitempty" ent:"schema,edge,field" builders:"WithDeprecated"`
-	Schema               *ogen.Schema         `json:",omitempty" ent:"field"             builders:"WithSchema"`
+	AdditionalTags       []string             `json:",omitempty" ent:"schema,edge"`
+	Tags                 []string             `json:",omitempty" ent:"schema,edge"`
+	OperationSummary     map[Operation]string `json:",omitempty" ent:"schema,edge"`
+	OperationDescription map[Operation]string `json:",omitempty" ent:"schema,edge"`
+	OperationID          map[Operation]string `json:",omitempty" ent:"schema,edge"`
+	Description          string               `json:",omitempty" ent:"schema,edge,field"`
+	Example              any                  `json:",omitempty" ent:"field"`
+	Deprecated           bool                 `json:",omitempty" ent:"schema,edge,field"`
+	Schema               *ogen.Schema         `json:",omitempty" ent:"field"`
 
 	// All others.
 
-	Pagination      *bool       `json:",omitempty" ent:"schema,edge"       builders:"WithPagination"`
-	MinItemsPerPage int         `json:",omitempty" ent:"schema,edge"       builders:"WithMinItemsPerPage"`
-	MaxItemsPerPage int         `json:",omitempty" ent:"schema,edge"       builders:"WithMaxItemsPerPage"`
-	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"       builders:"WithItemsPerPage"`
-	EagerLoad       *bool       `json:",omitempty" ent:"edge"              builders:"WithEagerLoad"`
-	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"              builders:"WithEdgeEndpoint"`
-	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"              builders:"WithEdgeUpdateBulk"`
-	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field" builders:"WithFilter"`
-	Handler         *bool       `json:",omitempty" ent:"schema,edge"       builders:"WithHandler"`
-	Sortable        bool        `json:",omitempty" ent:"field"             builders:"WithSortable"`
-	DefaultSort     *string     `json:",omitempty" ent:"schema"            builders:"WithDefaultSort"`
-	DefaultOrder    *SortOrder  `json:",omitempty" ent:"schema"            builders:"WithDefaultOrder"`
-	Skip            bool        `json:",omitempty" ent:"schema,edge,field" builders:"WithSkip"`
-	ReadOnly        bool        `json:",omitempty" ent:"field"             builders:"WithReadOnly"`
-	Operations      []Operation `json:",omitempty" ent:"schema,edge"       builders:"WithIncludeOperations,WithExcludeOperations"`
+	Pagination      *bool       `json:",omitempty" ent:"schema,edge"`
+	MinItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
+	MaxItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
+	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
+	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
+	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
+	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
+	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
+	Handler         *bool       `json:",omitempty" ent:"schema,edge"`
+	Sortable        bool        `json:",omitempty" ent:"field"`
+	DefaultSort     *string     `json:",omitempty" ent:"schema"`
+	DefaultOrder    *SortOrder  `json:",omitempty" ent:"schema"`
+	Skip            bool        `json:",omitempty" ent:"schema,edge,field"`
+	ReadOnly        bool        `json:",omitempty" ent:"field"`
+	Operations      []Operation `json:",omitempty" ent:"schema,edge"`
 }
 
 // getSupportedType uses reflection to check if the annotation is supported on the
@@ -459,7 +459,9 @@ func WithItemsPerPage(v int) Annotation {
 }
 
 // WithEagerLoad sets the edge to be eager-loaded in the REST API for each associated
-// entity. Note that edges are not eager-loaded by default.
+// entity. Note that edges are not eager-loaded by default. Eager-loading, when enabled,
+// means that the configured edge is always fetched when the parent entity is fetched
+// (only covering the first level, it does not recurse).
 func WithEagerLoad(v bool) Annotation {
 	return Annotation{EagerLoad: &v}
 }
@@ -496,7 +498,9 @@ func WithFilter(v Predicate) Annotation {
 	return Annotation{Filter: v}
 }
 
-// WithHandler sets the schema/edge to have an HTTP handler generated for it.
+// WithHandler sets the schema/edge to have an HTTP handler generated for it. Unless a schema/edge
+// is skipped or has the specific operation disabled, an HTTP handler/endpoint will be generated for
+// it by default.
 func WithHandler(v bool) Annotation {
 	return Annotation{Handler: &v}
 }
@@ -512,12 +516,18 @@ func WithSortable(v bool) Annotation {
 // on the schema, otherwise codegen will fail. You may provide any of the typical fields shown for
 // the "sort" field in the OpenAPI specification for this schema. E.g. "id", "created_at",
 // "someedge.count" (<edge>.<edge-field>), etc.
+//
+// Note that this will also change the way eager-loaded edges which are based on this schema are
+// sorted. This is currently the only way to sort eager-loaded data.
 func WithDefaultSort(field string) Annotation {
 	return Annotation{DefaultSort: &field}
 }
 
 // WithDefaultOrder sets the default sorting order for the schema in the REST API. If not specified,
 // will default to ASC.
+//
+// Note that this will also change the way eager-loaded edges which are based on this schema are
+// sorted. This is currently the only way to sort eager-loaded data.
 func WithDefaultOrder(v SortOrder) Annotation {
 	return Annotation{DefaultOrder: &v}
 }
@@ -547,7 +557,10 @@ func WithDeprecated(v bool) Annotation {
 	return Annotation{Deprecated: v}
 }
 
-// WithSchema sets the OpenAPI schema for a field.
+// WithSchema sets the OpenAPI schema for a field. This is required for any fields which
+// are JSON based, or don't have a pre-defined ent type for the field.
+//
+// You can use [SchemaObjectAny] for an object with any properties (effectively "any").
 func WithSchema(v *ogen.Schema) Annotation {
 	return Annotation{Schema: v}
 }

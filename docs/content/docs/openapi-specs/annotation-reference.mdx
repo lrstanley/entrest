@@ -20,14 +20,14 @@ Depending on the annotation used, it can only be applied in specific locations, 
 
 | Annotation | Usage Location | Description |
 |-------------------------------------------------------|---------------------------|------------------------------------------------------------------------------|
-| [WithSkip](#withskip) |  <Usage types={["schema", "edge", "field"]} /> | Sets the schema, edge, or field to be skipped in the REST API. |
+| [WithSkip](#withskip) | <Usage types={["schema", "edge", "field"]} /> | Sets the schema, edge, or field to be skipped in the REST API. |
 | [WithReadOnly](#withreadonly) | <Usage types={["field"]} /> | Sets the field to be read-only in the REST API. |
 | [WithExample](#withexample) | <Usage types={["field"]} /> | Sets the OpenAPI example for the specified field. |
 | [WithEagerLoad](#witheagerload) | <Usage types={["edge"]} /> | Sets the edge to be eager-loaded in the REST API for each associated entity. |
 | [WithSortable](#withsortable) | <Usage types={["field"]} /> | Sets the field to be sortable in the REST API. |
-| [WithDefaultSort](#withdefaultsort) | <Usage types={["field"]} /> | Sets the default sort field for the schema in the REST API. |
+| [WithDefaultSort](#withdefaultsort) | <Usage types={["schema"]} /> | Sets the default sort field for the schema in the REST API. |
 | [WithDefaultOrder](#withdefaultorder) | <Usage types={["schema"]} /> | Sets the default sorting order for the schema in the REST API. |
-| [WithFilter](#withfilter) | <Usage types={["edge"]} /> | Sets the field to be filterable with the provided predicate(s). |
+| [WithFilter](#withfilter) | <Usage types={["schema", "edge", "field"]} /> | Sets the field to be filterable with the provided predicate(s). |
 | [WithSchema](#withschema) | <Usage types={["field"]} /> | Sets the OpenAPI schema for the specified field. |
 | [WithPagination](#withpagination) | <Usage types={["schema", "edge"]} /> | Sets the schema to be paginated in the REST API. |
 | [WithOperationSummary](#withoperationsummary) | <Usage types={["schema", "edge"]} /> | Provides an OpenAPI summary for the specified operation. |
@@ -35,14 +35,14 @@ Depending on the annotation used, it can only be applied in specific locations, 
 | [WithAdditionalTags](#withadditionaltags) | <Usage types={["schema", "edge"]} /> | Adds additional tags to all operations for this schema/edge. |
 | [WithTags](#withtags) | <Usage types={["schema", "edge"]} /> | Sets the tags for all operations for this schema/edge. |
 | [WithOperationID](#withoperationid) | <Usage types={["schema", "edge"]} /> | Provides an OpenAPI operation ID for the specified operation. |
-| [WithDescription](#withdescription) | <Usage types={["schema", "edge"]} /> | Sets the OpenAPI description for the specified schema/edge. |
+| [WithDescription](#withdescription) | <Usage types={["schema", "edge", "field"]} /> | Sets the OpenAPI description for the specified schema/edge. |
 | [WithMinItemsPerPage](#withminitemsperpage) | <Usage types={["schema", "edge"]} /> | Sets an explicit minimum number of items per page for paginated calls. |
 | [WithMaxItemsPerPage](#withmaxitemsperpage) | <Usage types={["schema", "edge"]} /> | Sets an explicit maximum number of items per page for paginated calls. |
 | [WithItemsPerPage](#withitemsperpage) | <Usage types={["schema", "edge"]} /> | Sets an explicit default number of items per page for paginated calls. |
 | [WithEdgeEndpoint](#withedgeendpoint) | <Usage types={["edge"]} /> | Sets the edge to have an endpoint. |
 | [WithEdgeUpdateBulk](#withedgeupdatebulk) | <Usage types={["edge"]} /> | Sets the edge to be bulk updated on the entities associated with the edge. |
 | [WithHandler](#withhandler) | <Usage types={["schema", "edge"]} /> | Sets the schema/edge to be an HTTP handler generated for it. |
-| [WithDeprecated](#withdeprecated) |  <Usage types={["schema", "edge", "field"]} /> | Sets the OpenAPI deprecated flag for the specified schema/edge/field. |
+| [WithDeprecated](#withdeprecated) | <Usage types={["schema", "edge", "field"]} /> | Sets the OpenAPI deprecated flag for the specified schema/edge/field. |
 | [WithIncludeOperations](#withincludeoperations) | <Usage types={["schema", "edge"]} /> | Includes the specified operations in the REST API for the schema. |
 | [WithExcludeOperations](#withexcludeoperations) | <Usage types={["schema", "edge"]} /> | Excludes the specified operations in the REST API for the schema. |
 
@@ -105,12 +105,147 @@ func (Pet) Fields() []ent.Field {
 }
 ```
 
+### `WithEagerLoad`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithEagerLoad) | usage: <Usage types={["edge"]} /> ]
+
+> Sets the edge to be eager-loaded in the REST API for each associated entity. Note that edges are not
+> eager-loaded by default. Eager-loading, when enabled, means that the configured edge is always fetched
+> when the parent entity is fetched (only covering the first level, it does not recurse).
+>
+> See [Eager Loading](/entrest/openapi-specs/eager-loading/) for more information.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={4}
+func (Pet) Edges() []ent.Edge {
+    return []ent.Edge{
+        edge.To("owner", User.Type).Annotations(
+            entrest.WithEagerLoad(true),
+        ),
+    }
+}
+```
+
+### `WithSortable`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithSortable) | usage: <Usage types={["field"]} /> ]
+
+> Sets the field to be sortable in the REST API. Note that only types that can be sorted, will be sortable.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Fields() []ent.Field {
+    return []ent.Field{
+        field.String("name").Annotations(
+            entrest.WithSortable(true),
+        ),
+    }
+}
+```
+
+### `WithDefaultSort`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithDefaultSort) | usage: <Usage types={["schema"]} /> ]
+
+> Sets the default sort field for the schema in the REST API. If not specified, will default to the
+> `id` field (if it exists on the schema/edge). The provided field must exist on the schema, otherwise
+> codegen will fail. You may provide any of the typical fields shown for the `sort` field in the OpenAPI
+> specification for this schema. E.g. `id`, `created_at`, `someedge.count` (`<edge>.<edge-field>`), etc.
+>
+> Note that this will also change the way eager-loaded edges which are based on this schema are sorted.
+> This is currently the only way to sort eager-loaded data.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithDefaultSort("name"), // MUST be a valid field!
+    }
+}
+```
+
+### `WithDefaultOrder`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithDefaultOrder) | usage: <Usage types={["schema"]} /> ]
+
+> Sets the default sorting order for the schema in the REST API. If not specified, will default to
+> ASC.
+>
+> Note that this will also change the way eager-loaded edges which are based on this schema are sorted.
+> This is currently the only way to sort eager-loaded data.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithDefaultOrder(entrest.OrderDesc),
+    }
+}
+```
+
+### `WithFilter`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithFilter) | usage: <Usage types={["schema", "edge", "field"]} /> ]
+
+> Sets the field to be filterable with the provided predicate(s). When applied on an edge with
+> `entrest.FilterEdge` applied, it will include the fields associated with the edge that are also filterable.
+>
+> See [all predicate constants](https://pkg.go.dev/github.com/lrstanley/entrest#Predicate) that
+> can be used with `entrest.WithFilter` for more information.
+
+##### Example 1
+
+```go title="internal/database/schema/schema_pet.go" ins={3-4}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithFilter(entrest.FilterGroupArray | entrest.FilterGroupLength) // Bundle using groups.
+    }
+}
+```
+
+##### Example 2
+
+```go title="internal/database/schema/schema_pet.go" ins={3-4}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithFilter(entrest.FilterEQ | entrest.FilterNEQ), // Or use individual predicates.
+    }
+}
+```
+
+### `WithSchema`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithSchema) | usage: <Usage types={["field"]} /> ]
+
+> Sets the OpenAPI schema for a field. This is required for any fields which are JSON based, or don't
+> have a pre-defined ent type for the field.
+>
+> You can use `entrest.SchemaObjectAny` for an object with any properties (effectively `any`).
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={4}
+func (Pet) Fields() []ent.Field {
+    return []ent.Field{
+        field.JSON("uuid", &uuid.UUID{}).Annotations(
+            entrest.WithSchema(ogen.String()), // Can also use &ogen.Schema{} for full customization.
+        ),
+    }
+}
+```
+
 ### `WithPagination`
 
 [ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithPagination) | usage: <Usage types={["schema", "edge"]} /> ]
 
 > Sets the schema to be paginated in the REST API. This is not required to be provided unless
 > pagination was disabled globally.
+>
+> See [Pagination](/entrest/openapi-specs/pagination/) for more information.
 
 ##### Example
 
@@ -225,6 +360,183 @@ func (Pet) Annotations() []ent.Annotation {
 func (Pet) Annotations() []ent.Annotation {
     return []ent.Annotation{
         entrest.WithDescription("Pets are the best things ever."),
+    }
+}
+```
+
+### `WithMinItemsPerPage`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithMinItemsPerPage) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Sets an explicit minimum number of items per page for paginated calls.
+>
+> See [Pagination](/entrest/openapi-specs/pagination/) for more information.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithMinItemsPerPage(10),
+    }
+}
+```
+
+### `WithMaxItemsPerPage`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithMaxItemsPerPage) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Sets an explicit maximum number of items per page for paginated calls.
+>
+> See [Pagination](/entrest/openapi-specs/pagination/) for more information.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithMaxItemsPerPage(100),
+    }
+}
+```
+
+### `WithItemsPerPage`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithItemsPerPage) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Sets an explicit default number of items per page for paginated calls.
+>
+> See [Pagination](/entrest/openapi-specs/pagination/) for more information.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithItemsPerPage(10),
+    }
+}
+```
+
+### `WithEdgeEndpoint`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithEdgeEndpoint) | usage: <Usage types={["edge"]} /> ]
+
+> Sets the edge to have an endpoint. If the edge is eager-loaded, and the global config is set to
+> disable endpoints for edges which are also eager-loaded, this will default to false. Not required
+> to be provided unless endpoints are disabled globally and you want to specifically enable one edge
+> to have an endpoint, or want to disable an edge from having an endpoint in general.
+>
+> See [Eager Loading](/entrest/openapi-specs/eager-loading/) for more information.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithEdgeEndpoint(true),
+    }
+}
+```
+
+### `WithEdgeUpdateBulk`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithEdgeUpdateBulk) | usage: <Usage types={["edge"]} /> ]
+
+> Sets the edge to be bulk updated on the entities associated with the edge. This is disabled by default,
+> which will mean that you must use the `add_<field>` and `remove_<field>` object references to associate/disassociate
+> entities with the edge.
+>
+> **This is disabled by default due to the fact that this can lead to accidental disassociation of a massive
+> number of entities, if a user doesn't happen to fully understand the implications of providing values to
+> the `bulk` field, which would just be `<field>` (sets the non-unique edge to be set to those provided
+> values).**
+>
+> See [Eager Loading](/entrest/openapi-specs/eager-loading/) for more information.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithEdgeUpdateBulk(true),
+    }
+}
+```
+
+### `WithHandler`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithHandler) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Sets the schema/edge to have an HTTP handler generated for it. Unless a schema/edge is skipped or
+> has the specific operation disabled, an HTTP handler/endpoint will be generated for it by default.
+>
+> See [HTTP Handler](/entrest/http-handler/getting-started/) for more information.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithHandler(true),
+    }
+}
+```
+
+### `WithDeprecated`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithDeprecated) | usage: <Usage types={["schema", "edge", "field"]} /> ]
+
+> Sets the OpenAPI deprecated flag for the specified schema/edge/field.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Fields() []ent.Field {
+    return []ent.Field{
+        field.String("name").Annotations(
+            entrest.WithDeprecated(true),
+        ),
+    }
+}
+```
+
+### `WithIncludeOperations`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithIncludeOperations) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Includes the specified operations in the REST API for the schema. If empty, all operations are
+> generated (unless globally disabled).
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3-6}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithIncludeOperations(
+            entrest.OperationCreate,
+            entrest.OperationDelete,
+        ),
+    }
+}
+```
+
+### `WithExcludeOperations`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithExcludeOperations) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Excludes the specified operations in the REST API for the schema. If empty, all operations are
+> generated (unless globally disabled).
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3-6}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithExcludeOperations(
+            entrest.OperationCreate,
+            entrest.OperationDelete,
+        ),
     }
 }
 ```
