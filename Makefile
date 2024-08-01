@@ -19,6 +19,7 @@ up:
 
 prepare:
 	go mod tidy
+	go generate -x ./...
 
 examples: prepare
 	cd _examples/ && go generate -x ./...
@@ -33,5 +34,11 @@ dlv-kitchensink:
 		--allow-non-terminal-interactive \
 		database/entc.go
 
-test: prepare examples
+ensure-clean:
+	@if [ "${CI}" = "true" ] && [ "$(shell git status --porcelain | grep -v 'coverage')" != "" ]; then \
+		echo "ERROR: git working directory is not clean. Make sure to run 'make test' and re-commit any changes."; \
+		exit 1; \
+	fi
+
+test: prepare examples ensure-clean
 	go test -v -race -timeout 3m -count 2 ./...
