@@ -1,0 +1,19 @@
+---
+import { Badge } from "@astrojs/starlight/components"
+
+interface Props {
+    types: ("schema" | "edge" | "field")[]
+}
+
+const { types } = Astro.props
+---
+
+{
+    types.map((t) => (
+        <Badge
+            text={t}
+            variant={t === "schema" ? "tip" : t === "edge" ? "danger" : "note"}
+            size="small"
+        />
+    ))
+}

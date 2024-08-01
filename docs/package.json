@@ -3,9 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "dev": "node util/getAnnotations.js && astro dev",
+    "dev": "astro dev",
     "start": "astro dev",
-    "build": "node util/getAnnotations.js && astro check && astro build",
+    "build": "astro check && astro build",
     "preview": "astro preview",
     "astro": "astro"
   },

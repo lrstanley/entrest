@@ -4,35 +4,227 @@ sidebar:
   order: 2
 ---
 
-import annotationData from '../../../assets/data/annotations.json';
+import Usage from '../../../components/badges/Usage.astro';
 
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Applies to</th>
-            <th>Builders</th>
-        </tr>
-    </thead>
-    <tbody>
-        {
-            Object.entries(annotationData.annotations).map(([name, annotation]) => (
-                <tr>
-                    <td>{name}</td>
-                    <td>{annotation.tags?.ent.join(', ') || 'n/a'}</td>
-                    <td>
-                        {
-                            annotation.tags?.builders.map((builder) => (
-                                <a
-                                    href={`https://pkg.go.dev/github.com/lrstanley/entrest#${builder}`}
-                                    title={annotationData.builders[builder].comment.join('\n')}
-                                    style="margin-right: 1ch"
-                                >{builder}</a>
-                            ))
-                        }
-                    </td>
-                </tr>
-            ))
-        }
-    </tbody>
-</table>
+:::caution[Usage Location Explanation]
+
+Depending on the annotation used, it can only be applied in specific locations, otherwise code-generation
+**will fail**. The following table explains each usage location:
+
+- <Usage types={["schema"]} /> -- Allows applying to the root of the schema definition (e.g. `func (Pet) Annotations() []ent.Annotation`).
+- <Usage types={["edge"]} /> -- Allows applying directly on an edge (e.g. inside of `func (Pet) Edges() []ent.Edge`).
+- <Usage types={["field"]} /> -- Allows applying directly on a field (e.g. inside of `func (Pet) Fields() []ent.Field`).
+:::
+
+### Annotations Summary
+
+| Annotation | Usage Location | Description |
+|-------------------------------------------------------|---------------------------|------------------------------------------------------------------------------|
+| [WithSkip](#withskip) |  <Usage types={["schema", "edge", "field"]} /> | Sets the schema, edge, or field to be skipped in the REST API. |
+| [WithReadOnly](#withreadonly) | <Usage types={["field"]} /> | Sets the field to be read-only in the REST API. |
+| [WithExample](#withexample) | <Usage types={["field"]} /> | Sets the OpenAPI example for the specified field. |
+| [WithEagerLoad](#witheagerload) | <Usage types={["edge"]} /> | Sets the edge to be eager-loaded in the REST API for each associated entity. |
+| [WithSortable](#withsortable) | <Usage types={["field"]} /> | Sets the field to be sortable in the REST API. |
+| [WithDefaultSort](#withdefaultsort) | <Usage types={["field"]} /> | Sets the default sort field for the schema in the REST API. |
+| [WithDefaultOrder](#withdefaultorder) | <Usage types={["schema"]} /> | Sets the default sorting order for the schema in the REST API. |
+| [WithFilter](#withfilter) | <Usage types={["edge"]} /> | Sets the field to be filterable with the provided predicate(s). |
+| [WithSchema](#withschema) | <Usage types={["field"]} /> | Sets the OpenAPI schema for the specified field. |
+| [WithPagination](#withpagination) | <Usage types={["schema", "edge"]} /> | Sets the schema to be paginated in the REST API. |
+| [WithOperationSummary](#withoperationsummary) | <Usage types={["schema", "edge"]} /> | Provides an OpenAPI summary for the specified operation. |
+| [WithOperationDescription](#withoperationdescription) | <Usage types={["schema", "edge"]} /> | Provides an OpenAPI description for the specified operation. |
+| [WithAdditionalTags](#withadditionaltags) | <Usage types={["schema", "edge"]} /> | Adds additional tags to all operations for this schema/edge. |
+| [WithTags](#withtags) | <Usage types={["schema", "edge"]} /> | Sets the tags for all operations for this schema/edge. |
+| [WithOperationID](#withoperationid) | <Usage types={["schema", "edge"]} /> | Provides an OpenAPI operation ID for the specified operation. |
+| [WithDescription](#withdescription) | <Usage types={["schema", "edge"]} /> | Sets the OpenAPI description for the specified schema/edge. |
+| [WithMinItemsPerPage](#withminitemsperpage) | <Usage types={["schema", "edge"]} /> | Sets an explicit minimum number of items per page for paginated calls. |
+| [WithMaxItemsPerPage](#withmaxitemsperpage) | <Usage types={["schema", "edge"]} /> | Sets an explicit maximum number of items per page for paginated calls. |
+| [WithItemsPerPage](#withitemsperpage) | <Usage types={["schema", "edge"]} /> | Sets an explicit default number of items per page for paginated calls. |
+| [WithEdgeEndpoint](#withedgeendpoint) | <Usage types={["edge"]} /> | Sets the edge to have an endpoint. |
+| [WithEdgeUpdateBulk](#withedgeupdatebulk) | <Usage types={["edge"]} /> | Sets the edge to be bulk updated on the entities associated with the edge. |
+| [WithHandler](#withhandler) | <Usage types={["schema", "edge"]} /> | Sets the schema/edge to be an HTTP handler generated for it. |
+| [WithDeprecated](#withdeprecated) |  <Usage types={["schema", "edge", "field"]} /> | Sets the OpenAPI deprecated flag for the specified schema/edge/field. |
+| [WithIncludeOperations](#withincludeoperations) | <Usage types={["schema", "edge"]} /> | Includes the specified operations in the REST API for the schema. |
+| [WithExcludeOperations](#withexcludeoperations) | <Usage types={["schema", "edge"]} /> | Excludes the specified operations in the REST API for the schema. |
+
+### `WithSkip`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithSkip) | usage: <Usage types={["schema", "edge", "field"]} /> ]
+
+> Sets the schema, edge, or field to be skipped in the REST API. Primarily useful if an entire
+> schema shouldn't be queryable, or if there is a sensitive field that should never be returned (but
+> sensitive isn't set on the field for some reason).
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={4}
+func (Pet) Fields() []ent.Field {
+    return []ent.Field{
+        field.String("some_sensitive_field").Annotations(
+            entrest.WithSkip(true),
+        ),
+    }
+}
+```
+
+### `WithReadOnly`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithReadOnly) | usage: <Usage types={["field"]} /> ]
+
+> Sets the field to be read-only in the REST API. **If you want to make a schema or edge read-only,
+> use the Operations annotation instead.**
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={4}
+func (Pet) Fields() []ent.Field {
+    return []ent.Field{
+        field.String("uuid").Annotations(
+            entrest.WithReadOnly(true),
+        ),
+    }
+}
+```
+
+### `WithExample`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithExample) | usage: <Usage types={["field"]} /> ]
+
+> Sets the OpenAPI example for the specified field. This is recommended if it's not obvious what the
+> fields purpose is, or what the format could be. Many OpenAPI documentation browsers will use this
+> information as an example value within the POST/PATCH body.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={4}
+func (Pet) Fields() []ent.Field {
+    return []ent.Field{
+        field.String("uuid").Annotations(
+            entrest.WithExample("123e4567-e89b-12d3-a456-426655440000"),
+        ),
+    }
+}
+```
+
+### `WithPagination`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithPagination) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Sets the schema to be paginated in the REST API. This is not required to be provided unless
+> pagination was disabled globally.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithPagination(true),
+    }
+}
+```
+
+### `WithOperationSummary`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithOperationSummary) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Provides an [OpenAPI summary](https://swagger.io/specification/#operation-object) for the specified
+> operation. This should be a short summary of what the operation does.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithOperationSummary(entrest.OperationCreate, "Create a pet."),
+    }
+}
+```
+
+### `WithOperationDescription`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithOperationDescription) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Provides an [OpenAPI description](https://swagger.io/specification/#operation-object) for the specified
+> operation. This should be a verbose explanation of the operation behavior. CommonMark syntax MAY be used
+> for rich text representation.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithOperationDescription(entrest.OperationCreate, "Create a pet."),
+    }
+}
+```
+
+### `WithAdditionalTags`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithAdditionalTags) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Adds additional [OpenAPI tags](https://swagger.io/specification/#operation-object) to all operations
+> for this schema/edge. Tags can be used for logical grouping of operations by resources or any other
+> qualifier.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithAdditionalTags("Foo", "Bar"),
+    }
+}
+```
+
+### `WithTags`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithTags) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Sets the [OpenAPI tags](https://swagger.io/specification/#operation-object) for all operations for this
+> schema/edge. This will otherwise default to the schema/edge's name(s). Tags can be used for logical grouping
+> of operations by resources or any other qualifier.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithTags("Foo", "Bar"),
+    }
+}
+```
+
+### `WithOperationID`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithOperationID) | usage: <Usage types={["schema", "edge"]} /> ]
+
+> Provides an [OpenAPI operation ID](https://swagger.io/docs/specification/paths-and-operations/#operationid)
+> for the specified operation. This should be snake-cased and **must be unique** for the operation.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3-4}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithOperationID(entrest.OperationCreate, "createPet"),
+        entrest.WithOperationID(entrest.OperationUpdate, "updatePet"),
+    }
+}
+```
+
+### `WithDescription`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithDescription) | usage:  <Usage types={["schema", "edge", "field"]} /> ]
+
+> Sets the [OpenAPI description](https://swagger.io/specification/#schema-object) for the specified
+> schema/edge/field in the REST API. This will otherwise default to the schema/edge/field comment. It's
+> recommended to use the field comment rather than setting this annotation when possible.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithDescription("Pets are the best things ever."),
+    }
+}
+```

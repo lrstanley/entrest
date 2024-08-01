@@ -397,36 +397,42 @@ func (a *Annotation) GetSkip(config *Config) bool {
 	return a.Skip || len(a.GetOperations(config)) == 0
 }
 
-// WithOperationSummary provides a summary for the specified operation.
+// WithOperationSummary provides a summary for the specified operation. This should be
+// a short summary of what the operation does.
 func WithOperationSummary(op Operation, v string) Annotation {
 	return Annotation{OperationSummary: map[Operation]string{op: v}}
 }
 
-// WithOperationDescription provides a description for the specified operation.
+// WithOperationDescription provides a description for the specified operation. This
+// should be a verbose explanation of the operation behavior. CommonMark syntax MAY be
+// used for rich text representation.
 func WithOperationDescription(op Operation, v string) Annotation {
 	return Annotation{OperationDescription: map[Operation]string{op: v}}
 }
 
-// WithAdditionalTags adds additional tags to all operations for this schema/edge.
+// WithAdditionalTags adds additional tags to all operations for this schema/edge. Tags
+// can be used for logical grouping of operations by resources or any other qualifier.
 func WithAdditionalTags(v ...string) Annotation {
 	return Annotation{AdditionalTags: v}
 }
 
-// WithTags sets the tags for the schema/edge in the REST API. This will otherwise default
-// to the schema/edge's name(s).
+// Sets the tags for all operations for this schema/edge. This will otherwise default
+// to the schema/edge's name(s). Tags can be used for logical grouping of operations by
+// resources or any other qualifier.
 func WithTags(v ...string) Annotation {
 	return Annotation{Tags: v}
 }
 
 // WithOperationID provides an operation ID for the specified operation. This should be
-// snake-cased and unique for the operation.
+// snake-cased and MUST BE UNIQUE for the operation.
 func WithOperationID(op Operation, v string) Annotation {
 	return Annotation{OperationID: map[Operation]string{op: v}}
 }
 
 // WithDescription sets the description for the schema/edge/field in the REST API. This will
 // otherwise default to the schema/edge/field's description according to Ent (e.g. the
-// comment).
+// comment). It's recommended to use the field comment rather than setting this annotation
+// when possible.
 func WithDescription(v string) Annotation {
 	return Annotation{Description: v}
 }
@@ -516,7 +522,9 @@ func WithDefaultOrder(v SortOrder) Annotation {
 	return Annotation{DefaultOrder: &v}
 }
 
-// WithSkip sets the schema, edge, or field to be skipped in the REST API.
+// WithSkip sets the schema, edge, or field to be skipped in the REST API. Primarily useful if an entire
+// schema shouldn't be queryable, or if there is a sensitive field that should never be returned (but
+// sensitive isn't set on the field for some reason).
 func WithSkip(v bool) Annotation {
 	return Annotation{Skip: v}
 }
@@ -527,7 +535,9 @@ func WithReadOnly(v bool) Annotation {
 	return Annotation{ReadOnly: v}
 }
 
-// WithExample sets the OpenAPI Specification example value for a field.
+// WithExample sets the OpenAPI Specification example value for a field. This is recommended if it's
+// not obvious what the fields purpose is, or what the format could be. Many OpenAPI documentation
+// browsers will use this information as an example value within the POST/PATCH body.
 func WithExample(v any) Annotation {
 	return Annotation{Example: v}
 }

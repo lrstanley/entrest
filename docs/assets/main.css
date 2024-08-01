@@ -1,3 +1,7 @@
+:root {
+  --sl-content-width: 65rem;
+}
+
 .hero img {
   border-radius: 5px;
   margin-left: auto;

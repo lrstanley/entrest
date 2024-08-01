@@ -10,7 +10,7 @@ docs-build: docs-prepare
 	cd docs && pnpm build
 
 docs-preview: docs-build
-	cd docs pnpm preview
+	cd docs && pnpm preview
 
 up:
 	cd docs && pnpm dlx @astrojs/upgrade
