@@ -35,9 +35,9 @@ dlv-kitchensink:
 		database/entc.go
 
 ensure-clean:
-	@if [ "${CI}" = "true" ] && [ "$(shell git status --porcelain | grep -v 'coverage')" != "" ]; then \
+	@if [ "${CI}" = "true" ] && [ "$(shell git status --porcelain | grep -Ev 'coverage|ghmeta')" != "" ]; then \
 		echo "ERROR: git working directory is not clean. Make sure to run 'make test' and re-commit any changes."; \
-		git status --porcelain; \
+		git status --porcelain | grep -Ev 'coverage|ghmeta'; \
 		exit 1; \
 	fi
 
