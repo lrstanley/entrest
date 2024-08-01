@@ -99,6 +99,8 @@ type Annotation struct {
 	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field" builders:"WithFilter"`
 	Handler         *bool       `json:",omitempty" ent:"schema,edge"       builders:"WithHandler"`
 	Sortable        bool        `json:",omitempty" ent:"field"             builders:"WithSortable"`
+	DefaultSort     *string     `json:",omitempty" ent:"schema"            builders:"WithDefaultSort"`
+	DefaultOrder    *SortOrder  `json:",omitempty" ent:"schema"            builders:"WithDefaultOrder"`
 	Skip            bool        `json:",omitempty" ent:"schema,edge,field" builders:"WithSkip"`
 	ReadOnly        bool        `json:",omitempty" ent:"field"             builders:"WithReadOnly"`
 	Operations      []Operation `json:",omitempty" ent:"schema,edge"       builders:"WithIncludeOperations,WithExcludeOperations"`
@@ -222,6 +224,12 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 		a.Handler = am.Handler
 	}
 	a.Sortable = a.Sortable || am.Sortable
+	if am.DefaultSort != nil {
+		a.DefaultSort = am.DefaultSort
+	}
+	if am.DefaultOrder != nil {
+		a.DefaultOrder = am.DefaultOrder
+	}
 	a.Skip = a.Skip || am.Skip
 	a.ReadOnly = a.ReadOnly || am.ReadOnly
 	if len(am.Operations) > 0 {
@@ -363,6 +371,28 @@ func (a *Annotation) GetOperationID(op Operation) string {
 	return a.OperationID[op]
 }
 
+// GetDefaultSort returns the default sort field for the schema in the REST API.
+// If one was not previously specified, but the type has an ID field, it will default
+// to "id".
+func (a *Annotation) GetDefaultSort(hasID bool) string {
+	if a.DefaultSort == nil {
+		if hasID {
+			return "id"
+		}
+		return ""
+	}
+	return *a.DefaultSort
+}
+
+// GetDefaultOrder returns the default sorting order for the schema in the REST API,
+// defaulting to ascending if not specified.
+func (a *Annotation) GetDefaultOrder() SortOrder {
+	if a.DefaultOrder == nil {
+		return OrderAsc
+	}
+	return *a.DefaultOrder
+}
+
 func (a *Annotation) GetSkip(config *Config) bool {
 	return a.Skip || len(a.GetOperations(config)) == 0
 }
@@ -469,6 +499,21 @@ func WithHandler(v bool) Annotation {
 // sorted, will be sortable.
 func WithSortable(v bool) Annotation {
 	return Annotation{Sortable: v}
+}
+
+// WithDefaultSort sets the default sort field for the schema in the REST API. If not specified,
+// will default to the "id" field (if it exists on the schema/edge). The provided field must exist
+// on the schema, otherwise codegen will fail. You may provide any of the typical fields shown for
+// the "sort" field in the OpenAPI specification for this schema. E.g. "id", "created_at",
+// "someedge.count" (<edge>.<edge-field>), etc.
+func WithDefaultSort(field string) Annotation {
+	return Annotation{DefaultSort: &field}
+}
+
+// WithDefaultOrder sets the default sorting order for the schema in the REST API. If not specified,
+// will default to ASC.
+func WithDefaultOrder(v SortOrder) Annotation {
+	return Annotation{DefaultOrder: &v}
 }
 
 // WithSkip sets the schema, edge, or field to be skipped in the REST API.

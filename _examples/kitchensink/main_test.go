@@ -164,8 +164,8 @@ func TestHandler_List(t *testing.T) {
 	// We want to be able to test multiple pages, so create 1 page worth plus some change,
 	// so we're always sure there's more than 1 page without any filtering.
 	totalUsers := rest.UserPageConfig.ItemsPerPage + 5
-	sortableUser1 := newUser(db).SetName("abcdef").SaveX(ctx)
-	sortableUser2 := newUser(db).SetName("bcdefg").SaveX(ctx)
+	sortableUser1 := newUser(db).SetName("bcdefg").SaveX(ctx)
+	sortableUser2 := newUser(db).SetName("abcdef").SaveX(ctx)
 	currentUserCount := db.User.Query().CountX(ctx)
 	createdTime := time.Now()
 
@@ -340,7 +340,7 @@ func TestHandler_List(t *testing.T) {
 			expectedStatus:     http.StatusOK,
 			expectedCount:      2,
 			expectedTotalCount: 2,
-			expectedUsers:      []*ent.User{sortableUser1, sortableUser2},
+			expectedUsers:      []*ent.User{sortableUser2, sortableUser1},
 			mustUsers:          true,
 			mustUsersOrder:     true,
 		},
@@ -352,7 +352,7 @@ func TestHandler_List(t *testing.T) {
 			expectedStatus:     http.StatusOK,
 			expectedCount:      2,
 			expectedTotalCount: 2,
-			expectedUsers:      []*ent.User{sortableUser2, sortableUser1},
+			expectedUsers:      []*ent.User{sortableUser1, sortableUser2},
 			mustUsers:          true,
 			mustUsersOrder:     true,
 		},
@@ -570,4 +570,34 @@ func TestHandler_Valuer(t *testing.T) {
 	resp := enttest.Request[ent.User](ctx, s, http.MethodPost, "/users", data).Must(t)
 	assert.Equal(t, http.StatusCreated, resp.Data.Code)
 	assert.Equal(t, data["profile_url"], resp.Value.ProfileURL.String())
+}
+
+func TestHandler_DefaultSort(t *testing.T) {
+	ctx, db, s := newRestServer(t, nil)
+	t.Cleanup(func() { db.Close() })
+
+	pet1 := newPet(db).SetName("cdefgh").SaveX(ctx)
+	pet2 := newPet(db).SetName("bcdefg").SaveX(ctx)
+	pet3 := newPet(db).SetName("abcdef").SaveX(ctx)
+
+	// First fetch pets with no sorting in the query. Theoretically, default is ID & ASC (1, 2, 3),
+	// but we override this to be name & ASC (3, 2, 1).
+	resp1 := enttest.Request[rest.PagedResponse[ent.Pet]](ctx, s, http.MethodGet, "/pets", nil).Must(t)
+
+	assert.Equal(t, http.StatusOK, resp1.Data.Code)
+	require.Len(t, resp1.Value.Content, 3)
+	assert.Equal(t, pet3.Name, resp1.Value.Content[0].Name)
+	assert.Equal(t, pet2.Name, resp1.Value.Content[1].Name)
+	assert.Equal(t, pet1.Name, resp1.Value.Content[2].Name)
+
+	// Now fetch another entity type, and see if the eager-loaded edges also have the appropriate
+	// default sorting.
+	user1 := newUser(db).AddPets(pet1, pet2, pet3).SaveX(ctx)
+	resp2 := enttest.Request[ent.User](ctx, s, http.MethodGet, "/users/"+strconv.Itoa(user1.ID), nil).Must(t)
+
+	assert.Equal(t, http.StatusOK, resp2.Data.Code)
+	require.Len(t, resp2.Value.Edges.Pets, 3)
+	assert.Equal(t, pet3.Name, resp2.Value.Edges.Pets[0].Name)
+	assert.Equal(t, pet2.Name, resp2.Value.Edges.Pets[1].Name)
+	assert.Equal(t, pet1.Name, resp2.Value.Edges.Pets[2].Name)
 }

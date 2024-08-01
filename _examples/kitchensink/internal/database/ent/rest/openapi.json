@@ -35,11 +35,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/CategorySortableFields"
+                            "$ref": "#/components/schemas/CategorySortableFields",
+                            "default": "id"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -366,11 +377,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/PetSortableFields"
+                            "$ref": "#/components/schemas/PetSortableFields",
+                            "default": "name"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -794,7 +816,17 @@
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     }
                 ],
                 "responses": {
@@ -937,11 +969,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/FriendshipSortableFields"
+                            "$ref": "#/components/schemas/FriendshipSortableFields",
+                            "default": "id"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     }
                 ],
                 "responses": {
@@ -1439,11 +1482,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/PetSortableFields"
+                            "$ref": "#/components/schemas/PetSortableFields",
+                            "default": "name"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -2077,11 +2131,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/CategorySortableFields"
+                            "$ref": "#/components/schemas/CategorySortableFields",
+                            "default": "id"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -2181,11 +2246,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/UserSortableFields"
+                            "$ref": "#/components/schemas/UserSortableFields",
+                            "default": "name"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -2593,11 +2669,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/PetSortableFields"
+                            "$ref": "#/components/schemas/PetSortableFields",
+                            "default": "name"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -3082,11 +3169,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/SettingSortableFields"
+                            "$ref": "#/components/schemas/SettingSortableFields",
+                            "default": "id"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -3295,11 +3393,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/UserSortableFields"
+                            "$ref": "#/components/schemas/UserSortableFields",
+                            "default": "name"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -3707,11 +3816,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/UserSortableFields"
+                            "$ref": "#/components/schemas/UserSortableFields",
+                            "default": "name"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -4347,11 +4467,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/PetSortableFields"
+                            "$ref": "#/components/schemas/PetSortableFields",
+                            "default": "name"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -4771,11 +4902,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/UserSortableFields"
+                            "$ref": "#/components/schemas/UserSortableFields",
+                            "default": "name"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -5184,11 +5326,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/FriendshipSortableFields"
+                            "$ref": "#/components/schemas/FriendshipSortableFields",
+                            "default": "id"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     }
                 ],
                 "responses": {
@@ -5259,11 +5412,22 @@
                         "in": "query",
                         "description": "Sort entity results by the given field.",
                         "schema": {
-                            "$ref": "#/components/schemas/PetSortableFields"
+                            "$ref": "#/components/schemas/PetSortableFields",
+                            "default": "name"
                         }
                     },
                     {
-                        "$ref": "#/components/parameters/SortOrder"
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
                     },
                     {
                         "$ref": "#/components/parameters/FilterOperation"
@@ -6737,15 +6901,6 @@
                         }
                     }
                 }
-            },
-            "SortOrder": {
-                "description": "Sort order/direction.",
-                "type": "string",
-                "enum": [
-                    "asc",
-                    "desc"
-                ],
-                "default": "asc"
             },
             "User": {
                 "description": "A single User entity.",
@@ -8846,14 +9001,6 @@
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
                     "type": "number"
-                }
-            },
-            "SortOrder": {
-                "name": "order",
-                "in": "query",
-                "description": "Order the results in ascending or descending order.",
-                "schema": {
-                    "$ref": "#/components/schemas/SortOrder"
                 }
             },
             "UserCreatedAtGT": {

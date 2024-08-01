@@ -46,6 +46,16 @@ const (
 // AllOperations holds a list of all supported operations.
 var AllOperations = []Operation{OperationCreate, OperationRead, OperationUpdate, OperationDelete, OperationList}
 
+// SortOrder represents the sorting order.
+type SortOrder string
+
+const (
+	// OrderAsc represents an ascending order.
+	OrderAsc SortOrder = "asc"
+	// OrderDesc represents a descending order.
+	OrderDesc SortOrder = "desc"
+)
+
 // Predicate represents a filtering predicate provided by ent.
 type Predicate int
 

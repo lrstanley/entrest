@@ -99,12 +99,6 @@ func newBaseSpec(_ *Config) *ogen.Spec {
 		Paths: ogen.Paths{},
 		Components: &ogen.Components{
 			Schemas: map[string]*ogen.Schema{
-				"SortOrder": {
-					Description: "Sort order/direction.",
-					Type:        "string",
-					Enum:        sliceToRawMessage([]string{"asc", "desc"}),
-					Default:     jsonschema.RawValue(`"asc"`),
-				},
 				"FilterOperation": {
 					Description: "Specifies how to combine multiple filters.",
 					Type:        "string",
@@ -118,12 +112,6 @@ func newBaseSpec(_ *Config) *ogen.Spec {
 					In:          "query",
 					Description: "If set to true, any JSON response will be indented. Not recommended for best performance.",
 					Schema:      ogen.Bool(),
-				},
-				"SortOrder": {
-					Name:        "order",
-					In:          "query",
-					Description: "Order the results in ascending or descending order.",
-					Schema:      &ogen.Schema{Ref: "#/components/schemas/SortOrder"},
 				},
 				"FilterOperation": {
 					Name:        "filter_op",
@@ -316,18 +304,27 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			)
 		}
 
-		// Greater than 2 because we want to sort by id by default, and random is always included for non-edges.
-		if sortable := GetSortableFields(t, false); len(sortable) > 2 {
-			oper.Parameters = append(
-				oper.Parameters,
-				&ogen.Parameter{
-					Name:        "sort",
-					In:          "query",
-					Description: "Sort entity results by the given field.",
-					Schema:      &ogen.Schema{Ref: "#/components/schemas/" + addSortableFields(spec, t, sortable)},
+		if sortable := GetSortableFields(t, false); len(sortable) > 1 {
+			sortParam := &ogen.Parameter{
+				Name:        "sort",
+				In:          "query",
+				Description: "Sort entity results by the given field.",
+				Schema:      &ogen.Schema{Ref: "#/components/schemas/" + addSortableFields(spec, t, sortable)},
+			}
+			if v := ta.GetDefaultSort(t.ID != nil); v != "" {
+				sortParam.Schema = sortParam.Schema.SetDefault(json.RawMessage(fmt.Sprintf("%q", v)))
+			}
+			orderParam := &ogen.Parameter{
+				Name:        "order",
+				In:          "query",
+				Description: "Order the results in ascending or descending order.",
+				Schema: &ogen.Schema{
+					Type:    "string",
+					Enum:    sliceToRawMessage([]string{"asc", "desc"}),
+					Default: ogen.Default(json.RawMessage(fmt.Sprintf("%q", ta.GetDefaultOrder()))),
 				},
-				&ogen.Parameter{Ref: "#/components/parameters/SortOrder"},
-			)
+			}
+			oper.Parameters = append(oper.Parameters, sortParam, orderParam)
 		}
 
 		if filters := GetFilterableFields(t, nil); len(filters) > 0 {
@@ -544,18 +541,27 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			})
 		}
 
-		// Greater than 2 because we want to sort by id by default, and random is always included for non-edges.
-		if sortable := GetSortableFields(e.Type, false); len(sortable) > 2 {
-			oper.Parameters = append(
-				oper.Parameters,
-				&ogen.Parameter{
-					Name:        "sort",
-					In:          "query",
-					Description: "Sort entity results by the given field.",
-					Schema:      &ogen.Schema{Ref: "#/components/schemas/" + addSortableFields(spec, e.Type, sortable)},
+		if sortable := GetSortableFields(e.Type, false); len(sortable) > 1 {
+			sortParam := &ogen.Parameter{
+				Name:        "sort",
+				In:          "query",
+				Description: "Sort entity results by the given field.",
+				Schema:      &ogen.Schema{Ref: "#/components/schemas/" + addSortableFields(spec, e.Type, sortable)},
+			}
+			if v := ra.GetDefaultSort(t.ID != nil); v != "" {
+				sortParam.Schema = sortParam.Schema.SetDefault(json.RawMessage(fmt.Sprintf("%q", v)))
+			}
+			orderParam := &ogen.Parameter{
+				Name:        "order",
+				In:          "query",
+				Description: "Order the results in ascending or descending order.",
+				Schema: &ogen.Schema{
+					Type:    "string",
+					Enum:    sliceToRawMessage([]string{"asc", "desc"}),
+					Default: ogen.Default(json.RawMessage(fmt.Sprintf("%q", ra.GetDefaultOrder()))),
 				},
-				&ogen.Parameter{Ref: "#/components/parameters/SortOrder"},
-			)
+			}
+			oper.Parameters = append(oper.Parameters, sortParam, orderParam)
 		}
 
 		if filters := GetFilterableFields(e.Type, nil); len(filters) > 0 {

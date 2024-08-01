@@ -20,7 +20,14 @@ import (
         return query
         {{- range $e := $t.Edges -}}
             {{- if not (($e|getAnnotation).GetEagerLoad $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
-            .With{{ $e.StructField }}()
+            .With{{ $e.StructField }}(
+                {{- $sortField := ($e.Type|getAnnotation).GetDefaultSort (ne $e.Type.ID nil) }}
+                {{- if $sortField }}
+                    func(e *ent.{{ $e.Type.Name }}Query) {
+                        applySorting{{ $e.Type.Name|zsingular }}(e, {{ $sortField | quote }}, {{ printf "%s" ($t|getAnnotation).GetDefaultOrder| quote }})
+                    },
+                {{- end }}
+            )
         {{- end }}
     }
 {{- end }}

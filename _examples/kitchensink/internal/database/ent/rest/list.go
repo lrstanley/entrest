@@ -7,14 +7,11 @@ import (
 	"fmt"
 	"math"
 	"slices"
-	"strings"
 	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
@@ -36,37 +33,43 @@ var (
 		MinItemsPerPage: 1,
 		ItemsPerPage:    10,
 		MaxItemsPerPage: 100,
-	} // CategoryPageConfig defines the page configuration for LIST-related endpoints
+	}
+	// CategoryPageConfig defines the page configuration for LIST-related endpoints
 	// for Category.
 	CategoryPageConfig = &PageConfig{
 		MinItemsPerPage: DefaultPageConfig.MinItemsPerPage,
 		ItemsPerPage:    DefaultPageConfig.ItemsPerPage,
 		MaxItemsPerPage: DefaultPageConfig.MaxItemsPerPage,
-	} // FollowPageConfig defines the page configuration for LIST-related endpoints
+	}
+	// FollowPageConfig defines the page configuration for LIST-related endpoints
 	// for Follow.
 	FollowPageConfig = &PageConfig{
 		MinItemsPerPage: DefaultPageConfig.MinItemsPerPage,
 		ItemsPerPage:    DefaultPageConfig.ItemsPerPage,
 		MaxItemsPerPage: DefaultPageConfig.MaxItemsPerPage,
-	} // FriendshipPageConfig defines the page configuration for LIST-related endpoints
+	}
+	// FriendshipPageConfig defines the page configuration for LIST-related endpoints
 	// for Friendship.
 	FriendshipPageConfig = &PageConfig{
 		MinItemsPerPage: DefaultPageConfig.MinItemsPerPage,
 		ItemsPerPage:    DefaultPageConfig.ItemsPerPage,
 		MaxItemsPerPage: DefaultPageConfig.MaxItemsPerPage,
-	} // PetPageConfig defines the page configuration for LIST-related endpoints
+	}
+	// PetPageConfig defines the page configuration for LIST-related endpoints
 	// for Pet.
 	PetPageConfig = &PageConfig{
 		MinItemsPerPage: DefaultPageConfig.MinItemsPerPage,
 		ItemsPerPage:    DefaultPageConfig.ItemsPerPage,
 		MaxItemsPerPage: DefaultPageConfig.MaxItemsPerPage,
-	} // SettingPageConfig defines the page configuration for LIST-related endpoints
+	}
+	// SettingPageConfig defines the page configuration for LIST-related endpoints
 	// for Setting.
 	SettingPageConfig = &PageConfig{
 		MinItemsPerPage: DefaultPageConfig.MinItemsPerPage,
 		ItemsPerPage:    DefaultPageConfig.ItemsPerPage,
 		MaxItemsPerPage: DefaultPageConfig.MaxItemsPerPage,
-	} // UserPageConfig defines the page configuration for LIST-related endpoints
+	}
+	// UserPageConfig defines the page configuration for LIST-related endpoints
 	// for User.
 	UserPageConfig = &PageConfig{
 		MinItemsPerPage: DefaultPageConfig.MinItemsPerPage,
@@ -195,139 +198,6 @@ func (p *Paginated[P, T]) ExecutePaginated(ctx context.Context, query P, pageCon
 	}, nil
 }
 
-type Sorted struct {
-	Sort  *string `json:"sort"  form:"sort,omitempty"`
-	Order *string `json:"order" form:"order,omitempty"`
-}
-
-// Validate validates the sorting fields and applies any necessary defaults.
-func (s *Sorted) Validate(fields SortableFields) error {
-	if s.Sort == nil {
-		return nil
-	}
-
-	if !slices.Contains(fields, *s.Sort) {
-		return &ErrBadRequest{Err: fmt.Errorf("invalid sort field: %s", *s.Sort)}
-	}
-
-	if s.Order == nil {
-		order := "asc"
-		s.Order = &order
-	}
-
-	if !slices.Contains(OrderDirections, *s.Order) {
-		return &ErrBadRequest{Err: fmt.Errorf("invalid order: %s", *s.Order)}
-	}
-
-	return nil
-}
-
-// SortOrderTerm returns the OrderTermOption (Asc/Desc) based on the Order field.
-func (s *Sorted) SortOrderTerm() sql.OrderTermOption {
-	if *s.Order == "asc" {
-		return sql.OrderAsc()
-	}
-	return sql.OrderDesc()
-}
-
-func (s *Sorted) SortFieldSelector() func(*sql.Selector) {
-	if s.Order == nil || s.Sort == nil {
-		panic("calling FieldSelector with nil sorting params")
-	}
-
-	if *s.Order == "asc" {
-		return ent.Asc(*s.Sort)
-	}
-
-	return ent.Desc(*s.Sort)
-}
-
-// SortableFields is a list of sortable fields for the given entity.
-type SortableFields []string
-
-var (
-	// OrderDirections are the allowed order directions that can be provided.
-	OrderDirections = []string{"asc", "desc"}
-	// CategorySortFields is a list of sortable fields for the "Category" entity.
-	CategorySortFields = SortableFields{
-		"created_at",
-		"id",
-		"pets.age.sum",
-		"pets.count",
-		"random",
-		"updated_at",
-	}
-	// FollowSortFields is a list of sortable fields for the "Follows" entity.
-	FollowSortFields = SortableFields{
-		"followed_at",
-		"pet.age",
-		"pet.id",
-		"pet.name",
-		"random",
-		"user.created_at",
-		"user.email",
-		"user.id",
-		"user.name",
-		"user.updated_at",
-	}
-	// FriendshipSortFields is a list of sortable fields for the "Friendship" entity.
-	FriendshipSortFields = SortableFields{
-		"friend.created_at",
-		"friend.email",
-		"friend.id",
-		"friend.name",
-		"friend.updated_at",
-		"id",
-		"random",
-		"user.created_at",
-		"user.email",
-		"user.id",
-		"user.name",
-		"user.updated_at",
-	}
-	// PetSortFields is a list of sortable fields for the "Pet" entity.
-	PetSortFields = SortableFields{
-		"age",
-		"categories.count",
-		"followed_by.count",
-		"following.count",
-		"friends.age.sum",
-		"friends.count",
-		"id",
-		"name",
-		"owner.created_at",
-		"owner.email",
-		"owner.id",
-		"owner.name",
-		"owner.updated_at",
-		"random",
-	}
-	// SettingSortFields is a list of sortable fields for the "Settings" entity.
-	SettingSortFields = SortableFields{
-		"admins.count",
-		"created_at",
-		"id",
-		"random",
-		"updated_at",
-	}
-	// UserSortFields is a list of sortable fields for the "User" entity.
-	UserSortFields = SortableFields{
-		"created_at",
-		"email",
-		"followed_pets.age.sum",
-		"followed_pets.count",
-		"following.count",
-		"friends.count",
-		"friendships.count",
-		"id",
-		"name",
-		"pets.age.sum",
-		"pets.count",
-		"random",
-		"updated_at",
-	}
-)
-
 // FilterOperation represents if all or any (one or more) filters should be applied.
 type FilterOperation string
 
@@ -395,42 +265,15 @@ func (l *ListCategoryParams) FilterPredicates() (predicate.Category, error) {
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListCategoryParams) ApplySorting(query *ent.CategoryQuery) (*ent.CategoryQuery, error) {
-	if l.Sort == nil {
-		return query, nil
+func (l *ListCategoryParams) ApplySorting(query *ent.CategoryQuery) error {
+	if err := l.Sorted.Validate(CategorySortConfig); err != nil {
+		return err
 	}
-	if err := l.Sorted.Validate(CategorySortFields); err != nil {
-		return nil, err
+	if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
+		return nil
 	}
-	if parts := strings.Split(*l.Sort, "."); len(parts) > 1 {
-		dir := l.Sorted.SortOrderTerm()
-
-		var isCount, isSum bool
-		if len(parts) > 2 {
-			switch parts[2] {
-			case "count":
-				isCount = true
-			case "sum":
-				isSum = true
-			}
-		}
-
-		switch parts[0] {
-		case category.EdgePets:
-			switch {
-			case isCount:
-				return query.Order(category.ByPetsCount(dir)), nil
-			case isSum:
-				return query.Order(category.ByPets(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(category.ByPets(sql.OrderByField(parts[1], dir))), nil
-			}
-		}
-	}
-	if *l.Sort == "random" {
-		return query.Order(sql.OrderByRand()), nil
-	}
-	return query.Order(l.Sorted.SortFieldSelector()), nil
+	applySortingCategory(query, *l.Field, *l.Order)
+	return nil
 }
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
@@ -440,8 +283,8 @@ func (l *ListCategoryParams) Exec(ctx context.Context, query *ent.CategoryQuery)
 	if err != nil {
 		return nil, err
 	}
-	query = query.Where(predicates)
-	query, err = l.ApplySorting(EagerLoadCategory(query))
+	query.Where(predicates)
+	err = l.ApplySorting(EagerLoadCategory(query))
 	if err != nil {
 		return nil, err
 	}
@@ -455,33 +298,21 @@ type ListFollowParams struct {
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListFollowParams) ApplySorting(query *ent.FollowsQuery) (*ent.FollowsQuery, error) {
-	if l.Sort == nil {
-		return query, nil
+func (l *ListFollowParams) ApplySorting(query *ent.FollowsQuery) error {
+	if err := l.Sorted.Validate(FollowSortConfig); err != nil {
+		return err
 	}
-	if err := l.Sorted.Validate(FollowSortFields); err != nil {
-		return nil, err
+	if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
+		return nil
 	}
-	if parts := strings.Split(*l.Sort, "."); len(parts) > 1 {
-		dir := l.Sorted.SortOrderTerm()
-
-		switch parts[0] {
-		case follows.EdgeUser:
-			return query.Order(follows.ByUserField(parts[1], dir)), nil
-		case follows.EdgePet:
-			return query.Order(follows.ByPetField(parts[1], dir)), nil
-		}
-	}
-	if *l.Sort == "random" {
-		return query.Order(sql.OrderByRand()), nil
-	}
-	return query.Order(l.Sorted.SortFieldSelector()), nil
+	applySortingFollow(query, *l.Field, *l.Order)
+	return nil
 }
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
 // executes all necessary queries, returning the results.
 func (l *ListFollowParams) Exec(ctx context.Context, query *ent.FollowsQuery) (results *PagedResponse[ent.Follows], err error) {
-	query, err = l.ApplySorting(EagerLoadFollow(query))
+	err = l.ApplySorting(EagerLoadFollow(query))
 	if err != nil {
 		return nil, err
 	}
@@ -495,33 +326,21 @@ type ListFriendshipParams struct {
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListFriendshipParams) ApplySorting(query *ent.FriendshipQuery) (*ent.FriendshipQuery, error) {
-	if l.Sort == nil {
-		return query, nil
+func (l *ListFriendshipParams) ApplySorting(query *ent.FriendshipQuery) error {
+	if err := l.Sorted.Validate(FriendshipSortConfig); err != nil {
+		return err
 	}
-	if err := l.Sorted.Validate(FriendshipSortFields); err != nil {
-		return nil, err
+	if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
+		return nil
 	}
-	if parts := strings.Split(*l.Sort, "."); len(parts) > 1 {
-		dir := l.Sorted.SortOrderTerm()
-
-		switch parts[0] {
-		case friendship.EdgeUser:
-			return query.Order(friendship.ByUserField(parts[1], dir)), nil
-		case friendship.EdgeFriend:
-			return query.Order(friendship.ByFriendField(parts[1], dir)), nil
-		}
-	}
-	if *l.Sort == "random" {
-		return query.Order(sql.OrderByRand()), nil
-	}
-	return query.Order(l.Sorted.SortFieldSelector()), nil
+	applySortingFriendship(query, *l.Field, *l.Order)
+	return nil
 }
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
 // executes all necessary queries, returning the results.
 func (l *ListFriendshipParams) Exec(ctx context.Context, query *ent.FriendshipQuery) (results *PagedResponse[ent.Friendship], err error) {
-	query, err = l.ApplySorting(EagerLoadFriendship(query))
+	err = l.ApplySorting(EagerLoadFriendship(query))
 	if err != nil {
 		return nil, err
 	}
@@ -1143,71 +962,15 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListPetParams) ApplySorting(query *ent.PetQuery) (*ent.PetQuery, error) {
-	if l.Sort == nil {
-		return query, nil
+func (l *ListPetParams) ApplySorting(query *ent.PetQuery) error {
+	if err := l.Sorted.Validate(PetSortConfig); err != nil {
+		return err
 	}
-	if err := l.Sorted.Validate(PetSortFields); err != nil {
-		return nil, err
+	if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
+		return nil
 	}
-	if parts := strings.Split(*l.Sort, "."); len(parts) > 1 {
-		dir := l.Sorted.SortOrderTerm()
-
-		var isCount, isSum bool
-		if len(parts) > 2 {
-			switch parts[2] {
-			case "count":
-				isCount = true
-			case "sum":
-				isSum = true
-			}
-		}
-
-		switch parts[0] {
-		case pet.EdgeCategories:
-			switch {
-			case isCount:
-				return query.Order(pet.ByCategoriesCount(dir)), nil
-			case isSum:
-				return query.Order(pet.ByCategories(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(pet.ByCategories(sql.OrderByField(parts[1], dir))), nil
-			}
-		case pet.EdgeOwner:
-			return query.Order(pet.ByOwnerField(parts[1], dir)), nil
-		case pet.EdgeFriends:
-			switch {
-			case isCount:
-				return query.Order(pet.ByFriendsCount(dir)), nil
-			case isSum:
-				return query.Order(pet.ByFriends(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(pet.ByFriends(sql.OrderByField(parts[1], dir))), nil
-			}
-		case pet.EdgeFollowedBy:
-			switch {
-			case isCount:
-				return query.Order(pet.ByFollowedByCount(dir)), nil
-			case isSum:
-				return query.Order(pet.ByFollowedBy(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(pet.ByFollowedBy(sql.OrderByField(parts[1], dir))), nil
-			}
-		case pet.EdgeFollowing:
-			switch {
-			case isCount:
-				return query.Order(pet.ByFollowingCount(dir)), nil
-			case isSum:
-				return query.Order(pet.ByFollowing(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(pet.ByFollowing(sql.OrderByField(parts[1], dir))), nil
-			}
-		}
-	}
-	if *l.Sort == "random" {
-		return query.Order(sql.OrderByRand()), nil
-	}
-	return query.Order(l.Sorted.SortFieldSelector()), nil
+	applySortingPet(query, *l.Field, *l.Order)
+	return nil
 }
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
@@ -1217,8 +980,8 @@ func (l *ListPetParams) Exec(ctx context.Context, query *ent.PetQuery) (results 
 	if err != nil {
 		return nil, err
 	}
-	query = query.Where(predicates)
-	query, err = l.ApplySorting(EagerLoadPet(query))
+	query.Where(predicates)
+	err = l.ApplySorting(EagerLoadPet(query))
 	if err != nil {
 		return nil, err
 	}
@@ -1261,42 +1024,15 @@ func (l *ListSettingParams) FilterPredicates() (predicate.Settings, error) {
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListSettingParams) ApplySorting(query *ent.SettingsQuery) (*ent.SettingsQuery, error) {
-	if l.Sort == nil {
-		return query, nil
+func (l *ListSettingParams) ApplySorting(query *ent.SettingsQuery) error {
+	if err := l.Sorted.Validate(SettingSortConfig); err != nil {
+		return err
 	}
-	if err := l.Sorted.Validate(SettingSortFields); err != nil {
-		return nil, err
+	if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
+		return nil
 	}
-	if parts := strings.Split(*l.Sort, "."); len(parts) > 1 {
-		dir := l.Sorted.SortOrderTerm()
-
-		var isCount, isSum bool
-		if len(parts) > 2 {
-			switch parts[2] {
-			case "count":
-				isCount = true
-			case "sum":
-				isSum = true
-			}
-		}
-
-		switch parts[0] {
-		case settings.EdgeAdmins:
-			switch {
-			case isCount:
-				return query.Order(settings.ByAdminsCount(dir)), nil
-			case isSum:
-				return query.Order(settings.ByAdmins(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(settings.ByAdmins(sql.OrderByField(parts[1], dir))), nil
-			}
-		}
-	}
-	if *l.Sort == "random" {
-		return query.Order(sql.OrderByRand()), nil
-	}
-	return query.Order(l.Sorted.SortFieldSelector()), nil
+	applySortingSetting(query, *l.Field, *l.Order)
+	return nil
 }
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
@@ -1306,8 +1042,8 @@ func (l *ListSettingParams) Exec(ctx context.Context, query *ent.SettingsQuery) 
 	if err != nil {
 		return nil, err
 	}
-	query = query.Where(predicates)
-	query, err = l.ApplySorting(EagerLoadSetting(query))
+	query.Where(predicates)
+	err = l.ApplySorting(EagerLoadSetting(query))
 	if err != nil {
 		return nil, err
 	}
@@ -1909,78 +1645,15 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListUserParams) ApplySorting(query *ent.UserQuery) (*ent.UserQuery, error) {
-	if l.Sort == nil {
-		return query, nil
+func (l *ListUserParams) ApplySorting(query *ent.UserQuery) error {
+	if err := l.Sorted.Validate(UserSortConfig); err != nil {
+		return err
 	}
-	if err := l.Sorted.Validate(UserSortFields); err != nil {
-		return nil, err
+	if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
+		return nil
 	}
-	if parts := strings.Split(*l.Sort, "."); len(parts) > 1 {
-		dir := l.Sorted.SortOrderTerm()
-
-		var isCount, isSum bool
-		if len(parts) > 2 {
-			switch parts[2] {
-			case "count":
-				isCount = true
-			case "sum":
-				isSum = true
-			}
-		}
-
-		switch parts[0] {
-		case user.EdgePets:
-			switch {
-			case isCount:
-				return query.Order(user.ByPetsCount(dir)), nil
-			case isSum:
-				return query.Order(user.ByPets(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(user.ByPets(sql.OrderByField(parts[1], dir))), nil
-			}
-		case user.EdgeFollowedPets:
-			switch {
-			case isCount:
-				return query.Order(user.ByFollowedPetsCount(dir)), nil
-			case isSum:
-				return query.Order(user.ByFollowedPets(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(user.ByFollowedPets(sql.OrderByField(parts[1], dir))), nil
-			}
-		case user.EdgeFriends:
-			switch {
-			case isCount:
-				return query.Order(user.ByFriendsCount(dir)), nil
-			case isSum:
-				return query.Order(user.ByFriends(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(user.ByFriends(sql.OrderByField(parts[1], dir))), nil
-			}
-		case user.EdgeFollowing:
-			switch {
-			case isCount:
-				return query.Order(user.ByFollowingCount(dir)), nil
-			case isSum:
-				return query.Order(user.ByFollowing(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(user.ByFollowing(sql.OrderByField(parts[1], dir))), nil
-			}
-		case user.EdgeFriendships:
-			switch {
-			case isCount:
-				return query.Order(user.ByFriendshipsCount(dir)), nil
-			case isSum:
-				return query.Order(user.ByFriendships(sql.OrderBySum(parts[1], dir))), nil
-			default:
-				return query.Order(user.ByFriendships(sql.OrderByField(parts[1], dir))), nil
-			}
-		}
-	}
-	if *l.Sort == "random" {
-		return query.Order(sql.OrderByRand()), nil
-	}
-	return query.Order(l.Sorted.SortFieldSelector()), nil
+	applySortingUser(query, *l.Field, *l.Order)
+	return nil
 }
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
@@ -1990,8 +1663,8 @@ func (l *ListUserParams) Exec(ctx context.Context, query *ent.UserQuery) (result
 	if err != nil {
 		return nil, err
 	}
-	query = query.Where(predicates)
-	query, err = l.ApplySorting(EagerLoadUser(query))
+	query.Where(predicates)
+	err = l.ApplySorting(EagerLoadUser(query))
 	if err != nil {
 		return nil, err
 	}

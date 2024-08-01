@@ -28,8 +28,7 @@ var (
         MaxItemsPerPage: {{ $.Annotations.RestConfig.MaxItemsPerPage }},
     }
     {{- range $t := $.Nodes }}
-        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
-
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
         // {{ $t.Name|zsingular }}PageConfig defines the page configuration for LIST-related endpoints
         // for {{ $t.Name|zsingular }}.
         {{ $t.Name|zsingular }}PageConfig = &PageConfig{
@@ -160,71 +159,6 @@ func (p *Paginated[P, T]) ExecutePaginated(ctx context.Context, query P, pageCon
     }, nil
 }
 
-type Sorted struct {
-    Sort  *string `json:"sort"  form:"sort,omitempty"`
-    Order *string `json:"order" form:"order,omitempty"`
-}
-
-// Validate validates the sorting fields and applies any necessary defaults.
-func (s *Sorted) Validate(fields SortableFields) error {
-    if s.Sort == nil {
-        return nil
-    }
-
-    if !slices.Contains(fields, *s.Sort) {
-        return &ErrBadRequest{Err: fmt.Errorf("invalid sort field: %s", *s.Sort)}
-    }
-
-    if s.Order == nil {
-        order := "asc"
-        s.Order = &order
-    }
-
-    if !slices.Contains(OrderDirections, *s.Order) {
-        return &ErrBadRequest{Err: fmt.Errorf("invalid order: %s", *s.Order)}
-    }
-
-    return nil
-}
-
-// SortOrderTerm returns the OrderTermOption (Asc/Desc) based on the Order field.
-func (s *Sorted) SortOrderTerm() sql.OrderTermOption {
-    if *s.Order == "asc" {
-        return sql.OrderAsc()
-    }
-    return sql.OrderDesc()
-}
-
-func (s *Sorted) SortFieldSelector() func(*sql.Selector) {
-    if s.Order == nil || s.Sort == nil {
-        panic("calling FieldSelector with nil sorting params")
-    }
-
-    if *s.Order == "asc" {
-        return ent.Asc(*s.Sort)
-    }
-
-    return ent.Desc(*s.Sort)
-}
-
-// SortableFields is a list of sortable fields for the given entity.
-type SortableFields []string
-
-var (
-    // OrderDirections are the allowed order directions that can be provided.
-    OrderDirections = []string{"asc", "desc"}
-    {{ range $t := $.Nodes }}
-        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
-
-        // {{ $t.Name|zsingular }}SortFields is a list of sortable fields for the {{ $t.Name|quote }} entity.
-        {{ $t.Name|zsingular }}SortFields = SortableFields{
-            {{- range getSortableFields $t false }}
-            "{{ . }}",
-            {{- end }}
-        }
-    {{ end }}{{/* end range nodes */}}
-)
-
 // FilterOperation represents if all or any (one or more) filters should be applied.
 type FilterOperation string
 
@@ -303,60 +237,15 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
     {{- end }}{{/* end filters */}}
 
     // ApplySorting applies sorting to the query based on the provided sort and order fields.
-    func (l *List{{ $t.Name|zsingular }}Params) ApplySorting(query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}Query, error) {
-        {{- if not (getSortableFields $t false) }}
-            // {{ $t.Name }} has no sortable fields.
-            return query, nil
-        {{- else }}
-            if l.Sort == nil {
-                return query, nil
-            }
-            if err := l.Sorted.Validate({{ $t.Name|zsingular }}SortFields); err != nil {
-                return nil, err
-            }
-            {{- if $t.Edges }}
-            if parts := strings.Split(*l.Sort, "."); len(parts) > 1 {
-                dir := l.Sorted.SortOrderTerm()
-
-                {{- range $e := $t.Edges }}
-                    {{ if not $e.Unique }}
-                        var isCount, isSum bool
-                        if len(parts) > 2 {
-                            switch parts[2] {
-                            case "count":
-                                isCount = true
-                            case "sum":
-                                isSum = true
-                            }
-                        }
-                        {{ break }}
-                    {{ end }}
-                {{ end }}
-
-                switch parts[0] {
-                {{- range $e := $t.Edges }}
-                    case {{ $t.Package }}.Edge{{ $e.StructField }}:
-                        {{- if $e.Unique }}
-                            return query.Order({{ $t.Package }}.By{{ $e.StructField }}Field(parts[1], dir)), nil
-                        {{- else }}
-                            switch {
-                            case isCount:
-                                return query.Order({{ $t.Package }}.By{{ $e.StructField }}Count(dir)), nil
-                            case isSum:
-                                return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderBySum(parts[1], dir))), nil
-                            default:
-                                return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderByField(parts[1], dir))), nil
-                            }
-                        {{- end }}
-                {{- end }}
-                }
-            }
-            {{- end }}
-            if *l.Sort == "random" {
-                return query.Order(sql.OrderByRand()), nil
-            }
-            return query.Order(l.Sorted.SortFieldSelector()), nil
-        {{- end }}
+    func (l *List{{ $t.Name|zsingular }}Params) ApplySorting(query *ent.{{ $t.Name }}Query) error {
+        if err := l.Sorted.Validate({{ $t.Name|zsingular }}SortConfig); err != nil {
+            return err
+        }
+        if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
+            return nil
+        }
+        applySorting{{ $t.Name|zsingular }}(query, *l.Field, *l.Order)
+        return nil
     }
 
     {{- if $pagination }}
@@ -368,9 +257,9 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
                 if err != nil {
                     return nil, err
                 }
-                query = query.Where(predicates)
+                query.Where(predicates)
             {{- end }}
-            query, err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(query))
+            err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(query))
             if err != nil {
                 return nil, err
             }
@@ -385,10 +274,10 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
                 if err != nil {
                     return nil, err
                 }
-                query = query.Where(predicates)
+                query.Where(predicates)
             {{- end }}
 
-            query, err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(query))
+            err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(query))
             if err != nil {
                 return nil, err
             }

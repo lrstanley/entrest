@@ -134,7 +134,10 @@ func (User) Edges() []ent.Edge {
 }
 
 func (User) Annotations() []schema.Annotation {
-	return []schema.Annotation{}
+	return []schema.Annotation{
+		entrest.WithDefaultSort("name"),
+		entrest.WithDefaultOrder(entrest.OrderAsc),
+	}
 }
 
 type ExampleValuer struct {

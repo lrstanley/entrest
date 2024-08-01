@@ -1,0 +1,145 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "rest/sorting" }}
+{{- with extend $ "Package" "rest" }}{{ template "header" . }}{{ end }}
+
+import (
+    {{- template "helper/rest/standard-imports" . }}
+    {{- template "helper/rest/schema-imports" . }}
+)
+
+type Sorted struct {
+    // Field is the field to sort by. Can be a standard field name (e.g. "name"), or a custom field
+    // name (e.g. "pets.age.sum"). If no field is provided, the default field will be used.
+    Field *string `json:"sort" form:"sort,omitempty"`
+
+    // Order is the order to sort by. Can be either "asc" or "desc". If no order is provided, the
+    // default order will be used.
+    Order *orderDirection `json:"order" form:"order,omitempty"`
+}
+
+// Validate validates the sorting fields and applies any necessary defaults.
+func (s *Sorted) Validate(cfg *SortConfig) error {
+    if s.Field == nil {
+        if cfg.DefaultField == "" {
+            return nil
+        }
+        s.Field = &cfg.DefaultField
+    }
+    if s.Order == nil {
+        s.Order = &cfg.DefaultOrder
+    }
+
+    if !slices.Contains(cfg.Fields, *s.Field) {
+        return &ErrBadRequest{Err: fmt.Errorf("invalid sort field: %s", *s.Field)}
+    }
+
+    if !slices.Contains(OrderDirections, *s.Order) {
+        return &ErrBadRequest{Err: fmt.Errorf("invalid order: %s", *s.Order)}
+    }
+
+    return nil
+}
+
+// withOrderTerm returns the OrderTermOption (asc/desc) based on the provided order string.
+func withOrderTerm(order orderDirection) sql.OrderTermOption {
+    if order == orderAsc {
+        return sql.OrderAsc()
+    }
+    return sql.OrderDesc()
+}
+
+func withFieldSelector(field string, order orderDirection) func(*sql.Selector) {
+    if order == orderAsc {
+        return ent.Asc(field)
+    }
+    return ent.Desc(field)
+}
+
+type SortConfig struct {
+    Fields       []string
+    DefaultField string
+    DefaultOrder orderDirection
+}
+
+type orderDirection string
+
+var (
+    orderAsc  orderDirection = "asc"
+    orderDesc orderDirection = "desc"
+
+    // OrderDirections are the allowed order directions that can be provided.
+    OrderDirections = []orderDirection{orderAsc, orderDesc}
+
+    {{- range $t := $.Nodes }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        // {{ $t.Name|zsingular }}SortConfig defines the default sort configuration for {{ $t.Name|zsingular }}.
+        {{ $t.Name|zsingular }}SortConfig = &SortConfig{
+            Fields: []string{
+                {{- range getSortableFields $t false }}
+                "{{ . }}",
+                {{- end }}
+            },
+            {{- $sortField := ($t|getAnnotation).GetDefaultSort (ne $t.ID nil) }}
+            {{- if $sortField }}
+              DefaultField: {{ $sortField | quote }},
+            {{- end }}
+            DefaultOrder: {{ printf "%s" ($t|getAnnotation).GetDefaultOrder| quote }},
+        }
+    {{- end }}
+)
+
+{{- range $t := $.Nodes }}
+    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+
+    // applySorting{{ $t.Name|zsingular }} applies sorting to the query based on the provided sort and
+    // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
+    func applySorting{{ $t.Name|zsingular }}(query *ent.{{ $t.Name }}Query, field string, order orderDirection) *ent.{{ $t.Name }}Query {
+        {{- if $t.Edges }}
+        if parts := strings.Split(field, "."); len(parts) > 1 {
+            dir := withOrderTerm(order)
+
+            {{- range $e := $t.Edges }}
+                {{ if not $e.Unique }}
+                    var isCount, isSum bool
+                    if len(parts) > 2 {
+                        switch parts[2] {
+                        case "count":
+                            isCount = true
+                        case "sum":
+                            isSum = true
+                        }
+                    }
+                    {{ break }}
+                {{ end }}
+            {{ end }}
+
+            switch parts[0] {
+            {{- range $e := $t.Edges }}
+                case {{ $t.Package }}.Edge{{ $e.StructField }}:
+                    {{- if $e.Unique }}
+                        return query.Order({{ $t.Package }}.By{{ $e.StructField }}Field(parts[1], dir))
+                    {{- else }}
+                        switch {
+                        case isCount:
+                            return query.Order({{ $t.Package }}.By{{ $e.StructField }}Count(dir))
+                        case isSum:
+                            return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderBySum(parts[1], dir)))
+                        default:
+                            return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderByField(parts[1], dir)))
+                        }
+                    {{- end }}
+            {{- end }}
+            }
+        }
+        {{- end }}
+        if field == "random" {
+            return query.Order(sql.OrderByRand())
+        }
+        return query.Order(withFieldSelector(field, order))
+    }
+{{- end }}{{/* end range */}}
+{{- end }}{{/* end template */}}

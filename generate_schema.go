@@ -517,6 +517,7 @@ func toPagedSchema(schema *ogen.Schema) *ogen.Schema {
 // recurses through edges to find sortable fields as well.
 func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 	cfg := GetConfig(t.Config)
+	ta := GetAnnotation(t)
 	fields := t.Fields
 
 	if t.ID != nil {
@@ -569,6 +570,10 @@ func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 				sortable = append(sortable, e.Name+"."+f)
 			}
 		}
+	}
+
+	if v := ta.GetDefaultSort(t.ID != nil); v != "" && !slices.Contains(sortable, v) {
+		panic(fmt.Sprintf("default sort field %q on schema %q does not exist or does not have default sorting enabled", v, t.Name))
 	}
 
 	slices.Sort(sortable)
