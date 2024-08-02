@@ -199,20 +199,24 @@ func (Pet) Annotations() []ent.Annotation {
 
 ##### Example 1
 
-```go title="internal/database/schema/schema_pet.go" ins={3-4}
-func (Pet) Annotations() []ent.Annotation {
-    return []ent.Annotation{
-        entrest.WithFilter(entrest.FilterGroupArray | entrest.FilterGroupLength) // Bundle using groups.
+```go title="internal/database/schema/schema_pet.go" ins={4}
+func (Pet) Fields() []ent.Field {
+    return []ent.Field{
+        field.String("name").Annotations(
+            entrest.WithFilter(entrest.FilterGroupArray | entrest.FilterGroupLength) // Bundle using groups.
+        ),
     }
 }
 ```
 
 ##### Example 2
 
-```go title="internal/database/schema/schema_pet.go" ins={3-4}
-func (Pet) Annotations() []ent.Annotation {
-    return []ent.Annotation{
-        entrest.WithFilter(entrest.FilterEQ | entrest.FilterNEQ), // Or use individual predicates.
+```go title="internal/database/schema/schema_pet.go" ins={4}
+func (Pet) Fields() []ent.Field {
+    return []ent.Field{
+        field.String("name").Annotations(
+            entrest.WithFilter(entrest.FilterEQ | entrest.FilterNEQ), // Or use individual predicates.
+        ),
     }
 }
 ```
@@ -431,10 +435,12 @@ func (Pet) Annotations() []ent.Annotation {
 
 ##### Example
 
-```go title="internal/database/schema/schema_pet.go" ins={3}
-func (Pet) Annotations() []ent.Annotation {
-    return []ent.Annotation{
-        entrest.WithEdgeEndpoint(true),
+```go title="internal/database/schema/schema_pet.go" ins={4}
+func (Pet) Edges() []ent.Edge {
+    return []ent.Edge{
+        edge.To("owner", User.Type).Annotations(
+            entrest.WithEdgeEndpoint(false),
+        ),
     }
 }
 ```
@@ -456,10 +462,12 @@ func (Pet) Annotations() []ent.Annotation {
 
 ##### Example
 
-```go title="internal/database/schema/schema_pet.go" ins={3}
-func (Pet) Annotations() []ent.Annotation {
-    return []ent.Annotation{
-        entrest.WithEdgeUpdateBulk(true),
+```go title="internal/database/schema/schema_pet.go" ins={4}
+func (Pet) Edges() []ent.Edge {
+    return []ent.Edge{
+        edge.To("owner", User.Type).Annotations(
+            entrest.WithEdgeUpdateBulk(true),
+        ),
     }
 }
 ```
@@ -491,10 +499,10 @@ func (Pet) Annotations() []ent.Annotation {
 
 ##### Example
 
-```go title="internal/database/schema/schema_pet.go" ins={3}
+```go title="internal/database/schema/schema_pet.go" ins={4}
 func (Pet) Fields() []ent.Field {
     return []ent.Field{
-        field.String("name").Annotations(
+        field.String("some_old_field").Annotations(
             entrest.WithDeprecated(true),
         ),
     }
