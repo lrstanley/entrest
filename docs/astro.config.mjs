@@ -107,8 +107,7 @@ export default defineConfig({
                     ],
                 },
             ],
-            // TODO: https://github.com/HiDeoo/starlight-links-validator/issues/48
-            // plugins: [starlightLinksValidator()],
+            plugins: [starlightLinksValidator()],
         }),
     ],
     markdown: {
