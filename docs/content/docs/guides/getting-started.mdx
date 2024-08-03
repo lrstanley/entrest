@@ -34,9 +34,11 @@ fully-functional HTTP handler implementation.
 - ✨ And more!
 
 :::tip
-It is recommended to read through the [EntGo getting started guide](https://entgo.io/docs/getting-started/) before proceeding to get a better understanding of EntGo.
+It is recommended to read through the [EntGo getting started guide](https://entgo.io/docs/getting-started/)
+before proceeding to get a better understanding of EntGo.
 
-Additionally, to load extensions with additional configuration, using EntGo's [entc integration](https://entgo.io/docs/code-gen/#use-entc-as-a-package) is required.
+Additionally, to load extensions with additional configuration, using EntGo's
+[entc integration](https://entgo.io/docs/code-gen/#use-entc-as-a-package) is required.
 :::
 
 
@@ -64,9 +66,11 @@ We recommend a project structure that looks similar to this:
 
 There are a few reasons why we recommend this structure:
 
-- Generated code is isolated in its own folder. In most cases, you can simply ignore the folder in your editor, so it's less distracting.
+- Generated code is isolated in its own folder. In most cases, you can simply ignore the folder in you
+  editor, so it's less distracting.
 - Schemas aren't buried compared to the standard entgo setup.
-- All database-related code is explicitly in an `internal/` folder, which is best practice for logic that shouldn't be imported by external packages.
+- All database-related code is explicitly in an `internal/` folder, which is best practice for logic
+  that shouldn't be imported by external packages.
 
 ##### Future Growth
 
@@ -97,7 +101,8 @@ You can find a full example project that matches this guide [here](https://githu
 
 3. Add a few schema files:
 
-    Example `Pet` schema, which also has a few edge relationships, one of which we eager load. Take note of some of of the attached annotations:
+    Example `Pet` schema, which also has a few edge relationships, one of which we eager load. Take
+    note of some of of the attached annotations:
 
     <Code
         code={clean(FileSchemaPet)}
@@ -107,7 +112,8 @@ You can find a full example project that matches this guide [here](https://githu
         title="internal/database/schema/pet.go"
     />
 
-    Example `User` schema, which also has a single edge relationship, which we eager load. Take note of some of of the attached annotations:
+    Example `User` schema, which also has a single edge relationship, which we eager load. Take note
+    of some of of the attached annotations:
 
     <Code
         code={clean(FileSchemaUser)}
@@ -117,7 +123,9 @@ You can find a full example project that matches this guide [here](https://githu
         title="internal/database/schema/user.go"
     />
 
-4. Add an `internal/database/entc.go` file, which is used to configure the extension, and run code generation. Make sure to replace the <Badge text="github.com/example/my-project" variant="tip" size="small" /> module references with your module name.
+4. Add an `internal/database/entc.go` file, which is used to configure the extension, and run code
+   generation. Make sure to replace the <Badge text="github.com/example/my-project" variant="tip" size="small" />
+   module references with your module name.
 
     <Code
         code={clean(FileEntC)}
@@ -128,7 +136,8 @@ You can find a full example project that matches this guide [here](https://githu
         title="internal/database/entc.go"
     />
 
-5. Add a `internal/generate.go` file, where the `go:generate` comment is used to trigger all internal codegen logic. This file is also used to pin codegen dependencies:
+5. Add a `internal/generate.go` file, where the `go:generate` comment is used to trigger all internal
+   codegen logic. This file is also used to pin codegen dependencies:
 
     <Code
         code={clean(FileGenerate)}
@@ -159,12 +168,15 @@ You can find a full example project that matches this guide [here](https://githu
 That's it! You should now have a fully-functional project that uses entrest. This includes:
 
 1. A managed database schema using [EntGo](https://entgo.io/).
-2. A fully-functional HTTP handler implementation using [chi](https://github.com/go-chi/chi) (or any other HTTP router that supports `net/http`).
-3. A fully-functional OpenAPI spec, which can be used to generate client libraries, or to validate requests (see `internal/database/ent/rest/openapi.json`).
+2. A fully-functional HTTP handler implementation using [chi](https://github.com/go-chi/chi) (or any
+   other HTTP router that supports `net/http`).
+3. A fully-functional OpenAPI spec, which can be used to generate client libraries, or to validate
+   requests (see `internal/database/ent/rest/openapi.json`).
 
 ## Running The Server
 
-To run the application, simply run the following commands to download all dependencies, then run the application:
+To run the application, simply run the following commands to download all dependencies, then run the
+application:
 
 ```bash
 go mod tidy
@@ -180,7 +192,8 @@ running http server
 
 ## Next Steps
 
-Now that you've got a basic HTTP API setup, you can start making API requests to it, or further customizing it.
+Now that you've got a basic HTTP API setup, you can start making API requests to it, or further customizing
+it.
 
 <LinkCard
     title="Calling Your New API"
