@@ -1,7 +1,114 @@
 ---
 title: Extending the Spec
 sidebar:
-  order: 8
+  order: 5
 ---
 
+import { Code } from '@astrojs/starlight/components';
+import baseOpenAPI from "../../../../_examples/kitchensink/base-openapi.json?raw"
+
+You may want to extend the resulting OpenAPI spec, to add additional endpoints, tweak the schema,
+add security schemes, changelog/information, etc. entrest allows a few different ways of extending the OpenAPI
+spec.
+
+### `SpecFromPath`
+
+Configuration option [`SpecFromPath`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.SpecFromPath) allows
+you to provide a path to a JSON file containing the base OpenAPI spec. This is useful if you want to start with a
+base spec, and then add additional endpoints/security schemes/etc. This is the simplest option to managing extensions
+that is much less tedious than dealing with the `Spec` option.
+
+```go title="internal/database/entc.go" ins={5}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        // The path here is dependent on where your file that has "go:generate" is. Take a look at the "kitchensink"
+        // example for where the base-openapi.json file is located.
+        SpecFromPath: "../base-openapi.json",
+    })
+    // [...]
+}
+```
+
+Base OpenAPI spec from our kitchensink example, where we register a `/version` endpoint and associated schema:
+
+<Code code={baseOpenAPI} lang="json" title="_examples/kitchensink/base-openapi.json" />
+
+Take a look at the resulting OpenAPI spec, which includes the `/version` endpoint and associated schema
+[here](https://github.com/lrstanley/entrest/blob/master/_examples/kitchensink/internal/database/ent/rest/openapi.json).
+
+### Request Headers
+
 TODO
+
+### Response Headers
+
+TODO
+
+### Error Responses
+
+TODO
+
+### `Spec` Configuration Option
+
+Configuration option [`Spec`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Spec) allows you to provide
+a custom OpenAPI spec through the `ogen.Spec` type provided by [ogen](https://github.com/ogen-go/ogen). This is
+more of an advanced option, as it allows you to use additional Go logic to add additional generated endpoints or
+similar. This spec is effectively treated like the "base" in which the generated spec is merged into. A basic
+example:
+
+```go title="internal/database/entc.go" ins={3-13}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        Spec: &ogen.Spec{
+            Info: ogen.Info{
+                Title:       "My Sample API",
+                Description: "This is a sample API.",
+            },
+            Components: &ogen.Components{
+                Schemas: map[string]*ogen.Schema{
+                    "FooBar": {Type: "string"},
+                },
+            },
+        },
+    })
+    // [...]
+}
+```
+
+### `PreGenerateHook` and `PostGenerateHook`
+
+Configuration option [`PreGenerateHook`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.PreGenerateHook)
+and [`PostGenerateHook`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.PostGenerateHook) are
+similar to the `Spec` option, but you get access to the ent graph. Primarily useful if you need to
+extend the spec with ent-specific information, or you want to reuse content from the generated configuration,
+and build upon it.
+
+Example with a `PreGenerateHook`:
+
+```go title="internal/database/entc.go" ins={3-7}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        PreGenerateHook: func(g *gen.Graph, spec *ogen.Spec) error {
+            // Example:
+            spec.Components.Schemas["FooBar"] = &ogen.Schema{Type: "string"}
+            return nil
+        },
+    })
+    // [...]
+}
+```
+
+Same thing with a `PostGenerateHook`, but it runs after the spec has been generated:
+
+```go title="internal/database/entc.go" ins={3-7}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        PostGenerateHook: func(g *gen.Graph, spec *ogen.Spec) error {
+            // Example:
+            spec.Components.Schemas["FooBar"] = &ogen.Schema{Type: "string"}
+            return nil
+        },
+    })
+    // [...]
+}
+```
