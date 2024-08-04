@@ -272,6 +272,36 @@ func TestConfig_DisableEagerLoadedEndpoints(t *testing.T) {
 	})
 }
 
+func TestConfig_EagerLoadLimit(t *testing.T) {
+	t.Parallel()
+
+	t.Run("default-limit", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{}, func(g *gen.Graph) {
+			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+			injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+		})
+
+		assert.Equal(t, 0.0, r.json(`$.components.schemas.PetEdges.properties.categories.minItems`))    //nolint:all
+		assert.Equal(t, 1000.0, r.json(`$.components.schemas.PetEdges.properties.categories.maxItems`)) //nolint:all
+		assert.Nil(t, r.json(`$.components.schemas.PetEdges.properties.owner.minItems`))
+		assert.Nil(t, r.json(`$.components.schemas.PetEdges.properties.owner.maxItems`))
+	})
+
+	t.Run("with-limit", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{EagerLoadLimit: 2500}, func(g *gen.Graph) {
+			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+			injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+		})
+
+		assert.Equal(t, 0.0, r.json(`$.components.schemas.PetEdges.properties.categories.minItems`))    //nolint:all
+		assert.Equal(t, 2500.0, r.json(`$.components.schemas.PetEdges.properties.categories.maxItems`)) //nolint:all
+		assert.Nil(t, r.json(`$.components.schemas.PetEdges.properties.owner.minItems`))
+		assert.Nil(t, r.json(`$.components.schemas.PetEdges.properties.owner.maxItems`))
+	})
+}
+
 func TestConfig_AddEdgesToTags(t *testing.T) {
 	t.Parallel()
 

@@ -6626,10 +6626,13 @@
                 "type": "object",
                 "properties": {
                     "categories": {
+                        "description": "A list of Category entities. Limited to 1000 items. If there are more results than the limit, the results are capped and you must use the associated edge endpoint with pagination -- see also the 'EagerLoadLimit' config option.",
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/Category"
-                        }
+                        },
+                        "maxItems": 1000,
+                        "minItems": 0
                     },
                     "owner": {
                         "$ref": "#/components/schemas/User"
@@ -6819,10 +6822,13 @@
                 "type": "object",
                 "properties": {
                     "admins": {
+                        "description": "A list of User entities. Limited to 1000 items. If there are more results than the limit, the results are capped and you must use the associated edge endpoint with pagination -- see also the 'EagerLoadLimit' config option.",
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/User"
-                        }
+                        },
+                        "maxItems": 1000,
+                        "minItems": 0
                     }
                 }
             },

@@ -74,6 +74,15 @@ type Config struct {
 	// get the owner from that response).
 	DisableEagerLoadedEndpoints bool
 
+	// EagerLoadLimit controls the default maximum number of results that can be
+	// eager-loaded for a given edge. The default, when not specified, is 1000. The limit
+	// can be disabled by setting the value to -1. The intent of this option is to
+	// provide a safe default cap on the number of eager-loaded results, to prevent
+	// potential abuse, denial-of-service/resource-exhaustion, etc.
+	//
+	// This can be overridden on a per-edge basis with annotations.
+	EagerLoadLimit int
+
 	// AddEdgesToTags enables the addition of edge fields to the "tags" field in the
 	// OpenAPI spec. This is helpful to see if querying a specific entity also returns
 	// the thing you're looking for, though can be very noisy for large schemas. Note
@@ -184,6 +193,14 @@ func (c *Config) Validate() error {
 
 	if c.ItemsPerPage > c.MaxItemsPerPage {
 		c.ItemsPerPage = c.MaxItemsPerPage
+	}
+
+	if c.EagerLoadLimit < -1 {
+		c.EagerLoadLimit = -1
+	}
+
+	if c.EagerLoadLimit == 0 {
+		c.EagerLoadLimit = 1000
 	}
 
 	if c.DefaultOperations == nil {

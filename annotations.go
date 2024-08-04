@@ -94,6 +94,7 @@ type Annotation struct {
 	MaxItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
 	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
 	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
+	EagerLoadLimit  *int        `json:",omitempty" ent:"edge"`
 	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
 	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
 	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
@@ -213,6 +214,9 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 	if am.EagerLoad != nil {
 		a.EagerLoad = am.EagerLoad
 	}
+	if am.EagerLoadLimit != nil {
+		a.EagerLoadLimit = am.EagerLoadLimit
+	}
 	if am.EdgeEndpoint != nil {
 		a.EdgeEndpoint = am.EdgeEndpoint
 	}
@@ -305,6 +309,15 @@ func (a *Annotation) GetEagerLoad(config *Config) bool {
 		return config.DefaultEagerLoad
 	}
 	return *a.EagerLoad
+}
+
+// GetEagerLoadLimit returns the limit for the max number of entities to eager-load for the
+// edge (or defaults from [Config.EagerLoadLimit]).
+func (a *Annotation) GetEagerLoadLimit(config *Config) int {
+	if a.EagerLoadLimit == nil || *a.EagerLoadLimit == 0 {
+		return config.EagerLoadLimit
+	}
+	return *a.EagerLoadLimit
 }
 
 // GetEdgeEndpoint returns if the edge should have an endpoint (or defaults from
@@ -464,6 +477,17 @@ func WithItemsPerPage(v int) Annotation {
 // (only covering the first level, it does not recurse).
 func WithEagerLoad(v bool) Annotation {
 	return Annotation{EagerLoad: &v}
+}
+
+// WithEagerLoadLimit sets the limit for the max number of entities to eager-load for the
+// edge. There is a global default limit for eager-loading, which can be set via
+// [Config.EagerLoadLimit]. Defaults to 1000, and the limit can be disabled by setting
+// the value to -1.
+func WithEagerLoadLimit(v int) Annotation {
+	if v == 0 {
+		return Annotation{}
+	}
+	return Annotation{EagerLoadLimit: &v}
 }
 
 // WithEdgeEndpoint sets the edge to have an endpoint. If the edge is eager-loaded,

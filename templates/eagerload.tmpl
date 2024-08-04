@@ -22,9 +22,15 @@ import (
             {{- if not (($e|getAnnotation).GetEagerLoad $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
             .With{{ $e.StructField }}(
                 {{- $sortField := ($e.Type|getAnnotation).GetDefaultSort (ne $e.Type.ID nil) }}
-                {{- if $sortField }}
+                {{- $limit := ($e|getAnnotation).GetEagerLoadLimit $.Annotations.RestConfig }}
+                {{- if or $sortField (and (gt $limit 0) (not $e.Unique)) }}
                     func(e *ent.{{ $e.Type.Name }}Query) {
-                        applySorting{{ $e.Type.Name|zsingular }}(e, {{ $sortField | quote }}, {{ printf "%s" ($t|getAnnotation).GetDefaultOrder| quote }})
+                        {{- if $sortField }}
+                            applySorting{{ $e.Type.Name|zsingular }}(e, {{ $sortField | quote }}, {{ printf "%s" ($t|getAnnotation).GetDefaultOrder| quote }})
+                        {{- end }}
+                        {{- if (and (gt $limit 0) (not $e.Unique)) }}
+                            e.Limit({{ $limit }})
+                        {{- end }}
                     },
                 {{- end }}
             )

@@ -113,6 +113,7 @@ func (User) Edges() []ent.Edge {
 			Comment("Pets owned by the user.").
 			Annotations(
 				entrest.WithEagerLoad(true),
+				entrest.WithEagerLoadLimit(-1),
 				entrest.WithFilter(entrest.FilterEdge),
 				entsql.OnDelete(entsql.SetNull),
 			),

@@ -353,6 +353,12 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 
 			if !e.Unique {
 				prop.Schema = prop.Schema.AsArray()
+
+				if limit := ea.GetEagerLoadLimit(cfg); limit > 0 {
+					prop.Schema.MinItems = ptr(uint64(0))
+					prop.Schema.MaxItems = ptr(uint64(limit))
+					prop.Schema.Description = fmt.Sprintf("A list of %s entities. Limited to %d items. If there are more results than the limit, the results are capped and you must use the associated edge endpoint with pagination -- see also the 'EagerLoadLimit' config option.", Singularize(e.Type.Name), limit)
+				}
 			}
 
 			if !e.Optional {

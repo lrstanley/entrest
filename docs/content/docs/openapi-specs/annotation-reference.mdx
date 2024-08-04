@@ -39,6 +39,7 @@ Depending on the annotation used, it can only be applied in specific locations, 
 | [WithMinItemsPerPage](#withminitemsperpage) | <Usage types={["schema", "edge"]} /> | Sets an explicit minimum number of items per page for paginated calls. |
 | [WithMaxItemsPerPage](#withmaxitemsperpage) | <Usage types={["schema", "edge"]} /> | Sets an explicit maximum number of items per page for paginated calls. |
 | [WithItemsPerPage](#withitemsperpage) | <Usage types={["schema", "edge"]} /> | Sets an explicit default number of items per page for paginated calls. |
+| [WithEagerLoadLimit](#witheagerloadlimit) | <Usage types={["edge"]} /> | Sets the limit for the max number of entities to eager-load for the edge. |
 | [WithEdgeEndpoint](#withedgeendpoint) | <Usage types={["edge"]} /> | Sets the edge to have an endpoint. |
 | [WithEdgeUpdateBulk](#withedgeupdatebulk) | <Usage types={["edge"]} /> | Sets the edge to be bulk updated on the entities associated with the edge. |
 | [WithHandler](#withhandler) | <Usage types={["schema", "edge"]} /> | Sets the schema/edge to be an HTTP handler generated for it. |
@@ -419,6 +420,26 @@ func (Pet) Annotations() []ent.Annotation {
 func (Pet) Annotations() []ent.Annotation {
     return []ent.Annotation{
         entrest.WithItemsPerPage(10),
+    }
+}
+```
+
+### `WithEagerLoadLimit`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithEagerLoadLimit) | usage: <Usage types={["edge"]} /> ]
+
+> Sets the limit for the max number of entities to eager-load for the edge. There is a global default
+> limit for eager-loading, which can be set via the [`EagerLoadLimit`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.EagerLoadLimit)
+> configuration option. Defaults to**1000**, and the limit can be disabled by setting the value to `-1`.
+>
+> See [Eager Loading](/entrest/openapi-specs/eager-loading/) for more information.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithEagerLoadLimit(100),
     }
 }
 ```

@@ -601,3 +601,28 @@ func TestHandler_DefaultSort(t *testing.T) {
 	assert.Equal(t, pet2.Name, resp2.Value.Edges.Pets[1].Name)
 	assert.Equal(t, pet1.Name, resp2.Value.Edges.Pets[2].Name)
 }
+
+func TestHandler_EagerLoadLimit(t *testing.T) {
+	ctx, db, s := newRestServer(t, nil)
+	t.Cleanup(func() { db.Close() })
+
+	// Ensure that the limit is respected when eager-loading.
+	pet1 := newPet(db).SaveX(ctx)
+
+	db.Category.CreateBulk(enttest.Multiple(func(db *ent.Client) *ent.CategoryCreate {
+		return newCategory(db).AddPets(pet1)
+	}, db, 1020)...).ExecX(ctx)
+
+	resp1 := enttest.Request[ent.Pet](ctx, s, http.MethodGet, "/pets/"+strconv.Itoa(pet1.ID), nil).Must(t)
+	require.Len(t, resp1.Value.Edges.Categories, 1000)
+
+	// And when we hit something which has no limit...
+	user1 := newUser(db).SaveX(ctx)
+
+	db.Pet.CreateBulk(enttest.Multiple(func(db *ent.Client) *ent.PetCreate {
+		return newPet(db).SetOwner(user1)
+	}, db, 1020)...).ExecX(ctx)
+
+	resp2 := enttest.Request[ent.User](ctx, s, http.MethodGet, "/users/"+strconv.Itoa(user1.ID), nil).Must(t)
+	require.Len(t, resp2.Value.Edges.Pets, 1020)
+}

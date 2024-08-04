@@ -38,6 +38,7 @@ func EagerLoadPet(query *ent.PetQuery) *ent.PetQuery {
 	return query.WithCategories(
 		func(e *ent.CategoryQuery) {
 			applySortingCategory(e, "id", "asc")
+			e.Limit(1000)
 		},
 	).WithOwner(
 		func(e *ent.UserQuery) {
@@ -52,6 +53,7 @@ func EagerLoadSetting(query *ent.SettingsQuery) *ent.SettingsQuery {
 	return query.WithAdmins(
 		func(e *ent.UserQuery) {
 			applySortingUser(e, "name", "asc")
+			e.Limit(1000)
 		},
 	)
 }

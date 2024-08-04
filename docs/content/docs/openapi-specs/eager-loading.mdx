@@ -66,6 +66,10 @@ func (Pet) Edges() []ent.Edge {
 
 ### Additional configuration
 
+- The default maximum number of results that can be eager-loaded for a given edge can be controlled
+  with the config option [`EagerLoadLimit`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.EagerLoadLimit),
+  and associated [`WithEagerLoadLimit`](/entrest/openapi-specs/annotation-reference/#witheagerloadlimit)
+  annotation.
 - If you eager load an edge, by default the associated edge endpoint will have its pagination turned off.
   This can be turned off with the config option [`DisableEagerLoadNonPagedOpt`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableEagerLoadedEndpoints).
 - If you only ever want to eager load a specific edge and not have a dedicated endpoint, you can use
@@ -86,6 +90,10 @@ all cases.
 It's also worth noting that this could be used as an attack vector (i.e. denial-of-service and/or resource-exhaustion).
 If a user is in control of an association, and intentionally adds additional entities to the association,
 they could overwhelm consumers of your API (response times, memory usage, total response sizes, etc).
+As such, **entrest sets a default limit for the number of eager loaded results**. This can be controlled
+via the config option [`EagerLoadLimit`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.EagerLoadLimit),
+and associated [`WithEagerLoadLimit`](/entrest/openapi-specs/annotation-reference/#witheagerloadlimit)
+annotation.
 
 ### Examples of good and bad eager loading
 
