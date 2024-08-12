@@ -31,6 +31,7 @@ require (
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/exp v0.0.0-20240719175910-8a7402abbf56 // indirect
 	golang.org/x/mod v0.19.0 // indirect
+	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
@@ -45,7 +46,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dprotaso/go-yit v0.0.0-20240618133044-5a0af90af097 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/pb33f/libopenapi v0.16.11
+	github.com/pb33f/libopenapi v0.16.14
 	github.com/pb33f/libopenapi-validator v0.1.0
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
