@@ -34,7 +34,7 @@ curl --request POST \
 }'
 ```
 
-<Code code={`
+<Code lang="json" frame="none" class="code-output" mark="4294967297" code={`
 {
     "id": 4294967297,
     "username": "lrstanley",
@@ -42,7 +42,7 @@ curl --request POST \
     "email": "lrstanley@example.com",
     "edges": {}
 }
-`} lang="json" frame="none" class="code-output" mark="4294967297" />
+`} />
 
 ##### Create a new pet who is owned by the user we just created
 
@@ -58,7 +58,7 @@ curl --request POST \
 }'
 ```
 
-<Code code={`
+<Code lang="json" frame="none" class="code-output" code={`
 {
     "id": 1,
     "name": "Riley",
@@ -74,7 +74,7 @@ curl --request POST \
         }
     }
 }
-`} lang="json" frame="none" class="code-output" />
+`} />
 
 Notice that the response includes the `edges` field. This is because we've added the `owner` edge to
 be eager-loaded in the schema, as shown below:
@@ -105,7 +105,7 @@ curl --request GET \
   --url 'http://localhost:8080/users/4294967297/pets?pretty=true'
 ```
 
-<Code code={`
+<Code lang="json" frame="none" class="code-output" code={`
 {
     "page": 1,
     "total_count": 1,
@@ -129,4 +129,4 @@ curl --request GET \
         }
     ]
 }
-`} lang="json" frame="none" class="code-output" />
+`} />
