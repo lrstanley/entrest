@@ -164,7 +164,10 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
     {{ end }}
 
     {{- range $t := $.Nodes }}
-        {{- if (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        {{- if or
+            (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig)
+            $t.Annotations.Rest.DisableHandler
+        }}{{ continue }}{{ end }}
 
         {{- /* list nodes */}}
         {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "list" }}
@@ -189,6 +192,7 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
         {{- range $e := $t.Edges }}
             {{- if or
                 $e.Annotations.Rest.ReadOnly
+                $e.Annotations.Rest.DisableHandler
                 (not (($e|getAnnotation).GetEdgeEndpoint $t.Config.Annotations.RestConfig))
                 (not $e.Type.ID)
                 (not $t.ID)

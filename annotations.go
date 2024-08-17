@@ -98,7 +98,7 @@ type Annotation struct {
 	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
 	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
 	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
-	Handler         *bool       `json:",omitempty" ent:"schema,edge"`
+	DisableHandler  bool        `json:",omitempty" ent:"schema,edge"`
 	Sortable        bool        `json:",omitempty" ent:"field"`
 	DefaultSort     *string     `json:",omitempty" ent:"schema"`
 	DefaultOrder    *SortOrder  `json:",omitempty" ent:"schema"`
@@ -224,9 +224,7 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 	if am.Filter != 0 {
 		a.Filter = am.Filter.Add(a.Filter)
 	}
-	if am.Handler != nil {
-		a.Handler = am.Handler
-	}
+	a.DisableHandler = a.DisableHandler || am.DisableHandler
 	a.Sortable = a.Sortable || am.Sortable
 	if am.DefaultSort != nil {
 		a.DefaultSort = am.DefaultSort
@@ -524,9 +522,11 @@ func WithFilter(v Predicate) Annotation {
 
 // WithHandler sets the schema/edge to have an HTTP handler generated for it. Unless a schema/edge
 // is skipped or has the specific operation disabled, an HTTP handler/endpoint will be generated for
-// it by default.
+// it by default. This does not prevent the endpoint from being created within the spec, rather only
+// prevents the handler from being mounted. The handler functions will still be generated in case
+// you want to build upon them.
 func WithHandler(v bool) Annotation {
-	return Annotation{Handler: &v}
+	return Annotation{DisableHandler: !v}
 }
 
 // WithSortable sets the field to be sortable in the REST API. Note that only types that can be

@@ -500,6 +500,9 @@ func (Pet) Edges() []ent.Edge {
 
 > Sets the schema/edge to have an HTTP handler generated for it. Unless a schema/edge is skipped or
 > has the specific operation disabled, an HTTP handler/endpoint will be generated for it by default.
+> This does not prevent the endpoint from being created within the spec, rather only prevents the
+> handler from being mounted. The handler functions will still be generated in case you want to
+> build upon them.
 >
 > See [HTTP Handler](/entrest/http-handler/getting-started/) for more information.
 
