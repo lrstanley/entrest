@@ -760,7 +760,19 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 		return nil
 	}
 
-	for _, f := range t.Fields {
+	fields := t.Fields
+
+	if t.ID != nil {
+		if cfg.DefaultFilterID && t.ID != nil {
+			ida := GetAnnotation(t.ID)
+			if ida.Filter == 0 {
+				ida.Filter = FilterGroupEqualExact | FilterGroupArray
+			}
+			fields = append([]*gen.Field{t.ID}, fields...)
+		}
+	}
+
+	for _, f := range fields {
 		fa := GetAnnotation(f)
 
 		if fa.Filter == 0 || fa.GetSkip(cfg) || f.Sensitive() {
