@@ -31,7 +31,7 @@ func NewServer(t *testing.T, db *ent.Client, cfg *rest.ServerConfig) *TestServer
     }
     {{- if eq $.Annotations.RestConfig.Handler "chi" }}
         r := chi.NewRouter()
-        r.Route("/", srv.Handler(r))
+        r.Route("/", srv.Handler)
         return WithExisting(t, r)
     {{- else }}
         return WithExisting(t, srv.Handler())
