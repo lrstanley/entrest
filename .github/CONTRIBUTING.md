@@ -85,19 +85,6 @@ Below are a few guidelines if you would like to contribute:
 
 
 
-## :clipboard: References
-
-   * [Open Source: How to Contribute](https://opensource.guide/how-to-contribute/)
-   * [About pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
-   * [GitHub Docs](https://docs.github.com/)
-
-## :speech_balloon: What to do next?
-
-   * :old_key: Find a vulnerability? Check out our [Security and Disclosure][security] policy.
-   * :link: Repository [License][license].
-   * [Support][support]
-   * [Code of Conduct][coc].
-
 <!-- source for this section: ./.github/ci-config.yml -->
 
 ## :page_with_curl: Documentation
@@ -142,6 +129,19 @@ module. See the contents of the [Makefile](Makefile) for more information on spe
 
 Make sure you read the [Go](hamster-golang) section.
 
+
+## :clipboard: References
+
+   * [Open Source: How to Contribute](https://opensource.guide/how-to-contribute/)
+   * [About pull requests](https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests)
+   * [GitHub Docs](https://docs.github.com/)
+
+## :speech_balloon: What to do next?
+
+   * :old_key: Find a vulnerability? Check out our [Security and Disclosure][security] policy.
+   * :link: Repository [License][license].
+   * [Support][support]
+   * [Code of Conduct][coc].
 
 <!-- definitions -->
 [coc]: https://github.com/lrstanley/entrest/blob/master/.github/CODE_OF_CONDUCT.md
