@@ -23,4 +23,7 @@
             panic(fmt.Sprintf("failed to marshal response: %v", err))
         }
     }
+
+    // M is an alias for map[string]any, which makes it easier to respond with generic JSON data structures.
+    type M map[string]any
 {{- end }}{{/* end template */}}
