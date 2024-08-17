@@ -405,14 +405,6 @@ type ListPetParams struct {
 	EdgeCategoryUpdatedAtLT *time.Time `form:"category.updatedAt.lt,omitempty" json:"edge_category_updated_at_lt,omitempty"`
 	// If true, only return entities that have a owner edge.
 	EdgeHasOwner *bool `form:"has.owner,omitempty" json:"edge_has_owner,omitempty"`
-	// Filters field "id" to be equal to the provided value.
-	EdgeOwnerIDEQ *int `form:"owner.id.eq,omitempty" json:"edge_owner_ideq,omitempty"`
-	// Filters field "id" to be not equal to the provided value.
-	EdgeOwnerIDNEQ *int `form:"owner.id.neq,omitempty" json:"edge_owner_idneq,omitempty"`
-	// Filters field "id" to be within the provided values.
-	EdgeOwnerIDIn []int `form:"owner.id.in,omitempty" json:"edge_owner_id_in,omitempty"`
-	// Filters field "id" to be not within the provided values.
-	EdgeOwnerIDNotIn []int `form:"owner.id.notIn,omitempty" json:"edge_owner_id_not_in,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
 	EdgeOwnerCreatedAtGT *time.Time `form:"owner.createdAt.gt,omitempty" json:"edge_owner_created_at_gt,omitempty"`
 	// Filters field "created_at" to be less than the provided value.
@@ -519,14 +511,6 @@ type ListPetParams struct {
 	EdgeFriendTypeNotIn []pet.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitempty"`
 	// If true, only return entities that have a followed_by edge.
 	EdgeHasFollowedBy *bool `form:"has.followedBy,omitempty" json:"edge_has_followed_by,omitempty"`
-	// Filters field "id" to be equal to the provided value.
-	EdgeFollowedByIDEQ *int `form:"followedBy.id.eq,omitempty" json:"edge_followed_by_ideq,omitempty"`
-	// Filters field "id" to be not equal to the provided value.
-	EdgeFollowedByIDNEQ *int `form:"followedBy.id.neq,omitempty" json:"edge_followed_by_idneq,omitempty"`
-	// Filters field "id" to be within the provided values.
-	EdgeFollowedByIDIn []int `form:"followedBy.id.in,omitempty" json:"edge_followed_by_id_in,omitempty"`
-	// Filters field "id" to be not within the provided values.
-	EdgeFollowedByIDNotIn []int `form:"followedBy.id.notIn,omitempty" json:"edge_followed_by_id_not_in,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
 	EdgeFollowedByCreatedAtGT *time.Time `form:"followedBy.createdAt.gt,omitempty" json:"edge_followed_by_created_at_gt,omitempty"`
 	// Filters field "created_at" to be less than the provided value.
@@ -686,18 +670,6 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 		} else {
 			predicates = append(predicates, pet.Not(pet.HasOwner()))
 		}
-	}
-	if l.EdgeOwnerIDEQ != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.IDEQ(*l.EdgeOwnerIDEQ)))
-	}
-	if l.EdgeOwnerIDNEQ != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.IDNEQ(*l.EdgeOwnerIDNEQ)))
-	}
-	if l.EdgeOwnerIDIn != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.IDIn(l.EdgeOwnerIDIn...)))
-	}
-	if l.EdgeOwnerIDNotIn != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.IDNotIn(l.EdgeOwnerIDNotIn...)))
 	}
 	if l.EdgeOwnerCreatedAtGT != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.CreatedAtGT(*l.EdgeOwnerCreatedAtGT)))
@@ -877,18 +849,6 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 		} else {
 			predicates = append(predicates, pet.Not(pet.HasFollowedBy()))
 		}
-	}
-	if l.EdgeFollowedByIDEQ != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.IDEQ(*l.EdgeFollowedByIDEQ)))
-	}
-	if l.EdgeFollowedByIDNEQ != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.IDNEQ(*l.EdgeFollowedByIDNEQ)))
-	}
-	if l.EdgeFollowedByIDIn != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.IDIn(l.EdgeFollowedByIDIn...)))
-	}
-	if l.EdgeFollowedByIDNotIn != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.IDNotIn(l.EdgeFollowedByIDNotIn...)))
 	}
 	if l.EdgeFollowedByCreatedAtGT != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.CreatedAtGT(*l.EdgeFollowedByCreatedAtGT)))
@@ -1096,14 +1056,6 @@ type ListUserParams struct {
 	Paginated[*ent.UserQuery, ent.User]
 	Filtered[predicate.User]
 
-	// Filters field "id" to be equal to the provided value.
-	UserIDEQ *int `form:"id.eq,omitempty" json:"user_ideq,omitempty"`
-	// Filters field "id" to be not equal to the provided value.
-	UserIDNEQ *int `form:"id.neq,omitempty" json:"user_idneq,omitempty"`
-	// Filters field "id" to be within the provided values.
-	UserIDIn []int `form:"id.in,omitempty" json:"user_id_in,omitempty"`
-	// Filters field "id" to be not within the provided values.
-	UserIDNotIn []int `form:"id.notIn,omitempty" json:"user_id_not_in,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
 	UserCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"user_created_at_gt,omitempty"`
 	// Filters field "created_at" to be less than the provided value.
@@ -1252,14 +1204,6 @@ type ListUserParams struct {
 	EdgeFollowedPetTypeNotIn []pet.Type `form:"followedPet.type.notIn,omitempty" json:"edge_followed_pet_type_not_in,omitempty"`
 	// If true, only return entities that have a friend edge.
 	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitempty"`
-	// Filters field "id" to be equal to the provided value.
-	EdgeFriendIDEQ *int `form:"friend.id.eq,omitempty" json:"edge_friend_ideq,omitempty"`
-	// Filters field "id" to be not equal to the provided value.
-	EdgeFriendIDNEQ *int `form:"friend.id.neq,omitempty" json:"edge_friend_idneq,omitempty"`
-	// Filters field "id" to be within the provided values.
-	EdgeFriendIDIn []int `form:"friend.id.in,omitempty" json:"edge_friend_id_in,omitempty"`
-	// Filters field "id" to be not within the provided values.
-	EdgeFriendIDNotIn []int `form:"friend.id.notIn,omitempty" json:"edge_friend_id_not_in,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
 	EdgeFriendCreatedAtGT *time.Time `form:"friend.createdAt.gt,omitempty" json:"edge_friend_created_at_gt,omitempty"`
 	// Filters field "created_at" to be less than the provided value.
@@ -1332,18 +1276,6 @@ type ListUserParams struct {
 func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	var predicates []predicate.User
 
-	if l.UserIDEQ != nil {
-		predicates = append(predicates, user.IDEQ(*l.UserIDEQ))
-	}
-	if l.UserIDNEQ != nil {
-		predicates = append(predicates, user.IDNEQ(*l.UserIDNEQ))
-	}
-	if l.UserIDIn != nil {
-		predicates = append(predicates, user.IDIn(l.UserIDIn...))
-	}
-	if l.UserIDNotIn != nil {
-		predicates = append(predicates, user.IDNotIn(l.UserIDNotIn...))
-	}
 	if l.UserCreatedAtGT != nil {
 		predicates = append(predicates, user.CreatedAtGT(*l.UserCreatedAtGT))
 	}
@@ -1593,18 +1525,6 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 		} else {
 			predicates = append(predicates, user.Not(user.HasFriends()))
 		}
-	}
-	if l.EdgeFriendIDEQ != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.IDEQ(*l.EdgeFriendIDEQ)))
-	}
-	if l.EdgeFriendIDNEQ != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.IDNEQ(*l.EdgeFriendIDNEQ)))
-	}
-	if l.EdgeFriendIDIn != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.IDIn(l.EdgeFriendIDIn...)))
-	}
-	if l.EdgeFriendIDNotIn != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.IDNotIn(l.EdgeFriendIDNotIn...)))
 	}
 	if l.EdgeFriendCreatedAtGT != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.CreatedAtGT(*l.EdgeFriendCreatedAtGT)))
