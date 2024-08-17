@@ -89,7 +89,7 @@ Below are a few guidelines if you would like to contribute:
 
 ## :page_with_curl: Documentation
 
-Documentation is generated using [Starlight](https://starlight.astro.build/). To run the docs locally,you will need:
+Documentation is generated using [Starlight](https://starlight.astro.build/). To run the docs locally, you will need:
 
 - Node.js 18+
 - pnpm
