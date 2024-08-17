@@ -4,4 +4,220 @@ sidebar:
   order: 4
 ---
 
-TODO
+import { Code } from '@astrojs/starlight/components';
+
+## What is Pagination?
+
+entrest supports pagination for all **list** operations by default. Pagination at a high-level ensures
+that as the data returned by your API grows, there is a linear request size and query time/complexity,
+and you can better enforce rate limits for querying your API. If you cannot be confident that the number
+of results will not grow beyond a reasonable size, you should keep pagination enabled for any schemas
+where that may apply.
+
+## Configuration
+
+Pagination has a few configuration options in a few locations:
+
+- Turning pagination on/off.
+  - **Globally**: with the `DisablePagination` [config](https://pkg.go.dev/github.com/lrstanley/entrest#Config)
+    option.
+  - **Per-schema**: with the [`WithPagination`](/entrest/openapi-specs/annotation-reference/#withpagination)
+    annotation.
+- Adjusting the default, minimum and maximum number of results per page.
+  - **Globally**: with the `ItemsPerPage`, `MinItemsPerPage`, and `MaxItemsPerPage`
+    [config](https://pkg.go.dev/github.com/lrstanley/entrest#Config) options.
+  - **Per-schema**: with the [`WithItemsPerPage`](/entrest/openapi-specs/annotation-reference/#withitemsperpage),
+    [`WithMinItemsPerPage`](/entrest/openapi-specs/annotation-reference/#withminitemsperpage), and
+    [`WithMaxItemsPerPage`](/entrest/openapi-specs/annotation-reference/#withmaxitemsperpage) annotations.
+
+## Example of querying a paginated endpoint
+
+Using our [example API](/entrest/guides/getting-started/), and some of the [example queries](/entrest/guides/calling-your-new-api/),
+we have the `/users/{id}/pets` endpoint which returns a list of pets associated with the user. Since the
+user could have many pets (who knows, maybe they run a cat cafe), this is a perfect use case for pagination.
+
+<Code lang="bash" ins={/&page[^']+/g}  code={`
+curl --request GET \\
+  --url 'http://localhost:8080/users/4294967297/pets?pretty=true&page=1&per_page=5'
+`} />
+
+<Code lang="json" frame="none" class="code-output" mark={["page", "total_count", "last_page", "is_last_page", "content"]} code={`
+{
+    "page": 1,
+    "total_count": 124,
+    "last_page": 25,
+    "is_last_page": false,
+    "content": [
+        {
+            "id": 1,
+            "name": "Riley",
+            "age": 1,
+            "type": "DOG",
+            "edges": {
+                "owner": {
+                    "id": 4294967297,
+                    "username": "lrstanley",
+                    "display_name": "Liam Stanley",
+                    "email": "lrstanley@example.com",
+                    "edges": {}
+                }
+            }
+        },
+        {
+            "id": 2,
+            "name": "Orea",
+            "age": 2,
+            "type": "DOG",
+            "edges": {
+                "owner": {
+                    "id": 4294967297,
+                    "username": "lrstanley",
+                    "display_name": "Liam Stanley",
+                    "email": "lrstanley@example.com",
+                    "edges": {}
+                }
+            }
+        },
+        {
+            "id": 3,
+            "name": "Prince",
+            "age": 9,
+            "type": "CAT",
+            "edges": {
+                "owner": {
+                    "id": 4294967297,
+                    "username": "lrstanley",
+                    "display_name": "Liam Stanley",
+                    "email": "lrstanley@example.com",
+                    "edges": {}
+                }
+            }
+        },
+        {
+            "id": 4,
+            "name": "Rex",
+            "age": 2,
+            "type": "DOG",
+            "edges": {
+                "owner": {
+                    "id": 4294967297,
+                    "username": "lrstanley",
+                    "display_name": "Liam Stanley",
+                    "email": "lrstanley@example.com",
+                    "edges": {}
+                }
+            }
+        },
+        {
+            "id": 5,
+            "name": "Lucky",
+            "age": 4,
+            "type": "DOG",
+            "edges": {
+                "owner": {
+                    "id": 4294967297,
+                    "username": "lrstanley",
+                    "display_name": "Liam Stanley",
+                    "email": "lrstanley@example.com",
+                    "edges": {}
+                }
+            }
+        }
+    ]
+}
+`} />
+
+You will notice that we provided the `page` parameter (not required for the first page), and the
+`per_page` parameter (to control how many results we want per page). `per_page` will be limited to
+the `MinItemsPerPage` and `MaxItemsPerPage` values, and they have relatively sane defaults.
+
+As we only requested `5` results, and there are a total of `124` results as shown in the `total_count`
+field, we can see that there are `25` pages in total. You can use the `last_page` or `is_last_page`
+fields to determine if we are on the last page, or if there are more pages to fetch.
+
+### Python example
+
+Below is an example of how you might achieve collecting all results from a paginated endpoint in Python:
+
+```python
+import requests
+
+page = 1
+results = []
+
+while True:
+    print(f"fetching page {page}...")
+    resp = requests.get(f"http://localhost:8080/users/4294967297/pets?page={page}&per_page=100")
+    data = resp.json()
+
+    results += data["content"]
+
+    if data["is_last_page"]:
+        break
+
+    page += 1
+
+print(results)
+```
+
+### Go example
+
+Below is an example of how you might achieve collecting all results from a paginated endpoint in Go:
+
+```go
+package main
+
+import (
+    "encoding/json"
+    "fmt"
+    "net/http"
+)
+
+type Pet struct {
+    ID   int    `json:"id"`
+    Name string `json:"name"`
+    Age  int    `json:"age"`
+    Type string `json:"type"`
+
+    // [...]
+}
+
+// Recommend a generic type wrapper, since you'd likely have multiple endpoints which re-use the same
+// base paginated structure.
+type Paged[T any] struct {
+    Page       int  `json:"page"`
+    TotalCount int  `json:"total_count"`
+    LastPage   int  `json:"last_page"`
+    IsLastPage bool `json:"is_last_page"`
+    Content    []*T `json:"content"`
+}
+
+func main() {
+    page := 1
+    var pets []*Pet
+    var pageResults Paged[Pet]
+
+    for {
+        resp, err := http.Get(fmt.Sprintf("http://localhost:8080/users/4294967297/pets?page=%d&per_page=100", page))
+        if err != nil {
+            panic(err)
+        }
+
+        decoder := json.NewDecoder(resp.Body)
+        err = decoder.Decode(&pageResults)
+        if err != nil {
+            panic(err)
+        }
+        resp.Body.Close()
+
+        pets = append(pets, pageResults.Content...)
+
+        if pageResults.IsLastPage {
+            break
+        }
+        page += 1
+    }
+
+    fmt.Printf("total pets: %d\n", len(pets))
+}
+```
