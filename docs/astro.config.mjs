@@ -84,6 +84,13 @@ export default defineConfig({
                     },
                     items: [
                         {
+                            label: "Contributing",
+                            link: "https://github.com/lrstanley/entrest/blob/master/.github/CONTRIBUTING.md",
+                            attrs: {
+                                target: "_blank",
+                            },
+                        },
+                        {
                             label: "GitHub Project",
                             link: "https://github.com/lrstanley/entrest",
                             attrs: {
