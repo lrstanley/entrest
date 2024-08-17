@@ -98,6 +98,51 @@ Below are a few guidelines if you would like to contribute:
    * [Support][support]
    * [Code of Conduct][coc].
 
+<!-- source for this section: ./.github/ci-config.yml -->
+
+## :page_with_curl: Documentation
+
+Documentation is generated using [Starlight](https://starlight.astro.build/). To run the docs locally,you will need:
+
+- Node.js 18+
+- pnpm
+- make
+
+Then, run the following from the root of the repo:
+
+```bash
+make docs-debug
+```
+
+## :pushpin: All other contributions
+
+For all other contributions (bug fixes, feature additions, adding examples, etc), you will need the following installed:
+
+- Go (almost always the latest stable version)
+- make
+- **recommended**: [golangci-lint](https://golangci-lint.run/) (latest version)
+- **recommended**: [delve](https://github.com/go-delve/delve) (latest version)
+
+Once you have the above installed, you can run the following from the root of the repo:
+
+```bash
+make test
+```
+
+This will do the following:
+
+1. Ensure all dependencies are installed and in-sync with the code.
+2. Ensure any code-generation for the core module is up-to-date.
+3. Run ent code-generation for all examples.
+4. Run tests for all examples (multiple times).
+5. Run tests for the core module.
+
+During rapid prototyping, you may wish to only run `make examples` for examples, or `go test -v ./...` for the core
+module. See the contents of the [Makefile](Makefile) for more information on specifics.
+
+Make sure you read the [Go](hamster-golang) section.
+
+
 <!-- definitions -->
 [coc]: https://github.com/lrstanley/entrest/blob/master/.github/CODE_OF_CONDUCT.md
 [dco]: https://developercertificate.org/
