@@ -107,6 +107,9 @@ func JSON(w http.ResponseWriter, r *http.Request, status int, v any) {
 	}
 }
 
+// M is an alias for map[string]any, which makes it easier to respond with generic JSON data structures.
+type M map[string]any
+
 var (
 	// DefaultDecoder is the default decoder used by Bind. You can either override
 	// this, or provide your own. Make sure it is set before Bind is called.
