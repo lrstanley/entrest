@@ -187,7 +187,12 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
         {{- end }}
 
         {{- range $e := $t.Edges }}
-            {{- if or $e.Annotations.Rest.ReadOnly (not $e.Type.ID) (not $t.ID) }}{{ continue }}{{ end }}
+            {{- if or
+                $e.Annotations.Rest.ReadOnly
+                (not (($e|getAnnotation).GetEdgeEndpoint $t.Config.Annotations.RestConfig))
+                (not $e.Type.ID)
+                (not $t.ID)
+            }}{{ continue }}{{ end }}
 
             {{- /* get nodes edge (unique) */}}
             {{- if and $e.Unique (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
@@ -273,7 +278,12 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
     {{- end }}
 
     {{- range $e := $t.Edges }}
-        {{- if or $e.Annotations.Rest.ReadOnly (not $e.Type.ID) (not $t.ID) }}{{ continue }}{{ end }}
+        {{- if or
+            $e.Annotations.Rest.ReadOnly
+            (not (($e|getAnnotation).GetEdgeEndpoint $t.Config.Annotations.RestConfig))
+            (not $e.Type.ID)
+            (not $t.ID)
+        }}{{ continue }}{{ end }}
 
         {{- /* get nodes edge (unique) */}}
         {{- if and $e.Unique (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
