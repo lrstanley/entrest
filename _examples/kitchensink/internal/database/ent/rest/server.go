@@ -259,14 +259,13 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
     <script>
       document.getElementById("api-reference").dataset.configuration = JSON.stringify({
         spec: {
-          url: "{{ $.BasePath }}",
+          url: "{{ . }}",
         },
         servers: [
             {url: window.location.origin + window.location.pathname.replace(/\/docs$/g, "")}
         ],
         theme: "kepler",
         isEditable: false,
-        hideModels: {{ $.HideModels }},
         hideDownloadButton: true,
         customCss: ".darklight-reference-promo { visibility: hidden !important; height: 0 !important; }",
       });
@@ -281,11 +280,7 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
 
 func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
 	var buf bytes.Buffer
-	err := scalarTemplate.Execute(&buf, map[string]any{
-		"BasePath":   s.config.BasePath + "/openapi.json",
-		"HideModels": s.config.DocsHideModels,
-	})
-	if err != nil {
+	if err := scalarTemplate.Execute(&buf, s.config.BasePath+"/openapi.json"); err != nil {
 		handleResponse[struct{}](s, w, r, "", nil, err)
 		return
 	}
@@ -317,11 +312,6 @@ type ServerConfig struct {
 	// endpoint at /docs. Use this if you want to provide your own documentation functionality.
 	// This is disabled by default if [ServerConfig.DisableSpecHandler] is true.
 	DisableDocsHandler bool
-
-	// DocsHideModels if set to true, will hide the "models" section of the API reference
-	// documentation. This is disabled by default. This is useful to reduce load times and
-	// improve performance for very large APIs.
-	DocsHideModels bool
 
 	// EnableLinks if set to true, will enable the "Link" response header, which can be used to hint
 	// to clients about the location of the OpenAPI spec, API documentation, how to auto-paginate
