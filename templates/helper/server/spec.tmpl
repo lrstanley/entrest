@@ -17,6 +17,10 @@
         // disable the embedded API reference documentation, see [ServerConfig.DisableDocs] for more
         // information.
         DisableSpecHandler bool
+
+        // DisableSpecInjectServer if set to true, will disable the automatic injection of the
+        // server URL into the spec. This only applies if [ServerConfig.BaseURL] is provided.
+        DisableSpecInjectServer bool
     {{ end }}
 {{ end }}{{/* end template */}}
 
@@ -56,6 +60,23 @@
         // Spec returns the OpenAPI spec for the server implementation.
         func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
             w.Header().Set("Content-Type", "application/json")
+            if !s.config.DisableSpecInjectServer && s.config.BaseURL != "" {
+                spec := map[string]any{}
+                err := json.Unmarshal(OpenAPI, &spec)
+                if err != nil {
+                    panic(fmt.Sprintf("failed to unmarshal spec: %v", err))
+                }
+
+                type Server struct {
+                    URL string `json:"url"`
+                }
+
+                if _, ok := spec["servers"]; !ok {
+                    spec["servers"] = []Server{ {URL: s.config.BaseURL} }
+                    JSON(w, r, http.StatusOK, spec)
+                    return
+                }
+            }
             w.WriteHeader(http.StatusOK)
             _, _ = w.Write(OpenAPI)
         }

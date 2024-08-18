@@ -49,11 +49,15 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
     <script>
       document.getElementById("api-reference").dataset.configuration = JSON.stringify({
         spec: {
-          url: "{{ "{{" }} . {{ "}}" }}",
+          url: "{{ "{{" }} $.SpecPath {{ "}}" }}",
         },
+        {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
+        {{ "{{- " }}if $.DisableSpecInjectServer{{ " }}" }}
         servers: [
             {url: window.location.origin + window.location.pathname.replace(/\/docs$/g, "")}
         ],
+        {{ "{{- " }}end{{ " }}" }}
+        {{- end }}
         theme: "kepler",
         isEditable: false,
         hideDownloadButton: true,
@@ -70,7 +74,13 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
 
 func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
     var buf bytes.Buffer
-    if err := scalarTemplate.Execute(&buf, s.config.BasePath + "/openapi.json"); err != nil {
+    err := scalarTemplate.Execute(&buf, map[string]any{
+        "SpecPath": s.config.BasePath + "/openapi.json",
+        {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
+          "DisableSpecInjectServer": s.config.DisableSpecInjectServer,
+        {{- end }}
+    })
+    if err != nil {
         handleResponse[struct{}](s, w, r, "", nil, err)
         return
     }

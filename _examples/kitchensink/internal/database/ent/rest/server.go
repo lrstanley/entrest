@@ -240,6 +240,23 @@ type linkablePagedResource interface {
 // Spec returns the OpenAPI spec for the server implementation.
 func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
+	if !s.config.DisableSpecInjectServer && s.config.BaseURL != "" {
+		spec := map[string]any{}
+		err := json.Unmarshal(OpenAPI, &spec)
+		if err != nil {
+			panic(fmt.Sprintf("failed to unmarshal spec: %v", err))
+		}
+
+		type Server struct {
+			URL string `json:"url"`
+		}
+
+		if _, ok := spec["servers"]; !ok {
+			spec["servers"] = []Server{{URL: s.config.BaseURL}}
+			JSON(w, r, http.StatusOK, spec)
+			return
+		}
+	}
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(OpenAPI)
 }
@@ -259,11 +276,13 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
     <script>
       document.getElementById("api-reference").dataset.configuration = JSON.stringify({
         spec: {
-          url: "{{ . }}",
+          url: "{{ $.SpecPath }}",
         },
+        {{- if $.DisableSpecInjectServer }}
         servers: [
             {url: window.location.origin + window.location.pathname.replace(/\/docs$/g, "")}
         ],
+        {{- end }}
         theme: "kepler",
         isEditable: false,
         hideDownloadButton: true,
@@ -280,7 +299,11 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
 
 func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
 	var buf bytes.Buffer
-	if err := scalarTemplate.Execute(&buf, s.config.BasePath+"/openapi.json"); err != nil {
+	err := scalarTemplate.Execute(&buf, map[string]any{
+		"SpecPath":                s.config.BasePath + "/openapi.json",
+		"DisableSpecInjectServer": s.config.DisableSpecInjectServer,
+	})
+	if err != nil {
 		handleResponse[struct{}](s, w, r, "", nil, err)
 		return
 	}
@@ -307,6 +330,10 @@ type ServerConfig struct {
 	// disable the embedded API reference documentation, see [ServerConfig.DisableDocs] for more
 	// information.
 	DisableSpecHandler bool
+
+	// DisableSpecInjectServer if set to true, will disable the automatic injection of the
+	// server URL into the spec. This only applies if [ServerConfig.BaseURL] is provided.
+	DisableSpecInjectServer bool
 
 	// DisableDocsHandler if set to true, will disable the embedded API reference documentation
 	// endpoint at /docs. Use this if you want to provide your own documentation functionality.
