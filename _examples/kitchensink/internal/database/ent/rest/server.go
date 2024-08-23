@@ -500,10 +500,21 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
 	w.WriteHeader(http.StatusNoContent)
 }
 
+// UseEntContext can be used to inject an [ent.Client] into the context for use
+// by other middleware, or ent privacy layers. Note that the server will do this
+// by default, so you don't need to do this manually, unless it's a context that's
+// not being passed to the server and is being consumed elsewhere.
+func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			next.ServeHTTP(w, r.WithContext(ent.NewContext(r.Context(), db)))
+		})
+	}
+}
+
 // Handler returns a ready-to-use http.Handler that mounts all of the necessary endpoints.
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
-
 	mux.HandleFunc("GET /categories", ReqParam(s, OperationList, s.ListCategories))
 	mux.HandleFunc("GET /categories/{id}", ReqID(s, OperationRead, s.GetCategory))
 	mux.HandleFunc("GET /categories/{id}/pets", ReqIDParam(s, OperationList, s.ListCategoryPets))
@@ -556,7 +567,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
 	})
-	return mux
+	return UseEntContext(s.db)(mux)
 }
 
 // ListCategories maps to "GET /categories".

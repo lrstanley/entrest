@@ -15,3 +15,5 @@
 /docs/dist
 /docs/node_modules
 /docs/assets/data
+
+**/TODO.md
