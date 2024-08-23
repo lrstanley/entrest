@@ -132,3 +132,17 @@ func mapKeys[M ~map[K]V, K cmp.Ordered, V any](m M) []K {
 	slices.Sort(r)
 	return r
 }
+
+// ToEnum returns a slice of json.RawMessage from a slice of T. This is useful when
+// using the [WithSchema] annotation.
+func ToEnum[T any](values []T) ([]json.RawMessage, error) {
+	results := make([]json.RawMessage, len(values))
+	var err error
+	for i, e := range values {
+		results[i], err = json.Marshal(e)
+		if err != nil {
+			return nil, err
+		}
+	}
+	return results, nil
+}

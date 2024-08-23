@@ -86,14 +86,11 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 		// 		return nil, err
 		// 	}
 		// }
-		values := make([]json.RawMessage, len(f.EnumValues()))
-		for i, e := range f.EnumValues() {
-			values[i], err = json.Marshal(e)
-			if err != nil {
-				return nil, err
-			}
+		schema = &ogen.Schema{Type: "string"}
+		schema.Enum, err = ToEnum(f.EnumValues())
+		if err != nil {
+			return nil, err
 		}
-		schema = &ogen.Schema{Type: "string", Enum: values}
 	}
 
 	if schema == nil {
