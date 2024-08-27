@@ -5942,6 +5942,7 @@
                     }
                 },
                 "required": [
+                    "id",
                     "created_at",
                     "updated_at",
                     "name",
@@ -6415,6 +6416,7 @@
                     }
                 },
                 "required": [
+                    "id",
                     "created_at",
                     "user_id",
                     "friend_id"
@@ -6561,6 +6563,7 @@
                     }
                 },
                 "required": [
+                    "id",
                     "name",
                     "age",
                     "type"
@@ -6807,6 +6810,7 @@
                     }
                 },
                 "required": [
+                    "id",
                     "created_at",
                     "updated_at"
                 ]
@@ -6965,6 +6969,7 @@
                     }
                 },
                 "required": [
+                    "id",
                     "created_at",
                     "updated_at",
                     "name",

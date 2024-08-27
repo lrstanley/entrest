@@ -174,7 +174,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 			fieldSchema.Description = fmt.Sprintf("The ID of the %s entity.", entityName)
 			schema.Properties = append(schema.Properties, *fieldSchema.ToProperty("id"))
 
-			if t.ID.Default {
+			if !t.ID.Default {
 				schema.Required = append(schema.Required, "id")
 			}
 		}
@@ -300,6 +300,10 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 			}
 			fieldSchema.Description = fmt.Sprintf("The ID of the %s entity.", entityName)
 			schema.Properties = append(schema.Properties, *fieldSchema.ToProperty("id"))
+
+			if !t.ID.Optional {
+				schema.Required = append(schema.Required, "id")
+			}
 		}
 
 		for _, f := range t.Fields {
