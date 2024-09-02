@@ -204,7 +204,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 		}
 	}
 
-	addGlobalErrorResponses(spec, e.config.GlobalErrorResponses)
+	addGlobalErrorResponses(e.config, spec, e.config.GlobalErrorResponses)
 	addGlobalRequestHeaders(spec, e.config.GlobalRequestHeaders)
 	addGlobalResponseHeaders(spec, e.config.GlobalResponseHeaders)
 

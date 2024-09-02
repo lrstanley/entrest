@@ -99,6 +99,9 @@
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
                     },
@@ -762,6 +765,9 @@
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
                     },
@@ -859,6 +865,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
                     },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
@@ -1017,6 +1026,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
                     },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
@@ -1867,6 +1879,9 @@
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
                     },
@@ -2194,6 +2209,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
                     },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
@@ -2618,6 +2636,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
                     },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
@@ -3054,6 +3075,9 @@
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
                     },
@@ -3232,6 +3256,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
                     },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
@@ -3766,6 +3793,9 @@
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
                     },
@@ -4188,6 +4218,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
                     },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
@@ -4852,6 +4885,9 @@
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
                     },
@@ -5275,6 +5311,9 @@
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
                     },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
                     },
@@ -5374,6 +5413,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
                     },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"
@@ -5796,6 +5838,9 @@
                     },
                     "403": {
                         "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
                     },
                     "429": {
                         "$ref": "#/components/responses/ErrorTooManyRequests"

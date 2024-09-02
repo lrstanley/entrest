@@ -128,6 +128,13 @@ type Config struct {
 	// fields that are not defined in the schema.
 	StrictMutate bool
 
+	// ListNotFound if set to true, will cause a 404 "Not Found" response if a list endpoint
+	// (with any filtering as part of the request) returns no results. This is technically
+	// "more correct" according to the RFC, but some prefer to return a 200 "OK". In either
+	// case, the body of the response would still be the typical pagination or list object,
+	// with the "content" field being an empty array.
+	ListNotFound bool
+
 	// DisableSpecHandler disables the generation of an OpenAPI spec handler (e.g.
 	// /openapi.json). Disabling this will also disable embedding the spec into the
 	// binary/rest generated library.

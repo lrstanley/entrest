@@ -695,7 +695,7 @@ func addGlobalResponseHeaders(spec *ogen.Spec, headers map[string]*ogen.Header) 
 //
 // NOTE: order of operations for this function is important. Ideally, it should be
 // called before headers are added.
-func addGlobalErrorResponses(spec *ogen.Spec, responses map[int]*ogen.Schema) {
+func addGlobalErrorResponses(cfg *Config, spec *ogen.Spec, responses map[int]*ogen.Schema) {
 	// TODO: there is probably a more clean way of doing this, but this also covers
 	// user-provided paths/operations passed in via config and hooks.
 
@@ -728,7 +728,7 @@ func addGlobalErrorResponses(spec *ogen.Spec, responses map[int]*ogen.Schema) {
 
 			for k := range responses {
 				switch {
-				case strings.HasPrefix(op.OperationID, "list") && k == http.StatusNotFound:
+				case strings.HasPrefix(op.OperationID, "list") && k == http.StatusNotFound && !cfg.ListNotFound:
 					continue
 				case !strings.HasPrefix(op.OperationID, "create") && !strings.HasPrefix(op.OperationID, "update") && k == http.StatusConflict:
 					continue

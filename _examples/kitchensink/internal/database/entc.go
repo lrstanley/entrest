@@ -20,6 +20,7 @@ func main() {
 		Handler:               entrest.HandlerStdlib,
 		WithTesting:           true,
 		StrictMutate:          true,
+		ListNotFound:          true,
 		GlobalRequestHeaders:  entrest.RequestIDHeader,
 		GlobalResponseHeaders: entrest.RateLimitHeaders,
 	})
