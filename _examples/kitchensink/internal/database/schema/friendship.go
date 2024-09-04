@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/lrstanley/entrest"
 )
 
 type Friendship struct {
@@ -21,8 +22,16 @@ func (Friendship) Fields() []ent.Field {
 	return []ent.Field{
 		field.Time("created_at").
 			Default(time.Now),
-		field.Int("user_id"),
-		field.Int("friend_id"),
+		field.Int("user_id").
+			Annotations(
+				entrest.WithSortable(true),
+				entrest.WithFilter(entrest.FilterGroupEqualExact|entrest.FilterGroupArray),
+			),
+		field.Int("friend_id").
+			Annotations(
+				entrest.WithSortable(true),
+				entrest.WithFilter(entrest.FilterGroupEqualExact|entrest.FilterGroupArray),
+			),
 	}
 }
 
@@ -33,6 +42,7 @@ func (Friendship) Edges() []ent.Edge {
 			Unique().
 			Field("user_id").
 			Annotations(
+				entrest.WithFilter(entrest.FilterEdge),
 				entsql.OnDelete(entsql.Cascade),
 			),
 		edge.To("friend", User.Type).
@@ -40,6 +50,7 @@ func (Friendship) Edges() []ent.Edge {
 			Unique().
 			Field("friend_id").
 			Annotations(
+				entrest.WithFilter(entrest.FilterEdge),
 				entsql.OnDelete(entsql.Cascade),
 			),
 	}

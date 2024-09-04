@@ -21,6 +21,7 @@ func main() {
 		WithTesting:           true,
 		StrictMutate:          true,
 		ListNotFound:          true,
+		DefaultFilterID:       true,
 		GlobalRequestHeaders:  entrest.RequestIDHeader,
 		GlobalResponseHeaders: entrest.RateLimitHeaders,
 	})

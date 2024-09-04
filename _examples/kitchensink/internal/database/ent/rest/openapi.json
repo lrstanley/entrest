@@ -56,6 +56,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/CategoryIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/CategoryCreatedAtGT"
                     },
                     {
@@ -401,6 +413,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/PetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameEQ"
                     },
                     {
@@ -464,6 +488,18 @@
                         "$ref": "#/components/parameters/EdgeHasCategory"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeCategoryIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeCategoryCreatedAtGT"
                     },
                     {
@@ -477,6 +513,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerCreatedAtGT"
@@ -575,6 +623,18 @@
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameEQ"
                     },
                     {
@@ -636,6 +696,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByCreatedAtGT"
@@ -994,6 +1066,237 @@
                             ],
                             "default": "asc"
                         }
+                    },
+                    {
+                        "$ref": "#/components/parameters/FilterOperation"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipUserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipUserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipUserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipUserIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipFriendIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeHasUser"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserCreatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserCreatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserUpdatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserTypeNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserDescriptionContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserDescriptionIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserDescriptionContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEnabledEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeHasFriend"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendCreatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendCreatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendUpdatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEnabledEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     }
                 ],
                 "responses": {
@@ -1515,6 +1818,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/PetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameEQ"
                     },
                     {
@@ -1578,6 +1893,18 @@
                         "$ref": "#/components/parameters/EdgeHasCategory"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeCategoryIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeCategoryCreatedAtGT"
                     },
                     {
@@ -1591,6 +1918,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerCreatedAtGT"
@@ -1689,6 +2028,18 @@
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameEQ"
                     },
                     {
@@ -1750,6 +2101,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByCreatedAtGT"
@@ -2167,6 +2530,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/CategoryIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/CategoryCreatedAtGT"
                     },
                     {
@@ -2285,6 +2660,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/UserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserCreatedAtGT"
                     },
                     {
@@ -2381,6 +2768,18 @@
                         "$ref": "#/components/parameters/EdgeHasPet"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNameEQ"
                     },
                     {
@@ -2444,6 +2843,18 @@
                         "$ref": "#/components/parameters/EdgeHasFollowedPet"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameEQ"
                     },
                     {
@@ -2505,6 +2916,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendCreatedAtGT"
@@ -2604,6 +3027,42 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriendship"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDNotIn"
                     }
                 ],
                 "responses": {
@@ -2711,6 +3170,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/PetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameEQ"
                     },
                     {
@@ -2774,6 +3245,18 @@
                         "$ref": "#/components/parameters/EdgeHasCategory"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeCategoryIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeCategoryCreatedAtGT"
                     },
                     {
@@ -2787,6 +3270,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerCreatedAtGT"
@@ -2885,6 +3380,18 @@
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameEQ"
                     },
                     {
@@ -2946,6 +3453,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByCreatedAtGT"
@@ -3214,6 +3733,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/SettingsIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SettingsIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SettingsIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/SettingsIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/SettingsCreatedAtGT"
                     },
                     {
@@ -3441,6 +3972,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/UserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserCreatedAtGT"
                     },
                     {
@@ -3537,6 +4080,18 @@
                         "$ref": "#/components/parameters/EdgeHasPet"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNameEQ"
                     },
                     {
@@ -3600,6 +4155,18 @@
                         "$ref": "#/components/parameters/EdgeHasFollowedPet"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameEQ"
                     },
                     {
@@ -3661,6 +4228,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendCreatedAtGT"
@@ -3760,6 +4339,42 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriendship"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDNotIn"
                     }
                 ],
                 "responses": {
@@ -3867,6 +4482,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/UserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserCreatedAtGT"
                     },
                     {
@@ -3963,6 +4590,18 @@
                         "$ref": "#/components/parameters/EdgeHasPet"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNameEQ"
                     },
                     {
@@ -4026,6 +4665,18 @@
                         "$ref": "#/components/parameters/EdgeHasFollowedPet"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameEQ"
                     },
                     {
@@ -4087,6 +4738,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendCreatedAtGT"
@@ -4186,6 +4849,42 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriendship"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDNotIn"
                     }
                 ],
                 "responses": {
@@ -4521,6 +5220,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/PetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameEQ"
                     },
                     {
@@ -4584,6 +5295,18 @@
                         "$ref": "#/components/parameters/EdgeHasCategory"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeCategoryIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeCategoryCreatedAtGT"
                     },
                     {
@@ -4597,6 +5320,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerCreatedAtGT"
@@ -4695,6 +5430,18 @@
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameEQ"
                     },
                     {
@@ -4756,6 +5503,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByCreatedAtGT"
@@ -4959,6 +5718,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/UserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserCreatedAtGT"
                     },
                     {
@@ -5055,6 +5826,18 @@
                         "$ref": "#/components/parameters/EdgeHasPet"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNameEQ"
                     },
                     {
@@ -5118,6 +5901,18 @@
                         "$ref": "#/components/parameters/EdgeHasFollowedPet"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameEQ"
                     },
                     {
@@ -5179,6 +5974,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendCreatedAtGT"
@@ -5278,6 +6085,42 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriendship"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipUserIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendshipFriendIDNotIn"
                     }
                 ],
                 "responses": {
@@ -5381,6 +6224,237 @@
                             ],
                             "default": "asc"
                         }
+                    },
+                    {
+                        "$ref": "#/components/parameters/FilterOperation"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipUserIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipUserIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipUserIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipUserIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/FriendshipFriendIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeHasUser"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserCreatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserCreatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserUpdatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserTypeNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserDescriptionContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserDescriptionIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserDescriptionContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEnabledEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeHasFriend"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendCreatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendCreatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendUpdatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEnabledEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     }
                 ],
                 "responses": {
@@ -5475,6 +6549,18 @@
                         "$ref": "#/components/parameters/FilterOperation"
                     },
                     {
+                        "$ref": "#/components/parameters/PetIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameEQ"
                     },
                     {
@@ -5538,6 +6624,18 @@
                         "$ref": "#/components/parameters/EdgeHasCategory"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeCategoryIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeCategoryCreatedAtGT"
                     },
                     {
@@ -5551,6 +6649,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerCreatedAtGT"
@@ -5649,6 +6759,18 @@
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendIDNotIn"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameEQ"
                     },
                     {
@@ -5710,6 +6832,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowedBy"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByIDNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByCreatedAtGT"
@@ -6518,12 +7652,14 @@
                     "friend.email",
                     "friend.name",
                     "friend.updated_at",
+                    "friend_id",
                     "id",
                     "random",
                     "user.created_at",
                     "user.email",
                     "user.name",
-                    "user.updated_at"
+                    "user.updated_at",
+                    "user_id"
                 ],
                 "default": "id"
             },
@@ -7163,6 +8299,8 @@
                     "following.count",
                     "friends.count",
                     "friendships.count",
+                    "friendships.friend_id.sum",
+                    "friendships.user_id.sum",
                     "id",
                     "name",
                     "pets.age.sum",
@@ -7452,6 +8590,44 @@
                     "type": "integer"
                 }
             },
+            "CategoryIDEQ": {
+                "name": "id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "CategoryIDIn": {
+                "name": "id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "CategoryIDNEQ": {
+                "name": "id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "CategoryIDNotIn": {
+                "name": "id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
             "CategoryUpdatedAtGT": {
                 "name": "updatedAt.gt",
                 "in": "query",
@@ -7482,6 +8658,44 @@
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
                     "type": "number"
+                }
+            },
+            "EdgeCategoryIDEQ": {
+                "name": "category.id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeCategoryIDIn": {
+                "name": "category.id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeCategoryIDNEQ": {
+                "name": "category.id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeCategoryIDNotIn": {
+                "name": "category.id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             },
             "EdgeCategoryUpdatedAtGT": {
@@ -7632,6 +8846,44 @@
                 "description": "Filters field \"enabled\" to be equal to the provided value.",
                 "schema": {
                     "type": "boolean"
+                }
+            },
+            "EdgeFollowedByIDEQ": {
+                "name": "followedBy.id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFollowedByIDIn": {
+                "name": "followedBy.id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeFollowedByIDNEQ": {
+                "name": "followedBy.id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFollowedByIDNotIn": {
+                "name": "followedBy.id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             },
             "EdgeFollowedByNameContains": {
@@ -7813,6 +9065,44 @@
                 "name": "followedPet.age.notIn",
                 "in": "query",
                 "description": "Filters field \"age\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeFollowedPetIDEQ": {
+                "name": "followedPet.id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFollowedPetIDIn": {
+                "name": "followedPet.id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeFollowedPetIDNEQ": {
+                "name": "followedPet.id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFollowedPetIDNotIn": {
+                "name": "followedPet.id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
                 "schema": {
                     "type": "array",
                     "items": {
@@ -8135,6 +9425,44 @@
                     "type": "boolean"
                 }
             },
+            "EdgeFriendIDEQ": {
+                "name": "friend.id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFriendIDIn": {
+                "name": "friend.id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeFriendIDNEQ": {
+                "name": "friend.id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFriendIDNotIn": {
+                "name": "friend.id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
             "EdgeFriendNameContains": {
                 "name": "friend.name.has",
                 "in": "query",
@@ -8278,6 +9606,120 @@
                     "type": "number"
                 }
             },
+            "EdgeFriendshipFriendIDEQ": {
+                "name": "friendship.friendID.eq",
+                "in": "query",
+                "description": "Filters field \"friend_id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFriendshipFriendIDIn": {
+                "name": "friendship.friendID.in",
+                "in": "query",
+                "description": "Filters field \"friend_id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeFriendshipFriendIDNEQ": {
+                "name": "friendship.friendID.neq",
+                "in": "query",
+                "description": "Filters field \"friend_id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFriendshipFriendIDNotIn": {
+                "name": "friendship.friendID.notIn",
+                "in": "query",
+                "description": "Filters field \"friend_id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeFriendshipIDEQ": {
+                "name": "friendship.id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFriendshipIDIn": {
+                "name": "friendship.id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeFriendshipIDNEQ": {
+                "name": "friendship.id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFriendshipIDNotIn": {
+                "name": "friendship.id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeFriendshipUserIDEQ": {
+                "name": "friendship.userID.eq",
+                "in": "query",
+                "description": "Filters field \"user_id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFriendshipUserIDIn": {
+                "name": "friendship.userID.in",
+                "in": "query",
+                "description": "Filters field \"user_id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeFriendshipUserIDNEQ": {
+                "name": "friendship.userID.neq",
+                "in": "query",
+                "description": "Filters field \"user_id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeFriendshipUserIDNotIn": {
+                "name": "friendship.userID.notIn",
+                "in": "query",
+                "description": "Filters field \"user_id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
             "EdgeHasCategory": {
                 "name": "has.category",
                 "in": "query",
@@ -8338,6 +9780,14 @@
                 "name": "has.pet",
                 "in": "query",
                 "description": "If true, only return entities that have a pet edge.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeHasUser": {
+                "name": "has.user",
+                "in": "query",
+                "description": "If true, only return entities that have a user edge.",
                 "schema": {
                     "type": "boolean"
                 }
@@ -8474,6 +9924,44 @@
                 "description": "Filters field \"enabled\" to be equal to the provided value.",
                 "schema": {
                     "type": "boolean"
+                }
+            },
+            "EdgeOwnerIDEQ": {
+                "name": "owner.id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeOwnerIDIn": {
+                "name": "owner.id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgeOwnerIDNEQ": {
+                "name": "owner.id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgeOwnerIDNotIn": {
+                "name": "owner.id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             },
             "EdgeOwnerNameContains": {
@@ -8662,6 +10150,44 @@
                     }
                 }
             },
+            "EdgePetIDEQ": {
+                "name": "pet.id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgePetIDIn": {
+                "name": "pet.id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "EdgePetIDNEQ": {
+                "name": "pet.id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "EdgePetIDNotIn": {
+                "name": "pet.id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
             "EdgePetNameContains": {
                 "name": "pet.name.has",
                 "in": "query",
@@ -8789,12 +10315,316 @@
                     }
                 }
             },
+            "EdgeUserCreatedAtGT": {
+                "name": "user.createdAt.gt",
+                "in": "query",
+                "description": "Filters field \"created_at\" to be greater than the provided value.",
+                "schema": {
+                    "type": "number"
+                }
+            },
+            "EdgeUserCreatedAtLT": {
+                "name": "user.createdAt.lt",
+                "in": "query",
+                "description": "Filters field \"created_at\" to be less than the provided value.",
+                "schema": {
+                    "type": "number"
+                }
+            },
+            "EdgeUserDescriptionContains": {
+                "name": "user.description.has",
+                "in": "query",
+                "description": "Filters field \"description\" to contain the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserDescriptionContainsFold": {
+                "name": "user.description.ihas",
+                "in": "query",
+                "description": "Filters field \"description\" to contain the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserDescriptionIsNil": {
+                "name": "user.description.null",
+                "in": "query",
+                "description": "Filters field \"description\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeUserEmailContains": {
+                "name": "user.email.has",
+                "in": "query",
+                "description": "Filters field \"email\" to contain the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserEmailContainsFold": {
+                "name": "user.email.ihas",
+                "in": "query",
+                "description": "Filters field \"email\" to contain the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserEmailEQ": {
+                "name": "user.email.eq",
+                "in": "query",
+                "description": "Filters field \"email\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserEmailEqualFold": {
+                "name": "user.email.ieq",
+                "in": "query",
+                "description": "Filters field \"email\" to be equal to the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserEmailHasPrefix": {
+                "name": "user.email.prefix",
+                "in": "query",
+                "description": "Filters field \"email\" to start with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserEmailHasSuffix": {
+                "name": "user.email.suffix",
+                "in": "query",
+                "description": "Filters field \"email\" to end with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserEmailIn": {
+                "name": "user.email.in",
+                "in": "query",
+                "description": "Filters field \"email\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EdgeUserEmailIsNil": {
+                "name": "user.email.null",
+                "in": "query",
+                "description": "Filters field \"email\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeUserEmailNEQ": {
+                "name": "user.email.neq",
+                "in": "query",
+                "description": "Filters field \"email\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserEmailNotIn": {
+                "name": "user.email.notIn",
+                "in": "query",
+                "description": "Filters field \"email\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EdgeUserEnabledEQ": {
+                "name": "user.enabled.eq",
+                "in": "query",
+                "description": "Filters field \"enabled\" to be equal to the provided value.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeUserNameContains": {
+                "name": "user.name.has",
+                "in": "query",
+                "description": "Filters field \"name\" to contain the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserNameContainsFold": {
+                "name": "user.name.ihas",
+                "in": "query",
+                "description": "Filters field \"name\" to contain the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserNameEQ": {
+                "name": "user.name.eq",
+                "in": "query",
+                "description": "Filters field \"name\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserNameEqualFold": {
+                "name": "user.name.ieq",
+                "in": "query",
+                "description": "Filters field \"name\" to be equal to the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserNameHasPrefix": {
+                "name": "user.name.prefix",
+                "in": "query",
+                "description": "Filters field \"name\" to start with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserNameHasSuffix": {
+                "name": "user.name.suffix",
+                "in": "query",
+                "description": "Filters field \"name\" to end with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserNameIn": {
+                "name": "user.name.in",
+                "in": "query",
+                "description": "Filters field \"name\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EdgeUserNameNEQ": {
+                "name": "user.name.neq",
+                "in": "query",
+                "description": "Filters field \"name\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeUserNameNotIn": {
+                "name": "user.name.notIn",
+                "in": "query",
+                "description": "Filters field \"name\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EdgeUserTypeEQ": {
+                "name": "user.type.eq",
+                "in": "query",
+                "description": "Filters field \"type\" to be equal to the provided value.",
+                "schema": {
+                    "$ref": "#/components/schemas/UserTypeEnum"
+                }
+            },
+            "EdgeUserTypeIn": {
+                "name": "user.type.in",
+                "in": "query",
+                "description": "Filters field \"type\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UserTypeEnum"
+                    }
+                }
+            },
+            "EdgeUserTypeNEQ": {
+                "name": "user.type.neq",
+                "in": "query",
+                "description": "Filters field \"type\" to be not equal to the provided value.",
+                "schema": {
+                    "$ref": "#/components/schemas/UserTypeEnum"
+                }
+            },
+            "EdgeUserTypeNotIn": {
+                "name": "user.type.notIn",
+                "in": "query",
+                "description": "Filters field \"type\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UserTypeEnum"
+                    }
+                }
+            },
+            "EdgeUserUpdatedAtGT": {
+                "name": "user.updatedAt.gt",
+                "in": "query",
+                "description": "Filters field \"updated_at\" to be greater than the provided value.",
+                "schema": {
+                    "type": "number"
+                }
+            },
+            "EdgeUserUpdatedAtLT": {
+                "name": "user.updatedAt.lt",
+                "in": "query",
+                "description": "Filters field \"updated_at\" to be less than the provided value.",
+                "schema": {
+                    "type": "number"
+                }
+            },
             "FilterOperation": {
                 "name": "filter_op",
                 "in": "query",
                 "description": "Filter operation to use.",
                 "schema": {
                     "$ref": "#/components/schemas/FilterOperation"
+                }
+            },
+            "FriendshipFriendIDEQ": {
+                "name": "friendID.eq",
+                "in": "query",
+                "description": "Filters field \"friend_id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "FriendshipFriendIDIn": {
+                "name": "friendID.in",
+                "in": "query",
+                "description": "Filters field \"friend_id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "FriendshipFriendIDNEQ": {
+                "name": "friendID.neq",
+                "in": "query",
+                "description": "Filters field \"friend_id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "FriendshipFriendIDNotIn": {
+                "name": "friendID.notIn",
+                "in": "query",
+                "description": "Filters field \"friend_id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             },
             "FriendshipID": {
@@ -8804,6 +10634,82 @@
                 "required": true,
                 "schema": {
                     "type": "integer"
+                }
+            },
+            "FriendshipIDEQ": {
+                "name": "id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "FriendshipIDIn": {
+                "name": "id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "FriendshipIDNEQ": {
+                "name": "id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "FriendshipIDNotIn": {
+                "name": "id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "FriendshipUserIDEQ": {
+                "name": "userID.eq",
+                "in": "query",
+                "description": "Filters field \"user_id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "FriendshipUserIDIn": {
+                "name": "userID.in",
+                "in": "query",
+                "description": "Filters field \"user_id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "FriendshipUserIDNEQ": {
+                "name": "userID.neq",
+                "in": "query",
+                "description": "Filters field \"user_id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "FriendshipUserIDNotIn": {
+                "name": "userID.notIn",
+                "in": "query",
+                "description": "Filters field \"user_id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             },
             "Page": {
@@ -8877,6 +10783,44 @@
                 "required": true,
                 "schema": {
                     "type": "integer"
+                }
+            },
+            "PetIDEQ": {
+                "name": "id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "PetIDIn": {
+                "name": "id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "PetIDNEQ": {
+                "name": "id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "PetIDNotIn": {
+                "name": "id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             },
             "PetNameContains": {
@@ -9039,6 +10983,44 @@
                     "type": "number"
                 }
             },
+            "SettingsIDEQ": {
+                "name": "id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "SettingsIDIn": {
+                "name": "id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "SettingsIDNEQ": {
+                "name": "id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "SettingsIDNotIn": {
+                "name": "id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
             "SettingsUpdatedAtGT": {
                 "name": "updatedAt.gt",
                 "in": "query",
@@ -9196,6 +11178,44 @@
                 "required": true,
                 "schema": {
                     "type": "integer"
+                }
+            },
+            "UserIDEQ": {
+                "name": "id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "UserIDIn": {
+                "name": "id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "UserIDNEQ": {
+                "name": "id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "UserIDNotIn": {
+                "name": "id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             },
             "UserNameContains": {
