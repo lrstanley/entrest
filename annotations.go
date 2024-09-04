@@ -263,10 +263,11 @@ func (a *Annotation) GetPagination(config *Config, edge *gen.Edge) bool {
 		}
 		if edge != nil {
 			ea := GetAnnotation(edge)
-			if ea.EagerLoad != nil && *ea.EagerLoad {
-				return false
+			if !config.DisableEagerLoadNonPagedOpt {
+				if (ea.EagerLoad != nil && *ea.EagerLoad) || config.DefaultEagerLoad {
+					return false
+				}
 			}
-			return !config.DefaultEagerLoad
 		}
 		return true
 	}
