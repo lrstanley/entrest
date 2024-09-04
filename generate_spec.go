@@ -304,7 +304,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			)
 		}
 
-		if sortable := GetSortableFields(t, false); len(sortable) > 1 {
+		if sortable := GetSortableFields(t, nil); len(sortable) > 1 {
 			sortParam := &ogen.Parameter{
 				Name:        "sort",
 				In:          "query",
@@ -541,7 +541,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 			})
 		}
 
-		if sortable := GetSortableFields(e.Type, false); len(sortable) > 1 {
+		if sortable := GetSortableFields(e.Type, nil); len(sortable) > 1 {
 			sortParam := &ogen.Parameter{
 				Name:        "sort",
 				In:          "query",

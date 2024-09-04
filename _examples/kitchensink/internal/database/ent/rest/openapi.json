@@ -6431,12 +6431,10 @@
                 "enum": [
                     "followed_at",
                     "pet.age",
-                    "pet.id",
                     "pet.name",
                     "random",
                     "user.created_at",
                     "user.email",
-                    "user.id",
                     "user.name",
                     "user.updated_at"
                 ]
@@ -6518,14 +6516,12 @@
                 "enum": [
                     "friend.created_at",
                     "friend.email",
-                    "friend.id",
                     "friend.name",
                     "friend.updated_at",
                     "id",
                     "random",
                     "user.created_at",
                     "user.email",
-                    "user.id",
                     "user.name",
                     "user.updated_at"
                 ],

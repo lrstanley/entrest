@@ -522,16 +522,16 @@ func toPagedSchema(schema *ogen.Schema) *ogen.Schema {
 
 // GetSortableFields returnsd a list of sortable fields for the given type. It
 // recurses through edges to find sortable fields as well.
-func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
+func GetSortableFields(t *gen.Type, edge *gen.Edge) (sortable []string) {
 	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t)
 	fields := t.Fields
 
-	if t.ID != nil {
+	if t.ID != nil && (edge == nil || edge.Field() == nil) {
 		fields = append([]*gen.Field{t.ID}, fields...)
 	}
 
-	if !isEdge {
+	if edge == nil {
 		sortable = append(sortable, "random")
 	}
 
@@ -549,7 +549,7 @@ func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 		sortable = append(sortable, f.Name)
 	}
 
-	if !isEdge {
+	if edge == nil {
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
@@ -573,7 +573,7 @@ func GetSortableFields(t *gen.Type, isEdge bool) (sortable []string) {
 				continue
 			}
 
-			for _, f := range GetSortableFields(e.Type, true) {
+			for _, f := range GetSortableFields(e.Type, e) {
 				sortable = append(sortable, e.Name+"."+f)
 			}
 		}

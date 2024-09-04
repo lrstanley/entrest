@@ -79,7 +79,7 @@ var (
         // {{ $t.Name|zsingular }}SortConfig defines the default sort configuration for {{ $t.Name|zsingular }}.
         {{ $t.Name|zsingular }}SortConfig = &SortConfig{
             Fields: []string{
-                {{- range getSortableFields $t false }}
+                {{- range getSortableFields $t nil }}
                 "{{ . }}",
                 {{- end }}
             },
