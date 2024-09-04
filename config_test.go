@@ -640,3 +640,37 @@ func TestConfig_DisablePatchJSONTag(t *testing.T) {
 		t.Errorf("failed to find field with name 'name'")
 	})
 }
+
+func TestConfig_DefaultFilterID(t *testing.T) {
+	t.Parallel()
+
+	t.Run("default", func(t *testing.T) {
+		t.Parallel()
+
+		r := mustBuildSpec(t, &Config{}, nil)
+		assert.NotContains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/PetIDEQ")
+		assert.NotContains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/EdgeCategoryIDEQ")
+	})
+
+	t.Run("enabled", func(t *testing.T) {
+		t.Parallel()
+
+		r := mustBuildSpec(t, &Config{DefaultFilterID: true}, nil)
+		assert.Contains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/PetIDEQ")
+		assert.NotContains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/EdgeCategoryIDEQ")
+	})
+
+	t.Run("enabled-with-edge", func(t *testing.T) {
+		t.Parallel()
+
+		r := mustBuildSpec(t, &Config{
+			DefaultFilterID: true,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithFilter(FilterEdge))
+				return nil
+			},
+		}, nil)
+		assert.Contains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/PetIDEQ")
+		assert.Contains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/EdgeCategoryIDEQ")
+	})
+}
