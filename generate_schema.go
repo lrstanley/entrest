@@ -763,7 +763,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 
 	fields := t.Fields
 
-	if cfg.DefaultFilterID && t.ID != nil {
+	if cfg.DefaultFilterID && t.ID != nil && (edge == nil || edge.Field() == nil) {
 		ida := GetAnnotation(t.ID)
 		if ida.Filter == 0 {
 			ida.Filter = FilterGroupEqualExact | FilterGroupArray
