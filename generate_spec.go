@@ -548,7 +548,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 				Description: "Sort entity results by the given field.",
 				Schema:      &ogen.Schema{Ref: "#/components/schemas/" + addSortableFields(spec, e.Type, sortable)},
 			}
-			if v := ra.GetDefaultSort(t.ID != nil); v != "" {
+			if v := ra.GetDefaultSort(t.ID != nil && (e == nil || e.Field() == nil)); v != "" {
 				sortParam.Schema = sortParam.Schema.SetDefault(json.RawMessage(fmt.Sprintf("%q", v)))
 			}
 			orderParam := &ogen.Parameter{

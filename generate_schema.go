@@ -579,8 +579,13 @@ func GetSortableFields(t *gen.Type, edge *gen.Edge) (sortable []string) {
 		}
 	}
 
-	if v := ta.GetDefaultSort(t.ID != nil); v != "" && !slices.Contains(sortable, v) {
-		panic(fmt.Sprintf("default sort field %q on schema %q does not exist or does not have default sorting enabled", v, t.Name))
+	if v := ta.GetDefaultSort(t.ID != nil && (edge == nil || edge.Field() == nil)); v != "" && !slices.Contains(sortable, v) {
+		panic(fmt.Sprintf(
+			"default sort field %q on schema %q does not exist (valid: %s) or does not have default sorting enabled",
+			v,
+			t.Name,
+			strings.Join(sortable, ","),
+		))
 	}
 
 	slices.Sort(sortable)

@@ -21,7 +21,7 @@ import (
         {{- range $e := $t.Edges -}}
             {{- if not (($e|getAnnotation).GetEagerLoad $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
             .With{{ $e.StructField }}(
-                {{- $sortField := ($e.Type|getAnnotation).GetDefaultSort (ne $e.Type.ID nil) }}
+                {{- $sortField := ($e.Type|getAnnotation).GetDefaultSort (and $e.Type.ID (or (not $e) (not $e.Field))) }}
                 {{- $limit := ($e|getAnnotation).GetEagerLoadLimit $.Annotations.RestConfig }}
                 {{- if or $sortField (and (gt $limit 0) (not $e.Unique)) }}
                     func(e *ent.{{ $e.Type.Name }}Query) {
