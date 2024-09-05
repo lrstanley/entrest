@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"entgo.io/ent/entc/gen"
+	"github.com/ogen-go/ogen"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -145,9 +146,12 @@ func TestAnnotation_Merge(t *testing.T) {
 func TestAnnotation_AdditionalTags(t *testing.T) {
 	t.Parallel()
 
-	r := mustBuildSpec(t, &Config{}, func(g *gen.Graph) {
-		injectAnnotations(t, g, "Pet", WithAdditionalTags("Foo"))
-		injectAnnotations(t, g, "Pet.categories", WithAdditionalTags("Bar"))
+	r := mustBuildSpec(t, &Config{
+		PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+			injectAnnotations(t, g, "Pet", WithAdditionalTags("Foo"))
+			injectAnnotations(t, g, "Pet.categories", WithAdditionalTags("Bar"))
+			return nil
+		},
 	})
 
 	assert.Contains(t, r.json(`$.paths./pets.get.tags`), "Foo")
@@ -161,9 +165,12 @@ func TestAnnotation_AdditionalTags(t *testing.T) {
 func TestAnnotation_Tags(t *testing.T) {
 	t.Parallel()
 
-	r := mustBuildSpec(t, &Config{}, func(g *gen.Graph) {
-		injectAnnotations(t, g, "Pet", WithTags("Foo"))
-		injectAnnotations(t, g, "Pet.categories", WithTags("Bar"))
+	r := mustBuildSpec(t, &Config{
+		PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+			injectAnnotations(t, g, "Pet", WithTags("Foo"))
+			injectAnnotations(t, g, "Pet.categories", WithTags("Bar"))
+			return nil
+		},
 	})
 
 	assert.Equal(t, "Foo", r.json(`$.paths./pets.get.tags.*`))
@@ -177,8 +184,11 @@ func TestAnnotation_Tags(t *testing.T) {
 func TestAnnotation_EdgeUpdateBulk(t *testing.T) {
 	t.Parallel()
 
-	r := mustBuildSpec(t, &Config{}, func(g *gen.Graph) {
-		injectAnnotations(t, g, "Pet.categories", WithEdgeUpdateBulk(true))
+	r := mustBuildSpec(t, &Config{
+		PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+			injectAnnotations(t, g, "Pet.categories", WithEdgeUpdateBulk(true))
+			return nil
+		},
 	})
 
 	// Ensure create and update on categories have the bulk field in the right place.

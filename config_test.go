@@ -23,7 +23,7 @@ func TestEnsureIntegration(t *testing.T) {
 	// pre-attached annotations, which would cause the test to fail or succeed
 	// in a way that is not expected.
 
-	r := mustBuildSpec(t, &Config{}, nil)
+	r := mustBuildSpec(t, &Config{})
 
 	check := func(a *Annotation) error {
 		t.Helper()
@@ -76,13 +76,13 @@ func TestConfig_Spec(t *testing.T) {
 
 	t.Run("default-spec", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{Spec: nil}, nil)
+		r := mustBuildSpec(t, &Config{Spec: nil})
 		assert.Equal(t, "EntGo Rest API", r.json(`$.info.title`))
 	})
 
 	t.Run("with-spec", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{Spec: &ogen.Spec{Info: ogen.Info{Title: "foo"}}}, nil)
+		r := mustBuildSpec(t, &Config{Spec: &ogen.Spec{Info: ogen.Info{Title: "foo"}}})
 		assert.Equal(t, "foo", r.json(`$.info.title`))
 	})
 }
@@ -92,13 +92,13 @@ func TestConfig_DisablePagination(t *testing.T) {
 
 	t.Run("with-pagination", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisablePagination: false}, nil)
+		r := mustBuildSpec(t, &Config{DisablePagination: false})
 		assert.Contains(t, r.json(`$.components.schemas.PetList.allOf.*.$ref`), "/PagedResponse")
 	})
 
 	t.Run("with-pagination-edge", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisablePagination: false}, nil)
+		r := mustBuildSpec(t, &Config{DisablePagination: false})
 
 		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/CategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
@@ -106,22 +106,30 @@ func TestConfig_DisablePagination(t *testing.T) {
 
 	t.Run("without-pagination", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisablePagination: true}, nil)
+		r := mustBuildSpec(t, &Config{DisablePagination: true})
 		assert.Nil(t, r.json(`$.components.schemas.PetList.allOf`))
 	})
 
 	t.Run("no-global-but-local", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet", WithPagination(true))
+		r := mustBuildSpec(t, &Config{
+			DisablePagination: true,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet", WithPagination(true))
+				return nil
+			},
 		})
 		assert.Contains(t, r.json(`$.components.schemas.PetList.allOf.*.$ref`), "/PagedResponse")
 	})
 
 	t.Run("no-global-but-local-edge", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithPagination(true))
+		r := mustBuildSpec(t, &Config{
+			DisablePagination: true,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithPagination(true))
+				return nil
+			},
 		})
 
 		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/PetCategoryList")
@@ -132,8 +140,12 @@ func TestConfig_DisablePagination(t *testing.T) {
 	// underlying type.
 	t.Run("no-global-but-local-edge-ref", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisablePagination: true}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Category", WithPagination(true))
+		r := mustBuildSpec(t, &Config{
+			DisablePagination: true,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Category", WithPagination(true))
+				return nil
+			},
 		})
 		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/CategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
@@ -148,7 +160,7 @@ func TestConfig_ItemsPerPage(t *testing.T) {
 	t.Run("defaults", func(t *testing.T) {
 		t.Parallel()
 		c := &Config{}
-		r := mustBuildSpec(t, c, nil)
+		r := mustBuildSpec(t, c)
 
 		assert.Equal(t, float64(c.ItemsPerPage), r.json(base+`.default`))    //nolint:all
 		assert.Equal(t, float64(c.MinItemsPerPage), r.json(base+`.minimum`)) //nolint:all
@@ -162,7 +174,7 @@ func TestConfig_ItemsPerPage(t *testing.T) {
 			ItemsPerPage:    5,
 			MaxItemsPerPage: 999,
 		}
-		r := mustBuildSpec(t, c, nil)
+		r := mustBuildSpec(t, c)
 
 		assert.Equal(t, float64(c.ItemsPerPage), r.json(base+`.default`))    //nolint:all
 		assert.Equal(t, float64(c.MinItemsPerPage), r.json(base+`.minimum`)) //nolint:all
@@ -175,7 +187,7 @@ func TestConfig_DefaultEagerLoad(t *testing.T) {
 
 	t.Run("global-eager-load", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DefaultEagerLoad: true}, nil)
+		r := mustBuildSpec(t, &Config{DefaultEagerLoad: true})
 
 		assert.NotNil(t, r.json(`$.components.schemas.PetRead..properties.edges`))
 		assert.NotNil(t, r.json(`$.components.schemas.PetEdges.properties.owner.$ref`))
@@ -183,15 +195,19 @@ func TestConfig_DefaultEagerLoad(t *testing.T) {
 
 	t.Run("no-global-eager-load", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DefaultEagerLoad: false}, nil)
+		r := mustBuildSpec(t, &Config{DefaultEagerLoad: false})
 		assert.Nil(t, r.json(`$.components.schemas.PetRead..properties.edges`))
 		assert.Nil(t, r.json(`$.components.schemas.PetEdges`))
 	})
 
 	t.Run("no-global-but-local-eager-load", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DefaultEagerLoad: false}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+		r := mustBuildSpec(t, &Config{
+			DefaultEagerLoad: false,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+				return nil
+			},
 		})
 		assert.NotNil(t, r.json(`$.components.schemas.PetRead..properties.edges`))
 		assert.NotNil(t, r.json(`$.components.schemas.PetEdges.properties.categories.items.$ref`))
@@ -204,8 +220,12 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 
 	t.Run("no-opt-with-eager-load", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisableEagerLoadNonPagedOpt: true}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+		r := mustBuildSpec(t, &Config{
+			DisableEagerLoadNonPagedOpt: true,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+				return nil
+			},
 		})
 
 		// Validate the eager-loaded thing is still there.
@@ -221,8 +241,12 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 
 	t.Run("opt-with-eager-load", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisableEagerLoadNonPagedOpt: false}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+		r := mustBuildSpec(t, &Config{
+			DisableEagerLoadNonPagedOpt: false,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+				return nil
+			},
 		})
 
 		// Validate the eager-loaded thing is still there.
@@ -238,7 +262,7 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 
 	t.Run("no-opt-no-eager-load", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisableEagerLoadNonPagedOpt: true}, nil)
+		r := mustBuildSpec(t, &Config{DisableEagerLoadNonPagedOpt: true})
 
 		assert.Contains(t, r.json(`$.paths./pets/{petID}/categories..responses..schema.$ref`), "/CategoryList")
 		assert.Contains(t, r.json(`$.components.schemas.CategoryList.allOf.*.$ref`), "/PagedResponse")
@@ -250,9 +274,13 @@ func TestConfig_DisableEagerLoadedEndpoints(t *testing.T) {
 
 	t.Run("endpoints-with-eager-load", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisableEagerLoadedEndpoints: false}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
-			injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+		r := mustBuildSpec(t, &Config{
+			DisableEagerLoadedEndpoints: false,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+				injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+				return nil
+			},
 		})
 
 		assert.NotNil(t, r.json(`$.paths./pets/{petID}/categories`))
@@ -261,9 +289,13 @@ func TestConfig_DisableEagerLoadedEndpoints(t *testing.T) {
 
 	t.Run("no-endpoints-with-eager-load", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{DisableEagerLoadedEndpoints: true}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
-			injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+		r := mustBuildSpec(t, &Config{
+			DisableEagerLoadedEndpoints: true,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+				injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+				return nil
+			},
 		})
 
 		// The endpoints should be nil, because we disabled them.
@@ -277,9 +309,12 @@ func TestConfig_EagerLoadLimit(t *testing.T) {
 
 	t.Run("default-limit", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
-			injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+		r := mustBuildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+				injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+				return nil
+			},
 		})
 
 		assert.Equal(t, 0.0, r.json(`$.components.schemas.PetEdges.properties.categories.minItems`))    //nolint:all
@@ -290,9 +325,13 @@ func TestConfig_EagerLoadLimit(t *testing.T) {
 
 	t.Run("with-limit", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{EagerLoadLimit: 2500}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
-			injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+		r := mustBuildSpec(t, &Config{
+			EagerLoadLimit: 2500,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+				injectAnnotations(t, g, "Pet.owner", WithEagerLoad(true))
+				return nil
+			},
 		})
 
 		assert.Equal(t, 0.0, r.json(`$.components.schemas.PetEdges.properties.categories.minItems`))    //nolint:all
@@ -307,8 +346,12 @@ func TestConfig_AddEdgesToTags(t *testing.T) {
 
 	t.Run("with-tags", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{AddEdgesToTags: true}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+		r := mustBuildSpec(t, &Config{
+			AddEdgesToTags: true,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+				return nil
+			},
 		})
 
 		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Pets")
@@ -318,8 +361,12 @@ func TestConfig_AddEdgesToTags(t *testing.T) {
 
 	t.Run("no-tags", func(t *testing.T) {
 		t.Parallel()
-		r := mustBuildSpec(t, &Config{AddEdgesToTags: false}, func(g *gen.Graph) {
-			injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+		r := mustBuildSpec(t, &Config{
+			AddEdgesToTags: false,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEagerLoad(true))
+				return nil
+			},
 		})
 
 		assert.Contains(t, r.json(`$.paths./pets..tags.*`), "Pets")
@@ -376,12 +423,12 @@ func TestConfig_DefaultOperations(t *testing.T) {
 			t.Parallel()
 
 			if tt.wantErr {
-				_, err := buildSpec(t, &Config{DefaultOperations: tt.ops}, nil)
+				_, err := buildSpec(t, &Config{DefaultOperations: tt.ops})
 				assert.Error(t, err)
 				return
 			}
 
-			r := mustBuildSpec(t, &Config{DefaultOperations: tt.ops}, nil)
+			r := mustBuildSpec(t, &Config{DefaultOperations: tt.ops})
 
 			if slices.Contains(tt.ops, OperationCreate) {
 				assert.NotNil(t, r.json(`$.paths./pets.post`))
@@ -449,7 +496,7 @@ func TestConfig_GlobalHeaders(t *testing.T) {
 				Schema:      ogen.Int(),
 			},
 		},
-	}, nil)
+	})
 
 	assert.Contains(t, r.json(`$.components.parameters`), "X-Request-ID")
 	assert.Contains(t, r.json(`$.components.parameters`), "Foo-Bar")
@@ -510,7 +557,7 @@ func TestConfig_GlobalErrorResponses(t *testing.T) {
 				spec.Paths["/foo"] = newPathItem()
 				return nil
 			},
-		}, nil)
+		})
 
 		assert.NotNil(t, r.json(`$.components.responses.ErrorConflict`))
 		assert.NotNil(t, r.json(`$.components.schemas.ErrorConflict`))
@@ -555,7 +602,7 @@ func TestConfig_GlobalErrorResponses(t *testing.T) {
 				spec.Paths["/foo"] = newPathItem()
 				return nil
 			},
-		}, nil)
+		})
 
 		assert.NotNil(t, r.json(`$.components.responses.ErrorInternalServerError`))
 		assert.NotNil(t, r.json(`$.components.schemas.ErrorInternalServerError`))
@@ -578,7 +625,7 @@ func TestConfig_AllowClientUUIDs(t *testing.T) {
 	t.Run("enabled", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{AllowClientUUIDs: true}, nil)
+		r := mustBuildSpec(t, &Config{AllowClientUUIDs: true})
 
 		assert.Equal(t, "string", r.json(`$.components.schemas.AllType.properties.id.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllType.properties.id.format`))
@@ -591,7 +638,7 @@ func TestConfig_AllowClientUUIDs(t *testing.T) {
 	t.Run("disabled", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{AllowClientUUIDs: false}, nil)
+		r := mustBuildSpec(t, &Config{AllowClientUUIDs: false})
 
 		assert.Equal(t, "string", r.json(`$.components.schemas.AllType.properties.id.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllType.properties.id.format`))
@@ -607,7 +654,7 @@ func TestConfig_DisablePatchJSONTag(t *testing.T) {
 	t.Run("disabled", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{DisablePatchJSONTag: true}, nil)
+		r := mustBuildSpec(t, &Config{DisablePatchJSONTag: true})
 
 		for _, n := range r.graph.Nodes {
 			if n.Name == "Pet" {
@@ -625,7 +672,7 @@ func TestConfig_DisablePatchJSONTag(t *testing.T) {
 	t.Run("enabled", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{DisablePatchJSONTag: false}, nil)
+		r := mustBuildSpec(t, &Config{DisablePatchJSONTag: false})
 
 		for _, n := range r.graph.Nodes {
 			if n.Name == "Pet" {
@@ -647,7 +694,7 @@ func TestConfig_DefaultFilterID(t *testing.T) {
 	t.Run("default", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{}, nil)
+		r := mustBuildSpec(t, &Config{})
 		assert.NotContains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/PetIDEQ")
 		assert.NotContains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/EdgeCategoryIDEQ")
 	})
@@ -655,7 +702,7 @@ func TestConfig_DefaultFilterID(t *testing.T) {
 	t.Run("enabled", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{DefaultFilterID: true}, nil)
+		r := mustBuildSpec(t, &Config{DefaultFilterID: true})
 		assert.Contains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/PetIDEQ")
 		assert.NotContains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/EdgeCategoryIDEQ")
 	})
@@ -669,7 +716,7 @@ func TestConfig_DefaultFilterID(t *testing.T) {
 				injectAnnotations(t, g, "Pet.categories", WithFilter(FilterEdge))
 				return nil
 			},
-		}, nil)
+		})
 		assert.Contains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/PetIDEQ")
 		assert.Contains(t, r.json(`$.paths./pets.get.parameters.*.$ref`), "#/components/parameters/EdgeCategoryIDEQ")
 	})

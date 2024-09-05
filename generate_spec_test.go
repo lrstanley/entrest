@@ -12,13 +12,14 @@ import (
 	"testing"
 
 	"entgo.io/ent/entc/gen"
+	"github.com/ogen-go/ogen"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 func TestSpec_ThroughSchema_TwoTypes(t *testing.T) {
 	t.Parallel()
-	r := mustBuildSpec(t, &Config{}, nil)
+	r := mustBuildSpec(t, &Config{})
 
 	// Through schemas can be a bit different than normal schemas. Primarily:
 	//   - they may not have an ID field (if composite of two different IDs
@@ -60,7 +61,7 @@ func TestSpec_ThroughSchema_TwoTypes(t *testing.T) {
 
 func TestSpec_ThroughSchema_OneType(t *testing.T) {
 	t.Parallel()
-	r := mustBuildSpec(t, &Config{}, nil)
+	r := mustBuildSpec(t, &Config{})
 
 	assert.NotNil(t, r.json(`$.components.schemas.Friendship`))
 	assert.NotNil(t, r.json(`$.components.schemas.FriendshipCreate`))
@@ -92,8 +93,11 @@ func TestSpec_ThroughSchema_OneType(t *testing.T) {
 func TestSpec_HoistedEnums(t *testing.T) {
 	t.Parallel()
 
-	r := mustBuildSpec(t, &Config{}, func(g *gen.Graph) {
-		injectAnnotations(t, g, "User.type", WithFilter(FilterGroupEqualExact|FilterGroupArray))
+	r := mustBuildSpec(t, &Config{
+		PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+			injectAnnotations(t, g, "User.type", WithFilter(FilterGroupEqualExact|FilterGroupArray))
+			return nil
+		},
 	})
 
 	assert.NotNil(t, r.json(`$.components.schemas.UserTypeEnum`))
@@ -113,7 +117,7 @@ func TestSpec_HoistedEnums(t *testing.T) {
 func TestSpec_Sensitive(t *testing.T) {
 	t.Parallel()
 
-	r := mustBuildSpec(t, &Config{}, nil)
+	r := mustBuildSpec(t, &Config{})
 
 	assert.Nil(t, r.json(`$.components.schemas.User.properties.password_hashed`))
 	assert.NotNil(t, r.json(`$.components.schemas.UserCreate.properties.password_hashed`))

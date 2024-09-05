@@ -59,10 +59,10 @@ var (
 
 // mustBuildSpec is like buildSpec, but it fails if the extension execution fails.
 // Also runs spec validation, which will fail is the spec has any errors.
-func mustBuildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) *testSpecResult {
+func mustBuildSpec(t *testing.T, config *Config) *testSpecResult {
 	t.Helper()
 
-	result, err := buildSpec(t, config, hook)
+	result, err := buildSpec(t, config)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -120,7 +120,7 @@ func (s *testSpecResult) json(jsonPath string) any {
 // buildSpec uses the shared schema cache, and invokes the extension to build the
 // spec. It also invokes the provided hook on the graph before executing the extension,
 // if provided. DOES NOT RUN SPEC VALIDATION.
-func buildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) (*testSpecResult, error) {
+func buildSpec(t *testing.T, config *Config) (*testSpecResult, error) {
 	if config == nil {
 		config = &Config{}
 	}
@@ -149,17 +149,6 @@ func buildSpec(t *testing.T, config *Config, hook func(*gen.Graph)) (*testSpecRe
 	// LoadGraph doesn't configure annotations, so we have to do that manually.
 	for _, a := range ext.Annotations() {
 		gconfig.Annotations[a.Name()] = a
-	}
-
-	if hook != nil {
-		gconfig.Hooks = append([]gen.Hook{
-			func(next gen.Generator) gen.Generator {
-				return gen.GenerateFunc(func(g *gen.Graph) error {
-					hook(g)
-					return next.Generate(g)
-				})
-			},
-		}, gconfig.Hooks...)
 	}
 
 	// This is effectively the same as [entc.LoadGraph], but it caches the schema
