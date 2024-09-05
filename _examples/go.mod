@@ -10,14 +10,14 @@ require (
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-playground/form/v4 v4.2.1
 	github.com/google/go-github/v63 v63.0.0
-	github.com/lrstanley/entrest v0.0.0-20240902024450-b95ca963b8d5
+	github.com/lrstanley/entrest v0.0.0-20240904015855-04d8d429f148
 	github.com/ogen-go/ogen v1.3.0
 	github.com/stretchr/testify v1.9.0
 	modernc.org/sqlite v1.32.0
 )
 
 require (
-	ariga.io/atlas v0.26.1 // indirect
+	ariga.io/atlas v0.27.0 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -45,11 +45,11 @@ require (
 	github.com/zclconf/go-cty v1.15.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/exp v0.0.0-20240823005443-9b4947da3948 // indirect
-	golang.org/x/mod v0.20.0 // indirect
+	golang.org/x/exp v0.0.0-20240904232852-e7e105dedf7e // indirect
+	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
-	golang.org/x/sys v0.24.0 // indirect
-	golang.org/x/text v0.17.0 // indirect
+	golang.org/x/sys v0.25.0 // indirect
+	golang.org/x/text v0.18.0 // indirect
 	golang.org/x/tools v0.24.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
