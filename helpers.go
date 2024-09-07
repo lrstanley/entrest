@@ -10,6 +10,8 @@ import (
 	"fmt"
 	"slices"
 	"sync"
+
+	"entgo.io/ent/entc/gen"
 )
 
 // ptr returns a pointer to the given value. Should only be used for primitives.
@@ -167,4 +169,16 @@ func intersectSorted[T cmp.Ordered, S ~[]T](a, b S) S {
 	out := intersect(a, b)
 	slices.Sort(out)
 	return out
+}
+
+func patchJSONTag(g *gen.Graph) error {
+	for _, node := range g.Nodes {
+		for _, field := range node.Fields {
+			if field.StructTag == `json:"-"` {
+				continue
+			}
+			field.StructTag = fmt.Sprintf("json:%q", field.Name)
+		}
+	}
+	return nil
 }

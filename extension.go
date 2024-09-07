@@ -53,7 +53,7 @@ func (e *Extension) Hooks() []gen.Hook {
 		func(next gen.Generator) gen.Generator {
 			return gen.GenerateFunc(func(g *gen.Graph) error {
 				if !e.config.DisablePatchJSONTag {
-					err := e.patchJSONTag(g)
+					err := patchJSONTag(g)
 					if err != nil {
 						return err
 					}
@@ -242,16 +242,4 @@ func (e *Extension) writeSpec(g *gen.Graph, spec *ogen.Spec) error {
 
 func (e *Extension) Annotations() []entc.Annotation {
 	return []entc.Annotation{e.config}
-}
-
-func (e *Extension) patchJSONTag(g *gen.Graph) error {
-	for _, node := range g.Nodes {
-		for _, field := range node.Fields {
-			if field.StructTag == `json:"-"` {
-				continue
-			}
-			field.StructTag = fmt.Sprintf("json:%q", field.Name)
-		}
-	}
-	return nil
 }
