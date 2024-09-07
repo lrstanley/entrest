@@ -37,6 +37,7 @@ func (User) Fields() []ent.Field {
 			Annotations(
 				entrest.WithSortable(true),
 				entrest.WithFilter(entrest.FilterGroupEqual|entrest.FilterGroupArray),
+				entrest.WithFilterGroup("search"),
 			).
 			Comment("Name of the user."),
 		field.Enum("type").
@@ -58,6 +59,7 @@ func (User) Fields() []ent.Field {
 			Annotations(
 				entrest.WithExample("Jon Smith"),
 				entrest.WithFilter(entrest.FilterGroupContains|entrest.FilterGroupNil),
+				entrest.WithFilterGroup("search"),
 			).
 			Comment("Full name if USER, otherwise null."),
 		field.Bool("enabled").
@@ -72,6 +74,7 @@ func (User) Fields() []ent.Field {
 				entrest.WithSortable(true),
 				entrest.WithExample("John.Smith@example.com"),
 				entrest.WithFilter(entrest.FilterGroupEqual|entrest.FilterGroupArray),
+				entrest.WithFilterGroup("search"),
 			).
 			Comment("Email associated with the user. Note that not all users have an associated email address."),
 		field.Bytes("avatar").

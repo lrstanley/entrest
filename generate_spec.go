@@ -337,6 +337,16 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 			}
 		}
 
+		if groups := GetFilterGroups(t, nil); len(groups) > 0 {
+			for _, g := range groups {
+				for _, op := range g.Operations {
+					name := g.ComponentName(op)
+					spec.Components.Parameters[name] = g.Parameter(op)
+					oper.Parameters = append(oper.Parameters, &ogen.Parameter{Ref: "#/components/parameters/" + name})
+				}
+			}
+		}
+
 		if cfg.AddEdgesToTags {
 			oper.Tags = append(oper.Tags, edgesToTags(cfg, t)...)
 		}
@@ -571,6 +581,16 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 				name := f.ComponentName()
 				spec.Components.Parameters[name] = f.Parameter()
 				oper.Parameters = append(oper.Parameters, &ogen.Parameter{Ref: "#/components/parameters/" + name})
+			}
+		}
+
+		if groups := GetFilterGroups(e.Type, nil); len(groups) > 0 {
+			for _, g := range groups {
+				for _, op := range g.Operations {
+					name := g.ComponentName(op)
+					spec.Components.Parameters[name] = g.Parameter(op)
+					oper.Parameters = append(oper.Parameters, &ogen.Parameter{Ref: "#/components/parameters/" + name})
+				}
 			}
 		}
 

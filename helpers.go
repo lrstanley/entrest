@@ -146,3 +146,25 @@ func ToEnum[T any](values []T) ([]json.RawMessage, error) {
 	}
 	return results, nil
 }
+
+// intersect returns the intersection between two slices.
+func intersect[T comparable, S ~[]T](a, b S) S {
+	result := S{}
+	seen := map[T]struct{}{}
+	for i := range a {
+		seen[a[i]] = struct{}{}
+	}
+	for i := range b {
+		if _, ok := seen[b[i]]; ok {
+			result = append(result, b[i])
+		}
+	}
+	return result
+}
+
+// intersectSorted returns the intersection between two slices, and sorts the result.
+func intersectSorted[T cmp.Ordered, S ~[]T](a, b S) S {
+	out := intersect(a, b)
+	slices.Sort(out)
+	return out
+}

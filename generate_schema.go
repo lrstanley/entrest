@@ -9,11 +9,13 @@ import (
 	"cmp"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"math"
 	"slices"
 	"strings"
 
 	"entgo.io/ent/entc/gen"
+	"entgo.io/ent/schema/field"
 	"github.com/ogen-go/ogen"
 )
 
@@ -537,15 +539,12 @@ func GetSortableFields(t *gen.Type, edge *gen.Edge) (sortable []string) {
 
 	for _, f := range fields {
 		fa := GetAnnotation(f)
-
 		if fa.GetSkip(cfg) || f.Sensitive() || (!fa.Sortable && f.Name != "id") {
 			continue
 		}
-
 		if !f.IsString() && !f.IsTime() && !f.IsBool() && !f.IsInt() && !f.IsInt64() && !f.IsUUID() {
 			continue
 		}
-
 		sortable = append(sortable, f.Name)
 	}
 
@@ -562,11 +561,9 @@ func GetSortableFields(t *gen.Type, edge *gen.Edge) (sortable []string) {
 
 				for _, f := range e.Type.Fields {
 					fa := GetAnnotation(f)
-
 					if fa.GetSkip(cfg) || f.Sensitive() || !fa.Sortable || (!f.IsInt() && !f.IsInt64()) {
 						continue
 					}
-
 					sortable = append(sortable, e.Name+"."+f.Name+".sum")
 				}
 
@@ -634,62 +631,78 @@ func (f *FilterableFieldOp) StructTag() string {
 	)
 }
 
-// TODO: add tests.
-func (f *FilterableFieldOp) PredicateBuilder(structName string) string {
-	if f.Operation.Niladic() {
-		if f.Edge != nil {
-			if f.Field == nil {
-				return fmt.Sprintf("%s.Has%s()", f.Type.Package(), f.Edge.StructField())
+func generatePredicateBuilder(
+	t *gen.Type,
+	f *gen.Field,
+	e *gen.Edge,
+	op gen.Op,
+	structName, componentName string,
+) string {
+	if op.Niladic() {
+		if e != nil {
+			if f == nil {
+				return fmt.Sprintf("%s.Has%s()", t.Package(), e.StructField())
 			}
 
-			pkg := f.Type.Package()
+			pkg := t.Package()
 
-			if f.Edge.Ref != nil {
-				pkg = f.Edge.Ref.Type.Package()
-			} else if f.Edge.Owner != nil {
-				pkg = f.Edge.Owner.Package()
+			if e.Ref != nil {
+				pkg = e.Ref.Type.Package()
+			} else if e.Owner != nil {
+				pkg = e.Owner.Package()
 			}
 
 			return fmt.Sprintf(
 				"%s.Has%sWith(%s.%s%s())",
 				pkg,
-				f.Edge.StructField(),
-				f.Type.Package(),
-				f.Field.StructField(),
-				f.Operation.Name(),
+				e.StructField(),
+				t.Package(),
+				f.StructField(),
+				op.Name(),
 			)
 		}
-		return fmt.Sprintf("%s.%s%s()", f.Type.Package(), f.Field.StructField(), f.Operation.Name())
+		return fmt.Sprintf("%s.%s%s()", t.Package(), f.StructField(), op.Name())
 	}
 
-	field := structName + "." + f.ComponentName()
+	ftype := structName + "." + componentName
 
-	if f.Operation.Variadic() {
-		field += "..."
+	if op.Variadic() {
+		ftype += "..."
 	} else {
-		field = "*" + field
+		ftype = "*" + ftype
 	}
 
 	builder := fmt.Sprintf(
 		"%s.%s%s(%s)",
-		f.Type.Package(),
-		f.Field.StructField(),
-		f.Operation.Name(),
-		field,
+		t.Package(),
+		f.StructField(),
+		op.Name(),
+		ftype,
 	)
 
-	if f.Edge != nil {
-		pkg := f.Type.Package()
+	if e != nil {
+		pkg := t.Package()
 
-		if f.Edge.Ref != nil {
-			pkg = f.Edge.Ref.Type.Package()
-		} else if f.Edge.Owner != nil {
-			pkg = f.Edge.Owner.Package()
+		if e.Ref != nil {
+			pkg = e.Ref.Type.Package()
+		} else if e.Owner != nil {
+			pkg = e.Owner.Package()
 		}
 
-		return fmt.Sprintf("%s.Has%sWith(%s)", pkg, f.Edge.StructField(), builder)
+		return fmt.Sprintf("%s.Has%sWith(%s)", pkg, e.StructField(), builder)
 	}
 	return builder
+}
+
+func (f *FilterableFieldOp) PredicateBuilder(structName string) string {
+	return generatePredicateBuilder(
+		f.Type,
+		f.Field,
+		f.Edge,
+		f.Operation,
+		structName,
+		f.ComponentName(),
+	)
 }
 
 // TypeString returns the struct field type for the filterable field.
@@ -791,17 +804,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 			continue
 		}
 
-		requestedOps := fa.Filter.Explode()
-
-		for _, op := range f.Ops() {
-			if !slices.Contains(requestedOps, op) {
-				continue
-			}
-
-			if op == gen.NotNil {
-				continue // Since you can use IsNil=false (we have three states for passed parameters).
-			}
-
+		for _, op := range intersectSorted(f.Ops(), fa.Filter.Explode()) {
 			if f.IsBool() && op == gen.NEQ {
 				continue // Since you can use EQ=false instead.
 			}
@@ -845,4 +848,202 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 		}
 	}
 	return filters
+}
+
+type FilterGroup struct {
+	Name       string
+	Type       *gen.Type
+	FieldType  *field.TypeInfo
+	Operations []gen.Op
+	FieldPairs []*FilterGroupFieldPair
+	Schema     *ogen.Schema
+}
+
+// ParameterName returns the raw query parameter name for the filter group.
+func (g *FilterGroup) ParameterName(op gen.Op) string {
+	return g.Name + "." + predicateFormat(op)
+}
+
+// Parameter returns the parameter for the filter group.
+func (g *FilterGroup) Parameter(op gen.Op) *ogen.Parameter {
+	return &ogen.Parameter{
+		Name:        g.ParameterName(op),
+		In:          "query",
+		Description: g.Description(op),
+		Schema:      g.Schema,
+	}
+}
+
+func (g *FilterGroup) Description(op gen.Op) string {
+	var fields []string
+	for _, fp := range g.FieldPairs {
+		if fp.Edge != nil {
+			fields = append(fields, fp.Edge.Name+"."+fp.Field.Name)
+			continue
+		}
+		fields = append(fields, fp.Field.Name)
+	}
+	return fmt.Sprintf(
+		"Field %q filters across multiple fields (case insensitive): %s.",
+		g.ParameterName(op),
+		strings.Join(fields, ", "),
+	)
+}
+
+// StructTag returns the struct tag for the filter group, which uses json and
+// github.com/go-playground/validator based tags by default.
+func (g *FilterGroup) StructTag(op gen.Op) string {
+	return fmt.Sprintf(
+		`form:%q json:%q`,
+		g.ParameterName(op)+",omitempty",
+		SnakeCase(g.ComponentName(op))+",omitempty",
+	)
+}
+
+func (g *FilterGroup) PredicateBuilder(structName string, op gen.Op) string {
+	component := g.ComponentName(op)
+	var fields []string
+	for _, fp := range g.FieldPairs {
+		fields = append(fields, generatePredicateBuilder(
+			fp.Type,
+			fp.Field,
+			fp.Edge,
+			op,
+			structName,
+			component,
+		))
+	}
+	return fmt.Sprintf("sql.OrPredicates(\n%s,\n)", strings.Join(fields, ",\n"))
+}
+
+// TypeString returns the struct field type for the filter group.
+func (g *FilterGroup) TypeString(op gen.Op) string {
+	if op.Niladic() {
+		return "*bool"
+	}
+	if op.Variadic() {
+		return "[]" + g.FieldType.String()
+	}
+	return "*" + g.FieldType.String()
+}
+
+// ComponentName returns the name/component alias for the parameter.
+func (g *FilterGroup) ComponentName(op gen.Op) string {
+	return PascalCase(g.Type.Name) + "FilterGroup" + PascalCase(g.Name) + PascalCase(op.Name())
+}
+
+type FilterGroupFieldPair struct {
+	Type  *gen.Type
+	Edge  *gen.Edge
+	Field *gen.Field
+}
+
+func GetFilterGroups(t *gen.Type, edge *gen.Edge) []*FilterGroup {
+	cfg := GetConfig(t.Config)
+	ta := GetAnnotation(t)
+
+	if ta.GetSkip(cfg) {
+		return nil
+	}
+
+	groups := map[string]*FilterGroup{}
+
+	for _, f := range t.Fields {
+		fa := GetAnnotation(f)
+
+		if fa.FilterGroup == "" || fa.GetSkip(cfg) || f.Sensitive() {
+			continue
+		}
+
+		fieldSchema, err := GetSchemaField(f)
+		if err != nil {
+			panic(fmt.Sprintf(
+				"failed to generate schema for field %s within filter group %q: %v",
+				f.StructField(),
+				fa.FilterGroup,
+				err,
+			))
+		}
+
+		ops := intersectSorted(f.Ops(), fa.Filter.Explode())
+
+		if f.IsBool() {
+			ops = slices.DeleteFunc(ops, func(op gen.Op) bool {
+				return op == gen.NEQ
+			})
+		}
+
+		if len(ops) == 0 {
+			panic(fmt.Sprintf(
+				"filter group %q on type %q and field %q has no filter predicates configured",
+				fa.FilterGroup,
+				t.Name,
+				f.StructField(),
+			))
+		}
+
+		if _, ok := groups[fa.FilterGroup]; !ok {
+			groups[fa.FilterGroup] = &FilterGroup{
+				Name:       fa.FilterGroup,
+				Type:       t,
+				FieldType:  f.Type,
+				Operations: ops,
+				Schema:     fieldSchema,
+			}
+		}
+
+		if groups[fa.FilterGroup].FieldType.String() != f.Type.String() {
+			panic(fmt.Sprintf(
+				"filter group %q on type %q and field %q has a different type than another field in the group: %q vs %q",
+				fa.FilterGroup,
+				t.Name,
+				f.StructField(),
+				groups[fa.FilterGroup].FieldType.String(),
+				f.Type.String(),
+			))
+		}
+
+		if newOps := intersectSorted(groups[fa.FilterGroup].Operations, ops); len(groups[fa.FilterGroup].Operations) < len(newOps) {
+			if len(newOps) == 0 {
+				panic(fmt.Sprintf(
+					"filter group %q on type %q and field %q has no intersecting predicates when compared to all other fields in the group",
+					fa.FilterGroup,
+					t.Name,
+					f.StructField(),
+				))
+			}
+			groups[fa.FilterGroup].Operations = newOps
+		}
+
+		groups[fa.FilterGroup].FieldPairs = append(groups[fa.FilterGroup].FieldPairs, &FilterGroupFieldPair{
+			Type:  t,
+			Field: f,
+		})
+	}
+
+	if edge == nil {
+		for _, e := range t.Edges {
+			ea := GetAnnotation(e)
+
+			// Only include the edge as part of the inner filter group if it has a filter group
+			// that's a part of the main type.
+			if _, ok := groups[ea.FilterGroup]; !ok || ea.GetSkip(cfg) {
+				continue
+			}
+
+			edgeGroups := GetFilterGroups(e.Type, e)
+			for _, eg := range edgeGroups {
+				if _, ok := groups[eg.Name]; !ok {
+					groups[eg.Name] = eg
+					continue
+				}
+
+				groups[eg.Name].FieldPairs = append(groups[eg.Name].FieldPairs, eg.FieldPairs...)
+			}
+		}
+	}
+
+	return slices.SortedFunc(maps.Values(groups), func(a, b *FilterGroup) int {
+		return strings.Compare(a.Name, b.Name)
+	})
 }

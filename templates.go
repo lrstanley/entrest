@@ -25,6 +25,7 @@ var (
 		"getAnnotation":       GetAnnotation,
 		"getSortableFields":   GetSortableFields,
 		"getFilterableFields": GetFilterableFields,
+		"getFilterGroups":     GetFilterGroups,
 		"getOperationIDName":  GetOperationIDName,
 		"getPathName":         GetPathName,
 	}

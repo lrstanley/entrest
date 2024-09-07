@@ -437,19 +437,19 @@
                         "$ref": "#/components/parameters/PetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
@@ -461,16 +461,16 @@
                         "$ref": "#/components/parameters/PetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/PetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetTypeEQ"
@@ -551,19 +551,19 @@
                         "$ref": "#/components/parameters/EdgeOwnerNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerTypeEQ"
@@ -578,10 +578,10 @@
                         "$ref": "#/components/parameters/EdgeOwnerTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerDescriptionContainsFold"
@@ -596,28 +596,28 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -647,19 +647,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
@@ -671,16 +671,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgeFriendAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -734,19 +734,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedByNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByTypeEQ"
@@ -761,10 +761,10 @@
                         "$ref": "#/components/parameters/EdgeFollowedByTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByDescriptionContainsFold"
@@ -779,28 +779,28 @@
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -1134,19 +1134,19 @@
                         "$ref": "#/components/parameters/EdgeUserNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeUserNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeUserNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserTypeEQ"
@@ -1161,10 +1161,10 @@
                         "$ref": "#/components/parameters/EdgeUserTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeUserDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeUserDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeUserDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeUserDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserDescriptionContainsFold"
@@ -1179,28 +1179,28 @@
                         "$ref": "#/components/parameters/EdgeUserEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeUserEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeUserEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeUserEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeUserEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -1230,19 +1230,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -1257,10 +1257,10 @@
                         "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendDescriptionContainsFold"
@@ -1275,28 +1275,28 @@
                         "$ref": "#/components/parameters/EdgeFriendEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     }
                 ],
                 "responses": {
@@ -1842,19 +1842,19 @@
                         "$ref": "#/components/parameters/PetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
@@ -1866,16 +1866,16 @@
                         "$ref": "#/components/parameters/PetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/PetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetTypeEQ"
@@ -1956,19 +1956,19 @@
                         "$ref": "#/components/parameters/EdgeOwnerNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerTypeEQ"
@@ -1983,10 +1983,10 @@
                         "$ref": "#/components/parameters/EdgeOwnerTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerDescriptionContainsFold"
@@ -2001,28 +2001,28 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -2052,19 +2052,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
@@ -2076,16 +2076,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgeFriendAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -2139,19 +2139,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedByNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByTypeEQ"
@@ -2166,10 +2166,10 @@
                         "$ref": "#/components/parameters/EdgeFollowedByTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByDescriptionContainsFold"
@@ -2184,28 +2184,28 @@
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -2696,19 +2696,19 @@
                         "$ref": "#/components/parameters/UserNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/UserNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/UserNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserTypeEQ"
@@ -2723,10 +2723,10 @@
                         "$ref": "#/components/parameters/UserTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/UserDescriptionContains"
+                        "$ref": "#/components/parameters/UserDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/UserDescriptionIsNil"
+                        "$ref": "#/components/parameters/UserDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/UserDescriptionContainsFold"
@@ -2741,28 +2741,28 @@
                         "$ref": "#/components/parameters/UserEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/UserEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/UserEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasPet"
@@ -2792,19 +2792,19 @@
                         "$ref": "#/components/parameters/EdgePetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNicknamesIsNil"
@@ -2816,16 +2816,16 @@
                         "$ref": "#/components/parameters/EdgePetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgePetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgePetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetTypeEQ"
@@ -2867,19 +2867,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIsNil"
@@ -2891,16 +2891,16 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetTypeEQ"
@@ -2954,19 +2954,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -2981,10 +2981,10 @@
                         "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendDescriptionContainsFold"
@@ -2999,28 +2999,28 @@
                         "$ref": "#/components/parameters/EdgeFriendEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -3063,6 +3063,33 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendshipFriendIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchHasSuffix"
                     }
                 ],
                 "responses": {
@@ -3194,19 +3221,19 @@
                         "$ref": "#/components/parameters/PetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
@@ -3218,16 +3245,16 @@
                         "$ref": "#/components/parameters/PetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/PetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetTypeEQ"
@@ -3308,19 +3335,19 @@
                         "$ref": "#/components/parameters/EdgeOwnerNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerTypeEQ"
@@ -3335,10 +3362,10 @@
                         "$ref": "#/components/parameters/EdgeOwnerTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerDescriptionContainsFold"
@@ -3353,28 +3380,28 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -3404,19 +3431,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
@@ -3428,16 +3455,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgeFriendAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -3491,19 +3518,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedByNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByTypeEQ"
@@ -3518,10 +3545,10 @@
                         "$ref": "#/components/parameters/EdgeFollowedByTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByDescriptionContainsFold"
@@ -3536,28 +3563,28 @@
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -4008,19 +4035,19 @@
                         "$ref": "#/components/parameters/UserNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/UserNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/UserNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserTypeEQ"
@@ -4035,10 +4062,10 @@
                         "$ref": "#/components/parameters/UserTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/UserDescriptionContains"
+                        "$ref": "#/components/parameters/UserDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/UserDescriptionIsNil"
+                        "$ref": "#/components/parameters/UserDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/UserDescriptionContainsFold"
@@ -4053,28 +4080,28 @@
                         "$ref": "#/components/parameters/UserEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/UserEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/UserEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasPet"
@@ -4104,19 +4131,19 @@
                         "$ref": "#/components/parameters/EdgePetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNicknamesIsNil"
@@ -4128,16 +4155,16 @@
                         "$ref": "#/components/parameters/EdgePetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgePetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgePetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetTypeEQ"
@@ -4179,19 +4206,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIsNil"
@@ -4203,16 +4230,16 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetTypeEQ"
@@ -4266,19 +4293,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -4293,10 +4320,10 @@
                         "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendDescriptionContainsFold"
@@ -4311,28 +4338,28 @@
                         "$ref": "#/components/parameters/EdgeFriendEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -4375,6 +4402,33 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendshipFriendIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchHasSuffix"
                     }
                 ],
                 "responses": {
@@ -4518,19 +4572,19 @@
                         "$ref": "#/components/parameters/UserNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/UserNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/UserNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserTypeEQ"
@@ -4545,10 +4599,10 @@
                         "$ref": "#/components/parameters/UserTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/UserDescriptionContains"
+                        "$ref": "#/components/parameters/UserDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/UserDescriptionIsNil"
+                        "$ref": "#/components/parameters/UserDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/UserDescriptionContainsFold"
@@ -4563,28 +4617,28 @@
                         "$ref": "#/components/parameters/UserEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/UserEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/UserEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasPet"
@@ -4614,19 +4668,19 @@
                         "$ref": "#/components/parameters/EdgePetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNicknamesIsNil"
@@ -4638,16 +4692,16 @@
                         "$ref": "#/components/parameters/EdgePetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgePetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgePetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetTypeEQ"
@@ -4689,19 +4743,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIsNil"
@@ -4713,16 +4767,16 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetTypeEQ"
@@ -4776,19 +4830,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -4803,10 +4857,10 @@
                         "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendDescriptionContainsFold"
@@ -4821,28 +4875,28 @@
                         "$ref": "#/components/parameters/EdgeFriendEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -4885,6 +4939,33 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendshipFriendIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchHasSuffix"
                     }
                 ],
                 "responses": {
@@ -5244,19 +5325,19 @@
                         "$ref": "#/components/parameters/PetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
@@ -5268,16 +5349,16 @@
                         "$ref": "#/components/parameters/PetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/PetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetTypeEQ"
@@ -5358,19 +5439,19 @@
                         "$ref": "#/components/parameters/EdgeOwnerNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerTypeEQ"
@@ -5385,10 +5466,10 @@
                         "$ref": "#/components/parameters/EdgeOwnerTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerDescriptionContainsFold"
@@ -5403,28 +5484,28 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -5454,19 +5535,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
@@ -5478,16 +5559,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgeFriendAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -5541,19 +5622,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedByNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByTypeEQ"
@@ -5568,10 +5649,10 @@
                         "$ref": "#/components/parameters/EdgeFollowedByTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByDescriptionContainsFold"
@@ -5586,28 +5667,28 @@
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -5754,19 +5835,19 @@
                         "$ref": "#/components/parameters/UserNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/UserNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/UserNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserTypeEQ"
@@ -5781,10 +5862,10 @@
                         "$ref": "#/components/parameters/UserTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/UserDescriptionContains"
+                        "$ref": "#/components/parameters/UserDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/UserDescriptionIsNil"
+                        "$ref": "#/components/parameters/UserDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/UserDescriptionContainsFold"
@@ -5799,28 +5880,28 @@
                         "$ref": "#/components/parameters/UserEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/UserEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/UserEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/UserEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/UserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasPet"
@@ -5850,19 +5931,19 @@
                         "$ref": "#/components/parameters/EdgePetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetNicknamesIsNil"
@@ -5874,16 +5955,16 @@
                         "$ref": "#/components/parameters/EdgePetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgePetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgePetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgePetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetTypeEQ"
@@ -5925,19 +6006,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIsNil"
@@ -5949,16 +6030,16 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedPetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetTypeEQ"
@@ -6012,19 +6093,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -6039,10 +6120,10 @@
                         "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendDescriptionContainsFold"
@@ -6057,28 +6138,28 @@
                         "$ref": "#/components/parameters/EdgeFriendEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -6121,6 +6202,33 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendshipFriendIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserFilterGroupSearchHasSuffix"
                     }
                 ],
                 "responses": {
@@ -6292,19 +6400,19 @@
                         "$ref": "#/components/parameters/EdgeUserNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeUserNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeUserNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserTypeEQ"
@@ -6319,10 +6427,10 @@
                         "$ref": "#/components/parameters/EdgeUserTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeUserDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeUserDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeUserDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeUserDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserDescriptionContainsFold"
@@ -6337,28 +6445,28 @@
                         "$ref": "#/components/parameters/EdgeUserEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeUserEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeUserEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeUserEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeUserEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeUserEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeUserEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -6388,19 +6496,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -6415,10 +6523,10 @@
                         "$ref": "#/components/parameters/EdgeFriendTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFriendDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendDescriptionContainsFold"
@@ -6433,28 +6541,28 @@
                         "$ref": "#/components/parameters/EdgeFriendEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendEmailContainsFold"
                     }
                 ],
                 "responses": {
@@ -6573,19 +6681,19 @@
                         "$ref": "#/components/parameters/PetNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/PetNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
@@ -6597,16 +6705,16 @@
                         "$ref": "#/components/parameters/PetAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/PetAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/PetAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/PetAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetTypeEQ"
@@ -6687,19 +6795,19 @@
                         "$ref": "#/components/parameters/EdgeOwnerNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerTypeEQ"
@@ -6714,10 +6822,10 @@
                         "$ref": "#/components/parameters/EdgeOwnerTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeOwnerDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeOwnerDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerDescriptionContainsFold"
@@ -6732,28 +6840,28 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeOwnerEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeOwnerEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFriend"
@@ -6783,19 +6891,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
@@ -6807,16 +6915,16 @@
                         "$ref": "#/components/parameters/EdgeFriendAgeNEQ"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
-                    },
-                    {
                         "$ref": "#/components/parameters/EdgeFriendAgeGT"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendAgeNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendTypeEQ"
@@ -6870,19 +6978,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedByNameNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByNameHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByNameContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByTypeEQ"
@@ -6897,10 +7005,10 @@
                         "$ref": "#/components/parameters/EdgeFollowedByTypeNotIn"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
                     },
                     {
-                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionIsNil"
+                        "$ref": "#/components/parameters/EdgeFollowedByDescriptionContains"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByDescriptionContainsFold"
@@ -6915,28 +7023,28 @@
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNEQ"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailNotIn"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasPrefix"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailIsNil"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailEqualFold"
-                    },
-                    {
-                        "$ref": "#/components/parameters/EdgeFollowedByEmailContainsFold"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -11169,6 +11277,87 @@
                 "description": "Filters field \"enabled\" to be equal to the provided value.",
                 "schema": {
                     "type": "boolean"
+                }
+            },
+            "UserFilterGroupSearchContains": {
+                "name": "search.has",
+                "in": "query",
+                "description": "Field \"search.has\" filters across multiple fields (case insensitive): name, description, email.",
+                "schema": {
+                    "description": "Name of the user.",
+                    "type": "string"
+                }
+            },
+            "UserFilterGroupSearchContainsFold": {
+                "name": "search.ihas",
+                "in": "query",
+                "description": "Field \"search.ihas\" filters across multiple fields (case insensitive): name, description, email.",
+                "schema": {
+                    "description": "Name of the user.",
+                    "type": "string"
+                }
+            },
+            "UserFilterGroupSearchEQ": {
+                "name": "search.eq",
+                "in": "query",
+                "description": "Field \"search.eq\" filters across multiple fields (case insensitive): name, description, email.",
+                "schema": {
+                    "description": "Name of the user.",
+                    "type": "string"
+                }
+            },
+            "UserFilterGroupSearchEqualFold": {
+                "name": "search.ieq",
+                "in": "query",
+                "description": "Field \"search.ieq\" filters across multiple fields (case insensitive): name, description, email.",
+                "schema": {
+                    "description": "Name of the user.",
+                    "type": "string"
+                }
+            },
+            "UserFilterGroupSearchHasPrefix": {
+                "name": "search.prefix",
+                "in": "query",
+                "description": "Field \"search.prefix\" filters across multiple fields (case insensitive): name, description, email.",
+                "schema": {
+                    "description": "Name of the user.",
+                    "type": "string"
+                }
+            },
+            "UserFilterGroupSearchHasSuffix": {
+                "name": "search.suffix",
+                "in": "query",
+                "description": "Field \"search.suffix\" filters across multiple fields (case insensitive): name, description, email.",
+                "schema": {
+                    "description": "Name of the user.",
+                    "type": "string"
+                }
+            },
+            "UserFilterGroupSearchIn": {
+                "name": "search.in",
+                "in": "query",
+                "description": "Field \"search.in\" filters across multiple fields (case insensitive): name, description, email.",
+                "schema": {
+                    "description": "Name of the user.",
+                    "type": "string"
+                }
+            },
+            "UserFilterGroupSearchNEQ": {
+                "name": "search.neq",
+                "in": "query",
+                "description": "Field \"search.neq\" filters across multiple fields (case insensitive): name, description, email.",
+                "schema": {
+                    "description": "Name of the user.",
+                    "type": "string"
+                }
+            },
+            "UserFilterGroupSearchNotIn": {
+                "name": "search.notIn",
+                "in": "query",
+                "description": "Field \"search.notIn\" filters across multiple fields (case insensitive): name, description, email.",
+                "schema": {
+                    "description": "Name of the user.",
+                    "type": "string"
                 }
             },
             "UserID": {

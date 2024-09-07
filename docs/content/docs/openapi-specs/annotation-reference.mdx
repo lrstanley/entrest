@@ -28,6 +28,7 @@ Depending on the annotation used, it can only be applied in specific locations, 
 | [WithDefaultSort](#withdefaultsort) | <Usage types={["schema"]} /> | Sets the default sort field for the schema in the REST API. |
 | [WithDefaultOrder](#withdefaultorder) | <Usage types={["schema"]} /> | Sets the default sorting order for the schema in the REST API. |
 | [WithFilter](#withfilter) | <Usage types={["schema", "edge", "field"]} /> | Sets the field to be filterable with the provided predicate(s). |
+| [WithFilterGroup](#withfiltergroup) | <Usage types={["edge", "field"]} /> | Adds the field to a group of other fields that are filtered together. |
 | [WithSchema](#withschema) | <Usage types={["field"]} /> | Sets the OpenAPI schema for the specified field. |
 | [WithPagination](#withpagination) | <Usage types={["schema", "edge"]} /> | Sets the schema to be paginated in the REST API. |
 | [WithOperationSummary](#withoperationsummary) | <Usage types={["schema", "edge"]} /> | Provides an OpenAPI summary for the specified operation. |
@@ -221,6 +222,63 @@ func (Pet) Fields() []ent.Field {
         ),
     }
 }
+```
+
+### `WithFilterGroup`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithFilterGroup) | usage: <Usage types={["edge", "field"]} /> ]
+
+> Adds the field to a group of other fields that are filtered together. Note that only common filter
+> options across all of the groups will be supported. The goal of this is to group common fields that
+> would be searched together.
+>
+> You can also use **WithFilterGroup** on edges to also allow any matching groups on the edge to be
+> included in this filter group. The group name must match when used on the edge if you want that edge
+> to be included in that group.
+
+##### Example
+
+Using the following annotations:
+
+```go title="internal/database/schema/schema_user.go" ins={5,9,13}
+func (User) Fields() []ent.Field {
+    return []ent.Field{
+        field.String("username").Annotations(
+            entrest.WithFilter(entrest.FilterGroupEqual|entrest.FilterGroupArray),
+            entrest.WithFilterGroup("search"),
+        ),
+        field.String("display_name").Annotations(
+            entrest.WithFilter(entrest.FilterGroupEqual|entrest.FilterGroupArray),
+            entrest.WithFilterGroup("search"),
+        ),
+        field.String("email").Annotations(
+            entrest.WithFilter(entrest.FilterGroupEqual|entrest.FilterGroupArray),
+            entrest.WithFilterGroup("search"),
+        ),
+        field.Enum("type").
+            NamedValues(
+                "System", "SYSTEM",
+                "User", "USER",
+            ).
+            Default("USER").
+            Annotations(
+                entrest.WithExample("USER"),
+                entrest.WithFilter(entrest.FilterGroupEqualExact|entrest.FilterGroupArray),
+            ),
+    }
+}
+```
+
+And the following API query:
+
+```http ins="search.ihas=foo"
+GET /users?type.eq=USER&search.ihas=foo
+```
+
+This would effectively result in the following psuedo-code being used behind the scenes:
+
+```
+and(type.eq==USER, or(username.ihas==foo, display_name.ihas==foo, email.ihas==foo))
 ```
 
 ### `WithSchema`

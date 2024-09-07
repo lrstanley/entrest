@@ -195,6 +195,7 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
 
     {{- $pagination := (($t|getAnnotation).GetPagination $.Annotations.RestConfig nil) }}
     {{- $filters := getFilterableFields $t nil }}
+    {{- $groups := getFilterGroups $t nil }}
 
     // List{{ $t.Name|zsingular }}Params defines parameters for listing {{ $t.Name|zplural }} via a GET request.
     type List{{ $t.Name|zsingular }}Params struct {
@@ -202,7 +203,7 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
         {{- if $pagination }}
             Paginated[*ent.{{ $t.Name }}Query, ent.{{ $t.Name }}]
         {{- end }}
-        {{- if $filters }}
+        {{- if or $filters $groups }}
             Filtered[predicate.{{ $t.Name }}]
         {{- end }}
 
@@ -212,9 +213,18 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
                 {{ $f.ComponentName }} {{ $f.TypeString }} `{{ $f.StructTag }}`
             {{- end }}
         {{- end }}{{/* end filters */}}
+
+        {{ if $groups }}
+            {{- range $g := $groups }}
+                {{- range $op := $g.Operations }}
+                    // {{ $g.Description $op }}
+                    {{ $g.ComponentName $op }} {{ $g.TypeString $op }} `{{ $g.StructTag $op }}`
+                {{- end }}
+            {{- end }}
+        {{- end }}{{/* end filters */}}
     }
 
-    {{ if $filters }}
+    {{ if or $filters $groups }}
         // FilterPredicates returns the predicates for filter-related parameters in {{ $t.Name|singular }}.
         func (l *List{{ $t.Name|zsingular }}Params) FilterPredicates() (predicate.{{ $t.Name }}, error) {
             var predicates []predicate.{{ $t.Name }}
@@ -231,6 +241,21 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
                         predicates = append(predicates, {{ $f.PredicateBuilder "l" }})
                     {{- end }}{{/* end niladic */}}
                 }
+            {{- end }}{{/* end range filtering */}}
+            {{ range $g := $groups }}
+                {{- range $op := $g.Operations }}
+                    if l.{{ $g.ComponentName $op }} != nil {
+                        {{- if $op.Niladic }}
+                            if *l.{{ $g.ComponentName $op }} {
+                                predicates = append(predicates, {{ $g.PredicateBuilder "l" $op }})
+                            } else {
+                                predicates = append(predicates, {{ $t.Package }}.Not({{ $g.PredicateBuilder "l" $op }}))
+                            }
+                        {{- else }}
+                            predicates = append(predicates, {{ $g.PredicateBuilder "l" $op }})
+                        {{- end }}{{/* end niladic */}}
+                    }
+                {{- end }}
             {{- end }}{{/* end range filtering */}}
             return l.ApplyFilterOperation(predicates...)
         }
@@ -252,7 +277,7 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
         // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
         // executes all necessary queries, returning the results.
         func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, query *ent.{{ $t.Name }}Query) (results *PagedResponse[ent.{{ $t.Name }}], err error) {
-            {{- if $filters }}
+            {{- if or $filters $groups }}
                 predicates, err := l.FilterPredicates()
                 if err != nil {
                     return nil, err
@@ -269,7 +294,7 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
         // Exec wraps all logic (filtering, sorting, and eager loading) and
         // executes all necessary queries, returning the results.
         func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, query *ent.{{ $t.Name }}Query) (results []*ent.{{ $t.Name }}, err error) {
-            {{- if $filters }}
+            {{- if or $filters $groups }}
                 predicates, err := l.FilterPredicates()
                 if err != nil {
                     return nil, err

@@ -626,3 +626,39 @@ func TestHandler_EagerLoadLimit(t *testing.T) {
 	resp2 := enttest.Request[ent.User](ctx, s, http.MethodGet, "/users/"+strconv.Itoa(user1.ID), nil).Must(t)
 	require.Len(t, resp2.Value.Edges.Pets, 1020)
 }
+
+func TestHandler_FilterGroups(t *testing.T) {
+	ctx, db, s := newRestServer(t, nil)
+	t.Cleanup(func() { db.Close() })
+
+	db.User.CreateBulk(enttest.Multiple(newUser, db, 100)...).ExecX(ctx)
+
+	user1 := newUser(db).
+		SetName("123username").
+		SetDescription("456description").
+		SetEmail("789email@example.com").
+		SetEnabled(true).
+		SaveX(ctx)
+
+	newUser(db).
+		SetName("123username").
+		SetDescription("456description").
+		SetEmail("789email@example.com").
+		SetEnabled(false).
+		ExecX(ctx)
+
+	// Search for three different distinct fields using the 1 filter group, and make
+	// sure we only (and always) get user1 back. The logic for this query should be:
+	//   - and(enabled.eq==true, or(name.ihas=="123user", description.ihas=="123user", email.ihas=="123user"))
+	//
+	// enabled.eq should always be AND'd with the OR'd fields of the filter group.
+
+	tests := []string{"123user", "456desc", "789email"}
+
+	for _, test := range tests {
+		resp := enttest.Request[rest.PagedResponse[ent.User]](ctx, s, http.MethodGet, "/users?enabled.eq=true&search.ihas="+test, nil).Must(t)
+		require.Equal(t, http.StatusOK, resp.Data.Code)
+		require.Len(t, resp.Value.Content, 1)
+		assert.Equal(t, user1.ID, resp.Value.Content[0].ID)
+	}
+}

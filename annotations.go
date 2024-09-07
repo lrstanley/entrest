@@ -86,6 +86,7 @@ type Annotation struct {
 	Example              any                  `json:",omitempty" ent:"field"`
 	Deprecated           bool                 `json:",omitempty" ent:"schema,edge,field"`
 	Schema               *ogen.Schema         `json:",omitempty" ent:"field"`
+	ReadOnly             bool                 `json:",omitempty" ent:"field"`
 
 	// All others.
 
@@ -98,12 +99,12 @@ type Annotation struct {
 	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
 	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
 	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
+	FilterGroup     string      `json:",omitempty" ent:"edge,field"`
 	DisableHandler  bool        `json:",omitempty" ent:"schema,edge"`
 	Sortable        bool        `json:",omitempty" ent:"field"`
 	DefaultSort     *string     `json:",omitempty" ent:"schema"`
 	DefaultOrder    *SortOrder  `json:",omitempty" ent:"schema"`
 	Skip            bool        `json:",omitempty" ent:"schema,edge,field"`
-	ReadOnly        bool        `json:",omitempty" ent:"field"`
 	Operations      []Operation `json:",omitempty" ent:"schema,edge"`
 }
 
@@ -223,6 +224,9 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 	a.EdgeUpdateBulk = a.EdgeUpdateBulk || am.EdgeUpdateBulk
 	if am.Filter != 0 {
 		a.Filter = am.Filter.Add(a.Filter)
+	}
+	if am.FilterGroup != "" {
+		a.FilterGroup = am.FilterGroup
 	}
 	a.DisableHandler = a.DisableHandler || am.DisableHandler
 	a.Sortable = a.Sortable || am.Sortable
@@ -519,6 +523,19 @@ func WithEdgeUpdateBulk(v bool) Annotation {
 //	entrest.WithFilter(entrest.FilterEQ | entrest.FilterNEQ) // Or use individual predicates.
 func WithFilter(v Predicate) Annotation {
 	return Annotation{Filter: v}
+}
+
+// WithFilterGroup adds the field to a group of other fields that are filtered together. Note that
+// only common filter options across all of the groups will be supported. The goal of this is to group
+// common fields that would be searched together. This allows slightly more advanced logical operations,
+// like the following:
+//   - and(type.eq==FOO, or(field1.ihas==bar, field2.ihas==bar, field3.ihas==bar))
+//
+// You can use [WithFilterGroup] on edges to also allow any matching groups on the edge to be included
+// in this filter group. The group name must match when used on the edge if you want that edge to be
+// included in that group.
+func WithFilterGroup(name string) Annotation {
+	return Annotation{FilterGroup: name}
 }
 
 // WithHandler sets the schema/edge to have an HTTP handler generated for it. Unless a schema/edge

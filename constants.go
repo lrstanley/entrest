@@ -72,7 +72,6 @@ const (
 	FilterLT           // <
 	FilterLTE          // <=
 	FilterIsNil        // IS NULL / has
-	FilterNotNil       // IS NOT NULL / hasNot
 	FilterIn           // within
 	FilterNotIn        // without
 	FilterEqualFold    // equals case-insensitive
@@ -80,6 +79,7 @@ const (
 	FilterContainsFold // containing case-insensitive
 	FilterHasPrefix    // startingWith
 	FilterHasSuffix    // endingWith
+	// FilterNotNil // Since you can use IsNil=false (we have three states for passed parameters).
 
 	// FilterGroupEqualExact includes: eq, neq, equal fold, is nil.
 	FilterGroupEqualExact = FilterEQ | FilterNEQ | FilterEqualFold | FilterGroupNil
@@ -104,7 +104,6 @@ var filterMap = map[Predicate]gen.Op{
 	FilterLT:           gen.LT,
 	FilterLTE:          gen.LTE,
 	FilterIsNil:        gen.IsNil,
-	FilterNotNil:       gen.NotNil,
 	FilterIn:           gen.In,
 	FilterNotIn:        gen.NotIn,
 	FilterEqualFold:    gen.EqualFold,

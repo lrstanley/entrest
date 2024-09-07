@@ -282,6 +282,7 @@ func (l *ListCategoryParams) FilterPredicates() (predicate.Category, error) {
 	if l.CategoryUpdatedAtLT != nil {
 		predicates = append(predicates, category.UpdatedAtLT(*l.CategoryUpdatedAtLT))
 	}
+
 	return l.ApplyFilterOperation(predicates...)
 }
 
@@ -388,16 +389,16 @@ type ListFriendshipParams struct {
 	EdgeUserNameIn []string `form:"user.name.in,omitempty" json:"edge_user_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	EdgeUserNameNotIn []string `form:"user.name.notIn,omitempty" json:"edge_user_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	EdgeUserNameEqualFold *string `form:"user.name.ieq,omitempty" json:"edge_user_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	EdgeUserNameContains *string `form:"user.name.has,omitempty" json:"edge_user_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	EdgeUserNameContainsFold *string `form:"user.name.ihas,omitempty" json:"edge_user_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	EdgeUserNameHasPrefix *string `form:"user.name.prefix,omitempty" json:"edge_user_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgeUserNameHasSuffix *string `form:"user.name.suffix,omitempty" json:"edge_user_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeUserNameEqualFold *string `form:"user.name.ieq,omitempty" json:"edge_user_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeUserNameContainsFold *string `form:"user.name.ihas,omitempty" json:"edge_user_name_contains_fold,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	EdgeUserTypeEQ *user.Type `form:"user.type.eq,omitempty" json:"edge_user_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -406,10 +407,10 @@ type ListFriendshipParams struct {
 	EdgeUserTypeIn []user.Type `form:"user.type.in,omitempty" json:"edge_user_type_in,omitempty"`
 	// Filters field "type" to be not within the provided values.
 	EdgeUserTypeNotIn []user.Type `form:"user.type.notIn,omitempty" json:"edge_user_type_not_in,omitempty"`
-	// Filters field "description" to contain the provided value.
-	EdgeUserDescriptionContains *string `form:"user.description.has,omitempty" json:"edge_user_description_contains,omitempty"`
 	// Filters field "description" to be null/nil.
 	EdgeUserDescriptionIsNil *bool `form:"user.description.null,omitempty" json:"edge_user_description_is_nil,omitempty"`
+	// Filters field "description" to contain the provided value.
+	EdgeUserDescriptionContains *string `form:"user.description.has,omitempty" json:"edge_user_description_contains,omitempty"`
 	// Filters field "description" to contain the provided value, case-insensitive.
 	EdgeUserDescriptionContainsFold *string `form:"user.description.ihas,omitempty" json:"edge_user_description_contains_fold,omitempty"`
 	// Filters field "enabled" to be equal to the provided value.
@@ -418,22 +419,22 @@ type ListFriendshipParams struct {
 	EdgeUserEmailEQ *string `form:"user.email.eq,omitempty" json:"edge_user_email_eq,omitempty"`
 	// Filters field "email" to be not equal to the provided value.
 	EdgeUserEmailNEQ *string `form:"user.email.neq,omitempty" json:"edge_user_email_neq,omitempty"`
+	// Filters field "email" to be null/nil.
+	EdgeUserEmailIsNil *bool `form:"user.email.null,omitempty" json:"edge_user_email_is_nil,omitempty"`
 	// Filters field "email" to be within the provided values.
 	EdgeUserEmailIn []string `form:"user.email.in,omitempty" json:"edge_user_email_in,omitempty"`
 	// Filters field "email" to be not within the provided values.
 	EdgeUserEmailNotIn []string `form:"user.email.notIn,omitempty" json:"edge_user_email_not_in,omitempty"`
+	// Filters field "email" to be equal to the provided value, case-insensitive.
+	EdgeUserEmailEqualFold *string `form:"user.email.ieq,omitempty" json:"edge_user_email_equal_fold,omitempty"`
 	// Filters field "email" to contain the provided value.
 	EdgeUserEmailContains *string `form:"user.email.has,omitempty" json:"edge_user_email_contains,omitempty"`
+	// Filters field "email" to contain the provided value, case-insensitive.
+	EdgeUserEmailContainsFold *string `form:"user.email.ihas,omitempty" json:"edge_user_email_contains_fold,omitempty"`
 	// Filters field "email" to start with the provided value.
 	EdgeUserEmailHasPrefix *string `form:"user.email.prefix,omitempty" json:"edge_user_email_has_prefix,omitempty"`
 	// Filters field "email" to end with the provided value.
 	EdgeUserEmailHasSuffix *string `form:"user.email.suffix,omitempty" json:"edge_user_email_has_suffix,omitempty"`
-	// Filters field "email" to be null/nil.
-	EdgeUserEmailIsNil *bool `form:"user.email.null,omitempty" json:"edge_user_email_is_nil,omitempty"`
-	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeUserEmailEqualFold *string `form:"user.email.ieq,omitempty" json:"edge_user_email_equal_fold,omitempty"`
-	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeUserEmailContainsFold *string `form:"user.email.ihas,omitempty" json:"edge_user_email_contains_fold,omitempty"`
 	// If true, only return entities that have a friend edge.
 	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
@@ -452,16 +453,16 @@ type ListFriendshipParams struct {
 	EdgeFriendNameIn []string `form:"friend.name.in,omitempty" json:"edge_friend_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	EdgeFriendNameNotIn []string `form:"friend.name.notIn,omitempty" json:"edge_friend_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	EdgeFriendNameContains *string `form:"friend.name.has,omitempty" json:"edge_friend_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	EdgeFriendTypeEQ *user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -470,10 +471,10 @@ type ListFriendshipParams struct {
 	EdgeFriendTypeIn []user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitempty"`
 	// Filters field "type" to be not within the provided values.
 	EdgeFriendTypeNotIn []user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitempty"`
-	// Filters field "description" to contain the provided value.
-	EdgeFriendDescriptionContains *string `form:"friend.description.has,omitempty" json:"edge_friend_description_contains,omitempty"`
 	// Filters field "description" to be null/nil.
 	EdgeFriendDescriptionIsNil *bool `form:"friend.description.null,omitempty" json:"edge_friend_description_is_nil,omitempty"`
+	// Filters field "description" to contain the provided value.
+	EdgeFriendDescriptionContains *string `form:"friend.description.has,omitempty" json:"edge_friend_description_contains,omitempty"`
 	// Filters field "description" to contain the provided value, case-insensitive.
 	EdgeFriendDescriptionContainsFold *string `form:"friend.description.ihas,omitempty" json:"edge_friend_description_contains_fold,omitempty"`
 	// Filters field "enabled" to be equal to the provided value.
@@ -482,22 +483,22 @@ type ListFriendshipParams struct {
 	EdgeFriendEmailEQ *string `form:"friend.email.eq,omitempty" json:"edge_friend_email_eq,omitempty"`
 	// Filters field "email" to be not equal to the provided value.
 	EdgeFriendEmailNEQ *string `form:"friend.email.neq,omitempty" json:"edge_friend_email_neq,omitempty"`
+	// Filters field "email" to be null/nil.
+	EdgeFriendEmailIsNil *bool `form:"friend.email.null,omitempty" json:"edge_friend_email_is_nil,omitempty"`
 	// Filters field "email" to be within the provided values.
 	EdgeFriendEmailIn []string `form:"friend.email.in,omitempty" json:"edge_friend_email_in,omitempty"`
 	// Filters field "email" to be not within the provided values.
 	EdgeFriendEmailNotIn []string `form:"friend.email.notIn,omitempty" json:"edge_friend_email_not_in,omitempty"`
+	// Filters field "email" to be equal to the provided value, case-insensitive.
+	EdgeFriendEmailEqualFold *string `form:"friend.email.ieq,omitempty" json:"edge_friend_email_equal_fold,omitempty"`
 	// Filters field "email" to contain the provided value.
 	EdgeFriendEmailContains *string `form:"friend.email.has,omitempty" json:"edge_friend_email_contains,omitempty"`
+	// Filters field "email" to contain the provided value, case-insensitive.
+	EdgeFriendEmailContainsFold *string `form:"friend.email.ihas,omitempty" json:"edge_friend_email_contains_fold,omitempty"`
 	// Filters field "email" to start with the provided value.
 	EdgeFriendEmailHasPrefix *string `form:"friend.email.prefix,omitempty" json:"edge_friend_email_has_prefix,omitempty"`
 	// Filters field "email" to end with the provided value.
 	EdgeFriendEmailHasSuffix *string `form:"friend.email.suffix,omitempty" json:"edge_friend_email_has_suffix,omitempty"`
-	// Filters field "email" to be null/nil.
-	EdgeFriendEmailIsNil *bool `form:"friend.email.null,omitempty" json:"edge_friend_email_is_nil,omitempty"`
-	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeFriendEmailEqualFold *string `form:"friend.email.ieq,omitempty" json:"edge_friend_email_equal_fold,omitempty"`
-	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeFriendEmailContainsFold *string `form:"friend.email.ihas,omitempty" json:"edge_friend_email_contains_fold,omitempty"`
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Friendship.
@@ -571,20 +572,20 @@ func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) 
 	if l.EdgeUserNameNotIn != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.NameNotIn(l.EdgeUserNameNotIn...)))
 	}
+	if l.EdgeUserNameEqualFold != nil {
+		predicates = append(predicates, friendship.HasUserWith(user.NameEqualFold(*l.EdgeUserNameEqualFold)))
+	}
 	if l.EdgeUserNameContains != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.NameContains(*l.EdgeUserNameContains)))
+	}
+	if l.EdgeUserNameContainsFold != nil {
+		predicates = append(predicates, friendship.HasUserWith(user.NameContainsFold(*l.EdgeUserNameContainsFold)))
 	}
 	if l.EdgeUserNameHasPrefix != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.NameHasPrefix(*l.EdgeUserNameHasPrefix)))
 	}
 	if l.EdgeUserNameHasSuffix != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.NameHasSuffix(*l.EdgeUserNameHasSuffix)))
-	}
-	if l.EdgeUserNameEqualFold != nil {
-		predicates = append(predicates, friendship.HasUserWith(user.NameEqualFold(*l.EdgeUserNameEqualFold)))
-	}
-	if l.EdgeUserNameContainsFold != nil {
-		predicates = append(predicates, friendship.HasUserWith(user.NameContainsFold(*l.EdgeUserNameContainsFold)))
 	}
 	if l.EdgeUserTypeEQ != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.TypeEQ(*l.EdgeUserTypeEQ)))
@@ -598,15 +599,15 @@ func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) 
 	if l.EdgeUserTypeNotIn != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.TypeNotIn(l.EdgeUserTypeNotIn...)))
 	}
-	if l.EdgeUserDescriptionContains != nil {
-		predicates = append(predicates, friendship.HasUserWith(user.DescriptionContains(*l.EdgeUserDescriptionContains)))
-	}
 	if l.EdgeUserDescriptionIsNil != nil {
 		if *l.EdgeUserDescriptionIsNil {
 			predicates = append(predicates, friendship.HasUserWith(user.DescriptionIsNil()))
 		} else {
 			predicates = append(predicates, friendship.Not(friendship.HasUserWith(user.DescriptionIsNil())))
 		}
+	}
+	if l.EdgeUserDescriptionContains != nil {
+		predicates = append(predicates, friendship.HasUserWith(user.DescriptionContains(*l.EdgeUserDescriptionContains)))
 	}
 	if l.EdgeUserDescriptionContainsFold != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.DescriptionContainsFold(*l.EdgeUserDescriptionContainsFold)))
@@ -620,21 +621,6 @@ func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) 
 	if l.EdgeUserEmailNEQ != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.EmailNEQ(*l.EdgeUserEmailNEQ)))
 	}
-	if l.EdgeUserEmailIn != nil {
-		predicates = append(predicates, friendship.HasUserWith(user.EmailIn(l.EdgeUserEmailIn...)))
-	}
-	if l.EdgeUserEmailNotIn != nil {
-		predicates = append(predicates, friendship.HasUserWith(user.EmailNotIn(l.EdgeUserEmailNotIn...)))
-	}
-	if l.EdgeUserEmailContains != nil {
-		predicates = append(predicates, friendship.HasUserWith(user.EmailContains(*l.EdgeUserEmailContains)))
-	}
-	if l.EdgeUserEmailHasPrefix != nil {
-		predicates = append(predicates, friendship.HasUserWith(user.EmailHasPrefix(*l.EdgeUserEmailHasPrefix)))
-	}
-	if l.EdgeUserEmailHasSuffix != nil {
-		predicates = append(predicates, friendship.HasUserWith(user.EmailHasSuffix(*l.EdgeUserEmailHasSuffix)))
-	}
 	if l.EdgeUserEmailIsNil != nil {
 		if *l.EdgeUserEmailIsNil {
 			predicates = append(predicates, friendship.HasUserWith(user.EmailIsNil()))
@@ -642,11 +628,26 @@ func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) 
 			predicates = append(predicates, friendship.Not(friendship.HasUserWith(user.EmailIsNil())))
 		}
 	}
+	if l.EdgeUserEmailIn != nil {
+		predicates = append(predicates, friendship.HasUserWith(user.EmailIn(l.EdgeUserEmailIn...)))
+	}
+	if l.EdgeUserEmailNotIn != nil {
+		predicates = append(predicates, friendship.HasUserWith(user.EmailNotIn(l.EdgeUserEmailNotIn...)))
+	}
 	if l.EdgeUserEmailEqualFold != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.EmailEqualFold(*l.EdgeUserEmailEqualFold)))
 	}
+	if l.EdgeUserEmailContains != nil {
+		predicates = append(predicates, friendship.HasUserWith(user.EmailContains(*l.EdgeUserEmailContains)))
+	}
 	if l.EdgeUserEmailContainsFold != nil {
 		predicates = append(predicates, friendship.HasUserWith(user.EmailContainsFold(*l.EdgeUserEmailContainsFold)))
+	}
+	if l.EdgeUserEmailHasPrefix != nil {
+		predicates = append(predicates, friendship.HasUserWith(user.EmailHasPrefix(*l.EdgeUserEmailHasPrefix)))
+	}
+	if l.EdgeUserEmailHasSuffix != nil {
+		predicates = append(predicates, friendship.HasUserWith(user.EmailHasSuffix(*l.EdgeUserEmailHasSuffix)))
 	}
 	if l.EdgeHasFriend != nil {
 		if *l.EdgeHasFriend {
@@ -679,20 +680,20 @@ func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) 
 	if l.EdgeFriendNameNotIn != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.NameNotIn(l.EdgeFriendNameNotIn...)))
 	}
+	if l.EdgeFriendNameEqualFold != nil {
+		predicates = append(predicates, friendship.HasFriendWith(user.NameEqualFold(*l.EdgeFriendNameEqualFold)))
+	}
 	if l.EdgeFriendNameContains != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.NameContains(*l.EdgeFriendNameContains)))
+	}
+	if l.EdgeFriendNameContainsFold != nil {
+		predicates = append(predicates, friendship.HasFriendWith(user.NameContainsFold(*l.EdgeFriendNameContainsFold)))
 	}
 	if l.EdgeFriendNameHasPrefix != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.NameHasPrefix(*l.EdgeFriendNameHasPrefix)))
 	}
 	if l.EdgeFriendNameHasSuffix != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
-	}
-	if l.EdgeFriendNameEqualFold != nil {
-		predicates = append(predicates, friendship.HasFriendWith(user.NameEqualFold(*l.EdgeFriendNameEqualFold)))
-	}
-	if l.EdgeFriendNameContainsFold != nil {
-		predicates = append(predicates, friendship.HasFriendWith(user.NameContainsFold(*l.EdgeFriendNameContainsFold)))
 	}
 	if l.EdgeFriendTypeEQ != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.TypeEQ(*l.EdgeFriendTypeEQ)))
@@ -706,15 +707,15 @@ func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) 
 	if l.EdgeFriendTypeNotIn != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.TypeNotIn(l.EdgeFriendTypeNotIn...)))
 	}
-	if l.EdgeFriendDescriptionContains != nil {
-		predicates = append(predicates, friendship.HasFriendWith(user.DescriptionContains(*l.EdgeFriendDescriptionContains)))
-	}
 	if l.EdgeFriendDescriptionIsNil != nil {
 		if *l.EdgeFriendDescriptionIsNil {
 			predicates = append(predicates, friendship.HasFriendWith(user.DescriptionIsNil()))
 		} else {
 			predicates = append(predicates, friendship.Not(friendship.HasFriendWith(user.DescriptionIsNil())))
 		}
+	}
+	if l.EdgeFriendDescriptionContains != nil {
+		predicates = append(predicates, friendship.HasFriendWith(user.DescriptionContains(*l.EdgeFriendDescriptionContains)))
 	}
 	if l.EdgeFriendDescriptionContainsFold != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.DescriptionContainsFold(*l.EdgeFriendDescriptionContainsFold)))
@@ -728,21 +729,6 @@ func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) 
 	if l.EdgeFriendEmailNEQ != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.EmailNEQ(*l.EdgeFriendEmailNEQ)))
 	}
-	if l.EdgeFriendEmailIn != nil {
-		predicates = append(predicates, friendship.HasFriendWith(user.EmailIn(l.EdgeFriendEmailIn...)))
-	}
-	if l.EdgeFriendEmailNotIn != nil {
-		predicates = append(predicates, friendship.HasFriendWith(user.EmailNotIn(l.EdgeFriendEmailNotIn...)))
-	}
-	if l.EdgeFriendEmailContains != nil {
-		predicates = append(predicates, friendship.HasFriendWith(user.EmailContains(*l.EdgeFriendEmailContains)))
-	}
-	if l.EdgeFriendEmailHasPrefix != nil {
-		predicates = append(predicates, friendship.HasFriendWith(user.EmailHasPrefix(*l.EdgeFriendEmailHasPrefix)))
-	}
-	if l.EdgeFriendEmailHasSuffix != nil {
-		predicates = append(predicates, friendship.HasFriendWith(user.EmailHasSuffix(*l.EdgeFriendEmailHasSuffix)))
-	}
 	if l.EdgeFriendEmailIsNil != nil {
 		if *l.EdgeFriendEmailIsNil {
 			predicates = append(predicates, friendship.HasFriendWith(user.EmailIsNil()))
@@ -750,12 +736,28 @@ func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) 
 			predicates = append(predicates, friendship.Not(friendship.HasFriendWith(user.EmailIsNil())))
 		}
 	}
+	if l.EdgeFriendEmailIn != nil {
+		predicates = append(predicates, friendship.HasFriendWith(user.EmailIn(l.EdgeFriendEmailIn...)))
+	}
+	if l.EdgeFriendEmailNotIn != nil {
+		predicates = append(predicates, friendship.HasFriendWith(user.EmailNotIn(l.EdgeFriendEmailNotIn...)))
+	}
 	if l.EdgeFriendEmailEqualFold != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.EmailEqualFold(*l.EdgeFriendEmailEqualFold)))
+	}
+	if l.EdgeFriendEmailContains != nil {
+		predicates = append(predicates, friendship.HasFriendWith(user.EmailContains(*l.EdgeFriendEmailContains)))
 	}
 	if l.EdgeFriendEmailContainsFold != nil {
 		predicates = append(predicates, friendship.HasFriendWith(user.EmailContainsFold(*l.EdgeFriendEmailContainsFold)))
 	}
+	if l.EdgeFriendEmailHasPrefix != nil {
+		predicates = append(predicates, friendship.HasFriendWith(user.EmailHasPrefix(*l.EdgeFriendEmailHasPrefix)))
+	}
+	if l.EdgeFriendEmailHasSuffix != nil {
+		predicates = append(predicates, friendship.HasFriendWith(user.EmailHasSuffix(*l.EdgeFriendEmailHasSuffix)))
+	}
+
 	return l.ApplyFilterOperation(predicates...)
 }
 
@@ -808,30 +810,30 @@ type ListPetParams struct {
 	PetNameIn []string `form:"name.in,omitempty" json:"pet_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	PetNameNotIn []string `form:"name.notIn,omitempty" json:"pet_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	PetNameEqualFold *string `form:"name.ieq,omitempty" json:"pet_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	PetNameContains *string `form:"name.has,omitempty" json:"pet_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	PetNameContainsFold *string `form:"name.ihas,omitempty" json:"pet_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	PetNameHasPrefix *string `form:"name.prefix,omitempty" json:"pet_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	PetNameHasSuffix *string `form:"name.suffix,omitempty" json:"pet_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	PetNameEqualFold *string `form:"name.ieq,omitempty" json:"pet_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	PetNameContainsFold *string `form:"name.ihas,omitempty" json:"pet_name_contains_fold,omitempty"`
 	// Filters field "nicknames" to be null/nil.
 	PetNicknamesIsNil *bool `form:"nicknames.null,omitempty" json:"pet_nicknames_is_nil,omitempty"`
 	// Filters field "age" to be equal to the provided value.
 	PetAgeEQ *int `form:"age.eq,omitempty" json:"pet_age_eq,omitempty"`
 	// Filters field "age" to be not equal to the provided value.
 	PetAgeNEQ *int `form:"age.neq,omitempty" json:"pet_age_neq,omitempty"`
-	// Filters field "age" to be within the provided values.
-	PetAgeIn []int `form:"age.in,omitempty" json:"pet_age_in,omitempty"`
-	// Filters field "age" to be not within the provided values.
-	PetAgeNotIn []int `form:"age.notIn,omitempty" json:"pet_age_not_in,omitempty"`
 	// Filters field "age" to be greater than the provided value.
 	PetAgeGT *int `form:"age.gt,omitempty" json:"pet_age_gt,omitempty"`
 	// Filters field "age" to be less than the provided value.
 	PetAgeLT *int `form:"age.lt,omitempty" json:"pet_age_lt,omitempty"`
+	// Filters field "age" to be within the provided values.
+	PetAgeIn []int `form:"age.in,omitempty" json:"pet_age_in,omitempty"`
+	// Filters field "age" to be not within the provided values.
+	PetAgeNotIn []int `form:"age.notIn,omitempty" json:"pet_age_not_in,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	PetTypeEQ *pet.Type `form:"type.eq,omitempty" json:"pet_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -884,16 +886,16 @@ type ListPetParams struct {
 	EdgeOwnerNameIn []string `form:"owner.name.in,omitempty" json:"edge_owner_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	EdgeOwnerNameNotIn []string `form:"owner.name.notIn,omitempty" json:"edge_owner_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	EdgeOwnerNameEqualFold *string `form:"owner.name.ieq,omitempty" json:"edge_owner_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	EdgeOwnerNameContains *string `form:"owner.name.has,omitempty" json:"edge_owner_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	EdgeOwnerNameContainsFold *string `form:"owner.name.ihas,omitempty" json:"edge_owner_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	EdgeOwnerNameHasPrefix *string `form:"owner.name.prefix,omitempty" json:"edge_owner_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgeOwnerNameHasSuffix *string `form:"owner.name.suffix,omitempty" json:"edge_owner_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeOwnerNameEqualFold *string `form:"owner.name.ieq,omitempty" json:"edge_owner_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeOwnerNameContainsFold *string `form:"owner.name.ihas,omitempty" json:"edge_owner_name_contains_fold,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	EdgeOwnerTypeEQ *user.Type `form:"owner.type.eq,omitempty" json:"edge_owner_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -902,10 +904,10 @@ type ListPetParams struct {
 	EdgeOwnerTypeIn []user.Type `form:"owner.type.in,omitempty" json:"edge_owner_type_in,omitempty"`
 	// Filters field "type" to be not within the provided values.
 	EdgeOwnerTypeNotIn []user.Type `form:"owner.type.notIn,omitempty" json:"edge_owner_type_not_in,omitempty"`
-	// Filters field "description" to contain the provided value.
-	EdgeOwnerDescriptionContains *string `form:"owner.description.has,omitempty" json:"edge_owner_description_contains,omitempty"`
 	// Filters field "description" to be null/nil.
 	EdgeOwnerDescriptionIsNil *bool `form:"owner.description.null,omitempty" json:"edge_owner_description_is_nil,omitempty"`
+	// Filters field "description" to contain the provided value.
+	EdgeOwnerDescriptionContains *string `form:"owner.description.has,omitempty" json:"edge_owner_description_contains,omitempty"`
 	// Filters field "description" to contain the provided value, case-insensitive.
 	EdgeOwnerDescriptionContainsFold *string `form:"owner.description.ihas,omitempty" json:"edge_owner_description_contains_fold,omitempty"`
 	// Filters field "enabled" to be equal to the provided value.
@@ -914,22 +916,22 @@ type ListPetParams struct {
 	EdgeOwnerEmailEQ *string `form:"owner.email.eq,omitempty" json:"edge_owner_email_eq,omitempty"`
 	// Filters field "email" to be not equal to the provided value.
 	EdgeOwnerEmailNEQ *string `form:"owner.email.neq,omitempty" json:"edge_owner_email_neq,omitempty"`
+	// Filters field "email" to be null/nil.
+	EdgeOwnerEmailIsNil *bool `form:"owner.email.null,omitempty" json:"edge_owner_email_is_nil,omitempty"`
 	// Filters field "email" to be within the provided values.
 	EdgeOwnerEmailIn []string `form:"owner.email.in,omitempty" json:"edge_owner_email_in,omitempty"`
 	// Filters field "email" to be not within the provided values.
 	EdgeOwnerEmailNotIn []string `form:"owner.email.notIn,omitempty" json:"edge_owner_email_not_in,omitempty"`
+	// Filters field "email" to be equal to the provided value, case-insensitive.
+	EdgeOwnerEmailEqualFold *string `form:"owner.email.ieq,omitempty" json:"edge_owner_email_equal_fold,omitempty"`
 	// Filters field "email" to contain the provided value.
 	EdgeOwnerEmailContains *string `form:"owner.email.has,omitempty" json:"edge_owner_email_contains,omitempty"`
+	// Filters field "email" to contain the provided value, case-insensitive.
+	EdgeOwnerEmailContainsFold *string `form:"owner.email.ihas,omitempty" json:"edge_owner_email_contains_fold,omitempty"`
 	// Filters field "email" to start with the provided value.
 	EdgeOwnerEmailHasPrefix *string `form:"owner.email.prefix,omitempty" json:"edge_owner_email_has_prefix,omitempty"`
 	// Filters field "email" to end with the provided value.
 	EdgeOwnerEmailHasSuffix *string `form:"owner.email.suffix,omitempty" json:"edge_owner_email_has_suffix,omitempty"`
-	// Filters field "email" to be null/nil.
-	EdgeOwnerEmailIsNil *bool `form:"owner.email.null,omitempty" json:"edge_owner_email_is_nil,omitempty"`
-	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeOwnerEmailEqualFold *string `form:"owner.email.ieq,omitempty" json:"edge_owner_email_equal_fold,omitempty"`
-	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeOwnerEmailContainsFold *string `form:"owner.email.ihas,omitempty" json:"edge_owner_email_contains_fold,omitempty"`
 	// If true, only return entities that have a friend edge.
 	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitempty"`
 	// Filters field "id" to be equal to the provided value.
@@ -948,30 +950,30 @@ type ListPetParams struct {
 	EdgeFriendNameIn []string `form:"friend.name.in,omitempty" json:"edge_friend_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	EdgeFriendNameNotIn []string `form:"friend.name.notIn,omitempty" json:"edge_friend_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	EdgeFriendNameContains *string `form:"friend.name.has,omitempty" json:"edge_friend_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitempty"`
 	// Filters field "nicknames" to be null/nil.
 	EdgeFriendNicknamesIsNil *bool `form:"friend.nicknames.null,omitempty" json:"edge_friend_nicknames_is_nil,omitempty"`
 	// Filters field "age" to be equal to the provided value.
 	EdgeFriendAgeEQ *int `form:"friend.age.eq,omitempty" json:"edge_friend_age_eq,omitempty"`
 	// Filters field "age" to be not equal to the provided value.
 	EdgeFriendAgeNEQ *int `form:"friend.age.neq,omitempty" json:"edge_friend_age_neq,omitempty"`
-	// Filters field "age" to be within the provided values.
-	EdgeFriendAgeIn []int `form:"friend.age.in,omitempty" json:"edge_friend_age_in,omitempty"`
-	// Filters field "age" to be not within the provided values.
-	EdgeFriendAgeNotIn []int `form:"friend.age.notIn,omitempty" json:"edge_friend_age_not_in,omitempty"`
 	// Filters field "age" to be greater than the provided value.
 	EdgeFriendAgeGT *int `form:"friend.age.gt,omitempty" json:"edge_friend_age_gt,omitempty"`
 	// Filters field "age" to be less than the provided value.
 	EdgeFriendAgeLT *int `form:"friend.age.lt,omitempty" json:"edge_friend_age_lt,omitempty"`
+	// Filters field "age" to be within the provided values.
+	EdgeFriendAgeIn []int `form:"friend.age.in,omitempty" json:"edge_friend_age_in,omitempty"`
+	// Filters field "age" to be not within the provided values.
+	EdgeFriendAgeNotIn []int `form:"friend.age.notIn,omitempty" json:"edge_friend_age_not_in,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	EdgeFriendTypeEQ *pet.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -1006,16 +1008,16 @@ type ListPetParams struct {
 	EdgeFollowedByNameIn []string `form:"followedBy.name.in,omitempty" json:"edge_followed_by_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	EdgeFollowedByNameNotIn []string `form:"followedBy.name.notIn,omitempty" json:"edge_followed_by_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	EdgeFollowedByNameEqualFold *string `form:"followedBy.name.ieq,omitempty" json:"edge_followed_by_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	EdgeFollowedByNameContains *string `form:"followedBy.name.has,omitempty" json:"edge_followed_by_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	EdgeFollowedByNameContainsFold *string `form:"followedBy.name.ihas,omitempty" json:"edge_followed_by_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	EdgeFollowedByNameHasPrefix *string `form:"followedBy.name.prefix,omitempty" json:"edge_followed_by_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgeFollowedByNameHasSuffix *string `form:"followedBy.name.suffix,omitempty" json:"edge_followed_by_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFollowedByNameEqualFold *string `form:"followedBy.name.ieq,omitempty" json:"edge_followed_by_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFollowedByNameContainsFold *string `form:"followedBy.name.ihas,omitempty" json:"edge_followed_by_name_contains_fold,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	EdgeFollowedByTypeEQ *user.Type `form:"followedBy.type.eq,omitempty" json:"edge_followed_by_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -1024,10 +1026,10 @@ type ListPetParams struct {
 	EdgeFollowedByTypeIn []user.Type `form:"followedBy.type.in,omitempty" json:"edge_followed_by_type_in,omitempty"`
 	// Filters field "type" to be not within the provided values.
 	EdgeFollowedByTypeNotIn []user.Type `form:"followedBy.type.notIn,omitempty" json:"edge_followed_by_type_not_in,omitempty"`
-	// Filters field "description" to contain the provided value.
-	EdgeFollowedByDescriptionContains *string `form:"followedBy.description.has,omitempty" json:"edge_followed_by_description_contains,omitempty"`
 	// Filters field "description" to be null/nil.
 	EdgeFollowedByDescriptionIsNil *bool `form:"followedBy.description.null,omitempty" json:"edge_followed_by_description_is_nil,omitempty"`
+	// Filters field "description" to contain the provided value.
+	EdgeFollowedByDescriptionContains *string `form:"followedBy.description.has,omitempty" json:"edge_followed_by_description_contains,omitempty"`
 	// Filters field "description" to contain the provided value, case-insensitive.
 	EdgeFollowedByDescriptionContainsFold *string `form:"followedBy.description.ihas,omitempty" json:"edge_followed_by_description_contains_fold,omitempty"`
 	// Filters field "enabled" to be equal to the provided value.
@@ -1036,22 +1038,22 @@ type ListPetParams struct {
 	EdgeFollowedByEmailEQ *string `form:"followedBy.email.eq,omitempty" json:"edge_followed_by_email_eq,omitempty"`
 	// Filters field "email" to be not equal to the provided value.
 	EdgeFollowedByEmailNEQ *string `form:"followedBy.email.neq,omitempty" json:"edge_followed_by_email_neq,omitempty"`
+	// Filters field "email" to be null/nil.
+	EdgeFollowedByEmailIsNil *bool `form:"followedBy.email.null,omitempty" json:"edge_followed_by_email_is_nil,omitempty"`
 	// Filters field "email" to be within the provided values.
 	EdgeFollowedByEmailIn []string `form:"followedBy.email.in,omitempty" json:"edge_followed_by_email_in,omitempty"`
 	// Filters field "email" to be not within the provided values.
 	EdgeFollowedByEmailNotIn []string `form:"followedBy.email.notIn,omitempty" json:"edge_followed_by_email_not_in,omitempty"`
+	// Filters field "email" to be equal to the provided value, case-insensitive.
+	EdgeFollowedByEmailEqualFold *string `form:"followedBy.email.ieq,omitempty" json:"edge_followed_by_email_equal_fold,omitempty"`
 	// Filters field "email" to contain the provided value.
 	EdgeFollowedByEmailContains *string `form:"followedBy.email.has,omitempty" json:"edge_followed_by_email_contains,omitempty"`
+	// Filters field "email" to contain the provided value, case-insensitive.
+	EdgeFollowedByEmailContainsFold *string `form:"followedBy.email.ihas,omitempty" json:"edge_followed_by_email_contains_fold,omitempty"`
 	// Filters field "email" to start with the provided value.
 	EdgeFollowedByEmailHasPrefix *string `form:"followedBy.email.prefix,omitempty" json:"edge_followed_by_email_has_prefix,omitempty"`
 	// Filters field "email" to end with the provided value.
 	EdgeFollowedByEmailHasSuffix *string `form:"followedBy.email.suffix,omitempty" json:"edge_followed_by_email_has_suffix,omitempty"`
-	// Filters field "email" to be null/nil.
-	EdgeFollowedByEmailIsNil *bool `form:"followedBy.email.null,omitempty" json:"edge_followed_by_email_is_nil,omitempty"`
-	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeFollowedByEmailEqualFold *string `form:"followedBy.email.ieq,omitempty" json:"edge_followed_by_email_equal_fold,omitempty"`
-	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeFollowedByEmailContainsFold *string `form:"followedBy.email.ihas,omitempty" json:"edge_followed_by_email_contains_fold,omitempty"`
 	// If true, only return entities that have a following edge.
 	EdgeHasFollowing *bool `form:"has.following,omitempty" json:"edge_has_following,omitempty"`
 }
@@ -1084,20 +1086,20 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.PetNameNotIn != nil {
 		predicates = append(predicates, pet.NameNotIn(l.PetNameNotIn...))
 	}
+	if l.PetNameEqualFold != nil {
+		predicates = append(predicates, pet.NameEqualFold(*l.PetNameEqualFold))
+	}
 	if l.PetNameContains != nil {
 		predicates = append(predicates, pet.NameContains(*l.PetNameContains))
+	}
+	if l.PetNameContainsFold != nil {
+		predicates = append(predicates, pet.NameContainsFold(*l.PetNameContainsFold))
 	}
 	if l.PetNameHasPrefix != nil {
 		predicates = append(predicates, pet.NameHasPrefix(*l.PetNameHasPrefix))
 	}
 	if l.PetNameHasSuffix != nil {
 		predicates = append(predicates, pet.NameHasSuffix(*l.PetNameHasSuffix))
-	}
-	if l.PetNameEqualFold != nil {
-		predicates = append(predicates, pet.NameEqualFold(*l.PetNameEqualFold))
-	}
-	if l.PetNameContainsFold != nil {
-		predicates = append(predicates, pet.NameContainsFold(*l.PetNameContainsFold))
 	}
 	if l.PetNicknamesIsNil != nil {
 		if *l.PetNicknamesIsNil {
@@ -1112,17 +1114,17 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.PetAgeNEQ != nil {
 		predicates = append(predicates, pet.AgeNEQ(*l.PetAgeNEQ))
 	}
-	if l.PetAgeIn != nil {
-		predicates = append(predicates, pet.AgeIn(l.PetAgeIn...))
-	}
-	if l.PetAgeNotIn != nil {
-		predicates = append(predicates, pet.AgeNotIn(l.PetAgeNotIn...))
-	}
 	if l.PetAgeGT != nil {
 		predicates = append(predicates, pet.AgeGT(*l.PetAgeGT))
 	}
 	if l.PetAgeLT != nil {
 		predicates = append(predicates, pet.AgeLT(*l.PetAgeLT))
+	}
+	if l.PetAgeIn != nil {
+		predicates = append(predicates, pet.AgeIn(l.PetAgeIn...))
+	}
+	if l.PetAgeNotIn != nil {
+		predicates = append(predicates, pet.AgeNotIn(l.PetAgeNotIn...))
 	}
 	if l.PetTypeEQ != nil {
 		predicates = append(predicates, pet.TypeEQ(*l.PetTypeEQ))
@@ -1210,20 +1212,20 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeOwnerNameNotIn != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.NameNotIn(l.EdgeOwnerNameNotIn...)))
 	}
+	if l.EdgeOwnerNameEqualFold != nil {
+		predicates = append(predicates, pet.HasOwnerWith(user.NameEqualFold(*l.EdgeOwnerNameEqualFold)))
+	}
 	if l.EdgeOwnerNameContains != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.NameContains(*l.EdgeOwnerNameContains)))
+	}
+	if l.EdgeOwnerNameContainsFold != nil {
+		predicates = append(predicates, pet.HasOwnerWith(user.NameContainsFold(*l.EdgeOwnerNameContainsFold)))
 	}
 	if l.EdgeOwnerNameHasPrefix != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.NameHasPrefix(*l.EdgeOwnerNameHasPrefix)))
 	}
 	if l.EdgeOwnerNameHasSuffix != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.NameHasSuffix(*l.EdgeOwnerNameHasSuffix)))
-	}
-	if l.EdgeOwnerNameEqualFold != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.NameEqualFold(*l.EdgeOwnerNameEqualFold)))
-	}
-	if l.EdgeOwnerNameContainsFold != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.NameContainsFold(*l.EdgeOwnerNameContainsFold)))
 	}
 	if l.EdgeOwnerTypeEQ != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.TypeEQ(*l.EdgeOwnerTypeEQ)))
@@ -1237,15 +1239,15 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeOwnerTypeNotIn != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.TypeNotIn(l.EdgeOwnerTypeNotIn...)))
 	}
-	if l.EdgeOwnerDescriptionContains != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.DescriptionContains(*l.EdgeOwnerDescriptionContains)))
-	}
 	if l.EdgeOwnerDescriptionIsNil != nil {
 		if *l.EdgeOwnerDescriptionIsNil {
 			predicates = append(predicates, pet.HasOwnerWith(user.DescriptionIsNil()))
 		} else {
 			predicates = append(predicates, pet.Not(pet.HasOwnerWith(user.DescriptionIsNil())))
 		}
+	}
+	if l.EdgeOwnerDescriptionContains != nil {
+		predicates = append(predicates, pet.HasOwnerWith(user.DescriptionContains(*l.EdgeOwnerDescriptionContains)))
 	}
 	if l.EdgeOwnerDescriptionContainsFold != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.DescriptionContainsFold(*l.EdgeOwnerDescriptionContainsFold)))
@@ -1259,21 +1261,6 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeOwnerEmailNEQ != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.EmailNEQ(*l.EdgeOwnerEmailNEQ)))
 	}
-	if l.EdgeOwnerEmailIn != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.EmailIn(l.EdgeOwnerEmailIn...)))
-	}
-	if l.EdgeOwnerEmailNotIn != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.EmailNotIn(l.EdgeOwnerEmailNotIn...)))
-	}
-	if l.EdgeOwnerEmailContains != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.EmailContains(*l.EdgeOwnerEmailContains)))
-	}
-	if l.EdgeOwnerEmailHasPrefix != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.EmailHasPrefix(*l.EdgeOwnerEmailHasPrefix)))
-	}
-	if l.EdgeOwnerEmailHasSuffix != nil {
-		predicates = append(predicates, pet.HasOwnerWith(user.EmailHasSuffix(*l.EdgeOwnerEmailHasSuffix)))
-	}
 	if l.EdgeOwnerEmailIsNil != nil {
 		if *l.EdgeOwnerEmailIsNil {
 			predicates = append(predicates, pet.HasOwnerWith(user.EmailIsNil()))
@@ -1281,11 +1268,26 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 			predicates = append(predicates, pet.Not(pet.HasOwnerWith(user.EmailIsNil())))
 		}
 	}
+	if l.EdgeOwnerEmailIn != nil {
+		predicates = append(predicates, pet.HasOwnerWith(user.EmailIn(l.EdgeOwnerEmailIn...)))
+	}
+	if l.EdgeOwnerEmailNotIn != nil {
+		predicates = append(predicates, pet.HasOwnerWith(user.EmailNotIn(l.EdgeOwnerEmailNotIn...)))
+	}
 	if l.EdgeOwnerEmailEqualFold != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.EmailEqualFold(*l.EdgeOwnerEmailEqualFold)))
 	}
+	if l.EdgeOwnerEmailContains != nil {
+		predicates = append(predicates, pet.HasOwnerWith(user.EmailContains(*l.EdgeOwnerEmailContains)))
+	}
 	if l.EdgeOwnerEmailContainsFold != nil {
 		predicates = append(predicates, pet.HasOwnerWith(user.EmailContainsFold(*l.EdgeOwnerEmailContainsFold)))
+	}
+	if l.EdgeOwnerEmailHasPrefix != nil {
+		predicates = append(predicates, pet.HasOwnerWith(user.EmailHasPrefix(*l.EdgeOwnerEmailHasPrefix)))
+	}
+	if l.EdgeOwnerEmailHasSuffix != nil {
+		predicates = append(predicates, pet.HasOwnerWith(user.EmailHasSuffix(*l.EdgeOwnerEmailHasSuffix)))
 	}
 	if l.EdgeHasFriend != nil {
 		if *l.EdgeHasFriend {
@@ -1318,20 +1320,20 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeFriendNameNotIn != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.NameNotIn(l.EdgeFriendNameNotIn...)))
 	}
+	if l.EdgeFriendNameEqualFold != nil {
+		predicates = append(predicates, pet.HasFriendsWith(pet.NameEqualFold(*l.EdgeFriendNameEqualFold)))
+	}
 	if l.EdgeFriendNameContains != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.NameContains(*l.EdgeFriendNameContains)))
+	}
+	if l.EdgeFriendNameContainsFold != nil {
+		predicates = append(predicates, pet.HasFriendsWith(pet.NameContainsFold(*l.EdgeFriendNameContainsFold)))
 	}
 	if l.EdgeFriendNameHasPrefix != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.NameHasPrefix(*l.EdgeFriendNameHasPrefix)))
 	}
 	if l.EdgeFriendNameHasSuffix != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
-	}
-	if l.EdgeFriendNameEqualFold != nil {
-		predicates = append(predicates, pet.HasFriendsWith(pet.NameEqualFold(*l.EdgeFriendNameEqualFold)))
-	}
-	if l.EdgeFriendNameContainsFold != nil {
-		predicates = append(predicates, pet.HasFriendsWith(pet.NameContainsFold(*l.EdgeFriendNameContainsFold)))
 	}
 	if l.EdgeFriendNicknamesIsNil != nil {
 		if *l.EdgeFriendNicknamesIsNil {
@@ -1346,17 +1348,17 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeFriendAgeNEQ != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.AgeNEQ(*l.EdgeFriendAgeNEQ)))
 	}
-	if l.EdgeFriendAgeIn != nil {
-		predicates = append(predicates, pet.HasFriendsWith(pet.AgeIn(l.EdgeFriendAgeIn...)))
-	}
-	if l.EdgeFriendAgeNotIn != nil {
-		predicates = append(predicates, pet.HasFriendsWith(pet.AgeNotIn(l.EdgeFriendAgeNotIn...)))
-	}
 	if l.EdgeFriendAgeGT != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.AgeGT(*l.EdgeFriendAgeGT)))
 	}
 	if l.EdgeFriendAgeLT != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.AgeLT(*l.EdgeFriendAgeLT)))
+	}
+	if l.EdgeFriendAgeIn != nil {
+		predicates = append(predicates, pet.HasFriendsWith(pet.AgeIn(l.EdgeFriendAgeIn...)))
+	}
+	if l.EdgeFriendAgeNotIn != nil {
+		predicates = append(predicates, pet.HasFriendsWith(pet.AgeNotIn(l.EdgeFriendAgeNotIn...)))
 	}
 	if l.EdgeFriendTypeEQ != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.TypeEQ(*l.EdgeFriendTypeEQ)))
@@ -1413,20 +1415,20 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeFollowedByNameNotIn != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.NameNotIn(l.EdgeFollowedByNameNotIn...)))
 	}
+	if l.EdgeFollowedByNameEqualFold != nil {
+		predicates = append(predicates, pet.HasFollowedByWith(user.NameEqualFold(*l.EdgeFollowedByNameEqualFold)))
+	}
 	if l.EdgeFollowedByNameContains != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.NameContains(*l.EdgeFollowedByNameContains)))
+	}
+	if l.EdgeFollowedByNameContainsFold != nil {
+		predicates = append(predicates, pet.HasFollowedByWith(user.NameContainsFold(*l.EdgeFollowedByNameContainsFold)))
 	}
 	if l.EdgeFollowedByNameHasPrefix != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.NameHasPrefix(*l.EdgeFollowedByNameHasPrefix)))
 	}
 	if l.EdgeFollowedByNameHasSuffix != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.NameHasSuffix(*l.EdgeFollowedByNameHasSuffix)))
-	}
-	if l.EdgeFollowedByNameEqualFold != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.NameEqualFold(*l.EdgeFollowedByNameEqualFold)))
-	}
-	if l.EdgeFollowedByNameContainsFold != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.NameContainsFold(*l.EdgeFollowedByNameContainsFold)))
 	}
 	if l.EdgeFollowedByTypeEQ != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.TypeEQ(*l.EdgeFollowedByTypeEQ)))
@@ -1440,15 +1442,15 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeFollowedByTypeNotIn != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.TypeNotIn(l.EdgeFollowedByTypeNotIn...)))
 	}
-	if l.EdgeFollowedByDescriptionContains != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.DescriptionContains(*l.EdgeFollowedByDescriptionContains)))
-	}
 	if l.EdgeFollowedByDescriptionIsNil != nil {
 		if *l.EdgeFollowedByDescriptionIsNil {
 			predicates = append(predicates, pet.HasFollowedByWith(user.DescriptionIsNil()))
 		} else {
 			predicates = append(predicates, pet.Not(pet.HasFollowedByWith(user.DescriptionIsNil())))
 		}
+	}
+	if l.EdgeFollowedByDescriptionContains != nil {
+		predicates = append(predicates, pet.HasFollowedByWith(user.DescriptionContains(*l.EdgeFollowedByDescriptionContains)))
 	}
 	if l.EdgeFollowedByDescriptionContainsFold != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.DescriptionContainsFold(*l.EdgeFollowedByDescriptionContainsFold)))
@@ -1462,21 +1464,6 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeFollowedByEmailNEQ != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.EmailNEQ(*l.EdgeFollowedByEmailNEQ)))
 	}
-	if l.EdgeFollowedByEmailIn != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.EmailIn(l.EdgeFollowedByEmailIn...)))
-	}
-	if l.EdgeFollowedByEmailNotIn != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.EmailNotIn(l.EdgeFollowedByEmailNotIn...)))
-	}
-	if l.EdgeFollowedByEmailContains != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.EmailContains(*l.EdgeFollowedByEmailContains)))
-	}
-	if l.EdgeFollowedByEmailHasPrefix != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.EmailHasPrefix(*l.EdgeFollowedByEmailHasPrefix)))
-	}
-	if l.EdgeFollowedByEmailHasSuffix != nil {
-		predicates = append(predicates, pet.HasFollowedByWith(user.EmailHasSuffix(*l.EdgeFollowedByEmailHasSuffix)))
-	}
 	if l.EdgeFollowedByEmailIsNil != nil {
 		if *l.EdgeFollowedByEmailIsNil {
 			predicates = append(predicates, pet.HasFollowedByWith(user.EmailIsNil()))
@@ -1484,11 +1471,26 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 			predicates = append(predicates, pet.Not(pet.HasFollowedByWith(user.EmailIsNil())))
 		}
 	}
+	if l.EdgeFollowedByEmailIn != nil {
+		predicates = append(predicates, pet.HasFollowedByWith(user.EmailIn(l.EdgeFollowedByEmailIn...)))
+	}
+	if l.EdgeFollowedByEmailNotIn != nil {
+		predicates = append(predicates, pet.HasFollowedByWith(user.EmailNotIn(l.EdgeFollowedByEmailNotIn...)))
+	}
 	if l.EdgeFollowedByEmailEqualFold != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.EmailEqualFold(*l.EdgeFollowedByEmailEqualFold)))
 	}
+	if l.EdgeFollowedByEmailContains != nil {
+		predicates = append(predicates, pet.HasFollowedByWith(user.EmailContains(*l.EdgeFollowedByEmailContains)))
+	}
 	if l.EdgeFollowedByEmailContainsFold != nil {
 		predicates = append(predicates, pet.HasFollowedByWith(user.EmailContainsFold(*l.EdgeFollowedByEmailContainsFold)))
+	}
+	if l.EdgeFollowedByEmailHasPrefix != nil {
+		predicates = append(predicates, pet.HasFollowedByWith(user.EmailHasPrefix(*l.EdgeFollowedByEmailHasPrefix)))
+	}
+	if l.EdgeFollowedByEmailHasSuffix != nil {
+		predicates = append(predicates, pet.HasFollowedByWith(user.EmailHasSuffix(*l.EdgeFollowedByEmailHasSuffix)))
 	}
 	if l.EdgeHasFollowing != nil {
 		if *l.EdgeHasFollowing {
@@ -1497,6 +1499,7 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 			predicates = append(predicates, pet.Not(pet.HasFollowing()))
 		}
 	}
+
 	return l.ApplyFilterOperation(predicates...)
 }
 
@@ -1579,6 +1582,7 @@ func (l *ListSettingParams) FilterPredicates() (predicate.Settings, error) {
 	if l.SettingsUpdatedAtLT != nil {
 		predicates = append(predicates, settings.UpdatedAtLT(*l.SettingsUpdatedAtLT))
 	}
+
 	return l.ApplyFilterOperation(predicates...)
 }
 
@@ -1639,16 +1643,16 @@ type ListUserParams struct {
 	UserNameIn []string `form:"name.in,omitempty" json:"user_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	UserNameNotIn []string `form:"name.notIn,omitempty" json:"user_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	UserNameEqualFold *string `form:"name.ieq,omitempty" json:"user_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	UserNameContains *string `form:"name.has,omitempty" json:"user_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	UserNameContainsFold *string `form:"name.ihas,omitempty" json:"user_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	UserNameHasPrefix *string `form:"name.prefix,omitempty" json:"user_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	UserNameHasSuffix *string `form:"name.suffix,omitempty" json:"user_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	UserNameEqualFold *string `form:"name.ieq,omitempty" json:"user_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	UserNameContainsFold *string `form:"name.ihas,omitempty" json:"user_name_contains_fold,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	UserTypeEQ *user.Type `form:"type.eq,omitempty" json:"user_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -1657,10 +1661,10 @@ type ListUserParams struct {
 	UserTypeIn []user.Type `form:"type.in,omitempty" json:"user_type_in,omitempty"`
 	// Filters field "type" to be not within the provided values.
 	UserTypeNotIn []user.Type `form:"type.notIn,omitempty" json:"user_type_not_in,omitempty"`
-	// Filters field "description" to contain the provided value.
-	UserDescriptionContains *string `form:"description.has,omitempty" json:"user_description_contains,omitempty"`
 	// Filters field "description" to be null/nil.
 	UserDescriptionIsNil *bool `form:"description.null,omitempty" json:"user_description_is_nil,omitempty"`
+	// Filters field "description" to contain the provided value.
+	UserDescriptionContains *string `form:"description.has,omitempty" json:"user_description_contains,omitempty"`
 	// Filters field "description" to contain the provided value, case-insensitive.
 	UserDescriptionContainsFold *string `form:"description.ihas,omitempty" json:"user_description_contains_fold,omitempty"`
 	// Filters field "enabled" to be equal to the provided value.
@@ -1669,22 +1673,22 @@ type ListUserParams struct {
 	UserEmailEQ *string `form:"email.eq,omitempty" json:"user_email_eq,omitempty"`
 	// Filters field "email" to be not equal to the provided value.
 	UserEmailNEQ *string `form:"email.neq,omitempty" json:"user_email_neq,omitempty"`
+	// Filters field "email" to be null/nil.
+	UserEmailIsNil *bool `form:"email.null,omitempty" json:"user_email_is_nil,omitempty"`
 	// Filters field "email" to be within the provided values.
 	UserEmailIn []string `form:"email.in,omitempty" json:"user_email_in,omitempty"`
 	// Filters field "email" to be not within the provided values.
 	UserEmailNotIn []string `form:"email.notIn,omitempty" json:"user_email_not_in,omitempty"`
+	// Filters field "email" to be equal to the provided value, case-insensitive.
+	UserEmailEqualFold *string `form:"email.ieq,omitempty" json:"user_email_equal_fold,omitempty"`
 	// Filters field "email" to contain the provided value.
 	UserEmailContains *string `form:"email.has,omitempty" json:"user_email_contains,omitempty"`
+	// Filters field "email" to contain the provided value, case-insensitive.
+	UserEmailContainsFold *string `form:"email.ihas,omitempty" json:"user_email_contains_fold,omitempty"`
 	// Filters field "email" to start with the provided value.
 	UserEmailHasPrefix *string `form:"email.prefix,omitempty" json:"user_email_has_prefix,omitempty"`
 	// Filters field "email" to end with the provided value.
 	UserEmailHasSuffix *string `form:"email.suffix,omitempty" json:"user_email_has_suffix,omitempty"`
-	// Filters field "email" to be null/nil.
-	UserEmailIsNil *bool `form:"email.null,omitempty" json:"user_email_is_nil,omitempty"`
-	// Filters field "email" to be equal to the provided value, case-insensitive.
-	UserEmailEqualFold *string `form:"email.ieq,omitempty" json:"user_email_equal_fold,omitempty"`
-	// Filters field "email" to contain the provided value, case-insensitive.
-	UserEmailContainsFold *string `form:"email.ihas,omitempty" json:"user_email_contains_fold,omitempty"`
 	// If true, only return entities that have a pet edge.
 	EdgeHasPet *bool `form:"has.pet,omitempty" json:"edge_has_pet,omitempty"`
 	// Filters field "id" to be equal to the provided value.
@@ -1703,30 +1707,30 @@ type ListUserParams struct {
 	EdgePetNameIn []string `form:"pet.name.in,omitempty" json:"edge_pet_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	EdgePetNameNotIn []string `form:"pet.name.notIn,omitempty" json:"edge_pet_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	EdgePetNameEqualFold *string `form:"pet.name.ieq,omitempty" json:"edge_pet_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	EdgePetNameContains *string `form:"pet.name.has,omitempty" json:"edge_pet_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	EdgePetNameContainsFold *string `form:"pet.name.ihas,omitempty" json:"edge_pet_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	EdgePetNameHasPrefix *string `form:"pet.name.prefix,omitempty" json:"edge_pet_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgePetNameHasSuffix *string `form:"pet.name.suffix,omitempty" json:"edge_pet_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgePetNameEqualFold *string `form:"pet.name.ieq,omitempty" json:"edge_pet_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgePetNameContainsFold *string `form:"pet.name.ihas,omitempty" json:"edge_pet_name_contains_fold,omitempty"`
 	// Filters field "nicknames" to be null/nil.
 	EdgePetNicknamesIsNil *bool `form:"pet.nicknames.null,omitempty" json:"edge_pet_nicknames_is_nil,omitempty"`
 	// Filters field "age" to be equal to the provided value.
 	EdgePetAgeEQ *int `form:"pet.age.eq,omitempty" json:"edge_pet_age_eq,omitempty"`
 	// Filters field "age" to be not equal to the provided value.
 	EdgePetAgeNEQ *int `form:"pet.age.neq,omitempty" json:"edge_pet_age_neq,omitempty"`
-	// Filters field "age" to be within the provided values.
-	EdgePetAgeIn []int `form:"pet.age.in,omitempty" json:"edge_pet_age_in,omitempty"`
-	// Filters field "age" to be not within the provided values.
-	EdgePetAgeNotIn []int `form:"pet.age.notIn,omitempty" json:"edge_pet_age_not_in,omitempty"`
 	// Filters field "age" to be greater than the provided value.
 	EdgePetAgeGT *int `form:"pet.age.gt,omitempty" json:"edge_pet_age_gt,omitempty"`
 	// Filters field "age" to be less than the provided value.
 	EdgePetAgeLT *int `form:"pet.age.lt,omitempty" json:"edge_pet_age_lt,omitempty"`
+	// Filters field "age" to be within the provided values.
+	EdgePetAgeIn []int `form:"pet.age.in,omitempty" json:"edge_pet_age_in,omitempty"`
+	// Filters field "age" to be not within the provided values.
+	EdgePetAgeNotIn []int `form:"pet.age.notIn,omitempty" json:"edge_pet_age_not_in,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	EdgePetTypeEQ *pet.Type `form:"pet.type.eq,omitempty" json:"edge_pet_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -1753,30 +1757,30 @@ type ListUserParams struct {
 	EdgeFollowedPetNameIn []string `form:"followedPet.name.in,omitempty" json:"edge_followed_pet_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	EdgeFollowedPetNameNotIn []string `form:"followedPet.name.notIn,omitempty" json:"edge_followed_pet_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	EdgeFollowedPetNameEqualFold *string `form:"followedPet.name.ieq,omitempty" json:"edge_followed_pet_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	EdgeFollowedPetNameContains *string `form:"followedPet.name.has,omitempty" json:"edge_followed_pet_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	EdgeFollowedPetNameContainsFold *string `form:"followedPet.name.ihas,omitempty" json:"edge_followed_pet_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	EdgeFollowedPetNameHasPrefix *string `form:"followedPet.name.prefix,omitempty" json:"edge_followed_pet_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgeFollowedPetNameHasSuffix *string `form:"followedPet.name.suffix,omitempty" json:"edge_followed_pet_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFollowedPetNameEqualFold *string `form:"followedPet.name.ieq,omitempty" json:"edge_followed_pet_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFollowedPetNameContainsFold *string `form:"followedPet.name.ihas,omitempty" json:"edge_followed_pet_name_contains_fold,omitempty"`
 	// Filters field "nicknames" to be null/nil.
 	EdgeFollowedPetNicknamesIsNil *bool `form:"followedPet.nicknames.null,omitempty" json:"edge_followed_pet_nicknames_is_nil,omitempty"`
 	// Filters field "age" to be equal to the provided value.
 	EdgeFollowedPetAgeEQ *int `form:"followedPet.age.eq,omitempty" json:"edge_followed_pet_age_eq,omitempty"`
 	// Filters field "age" to be not equal to the provided value.
 	EdgeFollowedPetAgeNEQ *int `form:"followedPet.age.neq,omitempty" json:"edge_followed_pet_age_neq,omitempty"`
-	// Filters field "age" to be within the provided values.
-	EdgeFollowedPetAgeIn []int `form:"followedPet.age.in,omitempty" json:"edge_followed_pet_age_in,omitempty"`
-	// Filters field "age" to be not within the provided values.
-	EdgeFollowedPetAgeNotIn []int `form:"followedPet.age.notIn,omitempty" json:"edge_followed_pet_age_not_in,omitempty"`
 	// Filters field "age" to be greater than the provided value.
 	EdgeFollowedPetAgeGT *int `form:"followedPet.age.gt,omitempty" json:"edge_followed_pet_age_gt,omitempty"`
 	// Filters field "age" to be less than the provided value.
 	EdgeFollowedPetAgeLT *int `form:"followedPet.age.lt,omitempty" json:"edge_followed_pet_age_lt,omitempty"`
+	// Filters field "age" to be within the provided values.
+	EdgeFollowedPetAgeIn []int `form:"followedPet.age.in,omitempty" json:"edge_followed_pet_age_in,omitempty"`
+	// Filters field "age" to be not within the provided values.
+	EdgeFollowedPetAgeNotIn []int `form:"followedPet.age.notIn,omitempty" json:"edge_followed_pet_age_not_in,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	EdgeFollowedPetTypeEQ *pet.Type `form:"followedPet.type.eq,omitempty" json:"edge_followed_pet_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -1811,16 +1815,16 @@ type ListUserParams struct {
 	EdgeFriendNameIn []string `form:"friend.name.in,omitempty" json:"edge_friend_name_in,omitempty"`
 	// Filters field "name" to be not within the provided values.
 	EdgeFriendNameNotIn []string `form:"friend.name.notIn,omitempty" json:"edge_friend_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitempty"`
 	// Filters field "name" to contain the provided value.
 	EdgeFriendNameContains *string `form:"friend.name.has,omitempty" json:"edge_friend_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitempty"`
 	// Filters field "name" to start with the provided value.
 	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitempty"`
-	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitempty"`
-	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitempty"`
 	// Filters field "type" to be equal to the provided value.
 	EdgeFriendTypeEQ *user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitempty"`
 	// Filters field "type" to be not equal to the provided value.
@@ -1829,10 +1833,10 @@ type ListUserParams struct {
 	EdgeFriendTypeIn []user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitempty"`
 	// Filters field "type" to be not within the provided values.
 	EdgeFriendTypeNotIn []user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitempty"`
-	// Filters field "description" to contain the provided value.
-	EdgeFriendDescriptionContains *string `form:"friend.description.has,omitempty" json:"edge_friend_description_contains,omitempty"`
 	// Filters field "description" to be null/nil.
 	EdgeFriendDescriptionIsNil *bool `form:"friend.description.null,omitempty" json:"edge_friend_description_is_nil,omitempty"`
+	// Filters field "description" to contain the provided value.
+	EdgeFriendDescriptionContains *string `form:"friend.description.has,omitempty" json:"edge_friend_description_contains,omitempty"`
 	// Filters field "description" to contain the provided value, case-insensitive.
 	EdgeFriendDescriptionContainsFold *string `form:"friend.description.ihas,omitempty" json:"edge_friend_description_contains_fold,omitempty"`
 	// Filters field "enabled" to be equal to the provided value.
@@ -1841,22 +1845,22 @@ type ListUserParams struct {
 	EdgeFriendEmailEQ *string `form:"friend.email.eq,omitempty" json:"edge_friend_email_eq,omitempty"`
 	// Filters field "email" to be not equal to the provided value.
 	EdgeFriendEmailNEQ *string `form:"friend.email.neq,omitempty" json:"edge_friend_email_neq,omitempty"`
+	// Filters field "email" to be null/nil.
+	EdgeFriendEmailIsNil *bool `form:"friend.email.null,omitempty" json:"edge_friend_email_is_nil,omitempty"`
 	// Filters field "email" to be within the provided values.
 	EdgeFriendEmailIn []string `form:"friend.email.in,omitempty" json:"edge_friend_email_in,omitempty"`
 	// Filters field "email" to be not within the provided values.
 	EdgeFriendEmailNotIn []string `form:"friend.email.notIn,omitempty" json:"edge_friend_email_not_in,omitempty"`
+	// Filters field "email" to be equal to the provided value, case-insensitive.
+	EdgeFriendEmailEqualFold *string `form:"friend.email.ieq,omitempty" json:"edge_friend_email_equal_fold,omitempty"`
 	// Filters field "email" to contain the provided value.
 	EdgeFriendEmailContains *string `form:"friend.email.has,omitempty" json:"edge_friend_email_contains,omitempty"`
+	// Filters field "email" to contain the provided value, case-insensitive.
+	EdgeFriendEmailContainsFold *string `form:"friend.email.ihas,omitempty" json:"edge_friend_email_contains_fold,omitempty"`
 	// Filters field "email" to start with the provided value.
 	EdgeFriendEmailHasPrefix *string `form:"friend.email.prefix,omitempty" json:"edge_friend_email_has_prefix,omitempty"`
 	// Filters field "email" to end with the provided value.
 	EdgeFriendEmailHasSuffix *string `form:"friend.email.suffix,omitempty" json:"edge_friend_email_has_suffix,omitempty"`
-	// Filters field "email" to be null/nil.
-	EdgeFriendEmailIsNil *bool `form:"friend.email.null,omitempty" json:"edge_friend_email_is_nil,omitempty"`
-	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeFriendEmailEqualFold *string `form:"friend.email.ieq,omitempty" json:"edge_friend_email_equal_fold,omitempty"`
-	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeFriendEmailContainsFold *string `form:"friend.email.ihas,omitempty" json:"edge_friend_email_contains_fold,omitempty"`
 	// If true, only return entities that have a following edge.
 	EdgeHasFollowing *bool `form:"has.following,omitempty" json:"edge_has_following,omitempty"`
 	// If true, only return entities that have a friendship edge.
@@ -1885,6 +1889,25 @@ type ListUserParams struct {
 	EdgeFriendshipFriendIDIn []int `form:"friendship.friendID.in,omitempty" json:"edge_friendship_friend_id_in,omitempty"`
 	// Filters field "friend_id" to be not within the provided values.
 	EdgeFriendshipFriendIDNotIn []int `form:"friendship.friendID.notIn,omitempty" json:"edge_friendship_friend_id_not_in,omitempty"`
+
+	// Field "search.eq" filters across multiple fields (case insensitive): name, description, email.
+	UserFilterGroupSearchEQ *string `form:"search.eq,omitempty" json:"user_filter_group_search_eq,omitempty"`
+	// Field "search.neq" filters across multiple fields (case insensitive): name, description, email.
+	UserFilterGroupSearchNEQ *string `form:"search.neq,omitempty" json:"user_filter_group_search_neq,omitempty"`
+	// Field "search.in" filters across multiple fields (case insensitive): name, description, email.
+	UserFilterGroupSearchIn []string `form:"search.in,omitempty" json:"user_filter_group_search_in,omitempty"`
+	// Field "search.notIn" filters across multiple fields (case insensitive): name, description, email.
+	UserFilterGroupSearchNotIn []string `form:"search.notIn,omitempty" json:"user_filter_group_search_not_in,omitempty"`
+	// Field "search.ieq" filters across multiple fields (case insensitive): name, description, email.
+	UserFilterGroupSearchEqualFold *string `form:"search.ieq,omitempty" json:"user_filter_group_search_equal_fold,omitempty"`
+	// Field "search.has" filters across multiple fields (case insensitive): name, description, email.
+	UserFilterGroupSearchContains *string `form:"search.has,omitempty" json:"user_filter_group_search_contains,omitempty"`
+	// Field "search.ihas" filters across multiple fields (case insensitive): name, description, email.
+	UserFilterGroupSearchContainsFold *string `form:"search.ihas,omitempty" json:"user_filter_group_search_contains_fold,omitempty"`
+	// Field "search.prefix" filters across multiple fields (case insensitive): name, description, email.
+	UserFilterGroupSearchHasPrefix *string `form:"search.prefix,omitempty" json:"user_filter_group_search_has_prefix,omitempty"`
+	// Field "search.suffix" filters across multiple fields (case insensitive): name, description, email.
+	UserFilterGroupSearchHasSuffix *string `form:"search.suffix,omitempty" json:"user_filter_group_search_has_suffix,omitempty"`
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in User.
@@ -1927,20 +1950,20 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.UserNameNotIn != nil {
 		predicates = append(predicates, user.NameNotIn(l.UserNameNotIn...))
 	}
+	if l.UserNameEqualFold != nil {
+		predicates = append(predicates, user.NameEqualFold(*l.UserNameEqualFold))
+	}
 	if l.UserNameContains != nil {
 		predicates = append(predicates, user.NameContains(*l.UserNameContains))
+	}
+	if l.UserNameContainsFold != nil {
+		predicates = append(predicates, user.NameContainsFold(*l.UserNameContainsFold))
 	}
 	if l.UserNameHasPrefix != nil {
 		predicates = append(predicates, user.NameHasPrefix(*l.UserNameHasPrefix))
 	}
 	if l.UserNameHasSuffix != nil {
 		predicates = append(predicates, user.NameHasSuffix(*l.UserNameHasSuffix))
-	}
-	if l.UserNameEqualFold != nil {
-		predicates = append(predicates, user.NameEqualFold(*l.UserNameEqualFold))
-	}
-	if l.UserNameContainsFold != nil {
-		predicates = append(predicates, user.NameContainsFold(*l.UserNameContainsFold))
 	}
 	if l.UserTypeEQ != nil {
 		predicates = append(predicates, user.TypeEQ(*l.UserTypeEQ))
@@ -1954,15 +1977,15 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.UserTypeNotIn != nil {
 		predicates = append(predicates, user.TypeNotIn(l.UserTypeNotIn...))
 	}
-	if l.UserDescriptionContains != nil {
-		predicates = append(predicates, user.DescriptionContains(*l.UserDescriptionContains))
-	}
 	if l.UserDescriptionIsNil != nil {
 		if *l.UserDescriptionIsNil {
 			predicates = append(predicates, user.DescriptionIsNil())
 		} else {
 			predicates = append(predicates, user.Not(user.DescriptionIsNil()))
 		}
+	}
+	if l.UserDescriptionContains != nil {
+		predicates = append(predicates, user.DescriptionContains(*l.UserDescriptionContains))
 	}
 	if l.UserDescriptionContainsFold != nil {
 		predicates = append(predicates, user.DescriptionContainsFold(*l.UserDescriptionContainsFold))
@@ -1976,21 +1999,6 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.UserEmailNEQ != nil {
 		predicates = append(predicates, user.EmailNEQ(*l.UserEmailNEQ))
 	}
-	if l.UserEmailIn != nil {
-		predicates = append(predicates, user.EmailIn(l.UserEmailIn...))
-	}
-	if l.UserEmailNotIn != nil {
-		predicates = append(predicates, user.EmailNotIn(l.UserEmailNotIn...))
-	}
-	if l.UserEmailContains != nil {
-		predicates = append(predicates, user.EmailContains(*l.UserEmailContains))
-	}
-	if l.UserEmailHasPrefix != nil {
-		predicates = append(predicates, user.EmailHasPrefix(*l.UserEmailHasPrefix))
-	}
-	if l.UserEmailHasSuffix != nil {
-		predicates = append(predicates, user.EmailHasSuffix(*l.UserEmailHasSuffix))
-	}
 	if l.UserEmailIsNil != nil {
 		if *l.UserEmailIsNil {
 			predicates = append(predicates, user.EmailIsNil())
@@ -1998,11 +2006,26 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 			predicates = append(predicates, user.Not(user.EmailIsNil()))
 		}
 	}
+	if l.UserEmailIn != nil {
+		predicates = append(predicates, user.EmailIn(l.UserEmailIn...))
+	}
+	if l.UserEmailNotIn != nil {
+		predicates = append(predicates, user.EmailNotIn(l.UserEmailNotIn...))
+	}
 	if l.UserEmailEqualFold != nil {
 		predicates = append(predicates, user.EmailEqualFold(*l.UserEmailEqualFold))
 	}
+	if l.UserEmailContains != nil {
+		predicates = append(predicates, user.EmailContains(*l.UserEmailContains))
+	}
 	if l.UserEmailContainsFold != nil {
 		predicates = append(predicates, user.EmailContainsFold(*l.UserEmailContainsFold))
+	}
+	if l.UserEmailHasPrefix != nil {
+		predicates = append(predicates, user.EmailHasPrefix(*l.UserEmailHasPrefix))
+	}
+	if l.UserEmailHasSuffix != nil {
+		predicates = append(predicates, user.EmailHasSuffix(*l.UserEmailHasSuffix))
 	}
 	if l.EdgeHasPet != nil {
 		if *l.EdgeHasPet {
@@ -2035,20 +2058,20 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgePetNameNotIn != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.NameNotIn(l.EdgePetNameNotIn...)))
 	}
+	if l.EdgePetNameEqualFold != nil {
+		predicates = append(predicates, user.HasPetsWith(pet.NameEqualFold(*l.EdgePetNameEqualFold)))
+	}
 	if l.EdgePetNameContains != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.NameContains(*l.EdgePetNameContains)))
+	}
+	if l.EdgePetNameContainsFold != nil {
+		predicates = append(predicates, user.HasPetsWith(pet.NameContainsFold(*l.EdgePetNameContainsFold)))
 	}
 	if l.EdgePetNameHasPrefix != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.NameHasPrefix(*l.EdgePetNameHasPrefix)))
 	}
 	if l.EdgePetNameHasSuffix != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.NameHasSuffix(*l.EdgePetNameHasSuffix)))
-	}
-	if l.EdgePetNameEqualFold != nil {
-		predicates = append(predicates, user.HasPetsWith(pet.NameEqualFold(*l.EdgePetNameEqualFold)))
-	}
-	if l.EdgePetNameContainsFold != nil {
-		predicates = append(predicates, user.HasPetsWith(pet.NameContainsFold(*l.EdgePetNameContainsFold)))
 	}
 	if l.EdgePetNicknamesIsNil != nil {
 		if *l.EdgePetNicknamesIsNil {
@@ -2063,17 +2086,17 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgePetAgeNEQ != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.AgeNEQ(*l.EdgePetAgeNEQ)))
 	}
-	if l.EdgePetAgeIn != nil {
-		predicates = append(predicates, user.HasPetsWith(pet.AgeIn(l.EdgePetAgeIn...)))
-	}
-	if l.EdgePetAgeNotIn != nil {
-		predicates = append(predicates, user.HasPetsWith(pet.AgeNotIn(l.EdgePetAgeNotIn...)))
-	}
 	if l.EdgePetAgeGT != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.AgeGT(*l.EdgePetAgeGT)))
 	}
 	if l.EdgePetAgeLT != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.AgeLT(*l.EdgePetAgeLT)))
+	}
+	if l.EdgePetAgeIn != nil {
+		predicates = append(predicates, user.HasPetsWith(pet.AgeIn(l.EdgePetAgeIn...)))
+	}
+	if l.EdgePetAgeNotIn != nil {
+		predicates = append(predicates, user.HasPetsWith(pet.AgeNotIn(l.EdgePetAgeNotIn...)))
 	}
 	if l.EdgePetTypeEQ != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.TypeEQ(*l.EdgePetTypeEQ)))
@@ -2118,20 +2141,20 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgeFollowedPetNameNotIn != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.NameNotIn(l.EdgeFollowedPetNameNotIn...)))
 	}
+	if l.EdgeFollowedPetNameEqualFold != nil {
+		predicates = append(predicates, user.HasFollowedPetsWith(pet.NameEqualFold(*l.EdgeFollowedPetNameEqualFold)))
+	}
 	if l.EdgeFollowedPetNameContains != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.NameContains(*l.EdgeFollowedPetNameContains)))
+	}
+	if l.EdgeFollowedPetNameContainsFold != nil {
+		predicates = append(predicates, user.HasFollowedPetsWith(pet.NameContainsFold(*l.EdgeFollowedPetNameContainsFold)))
 	}
 	if l.EdgeFollowedPetNameHasPrefix != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.NameHasPrefix(*l.EdgeFollowedPetNameHasPrefix)))
 	}
 	if l.EdgeFollowedPetNameHasSuffix != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.NameHasSuffix(*l.EdgeFollowedPetNameHasSuffix)))
-	}
-	if l.EdgeFollowedPetNameEqualFold != nil {
-		predicates = append(predicates, user.HasFollowedPetsWith(pet.NameEqualFold(*l.EdgeFollowedPetNameEqualFold)))
-	}
-	if l.EdgeFollowedPetNameContainsFold != nil {
-		predicates = append(predicates, user.HasFollowedPetsWith(pet.NameContainsFold(*l.EdgeFollowedPetNameContainsFold)))
 	}
 	if l.EdgeFollowedPetNicknamesIsNil != nil {
 		if *l.EdgeFollowedPetNicknamesIsNil {
@@ -2146,17 +2169,17 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgeFollowedPetAgeNEQ != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeNEQ(*l.EdgeFollowedPetAgeNEQ)))
 	}
-	if l.EdgeFollowedPetAgeIn != nil {
-		predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeIn(l.EdgeFollowedPetAgeIn...)))
-	}
-	if l.EdgeFollowedPetAgeNotIn != nil {
-		predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeNotIn(l.EdgeFollowedPetAgeNotIn...)))
-	}
 	if l.EdgeFollowedPetAgeGT != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeGT(*l.EdgeFollowedPetAgeGT)))
 	}
 	if l.EdgeFollowedPetAgeLT != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeLT(*l.EdgeFollowedPetAgeLT)))
+	}
+	if l.EdgeFollowedPetAgeIn != nil {
+		predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeIn(l.EdgeFollowedPetAgeIn...)))
+	}
+	if l.EdgeFollowedPetAgeNotIn != nil {
+		predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeNotIn(l.EdgeFollowedPetAgeNotIn...)))
 	}
 	if l.EdgeFollowedPetTypeEQ != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.TypeEQ(*l.EdgeFollowedPetTypeEQ)))
@@ -2213,20 +2236,20 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgeFriendNameNotIn != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.NameNotIn(l.EdgeFriendNameNotIn...)))
 	}
+	if l.EdgeFriendNameEqualFold != nil {
+		predicates = append(predicates, user.HasFriendsWith(user.NameEqualFold(*l.EdgeFriendNameEqualFold)))
+	}
 	if l.EdgeFriendNameContains != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.NameContains(*l.EdgeFriendNameContains)))
+	}
+	if l.EdgeFriendNameContainsFold != nil {
+		predicates = append(predicates, user.HasFriendsWith(user.NameContainsFold(*l.EdgeFriendNameContainsFold)))
 	}
 	if l.EdgeFriendNameHasPrefix != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.NameHasPrefix(*l.EdgeFriendNameHasPrefix)))
 	}
 	if l.EdgeFriendNameHasSuffix != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
-	}
-	if l.EdgeFriendNameEqualFold != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.NameEqualFold(*l.EdgeFriendNameEqualFold)))
-	}
-	if l.EdgeFriendNameContainsFold != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.NameContainsFold(*l.EdgeFriendNameContainsFold)))
 	}
 	if l.EdgeFriendTypeEQ != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.TypeEQ(*l.EdgeFriendTypeEQ)))
@@ -2240,15 +2263,15 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgeFriendTypeNotIn != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.TypeNotIn(l.EdgeFriendTypeNotIn...)))
 	}
-	if l.EdgeFriendDescriptionContains != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.DescriptionContains(*l.EdgeFriendDescriptionContains)))
-	}
 	if l.EdgeFriendDescriptionIsNil != nil {
 		if *l.EdgeFriendDescriptionIsNil {
 			predicates = append(predicates, user.HasFriendsWith(user.DescriptionIsNil()))
 		} else {
 			predicates = append(predicates, user.Not(user.HasFriendsWith(user.DescriptionIsNil())))
 		}
+	}
+	if l.EdgeFriendDescriptionContains != nil {
+		predicates = append(predicates, user.HasFriendsWith(user.DescriptionContains(*l.EdgeFriendDescriptionContains)))
 	}
 	if l.EdgeFriendDescriptionContainsFold != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.DescriptionContainsFold(*l.EdgeFriendDescriptionContainsFold)))
@@ -2262,21 +2285,6 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgeFriendEmailNEQ != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.EmailNEQ(*l.EdgeFriendEmailNEQ)))
 	}
-	if l.EdgeFriendEmailIn != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.EmailIn(l.EdgeFriendEmailIn...)))
-	}
-	if l.EdgeFriendEmailNotIn != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.EmailNotIn(l.EdgeFriendEmailNotIn...)))
-	}
-	if l.EdgeFriendEmailContains != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.EmailContains(*l.EdgeFriendEmailContains)))
-	}
-	if l.EdgeFriendEmailHasPrefix != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.EmailHasPrefix(*l.EdgeFriendEmailHasPrefix)))
-	}
-	if l.EdgeFriendEmailHasSuffix != nil {
-		predicates = append(predicates, user.HasFriendsWith(user.EmailHasSuffix(*l.EdgeFriendEmailHasSuffix)))
-	}
 	if l.EdgeFriendEmailIsNil != nil {
 		if *l.EdgeFriendEmailIsNil {
 			predicates = append(predicates, user.HasFriendsWith(user.EmailIsNil()))
@@ -2284,11 +2292,26 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 			predicates = append(predicates, user.Not(user.HasFriendsWith(user.EmailIsNil())))
 		}
 	}
+	if l.EdgeFriendEmailIn != nil {
+		predicates = append(predicates, user.HasFriendsWith(user.EmailIn(l.EdgeFriendEmailIn...)))
+	}
+	if l.EdgeFriendEmailNotIn != nil {
+		predicates = append(predicates, user.HasFriendsWith(user.EmailNotIn(l.EdgeFriendEmailNotIn...)))
+	}
 	if l.EdgeFriendEmailEqualFold != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.EmailEqualFold(*l.EdgeFriendEmailEqualFold)))
 	}
+	if l.EdgeFriendEmailContains != nil {
+		predicates = append(predicates, user.HasFriendsWith(user.EmailContains(*l.EdgeFriendEmailContains)))
+	}
 	if l.EdgeFriendEmailContainsFold != nil {
 		predicates = append(predicates, user.HasFriendsWith(user.EmailContainsFold(*l.EdgeFriendEmailContainsFold)))
+	}
+	if l.EdgeFriendEmailHasPrefix != nil {
+		predicates = append(predicates, user.HasFriendsWith(user.EmailHasPrefix(*l.EdgeFriendEmailHasPrefix)))
+	}
+	if l.EdgeFriendEmailHasSuffix != nil {
+		predicates = append(predicates, user.HasFriendsWith(user.EmailHasSuffix(*l.EdgeFriendEmailHasSuffix)))
 	}
 	if l.EdgeHasFollowing != nil {
 		if *l.EdgeHasFollowing {
@@ -2339,6 +2362,70 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	}
 	if l.EdgeFriendshipFriendIDNotIn != nil {
 		predicates = append(predicates, user.HasFriendshipsWith(friendship.FriendIDNotIn(l.EdgeFriendshipFriendIDNotIn...)))
+	}
+
+	if l.UserFilterGroupSearchEQ != nil {
+		predicates = append(predicates, sql.OrPredicates(
+			user.NameEQ(*l.UserFilterGroupSearchEQ),
+			user.DescriptionEQ(*l.UserFilterGroupSearchEQ),
+			user.EmailEQ(*l.UserFilterGroupSearchEQ),
+		))
+	}
+	if l.UserFilterGroupSearchNEQ != nil {
+		predicates = append(predicates, sql.OrPredicates(
+			user.NameNEQ(*l.UserFilterGroupSearchNEQ),
+			user.DescriptionNEQ(*l.UserFilterGroupSearchNEQ),
+			user.EmailNEQ(*l.UserFilterGroupSearchNEQ),
+		))
+	}
+	if l.UserFilterGroupSearchIn != nil {
+		predicates = append(predicates, sql.OrPredicates(
+			user.NameIn(l.UserFilterGroupSearchIn...),
+			user.DescriptionIn(l.UserFilterGroupSearchIn...),
+			user.EmailIn(l.UserFilterGroupSearchIn...),
+		))
+	}
+	if l.UserFilterGroupSearchNotIn != nil {
+		predicates = append(predicates, sql.OrPredicates(
+			user.NameNotIn(l.UserFilterGroupSearchNotIn...),
+			user.DescriptionNotIn(l.UserFilterGroupSearchNotIn...),
+			user.EmailNotIn(l.UserFilterGroupSearchNotIn...),
+		))
+	}
+	if l.UserFilterGroupSearchEqualFold != nil {
+		predicates = append(predicates, sql.OrPredicates(
+			user.NameEqualFold(*l.UserFilterGroupSearchEqualFold),
+			user.DescriptionEqualFold(*l.UserFilterGroupSearchEqualFold),
+			user.EmailEqualFold(*l.UserFilterGroupSearchEqualFold),
+		))
+	}
+	if l.UserFilterGroupSearchContains != nil {
+		predicates = append(predicates, sql.OrPredicates(
+			user.NameContains(*l.UserFilterGroupSearchContains),
+			user.DescriptionContains(*l.UserFilterGroupSearchContains),
+			user.EmailContains(*l.UserFilterGroupSearchContains),
+		))
+	}
+	if l.UserFilterGroupSearchContainsFold != nil {
+		predicates = append(predicates, sql.OrPredicates(
+			user.NameContainsFold(*l.UserFilterGroupSearchContainsFold),
+			user.DescriptionContainsFold(*l.UserFilterGroupSearchContainsFold),
+			user.EmailContainsFold(*l.UserFilterGroupSearchContainsFold),
+		))
+	}
+	if l.UserFilterGroupSearchHasPrefix != nil {
+		predicates = append(predicates, sql.OrPredicates(
+			user.NameHasPrefix(*l.UserFilterGroupSearchHasPrefix),
+			user.DescriptionHasPrefix(*l.UserFilterGroupSearchHasPrefix),
+			user.EmailHasPrefix(*l.UserFilterGroupSearchHasPrefix),
+		))
+	}
+	if l.UserFilterGroupSearchHasSuffix != nil {
+		predicates = append(predicates, sql.OrPredicates(
+			user.NameHasSuffix(*l.UserFilterGroupSearchHasSuffix),
+			user.DescriptionHasSuffix(*l.UserFilterGroupSearchHasSuffix),
+			user.EmailHasSuffix(*l.UserFilterGroupSearchHasSuffix),
+		))
 	}
 	return l.ApplyFilterOperation(predicates...)
 }
