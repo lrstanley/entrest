@@ -384,6 +384,9 @@ func NewServer(db *ent.Client, config *ServerConfig) (*Server, error) {
 		}
 		s.config.BasePath = uri.Path
 	}
+	if s.config.BaseURL == "" {
+		s.config.DisableSpecInjectServer = true
+	}
 	if s.config.BasePath != "" {
 		if !strings.HasPrefix(s.config.BasePath, "/") {
 			s.config.BasePath = "/" + s.config.BasePath
