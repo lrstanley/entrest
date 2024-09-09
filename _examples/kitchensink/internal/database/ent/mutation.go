@@ -52,6 +52,7 @@ type CategoryMutation struct {
 	name          *string
 	readonly      *string
 	skip_in_spec  *string
+	nillable      *string
 	clearedFields map[string]struct{}
 	pets          map[int]struct{}
 	removedpets   map[int]struct{}
@@ -352,6 +353,42 @@ func (m *CategoryMutation) ResetSkipInSpec() {
 	delete(m.clearedFields, category.FieldSkipInSpec)
 }
 
+// SetNillable sets the "nillable" field.
+func (m *CategoryMutation) SetNillable(s string) {
+	m.nillable = &s
+}
+
+// Nillable returns the value of the "nillable" field in the mutation.
+func (m *CategoryMutation) Nillable() (r string, exists bool) {
+	v := m.nillable
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldNillable returns the old "nillable" field's value of the Category entity.
+// If the Category object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryMutation) OldNillable(ctx context.Context) (v *string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldNillable is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldNillable requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldNillable: %w", err)
+	}
+	return oldValue.Nillable, nil
+}
+
+// ResetNillable resets all changes to the "nillable" field.
+func (m *CategoryMutation) ResetNillable() {
+	m.nillable = nil
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by ids.
 func (m *CategoryMutation) AddPetIDs(ids ...int) {
 	if m.pets == nil {
@@ -440,7 +477,7 @@ func (m *CategoryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CategoryMutation) Fields() []string {
-	fields := make([]string, 0, 5)
+	fields := make([]string, 0, 6)
 	if m.created_at != nil {
 		fields = append(fields, category.FieldCreatedAt)
 	}
@@ -455,6 +492,9 @@ func (m *CategoryMutation) Fields() []string {
 	}
 	if m.skip_in_spec != nil {
 		fields = append(fields, category.FieldSkipInSpec)
+	}
+	if m.nillable != nil {
+		fields = append(fields, category.FieldNillable)
 	}
 	return fields
 }
@@ -474,6 +514,8 @@ func (m *CategoryMutation) Field(name string) (ent.Value, bool) {
 		return m.Readonly()
 	case category.FieldSkipInSpec:
 		return m.SkipInSpec()
+	case category.FieldNillable:
+		return m.Nillable()
 	}
 	return nil, false
 }
@@ -493,6 +535,8 @@ func (m *CategoryMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldReadonly(ctx)
 	case category.FieldSkipInSpec:
 		return m.OldSkipInSpec(ctx)
+	case category.FieldNillable:
+		return m.OldNillable(ctx)
 	}
 	return nil, fmt.Errorf("unknown Category field %s", name)
 }
@@ -536,6 +580,13 @@ func (m *CategoryMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetSkipInSpec(v)
+		return nil
+	case category.FieldNillable:
+		v, ok := value.(string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetNillable(v)
 		return nil
 	}
 	return fmt.Errorf("unknown Category field %s", name)
@@ -609,6 +660,9 @@ func (m *CategoryMutation) ResetField(name string) error {
 		return nil
 	case category.FieldSkipInSpec:
 		m.ResetSkipInSpec()
+		return nil
+	case category.FieldNillable:
+		m.ResetNillable()
 		return nil
 	}
 	return fmt.Errorf("unknown Category field %s", name)

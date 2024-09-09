@@ -24,6 +24,8 @@ const (
 	FieldReadonly = "readonly"
 	// FieldSkipInSpec holds the string denoting the skip_in_spec field in the database.
 	FieldSkipInSpec = "skip_in_spec"
+	// FieldNillable holds the string denoting the nillable field in the database.
+	FieldNillable = "nillable"
 	// EdgePets holds the string denoting the pets edge name in mutations.
 	EdgePets = "pets"
 	// Table holds the table name of the category in the database.
@@ -43,6 +45,7 @@ var Columns = []string{
 	FieldName,
 	FieldReadonly,
 	FieldSkipInSpec,
+	FieldNillable,
 }
 
 var (
@@ -68,6 +71,8 @@ var (
 	DefaultUpdatedAt func() time.Time
 	// UpdateDefaultUpdatedAt holds the default value on update for the "updated_at" field.
 	UpdateDefaultUpdatedAt func() time.Time
+	// DefaultNillable holds the default value on creation for the "nillable" field.
+	DefaultNillable string
 )
 
 // OrderOption defines the ordering options for the Category queries.
@@ -101,6 +106,11 @@ func ByReadonly(opts ...sql.OrderTermOption) OrderOption {
 // BySkipInSpec orders the results by the skip_in_spec field.
 func BySkipInSpec(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldSkipInSpec, opts...).ToFunc()
+}
+
+// ByNillable orders the results by the nillable field.
+func ByNillable(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldNillable, opts...).ToFunc()
 }
 
 // ByPetsCount orders the results by pets count.

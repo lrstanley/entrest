@@ -33,6 +33,10 @@ func init() {
 	category.DefaultUpdatedAt = categoryDescUpdatedAt.Default.(func() time.Time)
 	// category.UpdateDefaultUpdatedAt holds the default value on update for the updated_at field.
 	category.UpdateDefaultUpdatedAt = categoryDescUpdatedAt.UpdateDefault.(func() time.Time)
+	// categoryDescNillable is the schema descriptor for nillable field.
+	categoryDescNillable := categoryFields[3].Descriptor()
+	// category.DefaultNillable holds the default value on creation for the nillable field.
+	category.DefaultNillable = categoryDescNillable.Default.(string)
 	followsFields := schema.Follows{}.Fields()
 	_ = followsFields
 	// followsDescFollowedAt is the schema descriptor for followed_at field.

@@ -83,6 +83,20 @@ func (cu *CategoryUpdate) ClearSkipInSpec() *CategoryUpdate {
 	return cu
 }
 
+// SetNillable sets the "nillable" field.
+func (cu *CategoryUpdate) SetNillable(s string) *CategoryUpdate {
+	cu.mutation.SetNillable(s)
+	return cu
+}
+
+// SetNillableNillable sets the "nillable" field if the given value is not nil.
+func (cu *CategoryUpdate) SetNillableNillable(s *string) *CategoryUpdate {
+	if s != nil {
+		cu.SetNillable(*s)
+	}
+	return cu
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (cu *CategoryUpdate) AddPetIDs(ids ...int) *CategoryUpdate {
 	cu.mutation.AddPetIDs(ids...)
@@ -183,6 +197,9 @@ func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if cu.mutation.SkipInSpecCleared() {
 		_spec.ClearField(category.FieldSkipInSpec, field.TypeString)
+	}
+	if value, ok := cu.mutation.Nillable(); ok {
+		_spec.SetField(category.FieldNillable, field.TypeString, value)
 	}
 	if cu.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -300,6 +317,20 @@ func (cuo *CategoryUpdateOne) SetNillableSkipInSpec(s *string) *CategoryUpdateOn
 // ClearSkipInSpec clears the value of the "skip_in_spec" field.
 func (cuo *CategoryUpdateOne) ClearSkipInSpec() *CategoryUpdateOne {
 	cuo.mutation.ClearSkipInSpec()
+	return cuo
+}
+
+// SetNillable sets the "nillable" field.
+func (cuo *CategoryUpdateOne) SetNillable(s string) *CategoryUpdateOne {
+	cuo.mutation.SetNillable(s)
+	return cuo
+}
+
+// SetNillableNillable sets the "nillable" field if the given value is not nil.
+func (cuo *CategoryUpdateOne) SetNillableNillable(s *string) *CategoryUpdateOne {
+	if s != nil {
+		cuo.SetNillable(*s)
+	}
 	return cuo
 }
 
@@ -433,6 +464,9 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 	}
 	if cuo.mutation.SkipInSpecCleared() {
 		_spec.ClearField(category.FieldSkipInSpec, field.TypeString)
+	}
+	if value, ok := cuo.mutation.Nillable(); ok {
+		_spec.SetField(category.FieldNillable, field.TypeString, value)
 	}
 	if cuo.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{

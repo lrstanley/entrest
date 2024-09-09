@@ -24,6 +24,7 @@ func (Category) Fields() []ent.Field {
 		field.String("skip_in_spec").
 			Optional().
 			Annotations(entrest.WithSkip(true)),
+		field.String("nillable").Nillable().Default("test"), // but not optional.
 	}
 }
 

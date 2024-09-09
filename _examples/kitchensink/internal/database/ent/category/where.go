@@ -80,6 +80,11 @@ func SkipInSpec(v string) predicate.Category {
 	return predicate.Category(sql.FieldEQ(FieldSkipInSpec, v))
 }
 
+// Nillable applies equality check predicate on the "nillable" field. It's identical to NillableEQ.
+func Nillable(v string) predicate.Category {
+	return predicate.Category(sql.FieldEQ(FieldNillable, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.Category {
 	return predicate.Category(sql.FieldEQ(FieldCreatedAt, v))
@@ -363,6 +368,71 @@ func SkipInSpecEqualFold(v string) predicate.Category {
 // SkipInSpecContainsFold applies the ContainsFold predicate on the "skip_in_spec" field.
 func SkipInSpecContainsFold(v string) predicate.Category {
 	return predicate.Category(sql.FieldContainsFold(FieldSkipInSpec, v))
+}
+
+// NillableEQ applies the EQ predicate on the "nillable" field.
+func NillableEQ(v string) predicate.Category {
+	return predicate.Category(sql.FieldEQ(FieldNillable, v))
+}
+
+// NillableNEQ applies the NEQ predicate on the "nillable" field.
+func NillableNEQ(v string) predicate.Category {
+	return predicate.Category(sql.FieldNEQ(FieldNillable, v))
+}
+
+// NillableIn applies the In predicate on the "nillable" field.
+func NillableIn(vs ...string) predicate.Category {
+	return predicate.Category(sql.FieldIn(FieldNillable, vs...))
+}
+
+// NillableNotIn applies the NotIn predicate on the "nillable" field.
+func NillableNotIn(vs ...string) predicate.Category {
+	return predicate.Category(sql.FieldNotIn(FieldNillable, vs...))
+}
+
+// NillableGT applies the GT predicate on the "nillable" field.
+func NillableGT(v string) predicate.Category {
+	return predicate.Category(sql.FieldGT(FieldNillable, v))
+}
+
+// NillableGTE applies the GTE predicate on the "nillable" field.
+func NillableGTE(v string) predicate.Category {
+	return predicate.Category(sql.FieldGTE(FieldNillable, v))
+}
+
+// NillableLT applies the LT predicate on the "nillable" field.
+func NillableLT(v string) predicate.Category {
+	return predicate.Category(sql.FieldLT(FieldNillable, v))
+}
+
+// NillableLTE applies the LTE predicate on the "nillable" field.
+func NillableLTE(v string) predicate.Category {
+	return predicate.Category(sql.FieldLTE(FieldNillable, v))
+}
+
+// NillableContains applies the Contains predicate on the "nillable" field.
+func NillableContains(v string) predicate.Category {
+	return predicate.Category(sql.FieldContains(FieldNillable, v))
+}
+
+// NillableHasPrefix applies the HasPrefix predicate on the "nillable" field.
+func NillableHasPrefix(v string) predicate.Category {
+	return predicate.Category(sql.FieldHasPrefix(FieldNillable, v))
+}
+
+// NillableHasSuffix applies the HasSuffix predicate on the "nillable" field.
+func NillableHasSuffix(v string) predicate.Category {
+	return predicate.Category(sql.FieldHasSuffix(FieldNillable, v))
+}
+
+// NillableEqualFold applies the EqualFold predicate on the "nillable" field.
+func NillableEqualFold(v string) predicate.Category {
+	return predicate.Category(sql.FieldEqualFold(FieldNillable, v))
+}
+
+// NillableContainsFold applies the ContainsFold predicate on the "nillable" field.
+func NillableContainsFold(v string) predicate.Category {
+	return predicate.Category(sql.FieldContainsFold(FieldNillable, v))
 }
 
 // HasPets applies the HasEdge predicate on the "pets" edge.

@@ -79,9 +79,10 @@ import (
                 {{- if $f.Nillable }}
                     if v != nil {
                         builder.Set{{ $f.StructField }}(*v)
-                    } else {
+                    } {{- if $f.Optional }} else {
                         builder.Clear{{ $f.StructField }}()
                     }
+                    {{- end }}
                 {{- else }}
                     builder.Set{{ $f.StructField }}(v)
                 {{- end }}
@@ -108,9 +109,10 @@ import (
                     {{- if $e.Field.Nillable }}
                         if v != nil {
                             builder.Set{{ $e.Field.StructField }}(v)
-                        } else {
+                        } {{- if $e.Field.Optional }} else {
                             builder.Clear{{ $e.Field.StructField }}()
                         }
+                        {{- end }}
                     {{- else }}
                         builder.Set{{ $e.Field.StructField }}(v)
                     {{- end }}

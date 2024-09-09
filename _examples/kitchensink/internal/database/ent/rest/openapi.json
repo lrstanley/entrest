@@ -7226,6 +7226,11 @@
                     },
                     "readonly": {
                         "type": "string"
+                    },
+                    "nillable": {
+                        "type": "string",
+                        "nullable": true,
+                        "default": "test"
                     }
                 },
                 "required": [
@@ -7233,7 +7238,8 @@
                     "created_at",
                     "updated_at",
                     "name",
-                    "readonly"
+                    "readonly",
+                    "nillable"
                 ]
             },
             "CategoryCreate": {
@@ -7242,6 +7248,11 @@
                 "properties": {
                     "name": {
                         "type": "string"
+                    },
+                    "nillable": {
+                        "type": "string",
+                        "nullable": true,
+                        "default": "test"
                     },
                     "pets": {
                         "type": "array",
@@ -7298,6 +7309,11 @@
                 "properties": {
                     "name": {
                         "type": "string"
+                    },
+                    "nillable": {
+                        "type": "string",
+                        "nullable": true,
+                        "default": "test"
                     },
                     "add_pets": {
                         "type": "array",

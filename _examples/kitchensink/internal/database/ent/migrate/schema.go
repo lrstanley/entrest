@@ -16,6 +16,7 @@ var (
 		{Name: "name", Type: field.TypeString},
 		{Name: "readonly", Type: field.TypeString},
 		{Name: "skip_in_spec", Type: field.TypeString, Nullable: true},
+		{Name: "nillable", Type: field.TypeString, Default: "test"},
 	}
 	// CategoriesTable holds the schema information for the "categories" table.
 	CategoriesTable = &schema.Table{

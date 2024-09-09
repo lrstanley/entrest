@@ -19,12 +19,16 @@ import (
 
 // CreateCategoryParams defines parameters for creating a Category via a POST request.
 type CreateCategoryParams struct {
-	Name string `json:"name"`
-	Pets []int  `json:"pets,omitempty"`
+	Name     string  `json:"name"`
+	Nillable *string `json:"nillable"`
+	Pets     []int   `json:"pets,omitempty"`
 }
 
 func (c *CreateCategoryParams) ApplyInputs(builder *ent.CategoryCreate) *ent.CategoryCreate {
 	builder.SetName(c.Name)
+	if c.Nillable != nil {
+		builder.SetNillable(*c.Nillable)
+	}
 	builder.AddPetIDs(c.Pets...)
 	return builder
 }

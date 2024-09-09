@@ -27,6 +27,8 @@ type Category struct {
 	Readonly string `json:"readonly"`
 	// SkipInSpec holds the value of the "skip_in_spec" field.
 	SkipInSpec string `json:"skip_in_spec"`
+	// Nillable holds the value of the "nillable" field.
+	Nillable *string `json:"nillable"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the CategoryQuery when eager-loading is set.
 	Edges        CategoryEdges `json:"edges"`
@@ -58,7 +60,7 @@ func (*Category) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case category.FieldID:
 			values[i] = new(sql.NullInt64)
-		case category.FieldName, category.FieldReadonly, category.FieldSkipInSpec:
+		case category.FieldName, category.FieldReadonly, category.FieldSkipInSpec, category.FieldNillable:
 			values[i] = new(sql.NullString)
 		case category.FieldCreatedAt, category.FieldUpdatedAt:
 			values[i] = new(sql.NullTime)
@@ -112,6 +114,13 @@ func (c *Category) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field skip_in_spec", values[i])
 			} else if value.Valid {
 				c.SkipInSpec = value.String
+			}
+		case category.FieldNillable:
+			if value, ok := values[i].(*sql.NullString); !ok {
+				return fmt.Errorf("unexpected type %T for field nillable", values[i])
+			} else if value.Valid {
+				c.Nillable = new(string)
+				*c.Nillable = value.String
 			}
 		default:
 			c.selectValues.Set(columns[i], values[i])
@@ -168,6 +177,11 @@ func (c *Category) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("skip_in_spec=")
 	builder.WriteString(c.SkipInSpec)
+	builder.WriteString(", ")
+	if v := c.Nillable; v != nil {
+		builder.WriteString("nillable=")
+		builder.WriteString(*v)
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }

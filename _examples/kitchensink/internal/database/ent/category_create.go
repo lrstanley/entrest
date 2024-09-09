@@ -75,6 +75,20 @@ func (cc *CategoryCreate) SetNillableSkipInSpec(s *string) *CategoryCreate {
 	return cc
 }
 
+// SetNillable sets the "nillable" field.
+func (cc *CategoryCreate) SetNillable(s string) *CategoryCreate {
+	cc.mutation.SetNillable(s)
+	return cc
+}
+
+// SetNillableNillable sets the "nillable" field if the given value is not nil.
+func (cc *CategoryCreate) SetNillableNillable(s *string) *CategoryCreate {
+	if s != nil {
+		cc.SetNillable(*s)
+	}
+	return cc
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (cc *CategoryCreate) AddPetIDs(ids ...int) *CategoryCreate {
 	cc.mutation.AddPetIDs(ids...)
@@ -133,6 +147,10 @@ func (cc *CategoryCreate) defaults() {
 		v := category.DefaultUpdatedAt()
 		cc.mutation.SetUpdatedAt(v)
 	}
+	if _, ok := cc.mutation.Nillable(); !ok {
+		v := category.DefaultNillable
+		cc.mutation.SetNillable(v)
+	}
 }
 
 // check runs all checks and user-defined validators on the builder.
@@ -148,6 +166,9 @@ func (cc *CategoryCreate) check() error {
 	}
 	if _, ok := cc.mutation.Readonly(); !ok {
 		return &ValidationError{Name: "readonly", err: errors.New(`ent: missing required field "Category.readonly"`)}
+	}
+	if _, ok := cc.mutation.Nillable(); !ok {
+		return &ValidationError{Name: "nillable", err: errors.New(`ent: missing required field "Category.nillable"`)}
 	}
 	return nil
 }
@@ -194,6 +215,10 @@ func (cc *CategoryCreate) createSpec() (*Category, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.SkipInSpec(); ok {
 		_spec.SetField(category.FieldSkipInSpec, field.TypeString, value)
 		_node.SkipInSpec = value
+	}
+	if value, ok := cc.mutation.Nillable(); ok {
+		_spec.SetField(category.FieldNillable, field.TypeString, value)
+		_node.Nillable = &value
 	}
 	if nodes := cc.mutation.PetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
