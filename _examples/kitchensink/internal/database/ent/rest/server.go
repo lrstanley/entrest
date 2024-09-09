@@ -567,7 +567,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
 	})
-	return UseEntContext(s.db)(mux)
+	return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(mux))
 }
 
 // ListCategories maps to "GET /categories".

@@ -268,7 +268,7 @@ func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
     {{ template "helper/rest/server/not-found" . }}
 
     {{- if eq $.Annotations.RestConfig.Handler "stdlib" }}
-        return UseEntContext(s.db)(mux)
+        return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(mux))
     {{- end }}
 }
 
