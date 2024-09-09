@@ -5,12 +5,23 @@
 package schema
 
 import (
+	"encoding/json"
+
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
 	"github.com/lrstanley/entrest"
+	"github.com/ogen-go/ogen"
 )
+
+func mustEnum[T any](values []T) []json.RawMessage {
+	v, err := entrest.ToEnum(values)
+	if err != nil {
+		panic(err)
+	}
+	return v
+}
 
 type Category struct {
 	ent.Schema
@@ -25,6 +36,13 @@ func (Category) Fields() []ent.Field {
 			Optional().
 			Annotations(entrest.WithSkip(true)),
 		field.String("nillable").Nillable().Default("test"), // but not optional.
+		field.Strings("strings").
+			Optional().
+			Annotations(
+				entrest.WithSchema(ogen.String().SetEnum(mustEnum([]string{"FOO", "BAR", "BAZ"})).AsArray()),
+			),
+		field.Ints("ints").
+			Optional(),
 	}
 }
 

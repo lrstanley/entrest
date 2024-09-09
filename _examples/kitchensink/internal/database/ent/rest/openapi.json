@@ -7231,6 +7231,18 @@
                         "type": "string",
                         "nullable": true,
                         "default": "test"
+                    },
+                    "strings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryStringsEnum"
+                        }
+                    },
+                    "ints": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     }
                 },
                 "required": [
@@ -7253,6 +7265,18 @@
                         "type": "string",
                         "nullable": true,
                         "default": "test"
+                    },
+                    "strings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryStringsEnum"
+                        }
+                    },
+                    "ints": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     },
                     "pets": {
                         "type": "array",
@@ -7303,6 +7327,14 @@
                 ],
                 "default": "id"
             },
+            "CategoryStringsEnum": {
+                "type": "string",
+                "enum": [
+                    "FOO",
+                    "BAR",
+                    "BAZ"
+                ]
+            },
             "CategoryUpdate": {
                 "description": "A single Category entity and the fields that can be created/updated.",
                 "type": "object",
@@ -7314,6 +7346,18 @@
                         "type": "string",
                         "nullable": true,
                         "default": "test"
+                    },
+                    "strings": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/CategoryStringsEnum"
+                        }
+                    },
+                    "ints": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
                     },
                     "add_pets": {
                         "type": "array",
@@ -8262,11 +8306,13 @@
                         "nullable": true
                     },
                     "github_data": {
+                        "description": "The github user raw JSON data.",
                         "type": "object",
                         "additionalProperties": true
                     },
                     "profile_url": {
-                        "type": "string"
+                        "type": "string",
+                        "default": "http://127.0.0.1/"
                     }
                 },
                 "required": [
@@ -8317,11 +8363,13 @@
                         "type": "string"
                     },
                     "github_data": {
+                        "description": "The github user raw JSON data.",
                         "type": "object",
                         "additionalProperties": true
                     },
                     "profile_url": {
-                        "type": "string"
+                        "type": "string",
+                        "default": "http://127.0.0.1/"
                     },
                     "pets": {
                         "type": "array",
@@ -8482,11 +8530,13 @@
                         "type": "string"
                     },
                     "github_data": {
+                        "description": "The github user raw JSON data.",
                         "type": "object",
                         "additionalProperties": true
                     },
                     "profile_url": {
-                        "type": "string"
+                        "type": "string",
+                        "default": "http://127.0.0.1/"
                     },
                     "add_pets": {
                         "type": "array",

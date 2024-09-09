@@ -26,6 +26,10 @@ const (
 	FieldSkipInSpec = "skip_in_spec"
 	// FieldNillable holds the string denoting the nillable field in the database.
 	FieldNillable = "nillable"
+	// FieldStrings holds the string denoting the strings field in the database.
+	FieldStrings = "strings"
+	// FieldInts holds the string denoting the ints field in the database.
+	FieldInts = "ints"
 	// EdgePets holds the string denoting the pets edge name in mutations.
 	EdgePets = "pets"
 	// Table holds the table name of the category in the database.
@@ -46,6 +50,8 @@ var Columns = []string{
 	FieldReadonly,
 	FieldSkipInSpec,
 	FieldNillable,
+	FieldStrings,
+	FieldInts,
 }
 
 var (

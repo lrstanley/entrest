@@ -89,6 +89,18 @@ func (cc *CategoryCreate) SetNillableNillable(s *string) *CategoryCreate {
 	return cc
 }
 
+// SetStrings sets the "strings" field.
+func (cc *CategoryCreate) SetStrings(s []string) *CategoryCreate {
+	cc.mutation.SetStrings(s)
+	return cc
+}
+
+// SetInts sets the "ints" field.
+func (cc *CategoryCreate) SetInts(i []int) *CategoryCreate {
+	cc.mutation.SetInts(i)
+	return cc
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (cc *CategoryCreate) AddPetIDs(ids ...int) *CategoryCreate {
 	cc.mutation.AddPetIDs(ids...)
@@ -219,6 +231,14 @@ func (cc *CategoryCreate) createSpec() (*Category, *sqlgraph.CreateSpec) {
 	if value, ok := cc.mutation.Nillable(); ok {
 		_spec.SetField(category.FieldNillable, field.TypeString, value)
 		_node.Nillable = &value
+	}
+	if value, ok := cc.mutation.Strings(); ok {
+		_spec.SetField(category.FieldStrings, field.TypeJSON, value)
+		_node.Strings = value
+	}
+	if value, ok := cc.mutation.Ints(); ok {
+		_spec.SetField(category.FieldInts, field.TypeJSON, value)
+		_node.Ints = value
 	}
 	if nodes := cc.mutation.PetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

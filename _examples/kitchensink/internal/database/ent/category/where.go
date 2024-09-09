@@ -435,6 +435,26 @@ func NillableContainsFold(v string) predicate.Category {
 	return predicate.Category(sql.FieldContainsFold(FieldNillable, v))
 }
 
+// StringsIsNil applies the IsNil predicate on the "strings" field.
+func StringsIsNil() predicate.Category {
+	return predicate.Category(sql.FieldIsNull(FieldStrings))
+}
+
+// StringsNotNil applies the NotNil predicate on the "strings" field.
+func StringsNotNil() predicate.Category {
+	return predicate.Category(sql.FieldNotNull(FieldStrings))
+}
+
+// IntsIsNil applies the IsNil predicate on the "ints" field.
+func IntsIsNil() predicate.Category {
+	return predicate.Category(sql.FieldIsNull(FieldInts))
+}
+
+// IntsNotNil applies the NotNil predicate on the "ints" field.
+func IntsNotNil() predicate.Category {
+	return predicate.Category(sql.FieldNotNull(FieldInts))
+}
+
 // HasPets applies the HasEdge predicate on the "pets" edge.
 func HasPets() predicate.Category {
 	return predicate.Category(func(s *sql.Selector) {

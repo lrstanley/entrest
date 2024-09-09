@@ -68,14 +68,11 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 
 	var err error
 
-	if fa.Schema != nil {
-		return fa.Schema, nil
-	}
+	schema := fa.Schema
 
-	var schema *ogen.Schema
 	baseType := f.Type.String()
 
-	if f.IsEnum() {
+	if schema == nil && f.IsEnum() {
 		// TODO: sharing enum schemas between parameters and component schemas,
 		// means that the default is used for both, even if the parameter version
 		// shouldn't have a default.
@@ -116,17 +113,19 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 		// schema = ogen.NewSchema().SetOneOf([]*ogen.Schema{schema, {Type: "null"}})
 	}
 
-	if v := f.DefaultValue(); f.Default && v != nil && !f.IsEnum() {
-		schema.Default, err = json.Marshal(f.DefaultValue())
-		if err != nil {
-			return nil, fmt.Errorf("failed to marshal default value for field %s: %w", f.StructField(), err)
+	if schema.Default == nil {
+		if v := f.DefaultValue(); f.Default && v != nil && !f.IsEnum() {
+			schema.Default, err = json.Marshal(f.DefaultValue())
+			if err != nil {
+				return nil, fmt.Errorf("failed to marshal default value for field %s: %w", f.StructField(), err)
+			}
 		}
 	}
 
-	schema.Description = cmp.Or(fa.Description, f.Comment())
-	schema.Deprecated = fa.Deprecated
+	schema.Description = cmp.Or(schema.Description, fa.Description, f.Comment())
+	schema.Deprecated = cmp.Or(schema.Deprecated, fa.Deprecated)
 
-	if fa.Example != nil {
+	if fa.Example != nil && schema.Example == nil {
 		schema.Example, err = json.Marshal(fa.Example)
 		if err != nil {
 			return nil, fmt.Errorf("failed to marshal example for field %s: %w", f.StructField(), err)
@@ -194,14 +193,14 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 				}
 
 				// Hoist enums into components to reduce duplication where possible.
-				if updated, ref, ok := hoistEnums(t, f, fieldSchema); ok {
-					schemas[ref] = fieldSchema
+				if updated, asRef, ref, ok := hoistEnums(t, f, fieldSchema); ok {
+					schemas[ref] = updated
 					schema.Properties = append(schema.Properties, ogen.Property{
 						Name:   f.Name,
-						Schema: updated,
+						Schema: asRef,
 					})
 				} else {
-					schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(f.Name))
+					schema.Properties = append(schema.Properties, *updated.ToProperty(f.Name))
 				}
 
 				if op == OperationCreate && !f.Optional && !f.Default {
@@ -323,14 +322,14 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 			}
 
 			// Hoist enums into components to reduce duplication where possible.
-			if updated, ref, ok := hoistEnums(t, f, fieldSchema); ok {
-				schemas[ref] = fieldSchema
+			if updated, asRef, ref, ok := hoistEnums(t, f, fieldSchema); ok {
+				schemas[ref] = updated
 				schema.Properties = append(schema.Properties, ogen.Property{
 					Name:   f.Name,
-					Schema: updated,
+					Schema: asRef,
 				})
 			} else {
-				schema.Properties = append(schema.Properties, *fieldSchema.ToProperty(f.Name))
+				schema.Properties = append(schema.Properties, *updated.ToProperty(f.Name))
 			}
 		}
 
@@ -466,9 +465,9 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 // hoistEnums helps hoist field enums into components to reduce duplication where possible.
 // If the existing schema is pointing to an enum, a new schema is returned which points to the
 // provided component schema ref name.
-func hoistEnums(t *gen.Type, f *gen.Field, existing *ogen.Schema) (updated *ogen.Schema, ref string, ok bool) {
+func hoistEnums(t *gen.Type, f *gen.Field, existing *ogen.Schema) (updated, asRef *ogen.Schema, ref string, ok bool) {
 	if existing == nil {
-		return nil, "", false
+		return nil, nil, "", false
 	}
 
 	name := Singularize(t.Name) + PascalCase(f.Name) + "Enum"
@@ -484,14 +483,21 @@ func hoistEnums(t *gen.Type, f *gen.Field, existing *ogen.Schema) (updated *ogen
 			}
 		}
 		if isEnum {
-			updated = &ogen.Schema{Ref: "#/components/schemas/" + name}
-			return updated.AsArray(), name, true
+			// Unwrap the original.
+			if existing.Items.Item != nil {
+				updated = existing.Items.Item
+			} else if len(existing.Items.Items) > 0 {
+				updated = existing.Items.Items[0]
+			}
+
+			asRef = &ogen.Schema{Ref: "#/components/schemas/" + name}
+			return updated, asRef.AsArray(), name, true
 		}
 	}
 	if len(existing.Enum) > 0 {
-		return &ogen.Schema{Ref: "#/components/schemas/" + name}, name, true
+		return existing, &ogen.Schema{Ref: "#/components/schemas/" + name}, name, true
 	}
-	return existing, "", false
+	return existing, nil, "", false
 }
 
 // toPagedSchema converts a response schema to a paged response schema, hoisting the

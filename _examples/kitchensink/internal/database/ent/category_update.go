@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
@@ -94,6 +95,42 @@ func (cu *CategoryUpdate) SetNillableNillable(s *string) *CategoryUpdate {
 	if s != nil {
 		cu.SetNillable(*s)
 	}
+	return cu
+}
+
+// SetStrings sets the "strings" field.
+func (cu *CategoryUpdate) SetStrings(s []string) *CategoryUpdate {
+	cu.mutation.SetStrings(s)
+	return cu
+}
+
+// AppendStrings appends s to the "strings" field.
+func (cu *CategoryUpdate) AppendStrings(s []string) *CategoryUpdate {
+	cu.mutation.AppendStrings(s)
+	return cu
+}
+
+// ClearStrings clears the value of the "strings" field.
+func (cu *CategoryUpdate) ClearStrings() *CategoryUpdate {
+	cu.mutation.ClearStrings()
+	return cu
+}
+
+// SetInts sets the "ints" field.
+func (cu *CategoryUpdate) SetInts(i []int) *CategoryUpdate {
+	cu.mutation.SetInts(i)
+	return cu
+}
+
+// AppendInts appends i to the "ints" field.
+func (cu *CategoryUpdate) AppendInts(i []int) *CategoryUpdate {
+	cu.mutation.AppendInts(i)
+	return cu
+}
+
+// ClearInts clears the value of the "ints" field.
+func (cu *CategoryUpdate) ClearInts() *CategoryUpdate {
+	cu.mutation.ClearInts()
 	return cu
 }
 
@@ -200,6 +237,28 @@ func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := cu.mutation.Nillable(); ok {
 		_spec.SetField(category.FieldNillable, field.TypeString, value)
+	}
+	if value, ok := cu.mutation.Strings(); ok {
+		_spec.SetField(category.FieldStrings, field.TypeJSON, value)
+	}
+	if value, ok := cu.mutation.AppendedStrings(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, category.FieldStrings, value)
+		})
+	}
+	if cu.mutation.StringsCleared() {
+		_spec.ClearField(category.FieldStrings, field.TypeJSON)
+	}
+	if value, ok := cu.mutation.Ints(); ok {
+		_spec.SetField(category.FieldInts, field.TypeJSON, value)
+	}
+	if value, ok := cu.mutation.AppendedInts(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, category.FieldInts, value)
+		})
+	}
+	if cu.mutation.IntsCleared() {
+		_spec.ClearField(category.FieldInts, field.TypeJSON)
 	}
 	if cu.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -331,6 +390,42 @@ func (cuo *CategoryUpdateOne) SetNillableNillable(s *string) *CategoryUpdateOne 
 	if s != nil {
 		cuo.SetNillable(*s)
 	}
+	return cuo
+}
+
+// SetStrings sets the "strings" field.
+func (cuo *CategoryUpdateOne) SetStrings(s []string) *CategoryUpdateOne {
+	cuo.mutation.SetStrings(s)
+	return cuo
+}
+
+// AppendStrings appends s to the "strings" field.
+func (cuo *CategoryUpdateOne) AppendStrings(s []string) *CategoryUpdateOne {
+	cuo.mutation.AppendStrings(s)
+	return cuo
+}
+
+// ClearStrings clears the value of the "strings" field.
+func (cuo *CategoryUpdateOne) ClearStrings() *CategoryUpdateOne {
+	cuo.mutation.ClearStrings()
+	return cuo
+}
+
+// SetInts sets the "ints" field.
+func (cuo *CategoryUpdateOne) SetInts(i []int) *CategoryUpdateOne {
+	cuo.mutation.SetInts(i)
+	return cuo
+}
+
+// AppendInts appends i to the "ints" field.
+func (cuo *CategoryUpdateOne) AppendInts(i []int) *CategoryUpdateOne {
+	cuo.mutation.AppendInts(i)
+	return cuo
+}
+
+// ClearInts clears the value of the "ints" field.
+func (cuo *CategoryUpdateOne) ClearInts() *CategoryUpdateOne {
+	cuo.mutation.ClearInts()
 	return cuo
 }
 
@@ -467,6 +562,28 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 	}
 	if value, ok := cuo.mutation.Nillable(); ok {
 		_spec.SetField(category.FieldNillable, field.TypeString, value)
+	}
+	if value, ok := cuo.mutation.Strings(); ok {
+		_spec.SetField(category.FieldStrings, field.TypeJSON, value)
+	}
+	if value, ok := cuo.mutation.AppendedStrings(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, category.FieldStrings, value)
+		})
+	}
+	if cuo.mutation.StringsCleared() {
+		_spec.ClearField(category.FieldStrings, field.TypeJSON)
+	}
+	if value, ok := cuo.mutation.Ints(); ok {
+		_spec.SetField(category.FieldInts, field.TypeJSON, value)
+	}
+	if value, ok := cuo.mutation.AppendedInts(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, category.FieldInts, value)
+		})
+	}
+	if cuo.mutation.IntsCleared() {
+		_spec.ClearField(category.FieldInts, field.TypeJSON)
 	}
 	if cuo.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{

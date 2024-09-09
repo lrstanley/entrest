@@ -53,6 +53,10 @@ type CategoryMutation struct {
 	readonly      *string
 	skip_in_spec  *string
 	nillable      *string
+	strings       *[]string
+	appendstrings []string
+	ints          *[]int
+	appendints    []int
 	clearedFields map[string]struct{}
 	pets          map[int]struct{}
 	removedpets   map[int]struct{}
@@ -389,6 +393,136 @@ func (m *CategoryMutation) ResetNillable() {
 	m.nillable = nil
 }
 
+// SetStrings sets the "strings" field.
+func (m *CategoryMutation) SetStrings(s []string) {
+	m.strings = &s
+	m.appendstrings = nil
+}
+
+// Strings returns the value of the "strings" field in the mutation.
+func (m *CategoryMutation) Strings() (r []string, exists bool) {
+	v := m.strings
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStrings returns the old "strings" field's value of the Category entity.
+// If the Category object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryMutation) OldStrings(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStrings is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStrings requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStrings: %w", err)
+	}
+	return oldValue.Strings, nil
+}
+
+// AppendStrings adds s to the "strings" field.
+func (m *CategoryMutation) AppendStrings(s []string) {
+	m.appendstrings = append(m.appendstrings, s...)
+}
+
+// AppendedStrings returns the list of values that were appended to the "strings" field in this mutation.
+func (m *CategoryMutation) AppendedStrings() ([]string, bool) {
+	if len(m.appendstrings) == 0 {
+		return nil, false
+	}
+	return m.appendstrings, true
+}
+
+// ClearStrings clears the value of the "strings" field.
+func (m *CategoryMutation) ClearStrings() {
+	m.strings = nil
+	m.appendstrings = nil
+	m.clearedFields[category.FieldStrings] = struct{}{}
+}
+
+// StringsCleared returns if the "strings" field was cleared in this mutation.
+func (m *CategoryMutation) StringsCleared() bool {
+	_, ok := m.clearedFields[category.FieldStrings]
+	return ok
+}
+
+// ResetStrings resets all changes to the "strings" field.
+func (m *CategoryMutation) ResetStrings() {
+	m.strings = nil
+	m.appendstrings = nil
+	delete(m.clearedFields, category.FieldStrings)
+}
+
+// SetInts sets the "ints" field.
+func (m *CategoryMutation) SetInts(i []int) {
+	m.ints = &i
+	m.appendints = nil
+}
+
+// Ints returns the value of the "ints" field in the mutation.
+func (m *CategoryMutation) Ints() (r []int, exists bool) {
+	v := m.ints
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldInts returns the old "ints" field's value of the Category entity.
+// If the Category object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryMutation) OldInts(ctx context.Context) (v []int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldInts is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldInts requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldInts: %w", err)
+	}
+	return oldValue.Ints, nil
+}
+
+// AppendInts adds i to the "ints" field.
+func (m *CategoryMutation) AppendInts(i []int) {
+	m.appendints = append(m.appendints, i...)
+}
+
+// AppendedInts returns the list of values that were appended to the "ints" field in this mutation.
+func (m *CategoryMutation) AppendedInts() ([]int, bool) {
+	if len(m.appendints) == 0 {
+		return nil, false
+	}
+	return m.appendints, true
+}
+
+// ClearInts clears the value of the "ints" field.
+func (m *CategoryMutation) ClearInts() {
+	m.ints = nil
+	m.appendints = nil
+	m.clearedFields[category.FieldInts] = struct{}{}
+}
+
+// IntsCleared returns if the "ints" field was cleared in this mutation.
+func (m *CategoryMutation) IntsCleared() bool {
+	_, ok := m.clearedFields[category.FieldInts]
+	return ok
+}
+
+// ResetInts resets all changes to the "ints" field.
+func (m *CategoryMutation) ResetInts() {
+	m.ints = nil
+	m.appendints = nil
+	delete(m.clearedFields, category.FieldInts)
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by ids.
 func (m *CategoryMutation) AddPetIDs(ids ...int) {
 	if m.pets == nil {
@@ -477,7 +611,7 @@ func (m *CategoryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CategoryMutation) Fields() []string {
-	fields := make([]string, 0, 6)
+	fields := make([]string, 0, 8)
 	if m.created_at != nil {
 		fields = append(fields, category.FieldCreatedAt)
 	}
@@ -495,6 +629,12 @@ func (m *CategoryMutation) Fields() []string {
 	}
 	if m.nillable != nil {
 		fields = append(fields, category.FieldNillable)
+	}
+	if m.strings != nil {
+		fields = append(fields, category.FieldStrings)
+	}
+	if m.ints != nil {
+		fields = append(fields, category.FieldInts)
 	}
 	return fields
 }
@@ -516,6 +656,10 @@ func (m *CategoryMutation) Field(name string) (ent.Value, bool) {
 		return m.SkipInSpec()
 	case category.FieldNillable:
 		return m.Nillable()
+	case category.FieldStrings:
+		return m.Strings()
+	case category.FieldInts:
+		return m.Ints()
 	}
 	return nil, false
 }
@@ -537,6 +681,10 @@ func (m *CategoryMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldSkipInSpec(ctx)
 	case category.FieldNillable:
 		return m.OldNillable(ctx)
+	case category.FieldStrings:
+		return m.OldStrings(ctx)
+	case category.FieldInts:
+		return m.OldInts(ctx)
 	}
 	return nil, fmt.Errorf("unknown Category field %s", name)
 }
@@ -588,6 +736,20 @@ func (m *CategoryMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetNillable(v)
 		return nil
+	case category.FieldStrings:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStrings(v)
+		return nil
+	case category.FieldInts:
+		v, ok := value.([]int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetInts(v)
+		return nil
 	}
 	return fmt.Errorf("unknown Category field %s", name)
 }
@@ -621,6 +783,12 @@ func (m *CategoryMutation) ClearedFields() []string {
 	if m.FieldCleared(category.FieldSkipInSpec) {
 		fields = append(fields, category.FieldSkipInSpec)
 	}
+	if m.FieldCleared(category.FieldStrings) {
+		fields = append(fields, category.FieldStrings)
+	}
+	if m.FieldCleared(category.FieldInts) {
+		fields = append(fields, category.FieldInts)
+	}
 	return fields
 }
 
@@ -637,6 +805,12 @@ func (m *CategoryMutation) ClearField(name string) error {
 	switch name {
 	case category.FieldSkipInSpec:
 		m.ClearSkipInSpec()
+		return nil
+	case category.FieldStrings:
+		m.ClearStrings()
+		return nil
+	case category.FieldInts:
+		m.ClearInts()
 		return nil
 	}
 	return fmt.Errorf("unknown Category nullable field %s", name)
@@ -663,6 +837,12 @@ func (m *CategoryMutation) ResetField(name string) error {
 		return nil
 	case category.FieldNillable:
 		m.ResetNillable()
+		return nil
+	case category.FieldStrings:
+		m.ResetStrings()
+		return nil
+	case category.FieldInts:
+		m.ResetInts()
 		return nil
 	}
 	return fmt.Errorf("unknown Category field %s", name)

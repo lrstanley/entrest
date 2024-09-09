@@ -18,10 +18,12 @@ import (
 
 // UpdateCategoryParams defines parameters for updating a Category via a PATCH request.
 type UpdateCategoryParams struct {
-	Name       Option[string]  `json:"name"`
-	Nillable   Option[*string] `json:"nillable"`
-	AddPets    Option[[]int]   `json:"add_pets,omitempty"`
-	RemovePets Option[[]int]   `json:"remove_pets,omitempty"`
+	Name       Option[string]   `json:"name"`
+	Nillable   Option[*string]  `json:"nillable"`
+	Strings    Option[[]string] `json:"strings,omitempty"`
+	Ints       Option[[]int]    `json:"ints,omitempty"`
+	AddPets    Option[[]int]    `json:"add_pets,omitempty"`
+	RemovePets Option[[]int]    `json:"remove_pets,omitempty"`
 }
 
 func (u *UpdateCategoryParams) ApplyInputs(builder *ent.CategoryUpdateOne) *ent.CategoryUpdateOne {
@@ -32,6 +34,12 @@ func (u *UpdateCategoryParams) ApplyInputs(builder *ent.CategoryUpdateOne) *ent.
 		if v != nil {
 			builder.SetNillable(*v)
 		}
+	}
+	if v, ok := u.Strings.Get(); ok {
+		builder.SetStrings(v)
+	}
+	if v, ok := u.Ints.Get(); ok {
+		builder.SetInts(v)
 	}
 
 	if v, ok := u.AddPets.Get(); ok && v != nil {

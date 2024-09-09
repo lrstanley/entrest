@@ -402,8 +402,8 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 				continue // Just skip things that can't be generated/easily mapped.
 			}
 
-			if updated, _, ok := hoistEnums(t, f, fieldSchema); ok {
-				fieldSchema = updated
+			if _, asRef, _, ok := hoistEnums(t, f, fieldSchema); ok {
+				fieldSchema = asRef
 			}
 
 			filters = append(filters, &FilterableFieldOp{

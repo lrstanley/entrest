@@ -149,7 +149,7 @@ type ExampleValuer struct {
 }
 
 func DefaultExampleValuer() *ExampleValuer {
-	u, _ := url.Parse("127.0.0.1")
+	u, _ := url.Parse("http://127.0.0.1/")
 	return &ExampleValuer{URL: u}
 }
 
