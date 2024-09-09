@@ -21,7 +21,7 @@
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "GET"
                 "Path" "/"
-                "Func" "http.RedirectHandler(\"/docs\", http.StatusTemporaryRedirect).ServeHTTP"
+                "Func" "http.RedirectHandler(s.config.BasePath + \"/docs\", http.StatusTemporaryRedirect).ServeHTTP"
             ) }}
             {{- template "helper/rest/server/endpoint" (dict
                 "Handler" $.Annotations.RestConfig.Handler

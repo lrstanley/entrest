@@ -560,7 +560,7 @@ func (s *Server) Handler() http.Handler {
 	if !s.config.DisableSpecHandler && !s.config.DisableDocsHandler {
 		// If specs are enabled, it's safe to provide documentation, and if they don't override the
 		// root endpoint, we can redirect to the docs.
-		mux.HandleFunc("GET /", http.RedirectHandler("/docs", http.StatusTemporaryRedirect).ServeHTTP)
+		mux.HandleFunc("GET /", http.RedirectHandler(s.config.BasePath+"/docs", http.StatusTemporaryRedirect).ServeHTTP)
 		mux.HandleFunc("GET /docs", s.Docs)
 	}
 
