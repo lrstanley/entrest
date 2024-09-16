@@ -5,7 +5,7 @@ go 1.23.0
 require (
 	entgo.io/ent v0.14.1
 	github.com/go-openapi/inflect v0.21.0
-	github.com/ogen-go/ogen v1.3.0
+	github.com/ogen-go/ogen v1.4.1
 	github.com/stoewer/go-strcase v1.3.0
 )
 
