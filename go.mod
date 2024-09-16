@@ -46,7 +46,7 @@ require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dprotaso/go-yit v0.0.0-20240618133044-5a0af90af097 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
-	github.com/pb33f/libopenapi v0.17.0
+	github.com/pb33f/libopenapi v0.18.1
 	github.com/pb33f/libopenapi-validator v0.1.0
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v5 v5.3.1 // indirect
