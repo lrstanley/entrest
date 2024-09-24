@@ -16,9 +16,9 @@
 
     // ReqID is similar to Req, but also processes an "id" path parameter and provides it to the
     // handler function.
-    func ReqID[Resp any](s *Server, op Operation, fn func(*http.Request, {{- if $.Annotations.RestConfig.AllowClientUUIDs }} uuid.UUID {{- else }} int {{- end }}) (*Resp, error)) http.HandlerFunc {
+    func ReqID[Resp any](s *Server, op Operation, fn func(*http.Request, {{- if $.Config.IDType.Ident }}{{ $.Config.IDType.Ident }} {{- else }} int {{- end}}) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
-            {{- if $.Annotations.RestConfig.AllowClientUUIDs }}
+            {{- if $.Config.IDType.Ident }}
             id, err := uuid.Parse(r.PathValue("id"))
             {{- else }}
             id, err := strconv.Atoi(r.PathValue("id"))
@@ -48,9 +48,9 @@
 
     // ReqIDParam is similar to ReqParam, but also processes an "id" path parameter and request
     // body/query params, and provides it to the handler function.
-    func ReqIDParam[Params, Resp any](s *Server, op Operation, fn func(*http.Request, {{- if $.Annotations.RestConfig.AllowClientUUIDs }} uuid.UUID {{- else }} int {{- end }} , *Params) (*Resp, error)) http.HandlerFunc {
+    func ReqIDParam[Params, Resp any](s *Server, op Operation, fn func(*http.Request, {{- if $.Config.IDType.Ident }}{{ $.Config.IDType.Ident }} {{- else }} int {{- end }} , *Params) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
-            {{- if $.Annotations.RestConfig.AllowClientUUIDs }}
+            {{- if $.Config.IDType.Ident }}
             id, err := uuid.Parse(r.PathValue("id"))
             {{- else }}
             id, err := strconv.Atoi(r.PathValue("id"))
