@@ -52,3 +52,8 @@ var (
 			),
 	)
 )
+
+// FuncMaps export FuncMaps to use custom templates.
+func FuncMaps() template.FuncMap {
+	return funcMap
+}

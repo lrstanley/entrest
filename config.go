@@ -173,6 +173,9 @@ type Config struct {
 	// Writer is an optional writer to write the spec to. If not provided, the spec
 	// will be written to the filesystem under "<ent>/rest/openapi.json".
 	Writer io.Writer `json:"-"`
+
+	// Templates a universal template that can be used to add or replace an existing template.
+	Templates []*gen.Template `json:"-"`
 }
 
 func (c *Config) Validate() error {

@@ -42,10 +42,7 @@ func (e *Extension) Templates() []*gen.Template {
 	if e.config.Handler == HandlerNone {
 		return []*gen.Template{}
 	}
-	return []*gen.Template{
-		baseTemplates,
-		testingTemplates,
-	}
+	return append([]*gen.Template{baseTemplates, testingTemplates}, e.config.Templates...)
 }
 
 func (e *Extension) Hooks() []gen.Hook {
