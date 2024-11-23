@@ -286,12 +286,12 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
         theme: "kepler",
         isEditable: false,
         hideDownloadButton: true,
-        customCss: ".darklight-reference-promo { visibility: hidden !important; height: 0 !important; }",
+        customCss: ".darklight-reference-promo { visibility: hidden !important; height: 0 !important; } .open-api-client-button { display: none !important; }",
       });
     </script>
     <script
-      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.25.3"
-      integrity="sha256-NKouGW+1wM6fSI5l+lWltgWmD++6ircOAcyI3Sr8gR4="
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.25.70"
+      integrity="sha256-SbdhQhPGx4rwzR9j5N3qLN5IiuDhN8ioBx8qqf7WJe8="
       crossorigin="anonymous"
     ></script>
   </body>

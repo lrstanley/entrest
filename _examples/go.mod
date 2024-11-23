@@ -10,7 +10,7 @@ require (
 	github.com/go-chi/chi/v5 v5.1.0
 	github.com/go-playground/form/v4 v4.2.1
 	github.com/google/go-github/v66 v66.0.0
-	github.com/lrstanley/entrest v0.0.0-20241031045542-65daeca341ee
+	github.com/lrstanley/entrest v0.0.0-20241123194800-d2241a668b66
 	github.com/ogen-go/ogen v1.6.0
 	github.com/stretchr/testify v1.10.0
 	modernc.org/sqlite v1.34.1
