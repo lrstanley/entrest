@@ -14,7 +14,7 @@ docs-preview: docs-build
 
 up:
 	$(eval SCALAR_VERSION=$(shell curl -sSq https://registry.npmjs.org/@scalar/api-reference/latest | jq -r '.version'))
-	$(eval SCALAR_HASH=$(shell curl -sSq https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.25.70 | openssl dgst -sha256 -binary | openssl base64 -A))
+	$(eval SCALAR_HASH=$(shell curl -sSq https://cdn.jsdelivr.net/npm/@scalar/api-reference@$(SCALAR_VERSION) | openssl dgst -sha256 -binary | openssl base64 -A))
 	sed -ri -e "s:@scalar/api-reference@[0-9.]{5,10}:@scalar/api-reference@$(SCALAR_VERSION):g" -e 's:integrity="sha256-[^"]+":integrity="sha256-$(SCALAR_HASH)":g' templates/helper/server/docs.tmpl
 	cd docs && pnpm dlx @astrojs/upgrade
 	go get -t -u ./... && go mod tidy

@@ -290,8 +290,8 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
       });
     </script>
     <script
-      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.25.70"
-      integrity="sha256-SbdhQhPGx4rwzR9j5N3qLN5IiuDhN8ioBx8qqf7WJe8="
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.25.90"
+      integrity="sha256-++YJpNWmH8Qh3qcTB07t45rwT6wywwfvfBpMayejvbo="
       crossorigin="anonymous"
     ></script>
   </body>
