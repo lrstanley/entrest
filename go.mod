@@ -5,12 +5,12 @@ go 1.23.0
 require (
 	entgo.io/ent v0.14.1
 	github.com/go-openapi/inflect v0.21.0
-	github.com/ogen-go/ogen v1.6.0
+	github.com/ogen-go/ogen v1.8.1
 	github.com/stoewer/go-strcase v1.3.0
 )
 
 require (
-	ariga.io/atlas v0.28.1 // indirect
+	ariga.io/atlas v0.29.1 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
@@ -28,15 +28,15 @@ require (
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.1 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
-	github.com/zclconf/go-cty v1.15.0 // indirect
+	github.com/zclconf/go-cty v1.15.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
+	golang.org/x/exp v0.0.0-20241217172543-b2144cdd0a67 // indirect
 	golang.org/x/mod v0.22.0 // indirect
-	golang.org/x/sync v0.9.0 // indirect
-	golang.org/x/sys v0.27.0 // indirect
-	golang.org/x/text v0.20.0 // indirect
-	golang.org/x/tools v0.27.0 // indirect
+	golang.org/x/sync v0.10.0 // indirect
+	golang.org/x/sys v0.28.0 // indirect
+	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/tools v0.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
@@ -46,11 +46,11 @@ require (
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dprotaso/go-yit v0.0.0-20240618133044-5a0af90af097 // indirect
-	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/mailru/easyjson v0.9.0 // indirect
 	github.com/pb33f/libopenapi v0.18.7
 	github.com/pb33f/libopenapi-validator v0.2.2
 	github.com/pmezard/go-difflib v1.0.0 // indirect
-	github.com/spyzhov/ajson v0.9.5
+	github.com/spyzhov/ajson v0.9.6
 	github.com/stretchr/testify v1.10.0
 	github.com/vmware-labs/yaml-jsonpath v0.3.2 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.9-0.20240815153524-6ea36470d1bd // indirect
