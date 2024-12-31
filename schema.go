@@ -171,6 +171,9 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 				panic(fmt.Sprintf("failed to generate schema for field %s: %v", t.ID.StructField(), err))
 			}
 			fieldSchema.Description = fmt.Sprintf("The ID of the %s entity.", entityName)
+			if t.ID.Default {
+				fieldSchema.Description += " If not provided, one will be generated."
+			}
 			schema.Properties = append(schema.Properties, *fieldSchema.ToProperty("id"))
 
 			if !t.ID.Default {
