@@ -31,10 +31,10 @@ jobs:
           cache: "pnpm"
           cache-dependency-path: docs/pnpm-lock.yaml
       - run: make docs-build
-      - if: ${{ github.event_name != 'pull_request' }}
+      - if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name != 'pull_request' }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: docs/dist/
-      - if: ${{ github.event_name != 'pull_request' }}
+      - if: ${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.event_name != 'pull_request' }}
         id: deployment
         uses: actions/deploy-pages@v4
