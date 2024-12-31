@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
@@ -45,15 +46,15 @@ func (fu *FollowsUpdate) SetNillableFollowedAt(t *time.Time) *FollowsUpdate {
 }
 
 // SetUserID sets the "user_id" field.
-func (fu *FollowsUpdate) SetUserID(i int) *FollowsUpdate {
-	fu.mutation.SetUserID(i)
+func (fu *FollowsUpdate) SetUserID(u uuid.UUID) *FollowsUpdate {
+	fu.mutation.SetUserID(u)
 	return fu
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (fu *FollowsUpdate) SetNillableUserID(i *int) *FollowsUpdate {
-	if i != nil {
-		fu.SetUserID(*i)
+func (fu *FollowsUpdate) SetNillableUserID(u *uuid.UUID) *FollowsUpdate {
+	if u != nil {
+		fu.SetUserID(*u)
 	}
 	return fu
 }
@@ -141,7 +142,7 @@ func (fu *FollowsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if err := fu.check(); err != nil {
 		return n, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(follows.Table, follows.Columns, sqlgraph.NewFieldSpec(follows.FieldUserID, field.TypeInt), sqlgraph.NewFieldSpec(follows.FieldPetID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(follows.Table, follows.Columns, sqlgraph.NewFieldSpec(follows.FieldUserID, field.TypeUUID), sqlgraph.NewFieldSpec(follows.FieldPetID, field.TypeInt))
 	if ps := fu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
@@ -160,7 +161,7 @@ func (fu *FollowsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{follows.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -173,7 +174,7 @@ func (fu *FollowsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{follows.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -245,15 +246,15 @@ func (fuo *FollowsUpdateOne) SetNillableFollowedAt(t *time.Time) *FollowsUpdateO
 }
 
 // SetUserID sets the "user_id" field.
-func (fuo *FollowsUpdateOne) SetUserID(i int) *FollowsUpdateOne {
-	fuo.mutation.SetUserID(i)
+func (fuo *FollowsUpdateOne) SetUserID(u uuid.UUID) *FollowsUpdateOne {
+	fuo.mutation.SetUserID(u)
 	return fuo
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (fuo *FollowsUpdateOne) SetNillableUserID(i *int) *FollowsUpdateOne {
-	if i != nil {
-		fuo.SetUserID(*i)
+func (fuo *FollowsUpdateOne) SetNillableUserID(u *uuid.UUID) *FollowsUpdateOne {
+	if u != nil {
+		fuo.SetUserID(*u)
 	}
 	return fuo
 }
@@ -354,7 +355,7 @@ func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err e
 	if err := fuo.check(); err != nil {
 		return _node, err
 	}
-	_spec := sqlgraph.NewUpdateSpec(follows.Table, follows.Columns, sqlgraph.NewFieldSpec(follows.FieldUserID, field.TypeInt), sqlgraph.NewFieldSpec(follows.FieldPetID, field.TypeInt))
+	_spec := sqlgraph.NewUpdateSpec(follows.Table, follows.Columns, sqlgraph.NewFieldSpec(follows.FieldUserID, field.TypeUUID), sqlgraph.NewFieldSpec(follows.FieldPetID, field.TypeInt))
 	if id, ok := fuo.mutation.UserID(); !ok {
 		return nil, &ValidationError{Name: "user_id", err: errors.New(`ent: missing "Follows.user_id" for update`)}
 	} else {
@@ -392,7 +393,7 @@ func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err e
 			Columns: []string{follows.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -405,7 +406,7 @@ func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err e
 			Columns: []string{follows.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

@@ -5,6 +5,7 @@ package ent
 import (
 	"time"
 
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
@@ -183,4 +184,8 @@ func init() {
 	userDescProfileURL := userFields[9].Descriptor()
 	// user.DefaultProfileURL holds the default value on creation for the profile_url field.
 	user.DefaultProfileURL = userDescProfileURL.Default.(*schema.ExampleValuer)
+	// userDescID is the schema descriptor for id field.
+	userDescID := userFields[0].Descriptor()
+	// user.DefaultID holds the default value on creation for the id field.
+	user.DefaultID = userDescID.Default.(func() uuid.UUID)
 }

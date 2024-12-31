@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 )
@@ -36,14 +37,14 @@ func (fc *FriendshipCreate) SetNillableCreatedAt(t *time.Time) *FriendshipCreate
 }
 
 // SetUserID sets the "user_id" field.
-func (fc *FriendshipCreate) SetUserID(i int) *FriendshipCreate {
-	fc.mutation.SetUserID(i)
+func (fc *FriendshipCreate) SetUserID(u uuid.UUID) *FriendshipCreate {
+	fc.mutation.SetUserID(u)
 	return fc
 }
 
 // SetFriendID sets the "friend_id" field.
-func (fc *FriendshipCreate) SetFriendID(i int) *FriendshipCreate {
-	fc.mutation.SetFriendID(i)
+func (fc *FriendshipCreate) SetFriendID(u uuid.UUID) *FriendshipCreate {
+	fc.mutation.SetFriendID(u)
 	return fc
 }
 
@@ -153,7 +154,7 @@ func (fc *FriendshipCreate) createSpec() (*Friendship, *sqlgraph.CreateSpec) {
 			Columns: []string{friendship.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -170,7 +171,7 @@ func (fc *FriendshipCreate) createSpec() (*Friendship, *sqlgraph.CreateSpec) {
 			Columns: []string{friendship.FriendColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

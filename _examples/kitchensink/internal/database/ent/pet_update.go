@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/dialect/sql/sqljson"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
@@ -113,13 +114,13 @@ func (pu *PetUpdate) AddCategories(c ...*Category) *PetUpdate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (pu *PetUpdate) SetOwnerID(id int) *PetUpdate {
+func (pu *PetUpdate) SetOwnerID(id uuid.UUID) *PetUpdate {
 	pu.mutation.SetOwnerID(id)
 	return pu
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (pu *PetUpdate) SetNillableOwnerID(id *int) *PetUpdate {
+func (pu *PetUpdate) SetNillableOwnerID(id *uuid.UUID) *PetUpdate {
 	if id != nil {
 		pu = pu.SetOwnerID(*id)
 	}
@@ -147,14 +148,14 @@ func (pu *PetUpdate) AddFriends(p ...*Pet) *PetUpdate {
 }
 
 // AddFollowedByIDs adds the "followed_by" edge to the User entity by IDs.
-func (pu *PetUpdate) AddFollowedByIDs(ids ...int) *PetUpdate {
+func (pu *PetUpdate) AddFollowedByIDs(ids ...uuid.UUID) *PetUpdate {
 	pu.mutation.AddFollowedByIDs(ids...)
 	return pu
 }
 
 // AddFollowedBy adds the "followed_by" edges to the User entity.
 func (pu *PetUpdate) AddFollowedBy(u ...*User) *PetUpdate {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -221,14 +222,14 @@ func (pu *PetUpdate) ClearFollowedBy() *PetUpdate {
 }
 
 // RemoveFollowedByIDs removes the "followed_by" edge to User entities by IDs.
-func (pu *PetUpdate) RemoveFollowedByIDs(ids ...int) *PetUpdate {
+func (pu *PetUpdate) RemoveFollowedByIDs(ids ...uuid.UUID) *PetUpdate {
 	pu.mutation.RemoveFollowedByIDs(ids...)
 	return pu
 }
 
 // RemoveFollowedBy removes "followed_by" edges to User entities.
 func (pu *PetUpdate) RemoveFollowedBy(u ...*User) *PetUpdate {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -365,7 +366,7 @@ func (pu *PetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{pet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -378,7 +379,7 @@ func (pu *PetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{pet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -439,7 +440,7 @@ func (pu *PetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: pet.FollowedByPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		createE := &FollowsCreate{config: pu.config, mutation: newFollowsMutation(pu.config, OpCreate)}
@@ -456,7 +457,7 @@ func (pu *PetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: pet.FollowedByPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -476,7 +477,7 @@ func (pu *PetUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: pet.FollowedByPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -591,13 +592,13 @@ func (puo *PetUpdateOne) AddCategories(c ...*Category) *PetUpdateOne {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (puo *PetUpdateOne) SetOwnerID(id int) *PetUpdateOne {
+func (puo *PetUpdateOne) SetOwnerID(id uuid.UUID) *PetUpdateOne {
 	puo.mutation.SetOwnerID(id)
 	return puo
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (puo *PetUpdateOne) SetNillableOwnerID(id *int) *PetUpdateOne {
+func (puo *PetUpdateOne) SetNillableOwnerID(id *uuid.UUID) *PetUpdateOne {
 	if id != nil {
 		puo = puo.SetOwnerID(*id)
 	}
@@ -625,14 +626,14 @@ func (puo *PetUpdateOne) AddFriends(p ...*Pet) *PetUpdateOne {
 }
 
 // AddFollowedByIDs adds the "followed_by" edge to the User entity by IDs.
-func (puo *PetUpdateOne) AddFollowedByIDs(ids ...int) *PetUpdateOne {
+func (puo *PetUpdateOne) AddFollowedByIDs(ids ...uuid.UUID) *PetUpdateOne {
 	puo.mutation.AddFollowedByIDs(ids...)
 	return puo
 }
 
 // AddFollowedBy adds the "followed_by" edges to the User entity.
 func (puo *PetUpdateOne) AddFollowedBy(u ...*User) *PetUpdateOne {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -699,14 +700,14 @@ func (puo *PetUpdateOne) ClearFollowedBy() *PetUpdateOne {
 }
 
 // RemoveFollowedByIDs removes the "followed_by" edge to User entities by IDs.
-func (puo *PetUpdateOne) RemoveFollowedByIDs(ids ...int) *PetUpdateOne {
+func (puo *PetUpdateOne) RemoveFollowedByIDs(ids ...uuid.UUID) *PetUpdateOne {
 	puo.mutation.RemoveFollowedByIDs(ids...)
 	return puo
 }
 
 // RemoveFollowedBy removes "followed_by" edges to User entities.
 func (puo *PetUpdateOne) RemoveFollowedBy(u ...*User) *PetUpdateOne {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -873,7 +874,7 @@ func (puo *PetUpdateOne) sqlSave(ctx context.Context) (_node *Pet, err error) {
 			Columns: []string{pet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -886,7 +887,7 @@ func (puo *PetUpdateOne) sqlSave(ctx context.Context) (_node *Pet, err error) {
 			Columns: []string{pet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -947,7 +948,7 @@ func (puo *PetUpdateOne) sqlSave(ctx context.Context) (_node *Pet, err error) {
 			Columns: pet.FollowedByPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		createE := &FollowsCreate{config: puo.config, mutation: newFollowsMutation(puo.config, OpCreate)}
@@ -964,7 +965,7 @@ func (puo *PetUpdateOne) sqlSave(ctx context.Context) (_node *Pet, err error) {
 			Columns: pet.FollowedByPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -984,7 +985,7 @@ func (puo *PetUpdateOne) sqlSave(ctx context.Context) (_node *Pet, err error) {
 			Columns: pet.FollowedByPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

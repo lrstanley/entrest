@@ -7643,7 +7643,8 @@
                         "format": "date-time"
                     },
                     "user_id": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "pet_id": {
                         "type": "integer"
@@ -7660,7 +7661,8 @@
                 "type": "object",
                 "properties": {
                     "user_id": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "pet_id": {
                         "type": "integer"
@@ -7754,10 +7756,12 @@
                         "format": "date-time"
                     },
                     "user_id": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "friend_id": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 },
                 "required": [
@@ -7776,10 +7780,12 @@
                         "format": "date-time"
                     },
                     "user_id": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "friend_id": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 },
                 "required": [
@@ -7840,10 +7846,12 @@
                         "format": "date-time"
                     },
                     "user_id": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "friend_id": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -7949,7 +7957,8 @@
                         }
                     },
                     "owner": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "friends": {
                         "type": "array",
@@ -7960,7 +7969,8 @@
                     "followed_by": {
                         "type": "array",
                         "items": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 },
@@ -8102,7 +8112,8 @@
                         }
                     },
                     "owner": {
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "add_friends": {
                         "type": "array",
@@ -8119,13 +8130,15 @@
                     "add_followed_by": {
                         "type": "array",
                         "items": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     },
                     "remove_followed_by": {
                         "type": "array",
                         "items": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 }
@@ -8246,13 +8259,15 @@
                     "add_admins": {
                         "type": "array",
                         "items": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     },
                     "remove_admins": {
                         "type": "array",
                         "items": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     }
                 }
@@ -8263,7 +8278,8 @@
                 "properties": {
                     "id": {
                         "description": "The ID of the User entity.",
-                        "type": "integer"
+                        "type": "string",
+                        "format": "uuid"
                     },
                     "created_at": {
                         "description": "Time in which the resource was initially created.",
@@ -8386,7 +8402,8 @@
                     "friends": {
                         "type": "array",
                         "items": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     },
                     "friendships": {
@@ -8471,8 +8488,6 @@
                     "following.count",
                     "friends.count",
                     "friendships.count",
-                    "friendships.friend_id.sum",
-                    "friendships.user_id.sum",
                     "id",
                     "name",
                     "pets.age.sum",
@@ -8565,13 +8580,15 @@
                     "add_friends": {
                         "type": "array",
                         "items": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     },
                     "remove_friends": {
                         "type": "array",
                         "items": {
-                            "type": "integer"
+                            "type": "string",
+                            "format": "uuid"
                         }
                     },
                     "add_friendships": {
@@ -9027,7 +9044,7 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeFollowedByIDIn": {
@@ -9037,7 +9054,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -9046,7 +9063,7 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeFollowedByIDNotIn": {
@@ -9056,7 +9073,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -9604,7 +9621,7 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeFriendIDIn": {
@@ -9614,7 +9631,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -9623,7 +9640,7 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeFriendIDNotIn": {
@@ -9633,7 +9650,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -9785,7 +9802,7 @@
                 "in": "query",
                 "description": "Filters field \"friend_id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeFriendshipFriendIDIn": {
@@ -9795,7 +9812,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -9804,7 +9821,7 @@
                 "in": "query",
                 "description": "Filters field \"friend_id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeFriendshipFriendIDNotIn": {
@@ -9814,7 +9831,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -9861,7 +9878,7 @@
                 "in": "query",
                 "description": "Filters field \"user_id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeFriendshipUserIDIn": {
@@ -9871,7 +9888,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -9880,7 +9897,7 @@
                 "in": "query",
                 "description": "Filters field \"user_id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeFriendshipUserIDNotIn": {
@@ -9890,7 +9907,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -10105,7 +10122,7 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeOwnerIDIn": {
@@ -10115,7 +10132,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -10124,7 +10141,7 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "EdgeOwnerIDNotIn": {
@@ -10134,7 +10151,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -10768,7 +10785,7 @@
                 "in": "query",
                 "description": "Filters field \"friend_id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "FriendshipFriendIDIn": {
@@ -10778,7 +10795,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -10787,7 +10804,7 @@
                 "in": "query",
                 "description": "Filters field \"friend_id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "FriendshipFriendIDNotIn": {
@@ -10797,7 +10814,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -10853,7 +10870,7 @@
                 "in": "query",
                 "description": "Filters field \"user_id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "FriendshipUserIDIn": {
@@ -10863,7 +10880,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -10872,7 +10889,7 @@
                 "in": "query",
                 "description": "Filters field \"user_id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "FriendshipUserIDNotIn": {
@@ -10882,7 +10899,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -11432,7 +11449,8 @@
                 "description": "The ID of the User to act upon.",
                 "required": true,
                 "schema": {
-                    "type": "integer"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "UserIDEQ": {
@@ -11440,7 +11458,7 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "UserIDIn": {
@@ -11450,7 +11468,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },
@@ -11459,7 +11477,7 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "integer"
+                    "type": "string"
                 }
             },
             "UserIDNotIn": {
@@ -11469,7 +11487,7 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "integer"
+                        "type": "string"
                     }
                 }
             },

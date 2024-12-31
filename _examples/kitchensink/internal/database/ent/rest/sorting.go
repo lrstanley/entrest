@@ -168,8 +168,6 @@ var (
 			"following.count",
 			"friends.count",
 			"friendships.count",
-			"friendships.friend_id.sum",
-			"friendships.user_id.sum",
 			"id",
 			"name",
 			"pets.age.sum",
