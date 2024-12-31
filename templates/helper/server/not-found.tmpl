@@ -13,6 +13,18 @@
         })
     {{- else }}
         mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+            {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
+                if !s.config.DisableSpecHandler && !s.config.DisableDocsHandler && r.URL.Path == "/" && r.Method == http.MethodGet {
+                    // If specs are enabled, it's safe to provide documentation, and if they don't override the
+                    // root endpoint, we can redirect to the docs.
+                    http.Redirect(w, r, s.config.BasePath+"/docs", http.StatusTemporaryRedirect)
+                    return
+                }
+            {{- end }}
+            if r.Method != http.MethodGet {
+                handleResponse[struct{}](s, w, r, "", nil, ErrMethodNotAllowed)
+                return
+            }
             handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
         })
     {{- end }}

@@ -15,14 +15,6 @@
 {{- define "helper/rest/server/docs/route" -}}
     {{ if not $.Annotations.RestConfig.DisableSpecHandler }}
         if !s.config.DisableSpecHandler && !s.config.DisableDocsHandler {
-            // If specs are enabled, it's safe to provide documentation, and if they don't override the
-            // root endpoint, we can redirect to the docs.
-            {{- template "helper/rest/server/endpoint" (dict
-                "Handler" $.Annotations.RestConfig.Handler
-                "Method" "GET"
-                "Path" "/"
-                "Func" "http.RedirectHandler(s.config.BasePath + \"/docs\", http.StatusTemporaryRedirect).ServeHTTP"
-            ) }}
             {{- template "helper/rest/server/endpoint" (dict
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "GET"

@@ -624,13 +624,20 @@ func (s *Server) Handler() http.Handler {
 	}
 
 	if !s.config.DisableSpecHandler && !s.config.DisableDocsHandler {
-		// If specs are enabled, it's safe to provide documentation, and if they don't override the
-		// root endpoint, we can redirect to the docs.
-		mux.HandleFunc("GET /", http.RedirectHandler(s.config.BasePath+"/docs", http.StatusTemporaryRedirect).ServeHTTP)
 		mux.HandleFunc("GET /docs", s.Docs)
 	}
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if !s.config.DisableSpecHandler && !s.config.DisableDocsHandler && r.URL.Path == "/" && r.Method == http.MethodGet {
+			// If specs are enabled, it's safe to provide documentation, and if they don't override the
+			// root endpoint, we can redirect to the docs.
+			http.Redirect(w, r, s.config.BasePath+"/docs", http.StatusTemporaryRedirect)
+			return
+		}
+		if r.Method != http.MethodGet {
+			handleResponse[struct{}](s, w, r, "", nil, ErrMethodNotAllowed)
+			return
+		}
 		handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
 	})
 	return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(mux))
