@@ -596,6 +596,11 @@ func WithSkip(v bool) Annotation {
 // as part of a CREATE payload. This is beneficial to allow the client to supply
 // UUIDs as primary keys (for idempotency), or when your ID field is a username, for
 // example. This is not required if [Config.AllowClientIDs] is enabled.
+//
+// SECURITY NOTE: allowing requests to include the ID field is not recommended, unless
+// you add necessary validation (permissions) or disallow resources from being deleted.
+// Otherwise, you may allow an attacker to spoof a previously deleted resource, leading
+// to takeover attack vectors.
 func WithAllowClientIDs(v bool) Annotation {
 	return Annotation{AllowClientIDs: &v}
 }

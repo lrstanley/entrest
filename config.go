@@ -144,6 +144,11 @@ type Config struct {
 	// CREATE payload for entity creation. This is beneficial to allow the client to supply
 	// UUIDs as primary keys (for idempotency), or when your ID field is a username, for example.
 	// This can be enabled on a per-schema basis with annotations.
+	//
+	// SECURITY NOTE: allowing requests to include the ID field is not recommended, unless you add
+	// necessary validation (permissions) or disallow resources from being deleted. Otherwise,
+	// you may allow an attacker to spoof a previously deleted resource, leading to takeover attack
+	// vectors.
 	AllowClientIDs bool
 
 	// DisablePatchJSONTag disables a ent generation hook that patches the JSON tag of all
