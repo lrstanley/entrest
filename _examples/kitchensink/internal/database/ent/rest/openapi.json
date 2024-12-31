@@ -8766,7 +8766,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "CategoryCreatedAtLT": {
@@ -8774,7 +8775,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "CategoryID": {
@@ -8829,7 +8831,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "CategoryUpdatedAtLT": {
@@ -8837,7 +8840,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeCategoryCreatedAtGT": {
@@ -8845,7 +8849,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeCategoryCreatedAtLT": {
@@ -8853,7 +8858,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeCategoryIDEQ": {
@@ -8899,7 +8905,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeCategoryUpdatedAtLT": {
@@ -8907,7 +8914,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeFollowedByCreatedAtGT": {
@@ -8915,7 +8923,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeFollowedByCreatedAtLT": {
@@ -8923,7 +8932,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeFollowedByDescriptionContains": {
@@ -9049,7 +9059,8 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeFollowedByIDIn": {
@@ -9059,7 +9070,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -9068,7 +9080,8 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeFollowedByIDNotIn": {
@@ -9078,7 +9091,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -9203,7 +9217,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeFollowedByUpdatedAtLT": {
@@ -9211,7 +9226,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeFollowedPetAgeEQ": {
@@ -9492,7 +9508,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeFriendCreatedAtLT": {
@@ -9500,7 +9517,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeFriendDescriptionContains": {
@@ -9626,7 +9644,8 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeFriendIDIn": {
@@ -9636,7 +9655,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -9645,7 +9665,8 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeFriendIDNotIn": {
@@ -9655,7 +9676,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -9791,7 +9813,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeFriendUpdatedAtLT": {
@@ -9799,7 +9822,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeFriendshipFriendIDEQ": {
@@ -9807,7 +9831,8 @@
                 "in": "query",
                 "description": "Filters field \"friend_id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeFriendshipFriendIDIn": {
@@ -9817,7 +9842,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -9826,7 +9852,8 @@
                 "in": "query",
                 "description": "Filters field \"friend_id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeFriendshipFriendIDNotIn": {
@@ -9836,7 +9863,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -9883,7 +9911,8 @@
                 "in": "query",
                 "description": "Filters field \"user_id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeFriendshipUserIDIn": {
@@ -9893,7 +9922,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -9902,7 +9932,8 @@
                 "in": "query",
                 "description": "Filters field \"user_id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeFriendshipUserIDNotIn": {
@@ -9912,7 +9943,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -9993,7 +10025,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeOwnerCreatedAtLT": {
@@ -10001,7 +10034,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeOwnerDescriptionContains": {
@@ -10127,7 +10161,8 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeOwnerIDIn": {
@@ -10137,7 +10172,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -10146,7 +10182,8 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "EdgeOwnerIDNotIn": {
@@ -10156,7 +10193,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -10281,7 +10319,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeOwnerUpdatedAtLT": {
@@ -10289,7 +10328,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgePetAgeEQ": {
@@ -10516,7 +10556,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeUserCreatedAtLT": {
@@ -10524,7 +10565,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeUserDescriptionContains": {
@@ -10766,7 +10808,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "EdgeUserUpdatedAtLT": {
@@ -10774,7 +10817,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "FilterOperation": {
@@ -10790,7 +10834,8 @@
                 "in": "query",
                 "description": "Filters field \"friend_id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "FriendshipFriendIDIn": {
@@ -10800,7 +10845,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -10809,7 +10855,8 @@
                 "in": "query",
                 "description": "Filters field \"friend_id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "FriendshipFriendIDNotIn": {
@@ -10819,7 +10866,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -10875,7 +10923,8 @@
                 "in": "query",
                 "description": "Filters field \"user_id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "FriendshipUserIDIn": {
@@ -10885,7 +10934,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -10894,7 +10944,8 @@
                 "in": "query",
                 "description": "Filters field \"user_id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "FriendshipUserIDNotIn": {
@@ -10904,7 +10955,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -11168,7 +11220,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "SettingsCreatedAtLT": {
@@ -11176,7 +11229,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "SettingsIDEQ": {
@@ -11222,7 +11276,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "SettingsUpdatedAtLT": {
@@ -11230,7 +11285,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "UserCreatedAtGT": {
@@ -11238,7 +11294,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "UserCreatedAtLT": {
@@ -11246,7 +11303,8 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "UserDescriptionContains": {
@@ -11463,7 +11521,8 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "UserIDIn": {
@@ -11473,7 +11532,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -11482,7 +11542,8 @@
                 "in": "query",
                 "description": "Filters field \"id\" to be not equal to the provided value.",
                 "schema": {
-                    "type": "string"
+                    "type": "string",
+                    "format": "uuid"
                 }
             },
             "UserIDNotIn": {
@@ -11492,7 +11553,8 @@
                 "schema": {
                     "type": "array",
                     "items": {
-                        "type": "string"
+                        "type": "string",
+                        "format": "uuid"
                     }
                 }
             },
@@ -11617,7 +11679,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "UserUpdatedAtLT": {
@@ -11625,7 +11688,8 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number"
+                    "type": "number",
+                    "format": "date-time"
                 }
             },
             "X-Request-Id": {

@@ -326,6 +326,7 @@ func (f *FilterableFieldOp) Parameter() *ogen.Parameter {
 	schema := &ogen.Schema{
 		Ref:        f.fieldSchema.Ref,
 		Type:       f.fieldSchema.Type,
+		Format:     f.fieldSchema.Format,
 		Items:      f.fieldSchema.Items,
 		Minimum:    f.fieldSchema.Minimum,
 		Maximum:    f.fieldSchema.Maximum,
