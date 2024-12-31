@@ -20,7 +20,7 @@ type Follows struct {
 func (Follows) Fields() []ent.Field {
 	return []ent.Field{
 		field.Time("followed_at").Default(time.Now),
-		field.Int("user_id"),
+		field.String("user_id"),
 		field.Int("pet_id"),
 	}
 }

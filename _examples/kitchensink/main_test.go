@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/brianvoe/gofakeit/v7"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/enttest"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/migrate"
@@ -102,7 +103,7 @@ func TestHandler_Get(t *testing.T) {
 	resp := enttest.Request[ent.User](
 		ctx, s,
 		http.MethodGet,
-		"/users/"+strconv.Itoa(user1.ID),
+		"/users/"+user1.ID.String(),
 		http.NoBody,
 	).Must(t)
 
@@ -112,14 +113,24 @@ func TestHandler_Get(t *testing.T) {
 	assert.Equal(t, pet1.ID, followedPets[0].ID)
 
 	// Also validate that 404's work correctly.
+	respPet := enttest.Request[ent.Pet](
+		ctx, s,
+		http.MethodGet,
+		"/pets/123",
+		http.NoBody,
+	)
+	assert.Equal(t, http.StatusNotFound, respPet.Data.Code)
+	assert.Nil(t, respPet.Value)
+
+	// And if using UUIDs or similar, we'd actually get a 400 if we passed in an
+	// invalid UUID (but not specific info if masking is enabled).
 	resp = enttest.Request[ent.User](
 		ctx, s,
 		http.MethodGet,
 		"/users/123",
 		http.NoBody,
 	)
-
-	assert.Equal(t, http.StatusNotFound, resp.Data.Code)
+	assert.Equal(t, http.StatusBadRequest, resp.Data.Code)
 	assert.Nil(t, resp.Value)
 }
 
@@ -135,7 +146,7 @@ func TestHandler_GetEdge(t *testing.T) {
 	resp := enttest.Request[rest.PagedResponse[ent.User]](
 		ctx, s,
 		http.MethodGet,
-		"/users/"+strconv.Itoa(user1.ID)+"/friends",
+		"/users/"+user1.ID.String()+"/friends",
 		http.NoBody,
 	).Must(t)
 
@@ -144,6 +155,20 @@ func TestHandler_GetEdge(t *testing.T) {
 	assert.Equal(t, user2.ID, resp.Value.Content[0].ID)
 
 	// Also validate that 404's work correctly.
+	respPet := enttest.Request[rest.PagedResponse[ent.User]](
+		ctx, s,
+		http.MethodGet,
+		"/pets/123/friends",
+		http.NoBody,
+	)
+
+	assert.Equal(t, http.StatusNotFound, respPet.Data.Code)
+	assert.Empty(t, respPet.Value.Content)
+	assert.Equal(t, 0, respPet.Value.TotalCount)
+	assert.Equal(t, 1, respPet.Value.LastPage)
+
+	// And similar when invalid ID is used, just 400.
+
 	resp = enttest.Request[rest.PagedResponse[ent.User]](
 		ctx, s,
 		http.MethodGet,
@@ -151,10 +176,7 @@ func TestHandler_GetEdge(t *testing.T) {
 		http.NoBody,
 	)
 
-	assert.Equal(t, http.StatusNotFound, resp.Data.Code)
-	assert.Empty(t, resp.Value.Content)
-	assert.Equal(t, 0, resp.Value.TotalCount)
-	assert.Equal(t, 1, resp.Value.LastPage)
+	assert.Equal(t, http.StatusBadRequest, resp.Data.Code)
 }
 
 func TestHandler_List(t *testing.T) {
@@ -395,12 +417,12 @@ func TestHandler_List(t *testing.T) {
 				return
 			}
 
-			var needIDs []int
+			var needIDs []uuid.UUID
 			for _, u := range tt.expectedUsers {
 				needIDs = append(needIDs, u.ID)
 			}
 
-			var responseIDs []int
+			var responseIDs []uuid.UUID
 			for _, u := range resp.Value.Content {
 				responseIDs = append(responseIDs, u.ID)
 			}
@@ -593,7 +615,7 @@ func TestHandler_DefaultSort(t *testing.T) {
 	// Now fetch another entity type, and see if the eager-loaded edges also have the appropriate
 	// default sorting.
 	user1 := newUser(db).AddPets(pet1, pet2, pet3).SaveX(ctx)
-	resp2 := enttest.Request[ent.User](ctx, s, http.MethodGet, "/users/"+strconv.Itoa(user1.ID), nil).Must(t)
+	resp2 := enttest.Request[ent.User](ctx, s, http.MethodGet, "/users/"+user1.ID.String(), nil).Must(t)
 
 	assert.Equal(t, http.StatusOK, resp2.Data.Code)
 	require.Len(t, resp2.Value.Edges.Pets, 3)
@@ -623,7 +645,7 @@ func TestHandler_EagerLoadLimit(t *testing.T) {
 		return newPet(db).SetOwner(user1)
 	}, db, 1020)...).ExecX(ctx)
 
-	resp2 := enttest.Request[ent.User](ctx, s, http.MethodGet, "/users/"+strconv.Itoa(user1.ID), nil).Must(t)
+	resp2 := enttest.Request[ent.User](ctx, s, http.MethodGet, "/users/"+user1.ID.String(), nil).Must(t)
 	require.Len(t, resp2.Value.Edges.Pets, 1020)
 }
 

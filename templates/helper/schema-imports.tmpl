@@ -7,6 +7,9 @@
     {{- range $t := $.Nodes }}
         {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
         "{{ $.Config.Package }}/{{ $t.Package }}"
+        {{- if and $t.ID $t.ID.Type.PkgPath }}
+            {{ $t.ID.Type.PkgName }} "{{ $t.ID.Type.PkgPath }}"
+        {{- end }}
         {{- range $f := $t.Fields }}
             {{- if $f.Type.PkgPath }}
                 {{ $f.Type.PkgName }} "{{ $f.Type.PkgPath }}"

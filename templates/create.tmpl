@@ -16,6 +16,16 @@ import (
 
     // Create{{ $t.Name|zsingular }}Params defines parameters for creating a {{ $t.Name|zsingular }} via a POST request.
     type Create{{ $t.Name|zsingular }}Params struct {
+        {{- /* if we allow client-provided IDs, we need to add the ID field to the params struct */}}
+        {{- if and (($t|getAnnotation).GetAllowClientIDs $.Annotations.RestConfig) $t.ID }}
+            {{- template "helper/rest/fields/comment" $t.ID }}
+            {{- if or (hasPrefix $t.ID.Type.Ident "[]") (hasPrefix $t.ID.Type.Ident "*") $t.ID.IsBytes }}
+                {{ $t.ID.StructField }} {{ $t.ID.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $t.ID) }}
+            {{- else }}
+                {{ $t.ID.StructField }} *{{ $t.ID.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $t.ID) }}
+            {{- end }}
+        {{- end }}
+
         {{- range $f := $t.Fields }}
             {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
 
@@ -55,15 +65,21 @@ import (
             {{- else }}
                 {{- template "helper/rest/fields/comment" $e }}
                 {{- if $e.Optional }}
-                    {{ $e.StructField }} {{ if not $e.Unique }}[]{{else }}*{{ end }}{{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
+                    {{ $e.StructField }} {{ if not $e.Unique }}[]{{else }}*{{ end }}{{ $e.Type.ID.Type }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
                 {{- else }}
-                    {{ $e.StructField }} {{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
+                    {{ $e.StructField }} {{ $e.Type.ID.Type }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
                 {{- end }}
             {{- end }}
         {{- end }}
     }
 
     func (c *Create{{ $t.Name|zsingular }}Params) ApplyInputs(builder *ent.{{ $t.Name }}Create) *ent.{{ $t.Name }}Create {
+        {{- if and (($t|getAnnotation).GetAllowClientIDs $.Annotations.RestConfig) $t.ID }}
+            if c.{{ $t.ID.StructField }} != nil {
+                builder.Set{{ $t.ID.StructField }}(*c.{{ $t.ID.StructField }})
+            }
+        {{- end }}
+
         {{- range $f := $t.Fields }}
             {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
 

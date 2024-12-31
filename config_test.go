@@ -619,13 +619,13 @@ func TestConfig_GlobalErrorResponses(t *testing.T) {
 	})
 }
 
-func TestConfig_AllowClientUUIDs(t *testing.T) {
+func TestConfig_AllowClientIDs(t *testing.T) {
 	t.Parallel()
 
 	t.Run("enabled", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{AllowClientUUIDs: true})
+		r := mustBuildSpec(t, &Config{AllowClientIDs: true})
 
 		assert.Equal(t, "string", r.json(`$.components.schemas.AllType.properties.id.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllType.properties.id.format`))
@@ -633,18 +633,33 @@ func TestConfig_AllowClientUUIDs(t *testing.T) {
 		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllTypeCreate.properties.id.format`))
 		assert.Equal(t, "string", r.json(`$.components.parameters.AllTypeID.schema.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.parameters.AllTypeID.schema.format`))
+
+		assert.Equal(t, "string", r.json(`$.components.schemas.User.properties.id.type`))
+		assert.Equal(t, "string", r.json(`$.components.schemas.UserCreate.properties.id.type`))
+		assert.Equal(t, "string", r.json(`$.components.parameters.UserID.schema.type`))
 	})
 
 	t.Run("disabled", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{AllowClientUUIDs: false})
+		r := mustBuildSpec(t, &Config{
+			AllowClientIDs: false,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "User", WithAllowClientIDs(true))
+				return nil
+			},
+		})
 
 		assert.Equal(t, "string", r.json(`$.components.schemas.AllType.properties.id.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllType.properties.id.format`))
 		assert.Nil(t, r.json(`$.components.schemas.AllTypeCreate.properties.id`))
 		assert.Equal(t, "string", r.json(`$.components.parameters.AllTypeID.schema.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.parameters.AllTypeID.schema.format`))
+
+		// This should still be enabled because of WithAllowClientIDs.
+		assert.Equal(t, "string", r.json(`$.components.schemas.User.properties.id.type`))
+		assert.Equal(t, "string", r.json(`$.components.schemas.UserCreate.properties.id.type`))
+		assert.Equal(t, "string", r.json(`$.components.parameters.UserID.schema.type`))
 	})
 }
 

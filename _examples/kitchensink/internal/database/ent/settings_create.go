@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 )
@@ -64,14 +65,14 @@ func (sc *SettingsCreate) SetNillableGlobalBanner(s *string) *SettingsCreate {
 }
 
 // AddAdminIDs adds the "admins" edge to the User entity by IDs.
-func (sc *SettingsCreate) AddAdminIDs(ids ...int) *SettingsCreate {
+func (sc *SettingsCreate) AddAdminIDs(ids ...uuid.UUID) *SettingsCreate {
 	sc.mutation.AddAdminIDs(ids...)
 	return sc
 }
 
 // AddAdmins adds the "admins" edges to the User entity.
 func (sc *SettingsCreate) AddAdmins(u ...*User) *SettingsCreate {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -182,7 +183,7 @@ func (sc *SettingsCreate) createSpec() (*Settings, *sqlgraph.CreateSpec) {
 			Columns: []string{settings.AdminsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

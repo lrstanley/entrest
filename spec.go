@@ -111,7 +111,7 @@ func newBaseSpec(_ *Config) *ogen.Spec {
 				"PrettyResponse": {
 					Name:        "pretty",
 					In:          "query",
-					Description: "If set to true, any JSON response will be indented. Not recommended for best performance.",
+					Description: "If set to true, any JSON response will be indented.",
 					Schema:      ogen.Bool(),
 				},
 				"FilterOperation": {

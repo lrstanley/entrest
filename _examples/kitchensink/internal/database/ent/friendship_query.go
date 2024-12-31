@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
@@ -444,8 +445,8 @@ func (fq *FriendshipQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*F
 }
 
 func (fq *FriendshipQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Friendship, init func(*Friendship), assign func(*Friendship, *User)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Friendship)
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Friendship)
 	for i := range nodes {
 		fk := nodes[i].UserID
 		if _, ok := nodeids[fk]; !ok {
@@ -473,8 +474,8 @@ func (fq *FriendshipQuery) loadUser(ctx context.Context, query *UserQuery, nodes
 	return nil
 }
 func (fq *FriendshipQuery) loadFriend(ctx context.Context, query *UserQuery, nodes []*Friendship, init func(*Friendship), assign func(*Friendship, *User)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Friendship)
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Friendship)
 	for i := range nodes {
 		fk := nodes[i].FriendID
 		if _, ok := nodeids[fk]; !ok {

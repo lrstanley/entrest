@@ -10,6 +10,7 @@ require (
 	github.com/go-chi/chi/v5 v5.2.0
 	github.com/go-playground/form/v4 v4.2.1
 	github.com/google/go-github/v66 v66.0.0
+	github.com/google/uuid v1.6.0
 	github.com/lrstanley/entrest v0.0.0-20241123215036-448ac7a7c665
 	github.com/ogen-go/ogen v1.8.1
 	github.com/stretchr/testify v1.10.0
@@ -32,7 +33,6 @@ require (
 	github.com/go-openapi/inflect v0.21.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/golang-lru/v2 v2.0.7 // indirect
 	github.com/hashicorp/hcl/v2 v2.23.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect

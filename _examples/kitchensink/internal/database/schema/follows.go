@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/schema"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest"
 )
 
@@ -27,7 +28,7 @@ func (Follows) Fields() []ent.Field {
 				entrest.WithSortable(true),
 				entrest.WithReadOnly(true),
 			),
-		field.Int("user_id"),
+		field.UUID("user_id", uuid.Nil),
 		field.Int("pet_id"),
 	}
 }

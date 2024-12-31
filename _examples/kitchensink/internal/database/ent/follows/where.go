@@ -7,6 +7,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
 )
 
@@ -16,7 +17,7 @@ func FollowedAt(v time.Time) predicate.Follows {
 }
 
 // UserID applies equality check predicate on the "user_id" field. It's identical to UserIDEQ.
-func UserID(v int) predicate.Follows {
+func UserID(v uuid.UUID) predicate.Follows {
 	return predicate.Follows(sql.FieldEQ(FieldUserID, v))
 }
 
@@ -66,22 +67,22 @@ func FollowedAtLTE(v time.Time) predicate.Follows {
 }
 
 // UserIDEQ applies the EQ predicate on the "user_id" field.
-func UserIDEQ(v int) predicate.Follows {
+func UserIDEQ(v uuid.UUID) predicate.Follows {
 	return predicate.Follows(sql.FieldEQ(FieldUserID, v))
 }
 
 // UserIDNEQ applies the NEQ predicate on the "user_id" field.
-func UserIDNEQ(v int) predicate.Follows {
+func UserIDNEQ(v uuid.UUID) predicate.Follows {
 	return predicate.Follows(sql.FieldNEQ(FieldUserID, v))
 }
 
 // UserIDIn applies the In predicate on the "user_id" field.
-func UserIDIn(vs ...int) predicate.Follows {
+func UserIDIn(vs ...uuid.UUID) predicate.Follows {
 	return predicate.Follows(sql.FieldIn(FieldUserID, vs...))
 }
 
 // UserIDNotIn applies the NotIn predicate on the "user_id" field.
-func UserIDNotIn(vs ...int) predicate.Follows {
+func UserIDNotIn(vs ...uuid.UUID) predicate.Follows {
 	return predicate.Follows(sql.FieldNotIn(FieldUserID, vs...))
 }
 

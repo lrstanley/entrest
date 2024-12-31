@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 )
@@ -21,9 +22,9 @@ type Friendship struct {
 	// CreatedAt holds the value of the "created_at" field.
 	CreatedAt time.Time `json:"created_at"`
 	// UserID holds the value of the "user_id" field.
-	UserID int `json:"user_id"`
+	UserID uuid.UUID `json:"user_id"`
 	// FriendID holds the value of the "friend_id" field.
-	FriendID int `json:"friend_id"`
+	FriendID uuid.UUID `json:"friend_id"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the FriendshipQuery when eager-loading is set.
 	Edges        FriendshipEdges `json:"edges"`
@@ -68,10 +69,12 @@ func (*Friendship) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case friendship.FieldID, friendship.FieldUserID, friendship.FieldFriendID:
+		case friendship.FieldID:
 			values[i] = new(sql.NullInt64)
 		case friendship.FieldCreatedAt:
 			values[i] = new(sql.NullTime)
+		case friendship.FieldUserID, friendship.FieldFriendID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -100,16 +103,16 @@ func (f *Friendship) assignValues(columns []string, values []any) error {
 				f.CreatedAt = value.Time
 			}
 		case friendship.FieldUserID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
-			} else if value.Valid {
-				f.UserID = int(value.Int64)
+			} else if value != nil {
+				f.UserID = *value
 			}
 		case friendship.FieldFriendID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field friend_id", values[i])
-			} else if value.Valid {
-				f.FriendID = int(value.Int64)
+			} else if value != nil {
+				f.FriendID = *value
 			}
 		default:
 			f.selectValues.Set(columns[i], values[i])

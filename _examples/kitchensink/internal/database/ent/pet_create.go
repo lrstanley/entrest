@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
@@ -67,13 +68,13 @@ func (pc *PetCreate) AddCategories(c ...*Category) *PetCreate {
 }
 
 // SetOwnerID sets the "owner" edge to the User entity by ID.
-func (pc *PetCreate) SetOwnerID(id int) *PetCreate {
+func (pc *PetCreate) SetOwnerID(id uuid.UUID) *PetCreate {
 	pc.mutation.SetOwnerID(id)
 	return pc
 }
 
 // SetNillableOwnerID sets the "owner" edge to the User entity by ID if the given value is not nil.
-func (pc *PetCreate) SetNillableOwnerID(id *int) *PetCreate {
+func (pc *PetCreate) SetNillableOwnerID(id *uuid.UUID) *PetCreate {
 	if id != nil {
 		pc = pc.SetOwnerID(*id)
 	}
@@ -101,14 +102,14 @@ func (pc *PetCreate) AddFriends(p ...*Pet) *PetCreate {
 }
 
 // AddFollowedByIDs adds the "followed_by" edge to the User entity by IDs.
-func (pc *PetCreate) AddFollowedByIDs(ids ...int) *PetCreate {
+func (pc *PetCreate) AddFollowedByIDs(ids ...uuid.UUID) *PetCreate {
 	pc.mutation.AddFollowedByIDs(ids...)
 	return pc
 }
 
 // AddFollowedBy adds the "followed_by" edges to the User entity.
 func (pc *PetCreate) AddFollowedBy(u ...*User) *PetCreate {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -240,7 +241,7 @@ func (pc *PetCreate) createSpec() (*Pet, *sqlgraph.CreateSpec) {
 			Columns: []string{pet.OwnerColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -273,7 +274,7 @@ func (pc *PetCreate) createSpec() (*Pet, *sqlgraph.CreateSpec) {
 			Columns: pet.FollowedByPrimaryKey,
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

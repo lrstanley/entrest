@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
@@ -56,14 +57,14 @@ func (su *SettingsUpdate) ClearGlobalBanner() *SettingsUpdate {
 }
 
 // AddAdminIDs adds the "admins" edge to the User entity by IDs.
-func (su *SettingsUpdate) AddAdminIDs(ids ...int) *SettingsUpdate {
+func (su *SettingsUpdate) AddAdminIDs(ids ...uuid.UUID) *SettingsUpdate {
 	su.mutation.AddAdminIDs(ids...)
 	return su
 }
 
 // AddAdmins adds the "admins" edges to the User entity.
 func (su *SettingsUpdate) AddAdmins(u ...*User) *SettingsUpdate {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -82,14 +83,14 @@ func (su *SettingsUpdate) ClearAdmins() *SettingsUpdate {
 }
 
 // RemoveAdminIDs removes the "admins" edge to User entities by IDs.
-func (su *SettingsUpdate) RemoveAdminIDs(ids ...int) *SettingsUpdate {
+func (su *SettingsUpdate) RemoveAdminIDs(ids ...uuid.UUID) *SettingsUpdate {
 	su.mutation.RemoveAdminIDs(ids...)
 	return su
 }
 
 // RemoveAdmins removes "admins" edges to User entities.
 func (su *SettingsUpdate) RemoveAdmins(u ...*User) *SettingsUpdate {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -171,7 +172,7 @@ func (su *SettingsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{settings.AdminsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -184,7 +185,7 @@ func (su *SettingsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{settings.AdminsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -200,7 +201,7 @@ func (su *SettingsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 			Columns: []string{settings.AdminsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -255,14 +256,14 @@ func (suo *SettingsUpdateOne) ClearGlobalBanner() *SettingsUpdateOne {
 }
 
 // AddAdminIDs adds the "admins" edge to the User entity by IDs.
-func (suo *SettingsUpdateOne) AddAdminIDs(ids ...int) *SettingsUpdateOne {
+func (suo *SettingsUpdateOne) AddAdminIDs(ids ...uuid.UUID) *SettingsUpdateOne {
 	suo.mutation.AddAdminIDs(ids...)
 	return suo
 }
 
 // AddAdmins adds the "admins" edges to the User entity.
 func (suo *SettingsUpdateOne) AddAdmins(u ...*User) *SettingsUpdateOne {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -281,14 +282,14 @@ func (suo *SettingsUpdateOne) ClearAdmins() *SettingsUpdateOne {
 }
 
 // RemoveAdminIDs removes the "admins" edge to User entities by IDs.
-func (suo *SettingsUpdateOne) RemoveAdminIDs(ids ...int) *SettingsUpdateOne {
+func (suo *SettingsUpdateOne) RemoveAdminIDs(ids ...uuid.UUID) *SettingsUpdateOne {
 	suo.mutation.RemoveAdminIDs(ids...)
 	return suo
 }
 
 // RemoveAdmins removes "admins" edges to User entities.
 func (suo *SettingsUpdateOne) RemoveAdmins(u ...*User) *SettingsUpdateOne {
-	ids := make([]int, len(u))
+	ids := make([]uuid.UUID, len(u))
 	for i := range u {
 		ids[i] = u[i].ID
 	}
@@ -400,7 +401,7 @@ func (suo *SettingsUpdateOne) sqlSave(ctx context.Context) (_node *Settings, err
 			Columns: []string{settings.AdminsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
@@ -413,7 +414,7 @@ func (suo *SettingsUpdateOne) sqlSave(ctx context.Context) (_node *Settings, err
 			Columns: []string{settings.AdminsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {
@@ -429,7 +430,7 @@ func (suo *SettingsUpdateOne) sqlSave(ctx context.Context) (_node *Settings, err
 			Columns: []string{settings.AdminsColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 )
@@ -29,7 +30,7 @@ type Pet struct {
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the PetQuery when eager-loading is set.
 	Edges        PetEdges `json:"edges"`
-	user_pets    *int
+	user_pets    *uuid.UUID
 	selectValues sql.SelectValues
 }
 
@@ -109,7 +110,7 @@ func (*Pet) scanValues(columns []string) ([]any, error) {
 		case pet.FieldName, pet.FieldType:
 			values[i] = new(sql.NullString)
 		case pet.ForeignKeys[0]: // user_pets
-			values[i] = new(sql.NullInt64)
+			values[i] = &sql.NullScanner{S: new(uuid.UUID)}
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -158,11 +159,11 @@ func (pe *Pet) assignValues(columns []string, values []any) error {
 				pe.Type = pet.Type(value.String)
 			}
 		case pet.ForeignKeys[0]:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
-				return fmt.Errorf("unexpected type %T for edge-field user_pets", value)
+			if value, ok := values[i].(*sql.NullScanner); !ok {
+				return fmt.Errorf("unexpected type %T for field user_pets", values[i])
 			} else if value.Valid {
-				pe.user_pets = new(int)
-				*pe.user_pets = int(value.Int64)
+				pe.user_pets = new(uuid.UUID)
+				*pe.user_pets = *value.S.(*uuid.UUID)
 			}
 		default:
 			pe.selectValues.Set(columns[i], values[i])

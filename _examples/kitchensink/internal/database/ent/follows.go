@@ -9,6 +9,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
@@ -20,7 +21,7 @@ type Follows struct {
 	// FollowedAt holds the value of the "followed_at" field.
 	FollowedAt time.Time `json:"followed_at"`
 	// UserID holds the value of the "user_id" field.
-	UserID int `json:"user_id"`
+	UserID uuid.UUID `json:"user_id"`
 	// PetID holds the value of the "pet_id" field.
 	PetID int `json:"pet_id"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -67,10 +68,12 @@ func (*Follows) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case follows.FieldUserID, follows.FieldPetID:
+		case follows.FieldPetID:
 			values[i] = new(sql.NullInt64)
 		case follows.FieldFollowedAt:
 			values[i] = new(sql.NullTime)
+		case follows.FieldUserID:
+			values[i] = new(uuid.UUID)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -93,10 +96,10 @@ func (f *Follows) assignValues(columns []string, values []any) error {
 				f.FollowedAt = value.Time
 			}
 		case follows.FieldUserID:
-			if value, ok := values[i].(*sql.NullInt64); !ok {
+			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
-			} else if value.Valid {
-				f.UserID = int(value.Int64)
+			} else if value != nil {
+				f.UserID = *value
 			}
 		case follows.FieldPetID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {

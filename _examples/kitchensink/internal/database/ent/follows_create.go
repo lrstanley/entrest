@@ -10,6 +10,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
@@ -37,8 +38,8 @@ func (fc *FollowsCreate) SetNillableFollowedAt(t *time.Time) *FollowsCreate {
 }
 
 // SetUserID sets the "user_id" field.
-func (fc *FollowsCreate) SetUserID(i int) *FollowsCreate {
-	fc.mutation.SetUserID(i)
+func (fc *FollowsCreate) SetUserID(u uuid.UUID) *FollowsCreate {
+	fc.mutation.SetUserID(u)
 	return fc
 }
 
@@ -150,7 +151,7 @@ func (fc *FollowsCreate) createSpec() (*Follows, *sqlgraph.CreateSpec) {
 			Columns: []string{follows.UserColumn},
 			Bidi:    false,
 			Target: &sqlgraph.EdgeTarget{
-				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeInt),
+				IDSpec: sqlgraph.NewFieldSpec(user.FieldID, field.TypeUUID),
 			},
 		}
 		for _, k := range nodes {

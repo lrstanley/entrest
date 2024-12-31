@@ -165,12 +165,15 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 
 		var fieldSchema *ogen.Schema
 
-		if op == OperationCreate && cfg.AllowClientUUIDs && t.ID != nil && t.ID.IsUUID() {
+		if op == OperationCreate && ta.GetAllowClientIDs(cfg) && t.ID != nil {
 			fieldSchema, err = GetSchemaField(t.ID)
 			if err != nil {
 				panic(fmt.Sprintf("failed to generate schema for field %s: %v", t.ID.StructField(), err))
 			}
 			fieldSchema.Description = fmt.Sprintf("The ID of the %s entity.", entityName)
+			if t.ID.Default {
+				fieldSchema.Description += " If not provided, one will be generated."
+			}
 			schema.Properties = append(schema.Properties, *fieldSchema.ToProperty("id"))
 
 			if !t.ID.Default {

@@ -8,6 +8,7 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
 
@@ -145,6 +146,8 @@ var (
 	PasswordHashedValidator func(string) error
 	// DefaultProfileURL holds the default value on creation for the "profile_url" field.
 	DefaultProfileURL *schema.ExampleValuer
+	// DefaultID holds the default value on creation for the "id" field.
+	DefaultID func() uuid.UUID
 )
 
 // Type defines the type for the "type" enum field.

@@ -29,7 +29,7 @@ var (
 	// FollowsColumns holds the columns for the "follows" table.
 	FollowsColumns = []*schema.Column{
 		{Name: "followed_at", Type: field.TypeTime},
-		{Name: "user_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeUUID},
 		{Name: "pet_id", Type: field.TypeInt},
 	}
 	// FollowsTable holds the schema information for the "follows" table.
@@ -56,8 +56,8 @@ var (
 	FriendshipsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
 		{Name: "created_at", Type: field.TypeTime},
-		{Name: "user_id", Type: field.TypeInt},
-		{Name: "friend_id", Type: field.TypeInt},
+		{Name: "user_id", Type: field.TypeUUID},
+		{Name: "friend_id", Type: field.TypeUUID},
 	}
 	// FriendshipsTable holds the schema information for the "friendships" table.
 	FriendshipsTable = &schema.Table{
@@ -93,7 +93,7 @@ var (
 		{Name: "nicknames", Type: field.TypeJSON, Nullable: true},
 		{Name: "age", Type: field.TypeInt},
 		{Name: "type", Type: field.TypeEnum, Enums: []string{"DOG", "CAT", "BIRD", "FISH", "AMPHIBIAN", "REPTILE", "OTHER"}},
-		{Name: "user_pets", Type: field.TypeInt, Nullable: true},
+		{Name: "user_pets", Type: field.TypeUUID, Nullable: true},
 	}
 	// PetsTable holds the schema information for the "pets" table.
 	PetsTable = &schema.Table{
@@ -135,7 +135,7 @@ var (
 	}
 	// UsersColumns holds the columns for the "users" table.
 	UsersColumns = []*schema.Column{
-		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "id", Type: field.TypeUUID, Unique: true},
 		{Name: "created_at", Type: field.TypeTime},
 		{Name: "updated_at", Type: field.TypeTime},
 		{Name: "name", Type: field.TypeString},

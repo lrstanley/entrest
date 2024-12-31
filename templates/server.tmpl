@@ -88,6 +88,8 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op 
         resp.Code = http.StatusMethodNotAllowed
     case IsBadRequest(err):
         resp.Code = http.StatusBadRequest
+    case IsInvalidID(err):
+        resp.Code = http.StatusBadRequest
     {{- with $.Config.FeatureEnabled "privacy" }}
         case errors.Is(err, privacy.Deny):
             resp.Code = http.StatusForbidden
@@ -289,7 +291,7 @@ func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
     {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
         {{- $opID := getOperationIDName "read" $t nil | zpascal }}
         // {{ $opID }} maps to "GET {{ getPathName "read" $t nil false }}".
-        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} int) (*ent.{{ $t.Name }}, error) {
+        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}) (*ent.{{ $t.Name }}, error) {
             return EagerLoad{{ $t.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID({{ $id }}))).Only(r.Context())
         }
     {{- end }}
@@ -306,7 +308,7 @@ func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
         {{- if and $e.Unique (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "read") }}
             {{- $opID := getOperationIDName "read" $t $e | zpascal }}
             // {{ $opID }} maps to "GET {{ getPathName "read" $t $e false }}".
-            func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} int) (*ent.{{ $e.Type.Name }}, error) {
+            func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}) (*ent.{{ $e.Type.Name }}, error) {
                 return EagerLoad{{ $e.Type.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID({{ $id }})).Query{{ $e.StructField }}()).Only(r.Context())
             }
         {{- end }}
@@ -315,7 +317,7 @@ func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
         {{- if and (not $e.Unique) (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "list") }}
             {{- $opID := getOperationIDName "list" $t $e | zpascal }}
             // {{ $opID }} maps to "GET {{ getPathName "list" $t $e false }}".
-            func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} int, p *List{{ $e.Type.Name|zsingular }}Params) (*PagedResponse[ent.{{ $e.Type.Name }}], error) {
+            func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}, p *List{{ $e.Type.Name|zsingular }}Params) (*PagedResponse[ent.{{ $e.Type.Name }}], error) {
                 return p.Exec(r.Context(), s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID({{ $id }})).Query{{ $e.StructField }}())
             }
         {{- end }}
@@ -334,7 +336,7 @@ func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
     {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "update") }}
         {{- $opID := getOperationIDName "update" $t nil | zpascal }}
         // {{ $opID }} maps to "PATCH {{ getPathName "update" $t nil false }}".
-        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} int, p *Update{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
+        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}, p *Update{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
             return p.Exec(r.Context(), s.db.{{ $t.Name }}.UpdateOneID({{ $id }}), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
@@ -343,7 +345,7 @@ func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
     {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "delete") }}
         {{- $opID := getOperationIDName "delete" $t nil | zpascal }}
         // {{ $opID }} maps to "DELETE {{ getPathName "delete" $t nil false }}".
-        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} int) (*struct{}, error) {
+        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}) (*struct{}, error) {
             return nil, s.db.{{ $t.Name }}.DeleteOneID({{ $id }}).Exec(r.Context())
         }
     {{- end }}

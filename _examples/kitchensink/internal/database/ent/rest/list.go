@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	uuid "github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
@@ -356,21 +357,21 @@ type ListFriendshipParams struct {
 	// Filters field "id" to be not within the provided values.
 	FriendshipIDNotIn []int `form:"id.notIn,omitempty" json:"friendship_id_not_in,omitempty"`
 	// Filters field "user_id" to be equal to the provided value.
-	FriendshipUserIDEQ *int `form:"userID.eq,omitempty" json:"friendship_user_ideq,omitempty"`
+	FriendshipUserIDEQ *uuid.UUID `form:"userID.eq,omitempty" json:"friendship_user_ideq,omitempty"`
 	// Filters field "user_id" to be not equal to the provided value.
-	FriendshipUserIDNEQ *int `form:"userID.neq,omitempty" json:"friendship_user_idneq,omitempty"`
+	FriendshipUserIDNEQ *uuid.UUID `form:"userID.neq,omitempty" json:"friendship_user_idneq,omitempty"`
 	// Filters field "user_id" to be within the provided values.
-	FriendshipUserIDIn []int `form:"userID.in,omitempty" json:"friendship_user_id_in,omitempty"`
+	FriendshipUserIDIn []uuid.UUID `form:"userID.in,omitempty" json:"friendship_user_id_in,omitempty"`
 	// Filters field "user_id" to be not within the provided values.
-	FriendshipUserIDNotIn []int `form:"userID.notIn,omitempty" json:"friendship_user_id_not_in,omitempty"`
+	FriendshipUserIDNotIn []uuid.UUID `form:"userID.notIn,omitempty" json:"friendship_user_id_not_in,omitempty"`
 	// Filters field "friend_id" to be equal to the provided value.
-	FriendshipFriendIDEQ *int `form:"friendID.eq,omitempty" json:"friendship_friend_ideq,omitempty"`
+	FriendshipFriendIDEQ *uuid.UUID `form:"friendID.eq,omitempty" json:"friendship_friend_ideq,omitempty"`
 	// Filters field "friend_id" to be not equal to the provided value.
-	FriendshipFriendIDNEQ *int `form:"friendID.neq,omitempty" json:"friendship_friend_idneq,omitempty"`
+	FriendshipFriendIDNEQ *uuid.UUID `form:"friendID.neq,omitempty" json:"friendship_friend_idneq,omitempty"`
 	// Filters field "friend_id" to be within the provided values.
-	FriendshipFriendIDIn []int `form:"friendID.in,omitempty" json:"friendship_friend_id_in,omitempty"`
+	FriendshipFriendIDIn []uuid.UUID `form:"friendID.in,omitempty" json:"friendship_friend_id_in,omitempty"`
 	// Filters field "friend_id" to be not within the provided values.
-	FriendshipFriendIDNotIn []int `form:"friendID.notIn,omitempty" json:"friendship_friend_id_not_in,omitempty"`
+	FriendshipFriendIDNotIn []uuid.UUID `form:"friendID.notIn,omitempty" json:"friendship_friend_id_not_in,omitempty"`
 	// If true, only return entities that have a user edge.
 	EdgeHasUser *bool `form:"has.user,omitempty" json:"edge_has_user,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
@@ -863,13 +864,13 @@ type ListPetParams struct {
 	// If true, only return entities that have a owner edge.
 	EdgeHasOwner *bool `form:"has.owner,omitempty" json:"edge_has_owner,omitempty"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeOwnerIDEQ *int `form:"owner.id.eq,omitempty" json:"edge_owner_ideq,omitempty"`
+	EdgeOwnerIDEQ *uuid.UUID `form:"owner.id.eq,omitempty" json:"edge_owner_ideq,omitempty"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeOwnerIDNEQ *int `form:"owner.id.neq,omitempty" json:"edge_owner_idneq,omitempty"`
+	EdgeOwnerIDNEQ *uuid.UUID `form:"owner.id.neq,omitempty" json:"edge_owner_idneq,omitempty"`
 	// Filters field "id" to be within the provided values.
-	EdgeOwnerIDIn []int `form:"owner.id.in,omitempty" json:"edge_owner_id_in,omitempty"`
+	EdgeOwnerIDIn []uuid.UUID `form:"owner.id.in,omitempty" json:"edge_owner_id_in,omitempty"`
 	// Filters field "id" to be not within the provided values.
-	EdgeOwnerIDNotIn []int `form:"owner.id.notIn,omitempty" json:"edge_owner_id_not_in,omitempty"`
+	EdgeOwnerIDNotIn []uuid.UUID `form:"owner.id.notIn,omitempty" json:"edge_owner_id_not_in,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
 	EdgeOwnerCreatedAtGT *time.Time `form:"owner.createdAt.gt,omitempty" json:"edge_owner_created_at_gt,omitempty"`
 	// Filters field "created_at" to be less than the provided value.
@@ -985,13 +986,13 @@ type ListPetParams struct {
 	// If true, only return entities that have a followed_by edge.
 	EdgeHasFollowedBy *bool `form:"has.followedBy,omitempty" json:"edge_has_followed_by,omitempty"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeFollowedByIDEQ *int `form:"followedBy.id.eq,omitempty" json:"edge_followed_by_ideq,omitempty"`
+	EdgeFollowedByIDEQ *uuid.UUID `form:"followedBy.id.eq,omitempty" json:"edge_followed_by_ideq,omitempty"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeFollowedByIDNEQ *int `form:"followedBy.id.neq,omitempty" json:"edge_followed_by_idneq,omitempty"`
+	EdgeFollowedByIDNEQ *uuid.UUID `form:"followedBy.id.neq,omitempty" json:"edge_followed_by_idneq,omitempty"`
 	// Filters field "id" to be within the provided values.
-	EdgeFollowedByIDIn []int `form:"followedBy.id.in,omitempty" json:"edge_followed_by_id_in,omitempty"`
+	EdgeFollowedByIDIn []uuid.UUID `form:"followedBy.id.in,omitempty" json:"edge_followed_by_id_in,omitempty"`
 	// Filters field "id" to be not within the provided values.
-	EdgeFollowedByIDNotIn []int `form:"followedBy.id.notIn,omitempty" json:"edge_followed_by_id_not_in,omitempty"`
+	EdgeFollowedByIDNotIn []uuid.UUID `form:"followedBy.id.notIn,omitempty" json:"edge_followed_by_id_not_in,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
 	EdgeFollowedByCreatedAtGT *time.Time `form:"followedBy.createdAt.gt,omitempty" json:"edge_followed_by_created_at_gt,omitempty"`
 	// Filters field "created_at" to be less than the provided value.
@@ -1620,13 +1621,13 @@ type ListUserParams struct {
 	Filtered[predicate.User]
 
 	// Filters field "id" to be equal to the provided value.
-	UserIDEQ *int `form:"id.eq,omitempty" json:"user_ideq,omitempty"`
+	UserIDEQ *uuid.UUID `form:"id.eq,omitempty" json:"user_ideq,omitempty"`
 	// Filters field "id" to be not equal to the provided value.
-	UserIDNEQ *int `form:"id.neq,omitempty" json:"user_idneq,omitempty"`
+	UserIDNEQ *uuid.UUID `form:"id.neq,omitempty" json:"user_idneq,omitempty"`
 	// Filters field "id" to be within the provided values.
-	UserIDIn []int `form:"id.in,omitempty" json:"user_id_in,omitempty"`
+	UserIDIn []uuid.UUID `form:"id.in,omitempty" json:"user_id_in,omitempty"`
 	// Filters field "id" to be not within the provided values.
-	UserIDNotIn []int `form:"id.notIn,omitempty" json:"user_id_not_in,omitempty"`
+	UserIDNotIn []uuid.UUID `form:"id.notIn,omitempty" json:"user_id_not_in,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
 	UserCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"user_created_at_gt,omitempty"`
 	// Filters field "created_at" to be less than the provided value.
@@ -1792,13 +1793,13 @@ type ListUserParams struct {
 	// If true, only return entities that have a friend edge.
 	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitempty"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeFriendIDEQ *int `form:"friend.id.eq,omitempty" json:"edge_friend_ideq,omitempty"`
+	EdgeFriendIDEQ *uuid.UUID `form:"friend.id.eq,omitempty" json:"edge_friend_ideq,omitempty"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeFriendIDNEQ *int `form:"friend.id.neq,omitempty" json:"edge_friend_idneq,omitempty"`
+	EdgeFriendIDNEQ *uuid.UUID `form:"friend.id.neq,omitempty" json:"edge_friend_idneq,omitempty"`
 	// Filters field "id" to be within the provided values.
-	EdgeFriendIDIn []int `form:"friend.id.in,omitempty" json:"edge_friend_id_in,omitempty"`
+	EdgeFriendIDIn []uuid.UUID `form:"friend.id.in,omitempty" json:"edge_friend_id_in,omitempty"`
 	// Filters field "id" to be not within the provided values.
-	EdgeFriendIDNotIn []int `form:"friend.id.notIn,omitempty" json:"edge_friend_id_not_in,omitempty"`
+	EdgeFriendIDNotIn []uuid.UUID `form:"friend.id.notIn,omitempty" json:"edge_friend_id_not_in,omitempty"`
 	// Filters field "created_at" to be greater than the provided value.
 	EdgeFriendCreatedAtGT *time.Time `form:"friend.createdAt.gt,omitempty" json:"edge_friend_created_at_gt,omitempty"`
 	// Filters field "created_at" to be less than the provided value.
@@ -1874,21 +1875,21 @@ type ListUserParams struct {
 	// Filters field "id" to be not within the provided values.
 	EdgeFriendshipIDNotIn []int `form:"friendship.id.notIn,omitempty" json:"edge_friendship_id_not_in,omitempty"`
 	// Filters field "user_id" to be equal to the provided value.
-	EdgeFriendshipUserIDEQ *int `form:"friendship.userID.eq,omitempty" json:"edge_friendship_user_ideq,omitempty"`
+	EdgeFriendshipUserIDEQ *uuid.UUID `form:"friendship.userID.eq,omitempty" json:"edge_friendship_user_ideq,omitempty"`
 	// Filters field "user_id" to be not equal to the provided value.
-	EdgeFriendshipUserIDNEQ *int `form:"friendship.userID.neq,omitempty" json:"edge_friendship_user_idneq,omitempty"`
+	EdgeFriendshipUserIDNEQ *uuid.UUID `form:"friendship.userID.neq,omitempty" json:"edge_friendship_user_idneq,omitempty"`
 	// Filters field "user_id" to be within the provided values.
-	EdgeFriendshipUserIDIn []int `form:"friendship.userID.in,omitempty" json:"edge_friendship_user_id_in,omitempty"`
+	EdgeFriendshipUserIDIn []uuid.UUID `form:"friendship.userID.in,omitempty" json:"edge_friendship_user_id_in,omitempty"`
 	// Filters field "user_id" to be not within the provided values.
-	EdgeFriendshipUserIDNotIn []int `form:"friendship.userID.notIn,omitempty" json:"edge_friendship_user_id_not_in,omitempty"`
+	EdgeFriendshipUserIDNotIn []uuid.UUID `form:"friendship.userID.notIn,omitempty" json:"edge_friendship_user_id_not_in,omitempty"`
 	// Filters field "friend_id" to be equal to the provided value.
-	EdgeFriendshipFriendIDEQ *int `form:"friendship.friendID.eq,omitempty" json:"edge_friendship_friend_ideq,omitempty"`
+	EdgeFriendshipFriendIDEQ *uuid.UUID `form:"friendship.friendID.eq,omitempty" json:"edge_friendship_friend_ideq,omitempty"`
 	// Filters field "friend_id" to be not equal to the provided value.
-	EdgeFriendshipFriendIDNEQ *int `form:"friendship.friendID.neq,omitempty" json:"edge_friendship_friend_idneq,omitempty"`
+	EdgeFriendshipFriendIDNEQ *uuid.UUID `form:"friendship.friendID.neq,omitempty" json:"edge_friendship_friend_idneq,omitempty"`
 	// Filters field "friend_id" to be within the provided values.
-	EdgeFriendshipFriendIDIn []int `form:"friendship.friendID.in,omitempty" json:"edge_friendship_friend_id_in,omitempty"`
+	EdgeFriendshipFriendIDIn []uuid.UUID `form:"friendship.friendID.in,omitempty" json:"edge_friendship_friend_id_in,omitempty"`
 	// Filters field "friend_id" to be not within the provided values.
-	EdgeFriendshipFriendIDNotIn []int `form:"friendship.friendID.notIn,omitempty" json:"edge_friendship_friend_id_not_in,omitempty"`
+	EdgeFriendshipFriendIDNotIn []uuid.UUID `form:"friendship.friendID.notIn,omitempty" json:"edge_friendship_friend_id_not_in,omitempty"`
 
 	// Field "search.eq" filters across multiple fields (case insensitive): name, description, email.
 	UserFilterGroupSearchEQ *string `form:"search.eq,omitempty" json:"user_filter_group_search_eq,omitempty"`

@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
@@ -372,8 +373,8 @@ func (fq *FollowsQuery) sqlAll(ctx context.Context, hooks ...queryHook) ([]*Foll
 }
 
 func (fq *FollowsQuery) loadUser(ctx context.Context, query *UserQuery, nodes []*Follows, init func(*Follows), assign func(*Follows, *User)) error {
-	ids := make([]int, 0, len(nodes))
-	nodeids := make(map[int][]*Follows)
+	ids := make([]uuid.UUID, 0, len(nodes))
+	nodeids := make(map[uuid.UUID][]*Follows)
 	for i := range nodes {
 		fk := nodes[i].UserID
 		if _, ok := nodeids[fk]; !ok {
