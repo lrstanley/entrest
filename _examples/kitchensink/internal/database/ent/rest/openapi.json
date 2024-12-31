@@ -11127,7 +11127,7 @@
             "PrettyResponse": {
                 "name": "pretty",
                 "in": "query",
-                "description": "If set to true, any JSON response will be indented. Not recommended for best performance.",
+                "description": "If set to true, any JSON response will be indented.",
                 "schema": {
                     "type": "boolean"
                 }
