@@ -31,6 +31,7 @@ Depending on the annotation used, it can only be applied in specific locations, 
 | [WithFilterGroup](#withfiltergroup) | <Usage types={["edge", "field"]} /> | Adds the field to a group of other fields that are filtered together. |
 | [WithSchema](#withschema) | <Usage types={["field"]} /> | Sets the OpenAPI schema for the specified field. |
 | [WithPagination](#withpagination) | <Usage types={["schema", "edge"]} /> | Sets the schema to be paginated in the REST API. |
+| [WithAllowClientIDs](#withallowclientids) | <Usage types={["schema", "edge"]} /> | Sets the schema to allow clients to provide IDs in the CREATE payload. |
 | [WithOperationSummary](#withoperationsummary) | <Usage types={["schema", "edge"]} /> | Provides an OpenAPI summary for the specified operation. |
 | [WithOperationDescription](#withoperationdescription) | <Usage types={["schema", "edge"]} /> | Provides an OpenAPI description for the specified operation. |
 | [WithAdditionalTags](#withadditionaltags) | <Usage types={["schema", "edge"]} /> | Adds additional tags to all operations for this schema/edge. |
@@ -317,6 +318,24 @@ func (Pet) Fields() []ent.Field {
 func (Pet) Annotations() []ent.Annotation {
     return []ent.Annotation{
         entrest.WithPagination(true),
+    }
+}
+```
+
+### `WithAllowClientIDs`
+
+[ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithAllowClientIDs) | usage: <Usage types={["schema"]} /> ]
+
+> Sets the schema to allow clients to provide IDs in the CREATE payload. This is beneficial to allow
+> the client to supply UUIDs as primary keys (for idempotency), or when your ID field is a username,
+> for example. This is not required if `Config.AllowClientIDs` is enabled.
+
+##### Example
+
+```go title="internal/database/schema/schema_pet.go" ins={3}
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithAllowClientIDs(true),
     }
 }
 ```

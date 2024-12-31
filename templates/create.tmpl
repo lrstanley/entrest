@@ -17,7 +17,7 @@ import (
     // Create{{ $t.Name|zsingular }}Params defines parameters for creating a {{ $t.Name|zsingular }} via a POST request.
     type Create{{ $t.Name|zsingular }}Params struct {
         {{- /* if we allow client-provided IDs, we need to add the ID field to the params struct */}}
-        {{- if and $.Annotations.RestConfig.AllowClientIDs $t.ID }}
+        {{- if and (($t|getAnnotation).GetAllowClientIDs $.Annotations.RestConfig) $t.ID }}
             {{- template "helper/rest/fields/comment" $t.ID }}
             {{- if or (hasPrefix $t.ID.Type.Ident "[]") (hasPrefix $t.ID.Type.Ident "*") $t.ID.IsBytes }}
                 {{ $t.ID.StructField }} {{ $t.ID.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $t.ID) }}
@@ -74,7 +74,7 @@ import (
     }
 
     func (c *Create{{ $t.Name|zsingular }}Params) ApplyInputs(builder *ent.{{ $t.Name }}Create) *ent.{{ $t.Name }}Create {
-        {{- if and $.Annotations.RestConfig.AllowClientIDs $t.ID }}
+        {{- if and (($t|getAnnotation).GetAllowClientIDs $.Annotations.RestConfig) $t.ID }}
             if c.{{ $t.ID.StructField }} != nil {
                 builder.Set{{ $t.ID.StructField }}(*c.{{ $t.ID.StructField }})
             }

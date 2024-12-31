@@ -179,6 +179,7 @@ func (c *CreateSettingParams) Exec(ctx context.Context, builder *ent.SettingsCre
 
 // CreateUserParams defines parameters for creating a User via a POST request.
 type CreateUserParams struct {
+	ID *uuid.UUID `json:"id"`
 	// Name of the user.
 	Name string `json:"name"`
 	// Type of object being defined (user or system which is for internal usecases).
@@ -206,6 +207,9 @@ type CreateUserParams struct {
 }
 
 func (c *CreateUserParams) ApplyInputs(builder *ent.UserCreate) *ent.UserCreate {
+	if c.ID != nil {
+		builder.SetID(*c.ID)
+	}
 	builder.SetName(c.Name)
 	if c.Type != nil {
 		builder.SetType(*c.Type)

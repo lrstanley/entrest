@@ -143,6 +143,7 @@ func (User) Annotations() []schema.Annotation {
 	return []schema.Annotation{
 		entrest.WithDefaultSort("name"),
 		entrest.WithDefaultOrder(entrest.OrderAsc),
+		entrest.WithAllowClientIDs(true),
 	}
 }
 

@@ -140,9 +140,10 @@ type Config struct {
 	// binary/rest generated library.
 	DisableSpecHandler bool
 
-	// AllowClientIDs, when enabled, allows the built-in "id" field as part of a "Create"
-	// payload for entity creation, allowing the client to supply UUIDs as primary keys
-	// and for idempotency, for example.
+	// AllowClientIDs, when enabled, allows requests to include the "id" field as part of a
+	// CREATE payload for entity creation. This is beneficial to allow the client to supply
+	// UUIDs as primary keys (for idempotency), or when your ID field is a username, for example.
+	// This can be enabled on a per-schema basis with annotations.
 	AllowClientIDs bool
 
 	// DisablePatchJSONTag disables a ent generation hook that patches the JSON tag of all

@@ -105,6 +105,7 @@ type Annotation struct {
 	DefaultSort     *string     `json:",omitempty" ent:"schema"`
 	DefaultOrder    *SortOrder  `json:",omitempty" ent:"schema"`
 	Skip            bool        `json:",omitempty" ent:"schema,edge,field"`
+	AllowClientIDs  *bool       `json:",omitempty" ent:"schema"`
 	Operations      []Operation `json:",omitempty" ent:"schema,edge"`
 }
 
@@ -237,6 +238,9 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 		a.DefaultOrder = am.DefaultOrder
 	}
 	a.Skip = a.Skip || am.Skip
+	if am.AllowClientIDs != nil {
+		a.AllowClientIDs = am.AllowClientIDs
+	}
 	a.ReadOnly = a.ReadOnly || am.ReadOnly
 	if len(am.Operations) > 0 {
 		for _, op := range am.Operations {
@@ -413,6 +417,13 @@ func (a *Annotation) GetSkip(config *Config) bool {
 	return a.Skip || len(a.GetOperations(config)) == 0
 }
 
+func (a *Annotation) GetAllowClientIDs(config *Config) bool {
+	if a.AllowClientIDs == nil {
+		return config.AllowClientIDs
+	}
+	return *a.AllowClientIDs
+}
+
 // WithOperationSummary provides a summary for the specified operation. This should be
 // a short summary of what the operation does.
 func WithOperationSummary(op Operation, v string) Annotation {
@@ -579,6 +590,14 @@ func WithDefaultOrder(v SortOrder) Annotation {
 // sensitive isn't set on the field for some reason).
 func WithSkip(v bool) Annotation {
 	return Annotation{Skip: v}
+}
+
+// WithAllowClientIDs sets the schema to allow the client to provide the ID field
+// as part of a CREATE payload. This is beneficial to allow the client to supply
+// UUIDs as primary keys (for idempotency), or when your ID field is a username, for
+// example. This is not required if [Config.AllowClientIDs] is enabled.
+func WithAllowClientIDs(v bool) Annotation {
+	return Annotation{AllowClientIDs: &v}
 }
 
 // WithReadOnly sets the field to be read-only in the REST API. If you want to make

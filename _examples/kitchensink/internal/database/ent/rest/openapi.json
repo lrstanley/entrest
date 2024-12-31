@@ -8344,6 +8344,11 @@
                 "description": "A single User entity and the fields that can be created/updated.",
                 "type": "object",
                 "properties": {
+                    "id": {
+                        "description": "The ID of the User entity. If not provided, one will be generated.",
+                        "type": "string",
+                        "format": "uuid"
+                    },
                     "name": {
                         "description": "Name of the user.",
                         "type": "string"

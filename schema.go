@@ -165,7 +165,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 
 		var fieldSchema *ogen.Schema
 
-		if op == OperationCreate && cfg.AllowClientIDs && t.ID != nil {
+		if op == OperationCreate && ta.GetAllowClientIDs(cfg) && t.ID != nil {
 			fieldSchema, err = GetSchemaField(t.ID)
 			if err != nil {
 				panic(fmt.Sprintf("failed to generate schema for field %s: %v", t.ID.StructField(), err))
