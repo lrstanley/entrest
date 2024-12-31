@@ -65,9 +65,9 @@ import (
             {{- else }}
                 {{- template "helper/rest/fields/comment" $e }}
                 {{- if $e.Optional }}
-                    {{ $e.StructField }} {{ if not $e.Unique }}[]{{else }}*{{ end }}{{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
+                    {{ $e.StructField }} {{ if not $e.Unique }}[]{{else }}*{{ end }}{{ $e.Type.ID.Type }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
                 {{- else }}
-                    {{ $e.StructField }} {{ $e.Type.IDType.String }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
+                    {{ $e.StructField }} {{ $e.Type.ID.Type }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
                 {{- end }}
             {{- end }}
         {{- end }}

@@ -11,6 +11,7 @@ import (
 	"entgo.io/ent/dialect/entsql"
 	"entgo.io/ent/schema/edge"
 	"entgo.io/ent/schema/field"
+	"github.com/google/uuid"
 	"github.com/lrstanley/entrest"
 )
 
@@ -22,12 +23,12 @@ func (Friendship) Fields() []ent.Field {
 	return []ent.Field{
 		field.Time("created_at").
 			Default(time.Now),
-		field.Int("user_id").
+		field.UUID("user_id", uuid.Nil).
 			Annotations(
 				entrest.WithSortable(true),
 				entrest.WithFilter(entrest.FilterGroupEqualExact|entrest.FilterGroupArray),
 			),
-		field.Int("friend_id").
+		field.UUID("friend_id", uuid.Nil).
 			Annotations(
 				entrest.WithSortable(true),
 				entrest.WithFilter(entrest.FilterGroupEqualExact|entrest.FilterGroupArray),

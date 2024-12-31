@@ -20,8 +20,8 @@ func (Friendship) Fields() []ent.Field {
 	return []ent.Field{
 		field.Time("created_at").
 			Default(time.Now),
-		field.Int("user_id"),
-		field.Int("friend_id"),
+		field.String("user_id"),
+		field.String("friend_id"),
 	}
 }
 

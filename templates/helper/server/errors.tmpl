@@ -44,4 +44,23 @@
     func IsMethodNotAllowed(err error) bool {
         return errors.Is(err, ErrMethodNotAllowed)
     }
+
+    type ErrInvalidID struct {
+        ID string
+        Err error
+    }
+
+    func (e ErrInvalidID) Error() string {
+        return fmt.Sprintf("invalid ID provided: %q: %v", e.ID, e.Err)
+    }
+
+    func (e ErrInvalidID) Unwrap() error {
+        return e.Err
+    }
+
+    // IsInvalidID returns true if the unwrapped/underlying error is of type ErrInvalidID.
+    func IsInvalidID(err error) bool {
+        var target *ErrInvalidID
+	    return errors.As(err, &target)
+    }
 {{- end }}{{/* end template */}}

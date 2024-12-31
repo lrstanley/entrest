@@ -18,6 +18,11 @@ type User struct {
 
 func (User) Fields() []ent.Field {
 	return []ent.Field{
+		field.String("id").
+			Immutable().
+			NotEmpty().
+			Unique().
+			Comment("The username (id) of the user."),
 		field.String("name").Comment("Name of the identity."),
 		field.Enum("type").
 			NamedValues(

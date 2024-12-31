@@ -54,12 +54,12 @@ import (
                 {{ $e.Field.StructField }} Option[{{ if $e.Field.Nillable }}*{{ end }}{{ $e.Field.Type }}] {{ template "helper/rest/edge/tag" (dict "Field" $e.Field) }}
             {{- else if $e.Unique }}
                 {{- template "helper/rest/fields/comment" $e }}
-                {{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ $e.Type.IDType.String }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
+                {{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ $e.Type.ID.Type }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
             {{- else }}
                 {{- range $prefix := list "Add" "Remove" "" }}
                     {{- if and (not $e.Annotations.Rest.EdgeUpdateBulk) (not $prefix) }}{{ continue }}{{ end }}
                     {{- template "helper/rest/fields/comment" $e }}
-                    {{ $prefix }}{{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ $e.Type.IDType.String }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e "Prefix" $prefix) }}
+                    {{ $prefix }}{{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ $e.Type.ID.Type }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e "Prefix" $prefix) }}
                 {{- end }}
             {{- end }}
         {{- end }}

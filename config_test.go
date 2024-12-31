@@ -633,6 +633,10 @@ func TestConfig_AllowClientIDs(t *testing.T) {
 		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllTypeCreate.properties.id.format`))
 		assert.Equal(t, "string", r.json(`$.components.parameters.AllTypeID.schema.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.parameters.AllTypeID.schema.format`))
+
+		assert.Equal(t, "string", r.json(`$.components.schemas.User.properties.id.type`))
+		assert.Equal(t, "string", r.json(`$.components.schemas.UserCreate.properties.id.type`))
+		assert.Equal(t, "string", r.json(`$.components.parameters.UserID.schema.type`))
 	})
 
 	t.Run("disabled", func(t *testing.T) {
