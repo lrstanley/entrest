@@ -619,13 +619,13 @@ func TestConfig_GlobalErrorResponses(t *testing.T) {
 	})
 }
 
-func TestConfig_AllowClientUUIDs(t *testing.T) {
+func TestConfig_AllowClientIDs(t *testing.T) {
 	t.Parallel()
 
 	t.Run("enabled", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{AllowClientUUIDs: true})
+		r := mustBuildSpec(t, &Config{AllowClientIDs: true})
 
 		assert.Equal(t, "string", r.json(`$.components.schemas.AllType.properties.id.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllType.properties.id.format`))
@@ -638,7 +638,7 @@ func TestConfig_AllowClientUUIDs(t *testing.T) {
 	t.Run("disabled", func(t *testing.T) {
 		t.Parallel()
 
-		r := mustBuildSpec(t, &Config{AllowClientUUIDs: false})
+		r := mustBuildSpec(t, &Config{AllowClientIDs: false})
 
 		assert.Equal(t, "string", r.json(`$.components.schemas.AllType.properties.id.type`))
 		assert.Equal(t, "uuid", r.json(`$.components.schemas.AllType.properties.id.format`))

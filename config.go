@@ -142,8 +142,8 @@ type Config struct {
 
 	// AllowClientIDs, when enabled, allows the built-in "id" field as part of a "Create"
 	// payload for entity creation, allowing the client to supply UUIDs as primary keys
-	// and for idempotency.
-	AllowClientUUIDs bool
+	// and for idempotency, for example.
+	AllowClientIDs bool
 
 	// DisablePatchJSONTag disables a ent generation hook that patches the JSON tag of all
 	// fields in the schema, removing the usage of omitempty. This helps ensure that fields
