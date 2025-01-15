@@ -337,9 +337,9 @@ func (f *FilterableFieldOp) Parameter() *ogen.Parameter {
 	}
 
 	if f.Operation == gen.GT || f.Operation == gen.LT || f.Operation == gen.GTE || f.Operation == gen.LTE {
-		if schema.Items != nil {
+		if schema.Items != nil && f.fieldSchema.Format != "date-time" {
 			schema.Items.Item.Type = "number"
-		} else {
+		} else if f.fieldSchema.Format != "date-time" {
 			schema.Type = "number"
 		}
 	}

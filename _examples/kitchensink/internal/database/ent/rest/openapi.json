@@ -8766,7 +8766,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -8775,7 +8775,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -8831,7 +8831,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -8840,7 +8840,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -8849,7 +8849,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -8858,7 +8858,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -8905,7 +8905,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -8914,7 +8914,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -8923,7 +8923,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -8932,7 +8932,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -9217,7 +9217,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -9226,7 +9226,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -9508,7 +9508,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -9517,7 +9517,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -9813,7 +9813,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -9822,7 +9822,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -10025,7 +10025,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -10034,7 +10034,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -10319,7 +10319,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -10328,7 +10328,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -10556,7 +10556,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -10565,7 +10565,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -10808,7 +10808,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -10817,7 +10817,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -11220,7 +11220,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -11229,7 +11229,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -11276,7 +11276,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -11285,7 +11285,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -11294,7 +11294,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -11303,7 +11303,7 @@
                 "in": "query",
                 "description": "Filters field \"created_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -11679,7 +11679,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be greater than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
@@ -11688,7 +11688,7 @@
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
-                    "type": "number",
+                    "type": "string",
                     "format": "date-time"
                 }
             },
