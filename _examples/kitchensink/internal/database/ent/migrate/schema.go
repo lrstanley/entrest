@@ -147,6 +147,7 @@ var (
 		{Name: "password_hashed", Type: field.TypeString},
 		{Name: "github_data", Type: field.TypeJSON, Nullable: true},
 		{Name: "profile_url", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"postgres": "varchar", "sqlite3": "text"}},
+		{Name: "last_authenticated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "settings_admins", Type: field.TypeInt, Nullable: true},
 	}
 	// UsersTable holds the schema information for the "users" table.
@@ -157,7 +158,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "users_settings_admins",
-				Columns:    []*schema.Column{UsersColumns[12]},
+				Columns:    []*schema.Column{UsersColumns[13]},
 				RefColumns: []*schema.Column{SettingsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

@@ -102,6 +102,11 @@ func ProfileURL(v *schema.ExampleValuer) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldProfileURL, v))
 }
 
+// LastAuthenticatedAt applies equality check predicate on the "last_authenticated_at" field. It's identical to LastAuthenticatedAtEQ.
+func LastAuthenticatedAt(v time.Time) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldLastAuthenticatedAt, v))
+}
+
 // CreatedAtEQ applies the EQ predicate on the "created_at" field.
 func CreatedAtEQ(v time.Time) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldCreatedAt, v))
@@ -600,6 +605,56 @@ func ProfileURLIsNil() predicate.User {
 // ProfileURLNotNil applies the NotNil predicate on the "profile_url" field.
 func ProfileURLNotNil() predicate.User {
 	return predicate.User(sql.FieldNotNull(FieldProfileURL))
+}
+
+// LastAuthenticatedAtEQ applies the EQ predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtEQ(v time.Time) predicate.User {
+	return predicate.User(sql.FieldEQ(FieldLastAuthenticatedAt, v))
+}
+
+// LastAuthenticatedAtNEQ applies the NEQ predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtNEQ(v time.Time) predicate.User {
+	return predicate.User(sql.FieldNEQ(FieldLastAuthenticatedAt, v))
+}
+
+// LastAuthenticatedAtIn applies the In predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtIn(vs ...time.Time) predicate.User {
+	return predicate.User(sql.FieldIn(FieldLastAuthenticatedAt, vs...))
+}
+
+// LastAuthenticatedAtNotIn applies the NotIn predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtNotIn(vs ...time.Time) predicate.User {
+	return predicate.User(sql.FieldNotIn(FieldLastAuthenticatedAt, vs...))
+}
+
+// LastAuthenticatedAtGT applies the GT predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtGT(v time.Time) predicate.User {
+	return predicate.User(sql.FieldGT(FieldLastAuthenticatedAt, v))
+}
+
+// LastAuthenticatedAtGTE applies the GTE predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtGTE(v time.Time) predicate.User {
+	return predicate.User(sql.FieldGTE(FieldLastAuthenticatedAt, v))
+}
+
+// LastAuthenticatedAtLT applies the LT predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtLT(v time.Time) predicate.User {
+	return predicate.User(sql.FieldLT(FieldLastAuthenticatedAt, v))
+}
+
+// LastAuthenticatedAtLTE applies the LTE predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtLTE(v time.Time) predicate.User {
+	return predicate.User(sql.FieldLTE(FieldLastAuthenticatedAt, v))
+}
+
+// LastAuthenticatedAtIsNil applies the IsNil predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldLastAuthenticatedAt))
+}
+
+// LastAuthenticatedAtNotNil applies the NotNil predicate on the "last_authenticated_at" field.
+func LastAuthenticatedAtNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldLastAuthenticatedAt))
 }
 
 // HasPets applies the HasEdge predicate on the "pets" edge.

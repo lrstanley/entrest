@@ -3649,36 +3649,37 @@ func (m *SkippedMutation) ResetEdge(name string) error {
 // UserMutation represents an operation that mutates the User nodes in the graph.
 type UserMutation struct {
 	config
-	op                   Op
-	typ                  string
-	id                   *uuid.UUID
-	created_at           *time.Time
-	updated_at           *time.Time
-	name                 *string
-	_type                *user.Type
-	description          *string
-	enabled              *bool
-	email                *string
-	avatar               *[]byte
-	password_hashed      *string
-	github_data          **github.User
-	profile_url          **schema.ExampleValuer
-	clearedFields        map[string]struct{}
-	pets                 map[int]struct{}
-	removedpets          map[int]struct{}
-	clearedpets          bool
-	followed_pets        map[int]struct{}
-	removedfollowed_pets map[int]struct{}
-	clearedfollowed_pets bool
-	friends              map[uuid.UUID]struct{}
-	removedfriends       map[uuid.UUID]struct{}
-	clearedfriends       bool
-	friendships          map[int]struct{}
-	removedfriendships   map[int]struct{}
-	clearedfriendships   bool
-	done                 bool
-	oldValue             func(context.Context) (*User, error)
-	predicates           []predicate.User
+	op                    Op
+	typ                   string
+	id                    *uuid.UUID
+	created_at            *time.Time
+	updated_at            *time.Time
+	name                  *string
+	_type                 *user.Type
+	description           *string
+	enabled               *bool
+	email                 *string
+	avatar                *[]byte
+	password_hashed       *string
+	github_data           **github.User
+	profile_url           **schema.ExampleValuer
+	last_authenticated_at *time.Time
+	clearedFields         map[string]struct{}
+	pets                  map[int]struct{}
+	removedpets           map[int]struct{}
+	clearedpets           bool
+	followed_pets         map[int]struct{}
+	removedfollowed_pets  map[int]struct{}
+	clearedfollowed_pets  bool
+	friends               map[uuid.UUID]struct{}
+	removedfriends        map[uuid.UUID]struct{}
+	clearedfriends        bool
+	friendships           map[int]struct{}
+	removedfriendships    map[int]struct{}
+	clearedfriendships    bool
+	done                  bool
+	oldValue              func(context.Context) (*User, error)
+	predicates            []predicate.User
 }
 
 var _ ent.Mutation = (*UserMutation)(nil)
@@ -4246,6 +4247,55 @@ func (m *UserMutation) ResetProfileURL() {
 	delete(m.clearedFields, user.FieldProfileURL)
 }
 
+// SetLastAuthenticatedAt sets the "last_authenticated_at" field.
+func (m *UserMutation) SetLastAuthenticatedAt(t time.Time) {
+	m.last_authenticated_at = &t
+}
+
+// LastAuthenticatedAt returns the value of the "last_authenticated_at" field in the mutation.
+func (m *UserMutation) LastAuthenticatedAt() (r time.Time, exists bool) {
+	v := m.last_authenticated_at
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldLastAuthenticatedAt returns the old "last_authenticated_at" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldLastAuthenticatedAt(ctx context.Context) (v *time.Time, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldLastAuthenticatedAt is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldLastAuthenticatedAt requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldLastAuthenticatedAt: %w", err)
+	}
+	return oldValue.LastAuthenticatedAt, nil
+}
+
+// ClearLastAuthenticatedAt clears the value of the "last_authenticated_at" field.
+func (m *UserMutation) ClearLastAuthenticatedAt() {
+	m.last_authenticated_at = nil
+	m.clearedFields[user.FieldLastAuthenticatedAt] = struct{}{}
+}
+
+// LastAuthenticatedAtCleared returns if the "last_authenticated_at" field was cleared in this mutation.
+func (m *UserMutation) LastAuthenticatedAtCleared() bool {
+	_, ok := m.clearedFields[user.FieldLastAuthenticatedAt]
+	return ok
+}
+
+// ResetLastAuthenticatedAt resets all changes to the "last_authenticated_at" field.
+func (m *UserMutation) ResetLastAuthenticatedAt() {
+	m.last_authenticated_at = nil
+	delete(m.clearedFields, user.FieldLastAuthenticatedAt)
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by ids.
 func (m *UserMutation) AddPetIDs(ids ...int) {
 	if m.pets == nil {
@@ -4496,7 +4546,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -4530,6 +4580,9 @@ func (m *UserMutation) Fields() []string {
 	if m.profile_url != nil {
 		fields = append(fields, user.FieldProfileURL)
 	}
+	if m.last_authenticated_at != nil {
+		fields = append(fields, user.FieldLastAuthenticatedAt)
+	}
 	return fields
 }
 
@@ -4560,6 +4613,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.GithubData()
 	case user.FieldProfileURL:
 		return m.ProfileURL()
+	case user.FieldLastAuthenticatedAt:
+		return m.LastAuthenticatedAt()
 	}
 	return nil, false
 }
@@ -4591,6 +4646,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldGithubData(ctx)
 	case user.FieldProfileURL:
 		return m.OldProfileURL(ctx)
+	case user.FieldLastAuthenticatedAt:
+		return m.OldLastAuthenticatedAt(ctx)
 	}
 	return nil, fmt.Errorf("unknown User field %s", name)
 }
@@ -4677,6 +4734,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetProfileURL(v)
 		return nil
+	case user.FieldLastAuthenticatedAt:
+		v, ok := value.(time.Time)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetLastAuthenticatedAt(v)
+		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)
 }
@@ -4722,6 +4786,9 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldProfileURL) {
 		fields = append(fields, user.FieldProfileURL)
 	}
+	if m.FieldCleared(user.FieldLastAuthenticatedAt) {
+		fields = append(fields, user.FieldLastAuthenticatedAt)
+	}
 	return fields
 }
 
@@ -4750,6 +4817,9 @@ func (m *UserMutation) ClearField(name string) error {
 		return nil
 	case user.FieldProfileURL:
 		m.ClearProfileURL()
+		return nil
+	case user.FieldLastAuthenticatedAt:
+		m.ClearLastAuthenticatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown User nullable field %s", name)
@@ -4791,6 +4861,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldProfileURL:
 		m.ResetProfileURL()
+		return nil
+	case user.FieldLastAuthenticatedAt:
+		m.ResetLastAuthenticatedAt()
 		return nil
 	}
 	return fmt.Errorf("unknown User field %s", name)

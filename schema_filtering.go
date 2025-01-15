@@ -347,8 +347,10 @@ func (f *FilterableFieldOp) Parameter() *ogen.Parameter {
 	if f.Operation == gen.IsNil {
 		if schema.Items != nil {
 			schema.Items.Item.Type = "boolean"
+			schema.Items.Item.Format = ""
 		} else {
 			schema.Type = "boolean"
+			schema.Format = ""
 		}
 	}
 

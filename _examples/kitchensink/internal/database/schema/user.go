@@ -109,6 +109,11 @@ func (User) Fields() []ent.Field {
 			}).
 			Default(DefaultExampleValuer()).
 			Annotations(entrest.WithSchema(ogen.String())),
+		field.Time("last_authenticated_at").
+			Optional().
+			Nillable().Annotations(
+			entrest.WithFilter(entrest.FilterGroupEqual),
+		),
 	}
 }
 

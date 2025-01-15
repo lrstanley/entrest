@@ -620,6 +620,15 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
@@ -801,6 +810,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -1203,6 +1221,15 @@
                         "$ref": "#/components/parameters/EdgeUserEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeUserLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
@@ -1297,6 +1324,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtIsNil"
                     }
                 ],
                 "responses": {
@@ -2025,6 +2061,15 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
@@ -2206,6 +2251,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -2765,6 +2819,15 @@
                         "$ref": "#/components/parameters/UserEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasPet"
                     },
                     {
@@ -3021,6 +3084,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -3404,6 +3476,15 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
@@ -3585,6 +3666,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -4104,6 +4194,15 @@
                         "$ref": "#/components/parameters/UserEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasPet"
                     },
                     {
@@ -4360,6 +4459,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -4641,6 +4749,15 @@
                         "$ref": "#/components/parameters/UserEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasPet"
                     },
                     {
@@ -4897,6 +5014,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -5508,6 +5634,15 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
@@ -5689,6 +5824,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -5902,6 +6046,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/UserEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/UserLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasPet"
@@ -6160,6 +6313,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -6469,6 +6631,15 @@
                         "$ref": "#/components/parameters/EdgeUserEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeUserLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeUserLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
@@ -6563,6 +6734,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendLastAuthenticatedAtIsNil"
                     }
                 ],
                 "responses": {
@@ -6864,6 +7044,15 @@
                         "$ref": "#/components/parameters/EdgeOwnerEmailHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeOwnerLastAuthenticatedAtIsNil"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeHasFriend"
                     },
                     {
@@ -7045,6 +7234,15 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedByEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedByLastAuthenticatedAtIsNil"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasFollowing"
@@ -8329,6 +8527,11 @@
                     "profile_url": {
                         "type": "string",
                         "default": "http://127.0.0.1/"
+                    },
+                    "last_authenticated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
                     }
                 },
                 "required": [
@@ -8391,6 +8594,11 @@
                     "profile_url": {
                         "type": "string",
                         "default": "http://127.0.0.1/"
+                    },
+                    "last_authenticated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
                     },
                     "pets": {
                         "type": "array",
@@ -8557,6 +8765,11 @@
                     "profile_url": {
                         "type": "string",
                         "default": "http://127.0.0.1/"
+                    },
+                    "last_authenticated_at": {
+                        "type": "string",
+                        "format": "date-time",
+                        "nullable": true
                     },
                     "add_pets": {
                         "type": "array",
@@ -9094,6 +9307,32 @@
                         "type": "string",
                         "format": "uuid"
                     }
+                }
+            },
+            "EdgeFollowedByLastAuthenticatedAtEQ": {
+                "name": "followedBy.lastAuthenticatedAt.eq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeFollowedByLastAuthenticatedAtIsNil": {
+                "name": "followedBy.lastAuthenticatedAt.null",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeFollowedByLastAuthenticatedAtNEQ": {
+                "name": "followedBy.lastAuthenticatedAt.neq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
                 }
             },
             "EdgeFollowedByNameContains": {
@@ -9681,6 +9920,32 @@
                     }
                 }
             },
+            "EdgeFriendLastAuthenticatedAtEQ": {
+                "name": "friend.lastAuthenticatedAt.eq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeFriendLastAuthenticatedAtIsNil": {
+                "name": "friend.lastAuthenticatedAt.null",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeFriendLastAuthenticatedAtNEQ": {
+                "name": "friend.lastAuthenticatedAt.neq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
             "EdgeFriendNameContains": {
                 "name": "friend.name.has",
                 "in": "query",
@@ -10198,6 +10463,32 @@
                     }
                 }
             },
+            "EdgeOwnerLastAuthenticatedAtEQ": {
+                "name": "owner.lastAuthenticatedAt.eq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeOwnerLastAuthenticatedAtIsNil": {
+                "name": "owner.lastAuthenticatedAt.null",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeOwnerLastAuthenticatedAtNEQ": {
+                "name": "owner.lastAuthenticatedAt.neq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
             "EdgeOwnerNameContains": {
                 "name": "owner.name.has",
                 "in": "query",
@@ -10685,6 +10976,32 @@
                 "description": "Filters field \"enabled\" to be equal to the provided value.",
                 "schema": {
                     "type": "boolean"
+                }
+            },
+            "EdgeUserLastAuthenticatedAtEQ": {
+                "name": "user.lastAuthenticatedAt.eq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeUserLastAuthenticatedAtIsNil": {
+                "name": "user.lastAuthenticatedAt.null",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeUserLastAuthenticatedAtNEQ": {
+                "name": "user.lastAuthenticatedAt.neq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
                 }
             },
             "EdgeUserNameContains": {
@@ -11556,6 +11873,32 @@
                         "type": "string",
                         "format": "uuid"
                     }
+                }
+            },
+            "UserLastAuthenticatedAtEQ": {
+                "name": "lastAuthenticatedAt.eq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "UserLastAuthenticatedAtIsNil": {
+                "name": "lastAuthenticatedAt.null",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "UserLastAuthenticatedAtNEQ": {
+                "name": "lastAuthenticatedAt.neq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
                 }
             },
             "UserNameContains": {

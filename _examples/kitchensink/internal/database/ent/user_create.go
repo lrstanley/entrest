@@ -139,6 +139,20 @@ func (uc *UserCreate) SetProfileURL(sv *schema.ExampleValuer) *UserCreate {
 	return uc
 }
 
+// SetLastAuthenticatedAt sets the "last_authenticated_at" field.
+func (uc *UserCreate) SetLastAuthenticatedAt(t time.Time) *UserCreate {
+	uc.mutation.SetLastAuthenticatedAt(t)
+	return uc
+}
+
+// SetNillableLastAuthenticatedAt sets the "last_authenticated_at" field if the given value is not nil.
+func (uc *UserCreate) SetNillableLastAuthenticatedAt(t *time.Time) *UserCreate {
+	if t != nil {
+		uc.SetLastAuthenticatedAt(*t)
+	}
+	return uc
+}
+
 // SetID sets the "id" field.
 func (uc *UserCreate) SetID(u uuid.UUID) *UserCreate {
 	uc.mutation.SetID(u)
@@ -397,6 +411,10 @@ func (uc *UserCreate) createSpec() (*User, *sqlgraph.CreateSpec) {
 	if value, ok := uc.mutation.ProfileURL(); ok {
 		_spec.SetField(user.FieldProfileURL, field.TypeOther, value)
 		_node.ProfileURL = value
+	}
+	if value, ok := uc.mutation.LastAuthenticatedAt(); ok {
+		_spec.SetField(user.FieldLastAuthenticatedAt, field.TypeTime, value)
+		_node.LastAuthenticatedAt = &value
 	}
 	if nodes := uc.mutation.PetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{

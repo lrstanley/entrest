@@ -171,6 +171,26 @@ func (uu *UserUpdate) ClearProfileURL() *UserUpdate {
 	return uu
 }
 
+// SetLastAuthenticatedAt sets the "last_authenticated_at" field.
+func (uu *UserUpdate) SetLastAuthenticatedAt(t time.Time) *UserUpdate {
+	uu.mutation.SetLastAuthenticatedAt(t)
+	return uu
+}
+
+// SetNillableLastAuthenticatedAt sets the "last_authenticated_at" field if the given value is not nil.
+func (uu *UserUpdate) SetNillableLastAuthenticatedAt(t *time.Time) *UserUpdate {
+	if t != nil {
+		uu.SetLastAuthenticatedAt(*t)
+	}
+	return uu
+}
+
+// ClearLastAuthenticatedAt clears the value of the "last_authenticated_at" field.
+func (uu *UserUpdate) ClearLastAuthenticatedAt() *UserUpdate {
+	uu.mutation.ClearLastAuthenticatedAt()
+	return uu
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (uu *UserUpdate) AddPetIDs(ids ...int) *UserUpdate {
 	uu.mutation.AddPetIDs(ids...)
@@ -442,6 +462,12 @@ func (uu *UserUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if uu.mutation.ProfileURLCleared() {
 		_spec.ClearField(user.FieldProfileURL, field.TypeOther)
+	}
+	if value, ok := uu.mutation.LastAuthenticatedAt(); ok {
+		_spec.SetField(user.FieldLastAuthenticatedAt, field.TypeTime, value)
+	}
+	if uu.mutation.LastAuthenticatedAtCleared() {
+		_spec.ClearField(user.FieldLastAuthenticatedAt, field.TypeTime)
 	}
 	if uu.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
@@ -805,6 +831,26 @@ func (uuo *UserUpdateOne) ClearProfileURL() *UserUpdateOne {
 	return uuo
 }
 
+// SetLastAuthenticatedAt sets the "last_authenticated_at" field.
+func (uuo *UserUpdateOne) SetLastAuthenticatedAt(t time.Time) *UserUpdateOne {
+	uuo.mutation.SetLastAuthenticatedAt(t)
+	return uuo
+}
+
+// SetNillableLastAuthenticatedAt sets the "last_authenticated_at" field if the given value is not nil.
+func (uuo *UserUpdateOne) SetNillableLastAuthenticatedAt(t *time.Time) *UserUpdateOne {
+	if t != nil {
+		uuo.SetLastAuthenticatedAt(*t)
+	}
+	return uuo
+}
+
+// ClearLastAuthenticatedAt clears the value of the "last_authenticated_at" field.
+func (uuo *UserUpdateOne) ClearLastAuthenticatedAt() *UserUpdateOne {
+	uuo.mutation.ClearLastAuthenticatedAt()
+	return uuo
+}
+
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
 func (uuo *UserUpdateOne) AddPetIDs(ids ...int) *UserUpdateOne {
 	uuo.mutation.AddPetIDs(ids...)
@@ -1106,6 +1152,12 @@ func (uuo *UserUpdateOne) sqlSave(ctx context.Context) (_node *User, err error) 
 	}
 	if uuo.mutation.ProfileURLCleared() {
 		_spec.ClearField(user.FieldProfileURL, field.TypeOther)
+	}
+	if value, ok := uuo.mutation.LastAuthenticatedAt(); ok {
+		_spec.SetField(user.FieldLastAuthenticatedAt, field.TypeTime, value)
+	}
+	if uuo.mutation.LastAuthenticatedAtCleared() {
+		_spec.ClearField(user.FieldLastAuthenticatedAt, field.TypeTime)
 	}
 	if uuo.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{

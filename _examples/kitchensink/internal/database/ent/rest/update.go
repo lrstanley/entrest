@@ -235,8 +235,9 @@ type UpdateUserParams struct {
 	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
 	PasswordHashed Option[string] `json:"password_hashed"`
 	// The github user raw JSON data.
-	GithubData Option[*github.User]          `json:"github_data,omitempty"`
-	ProfileURL Option[*schema.ExampleValuer] `json:"profile_url,omitempty"`
+	GithubData          Option[*github.User]          `json:"github_data,omitempty"`
+	ProfileURL          Option[*schema.ExampleValuer] `json:"profile_url,omitempty"`
+	LastAuthenticatedAt Option[*time.Time]            `json:"last_authenticated_at,omitempty"`
 	// Pets owned by the user.
 	AddPets Option[[]int] `json:"add_pets,omitempty"`
 	// Pets owned by the user.
@@ -292,6 +293,13 @@ func (u *UpdateUserParams) ApplyInputs(builder *ent.UserUpdateOne) *ent.UserUpda
 	}
 	if v, ok := u.ProfileURL.Get(); ok {
 		builder.SetProfileURL(v)
+	}
+	if v, ok := u.LastAuthenticatedAt.Get(); ok {
+		if v != nil {
+			builder.SetLastAuthenticatedAt(*v)
+		} else {
+			builder.ClearLastAuthenticatedAt()
+		}
 	}
 
 	if v, ok := u.AddPets.Get(); ok && v != nil {

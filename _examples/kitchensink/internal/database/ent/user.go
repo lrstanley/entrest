@@ -43,6 +43,8 @@ type User struct {
 	GithubData *github.User `json:"github_data"`
 	// ProfileURL holds the value of the "profile_url" field.
 	ProfileURL *schema.ExampleValuer `json:"profile_url"`
+	// LastAuthenticatedAt holds the value of the "last_authenticated_at" field.
+	LastAuthenticatedAt *time.Time `json:"last_authenticated_at"`
 	// Edges holds the relations/edges for other nodes in the graph.
 	// The values are being populated by the UserQuery when eager-loading is set.
 	Edges           UserEdges `json:"edges"`
@@ -125,7 +127,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 			values[i] = new(sql.NullBool)
 		case user.FieldName, user.FieldType, user.FieldDescription, user.FieldEmail, user.FieldPasswordHashed:
 			values[i] = new(sql.NullString)
-		case user.FieldCreatedAt, user.FieldUpdatedAt:
+		case user.FieldCreatedAt, user.FieldUpdatedAt, user.FieldLastAuthenticatedAt:
 			values[i] = new(sql.NullTime)
 		case user.FieldID:
 			values[i] = new(uuid.UUID)
@@ -221,6 +223,13 @@ func (u *User) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field profile_url", values[i])
 			} else if value != nil {
 				u.ProfileURL = value
+			}
+		case user.FieldLastAuthenticatedAt:
+			if value, ok := values[i].(*sql.NullTime); !ok {
+				return fmt.Errorf("unexpected type %T for field last_authenticated_at", values[i])
+			} else if value.Valid {
+				u.LastAuthenticatedAt = new(time.Time)
+				*u.LastAuthenticatedAt = value.Time
 			}
 		case user.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -327,6 +336,11 @@ func (u *User) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("profile_url=")
 	builder.WriteString(fmt.Sprintf("%v", u.ProfileURL))
+	builder.WriteString(", ")
+	if v := u.LastAuthenticatedAt; v != nil {
+		builder.WriteString("last_authenticated_at=")
+		builder.WriteString(v.Format(time.ANSIC))
+	}
 	builder.WriteByte(')')
 	return builder.String()
 }
