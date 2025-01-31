@@ -40,7 +40,7 @@ var (
 )
 
 // PagableQuery is an interface for ent queries which support providing limit/offset.
-type PagableQuery[P any, T any] interface {
+type PagableQuery[P, T any] interface {
     Limit(int) P
     Offset(int) P
     Count(ctx context.Context) (int, error)

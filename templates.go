@@ -28,6 +28,7 @@ var (
 		"getFilterGroups":     GetFilterGroups,
 		"getOperationIDName":  GetOperationIDName,
 		"getPathName":         GetPathName,
+		"hasConditional":      hasConditional,
 	}
 
 	//go:embed templates
@@ -56,4 +57,25 @@ var (
 // FuncMaps export FuncMaps to use custom templates.
 func FuncMaps() template.FuncMap {
 	return funcMap
+}
+
+// hasConditional returns true if the graph has at least one schema with conditional functionality.
+func hasConditional(g *gen.Graph, matchType *gen.Type) bool {
+	cfg := GetConfig(g.Config)
+
+	for _, t := range g.Nodes {
+		if matchType != nil && t.Name != matchType.Name {
+			continue
+		}
+
+		for _, f := range t.Fields {
+			fa := GetAnnotation(f)
+
+			if !fa.GetSkip(cfg) && fa.Conditional {
+				return true
+			}
+		}
+	}
+
+	return false
 }

@@ -1,0 +1,121 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/conditional-req" -}}
+{{- if hasConditional $ nil }}
+    type ConditionalSelect[T any] interface {
+        Select(fields ...string) T
+    }
+
+    type ConditionalQuery[T any] interface {
+        Only(ctx context.Context) (*T, error)
+    }
+
+    func generateConditional[P ConditionalSelect[Q], Q ConditionalQuery[T], T any](
+        ctx context.Context,
+        query P,
+        lastModSelector func(*T) *time.Time,
+        fields ...string,
+    ) (etag string, lastModified time.Time, err error) {
+        entity, err := query.Select(fields...).Only(ctx)
+        if err != nil {
+            return "", time.Time{}, err
+        }
+        if lastModSelector != nil {
+            lm := lastModSelector(entity)
+            if lm != nil && !lm.IsZero() {
+                lastModified = *lm
+            }
+        }
+
+        // json encode, then crc32 hash it.
+        b, err := json.Marshal(entity)
+        if err != nil {
+            return "", time.Time{}, err
+        }
+
+        return fmt.Sprintf("%x", crc32.ChecksumIEEE(b)), lastModified, nil
+    }
+
+    // cleanETag removes the "W/" prefix from the ETag value, if present, and trims any quotes.
+    func cleanETag(value string) string {
+        if strings.HasPrefix(value, "W/") && len(value) > 2 {
+            return value[2:]
+        }
+        return strings.Trim(value, `"`)
+    }
+
+    // TODO: get rid of this and just inline it...?
+    type conditionalParams struct {
+        ifMatch           []string
+        ifNoneMatch       []string
+        ifModifiedSince   time.Time
+        ifUnmodifiedSince time.Time
+    }
+
+    func getConditionalParams(r *http.Request, allowedMethods []string) (params *conditionalParams, ok bool, err error) {
+        if len(allowedMethods) > 0 && !slices.Contains(allowedMethods, r.Method) {
+            return nil, false, ErrPreconditionRequired
+        }
+        params = &conditionalParams{}
+
+        for header, values := range r.Header{
+            switch header {
+            case "If-Match":
+                for _, value := range values {
+                    params.ifMatch = append(params.ifMatch, cleanETag(value))
+                }
+                ok = true
+            case "If-None-Match":
+                for _, value := range values {
+                    params.ifNoneMatch = append(params.ifNoneMatch, cleanETag(value))
+                }
+                ok = true
+            case "If-Modified-Since":
+                // TODO: validate that values length is always at least 1.
+                if params.ifModifiedSince, err = time.Parse(time.RFC1123, values[0]); err != nil {
+                    return nil, false, err
+                }
+                ok = true
+            case "If-Unmodified-Since":
+                if params.ifUnmodifiedSince, err = time.Parse(time.RFC1123, values[0]); err != nil {
+                    return nil, false, err
+                }
+                ok = true
+            }
+        }
+
+        if !ok {
+            return nil, false, nil
+        }
+        return params, ok, nil
+    }
+
+    func (p *conditionalParams) check(etag string, lastModified time.Time, err error) error {
+        if err != nil {
+            return err
+        }
+
+        return nil
+    }
+
+    func applyConditionalData(w http.ResponseWriter, etag string, lastModified time.Time) {
+        if !lastModified.IsZero() {
+            loc, err := time.LoadLocation("UTC")
+            if err == nil {
+                w.Header().Set("Last-Modified", lastModified.In(loc).Format(http.TimeFormat))
+            }
+        }
+
+        if etag != "" {
+            w.Header().Set("ETag", etag)
+        }
+    }
+{{- end }}
+{{- end }}{{/* end template */}}
+
+{{- define "helper/rest/server/conditional-req-handler" -}}
+
+{{- end }}{{/* end template */}}

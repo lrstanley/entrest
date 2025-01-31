@@ -7,6 +7,7 @@ package entrest
 import (
 	"encoding/json"
 	"fmt"
+	"net/http"
 	"reflect"
 	"slices"
 	"strings"
@@ -90,23 +91,25 @@ type Annotation struct {
 
 	// All others.
 
-	Pagination      *bool       `json:",omitempty" ent:"schema,edge"`
-	MinItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
-	MaxItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
-	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
-	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
-	EagerLoadLimit  *int        `json:",omitempty" ent:"edge"`
-	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
-	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
-	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
-	FilterGroup     string      `json:",omitempty" ent:"edge,field"`
-	DisableHandler  bool        `json:",omitempty" ent:"schema,edge"`
-	Sortable        bool        `json:",omitempty" ent:"field"`
-	DefaultSort     *string     `json:",omitempty" ent:"schema"`
-	DefaultOrder    *SortOrder  `json:",omitempty" ent:"schema"`
-	Skip            bool        `json:",omitempty" ent:"schema,edge,field"`
-	AllowClientIDs  *bool       `json:",omitempty" ent:"schema"`
-	Operations      []Operation `json:",omitempty" ent:"schema,edge"`
+	Pagination          *bool       `json:",omitempty" ent:"schema,edge"`
+	MinItemsPerPage     int         `json:",omitempty" ent:"schema,edge"`
+	MaxItemsPerPage     int         `json:",omitempty" ent:"schema,edge"`
+	ItemsPerPage        int         `json:",omitempty" ent:"schema,edge"`
+	EagerLoad           *bool       `json:",omitempty" ent:"edge"`
+	EagerLoadLimit      *int        `json:",omitempty" ent:"edge"`
+	EdgeEndpoint        *bool       `json:",omitempty" ent:"edge"`
+	EdgeUpdateBulk      bool        `json:",omitempty" ent:"edge"`
+	Filter              Predicate   `json:",omitempty" ent:"schema,edge,field"`
+	FilterGroup         string      `json:",omitempty" ent:"edge,field"`
+	DisableHandler      bool        `json:",omitempty" ent:"schema,edge"`
+	Sortable            bool        `json:",omitempty" ent:"field"`
+	DefaultSort         *string     `json:",omitempty" ent:"schema"`
+	DefaultOrder        *SortOrder  `json:",omitempty" ent:"schema"`
+	Skip                bool        `json:",omitempty" ent:"schema,edge,field"`
+	AllowClientIDs      *bool       `json:",omitempty" ent:"schema"`
+	Conditional         bool        `json:",omitempty" ent:"field"`
+	ConditionalRequired []string    `json:",omitempty" ent:"field"`
+	Operations          []Operation `json:",omitempty" ent:"schema,edge"`
 }
 
 // getSupportedType uses reflection to check if the annotation is supported on the
@@ -240,6 +243,12 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 	a.Skip = a.Skip || am.Skip
 	if am.AllowClientIDs != nil {
 		a.AllowClientIDs = am.AllowClientIDs
+	}
+	a.Conditional = a.Conditional || am.Conditional
+	for _, method := range am.ConditionalRequired {
+		if !slices.Contains(a.ConditionalRequired, method) {
+			a.ConditionalRequired = append(a.ConditionalRequired, method)
+		}
 	}
 	a.ReadOnly = a.ReadOnly || am.ReadOnly
 	if len(am.Operations) > 0 {
@@ -603,6 +612,24 @@ func WithSkip(v bool) Annotation {
 // to takeover attack vectors.
 func WithAllowClientIDs(v bool) Annotation {
 	return Annotation{AllowClientIDs: &v}
+}
+
+func WithConditional(v bool) Annotation {
+	return Annotation{Conditional: v}
+}
+
+func WithConditionalRequired(methods ...string) Annotation {
+	allowedMethods := []string{
+		http.MethodPatch,
+		http.MethodPost,
+		http.MethodPut,
+		http.MethodDelete,
+	}
+
+	if len(methods) == 0 {
+		return Annotation{ConditionalRequired: allowedMethods}
+	}
+	return Annotation{ConditionalRequired: methods}
 }
 
 // WithReadOnly sets the field to be read-only in the REST API. If you want to make

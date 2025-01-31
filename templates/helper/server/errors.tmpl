@@ -61,6 +61,24 @@
     // IsInvalidID returns true if the unwrapped/underlying error is of type ErrInvalidID.
     func IsInvalidID(err error) bool {
         var target *ErrInvalidID
-	    return errors.As(err, &target)
+        return errors.As(err, &target)
     }
+
+    {{- if hasConditional $ nil }}
+    var ErrPreconditionRequired = errors.New("precondition required")
+
+    // IsPreconditionRequired returns true if the unwrapped/underlying error is of type ErrPreconditionRequired.
+    func IsPreconditionRequired(err error) bool {
+        return errors.Is(err, ErrPreconditionRequired)
+    }
+
+    type ErrPreconditionFailed struct {
+        Condition string
+        Reason    string
+    }
+
+    func (e ErrPreconditionFailed) Error() string {
+        return fmt.Sprintf("precondition failed: %s: %s", e.Condition, e.Reason)
+    }
+    {{- end }}
 {{- end }}{{/* end template */}}

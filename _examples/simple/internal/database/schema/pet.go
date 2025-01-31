@@ -63,3 +63,9 @@ func (Pet) Edges() []ent.Edge {
 			),
 	}
 }
+
+func (Pet) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		MixinTime{},
+	}
+}

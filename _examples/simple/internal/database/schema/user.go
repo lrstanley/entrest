@@ -20,6 +20,7 @@ func (User) Fields() []ent.Field {
 			Annotations(
 				entrest.WithSortable(true),
 				entrest.WithFilter(entrest.FilterGroupEqual|entrest.FilterGroupArray),
+				entrest.WithConditional(true),
 			).
 			Comment("Username of the user."),
 		field.String("display_name").
@@ -49,5 +50,11 @@ func (User) Edges() []ent.Edge {
 				entrest.WithFilter(entrest.FilterEdge),
 				entsql.OnDelete(entsql.SetNull),
 			),
+	}
+}
+
+func (User) Mixin() []ent.Mixin {
+	return []ent.Mixin{
+		MixinTime{},
 	}
 }
