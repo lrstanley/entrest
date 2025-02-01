@@ -49,10 +49,6 @@ type Config struct {
 	// This can be overridden on a per-schema basis with annotations.
 	ItemsPerPage int
 
-	// DisableEdgeEndpoints disables the generation of dedicated endpoints for edges.
-	// See also [Config.DisableEagerLoadedEndpoints].
-	DisableEdgeEndpoints bool
-
 	// DefaultEagerLoad enables eager loading of all edges by default. This can be
 	// overridden on a per-edge basis with annotations. If edges load a lot of data
 	// or are expensive, this can be a performance hit and isn't recommended.
