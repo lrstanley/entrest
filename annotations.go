@@ -96,7 +96,7 @@ type Annotation struct {
 	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
 	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
 	EagerLoadLimit  *int        `json:",omitempty" ent:"edge"`
-	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
+	EdgeEndpoint    *bool       `json:",omitempty" ent:"schema,edge"`
 	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
 	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
 	FilterGroup     string      `json:",omitempty" ent:"edge,field"`
@@ -333,6 +333,9 @@ func (a *Annotation) GetEdgeEndpoint(config *Config) bool {
 	if a.EdgeEndpoint != nil {
 		return *a.EdgeEndpoint
 	}
+	if config.DisableEdgeEndpoints {
+		return false
+	}
 	if config.DisableEagerLoadedEndpoints {
 		// Only return false if the edge is in fact eager-loaded.
 		if a.EagerLoad != nil && *a.EagerLoad {
@@ -506,9 +509,10 @@ func WithEagerLoadLimit(v int) Annotation {
 
 // WithEdgeEndpoint sets the edge to have an endpoint. If the edge is eager-loaded,
 // and the global config is set to disable endpoints for edges which are also
-// eager-loaded, this will default to false. Not required to be provided unless
-// endpoints are disabled globally and you want to specifically enable one edge to
-// have an endpoint, or want to disable an edge from having an endpoint in general.
+// eager-loaded, or if [Config.DisableEdgeEndpoints] is set to true, this will default
+// to false. Not required to be provided unless endpoints are disabled globally and you
+// want to specifically enable one edge to have an endpoint, or want to disable an edge
+// from having an endpoint in general.
 func WithEdgeEndpoint(v bool) Annotation {
 	return Annotation{EdgeEndpoint: &v}
 }

@@ -269,6 +269,50 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 	})
 }
 
+func TestConfig_DisableEdgeEndpoints(t *testing.T) {
+	t.Parallel()
+
+	t.Run("with-edge-endpoints-annotation-edge", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			DisableEdgeEndpoints: false,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEdgeEndpoint(true))
+				injectAnnotations(t, g, "Pet.owner", WithEdgeEndpoint(true))
+				return nil
+			},
+		})
+
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/categories`), "PetCategories")
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/owner`), "PetOwner")
+	})
+
+	t.Run("with-edge-endpoints-annotation-schema", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			DisableEdgeEndpoints: false,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet", WithEdgeEndpoint(true))
+				injectAnnotations(t, g, "Pet", WithEdgeEndpoint(true))
+				return nil
+			},
+		})
+
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/categories`), "PetCategories")
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/owner`), "PetOwner")
+	})
+
+	t.Run("without-edge-endpoints", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			DisableEdgeEndpoints: true,
+		})
+
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories`), "PetCategories")
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/owner`), "PetOwner")
+	})
+}
+
 func TestConfig_DisableEagerLoadedEndpoints(t *testing.T) {
 	t.Parallel()
 

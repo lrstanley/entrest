@@ -161,7 +161,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 			}
 			ea := GetAnnotation(edge)
 
-			if ea.GetSkip(e.config) || !ea.GetEdgeEndpoint(e.config) {
+			if ea.GetSkip(e.config) || (!ta.GetEdgeEndpoint(e.config) && !ea.GetEdgeEndpoint(e.config)) {
 				continue
 			}
 

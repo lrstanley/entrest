@@ -408,7 +408,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		return nil, errors.New("edge is skipped")
 	}
 
-	if !ea.GetEdgeEndpoint(cfg) {
+	if !ta.GetEdgeEndpoint(cfg) && !ea.GetEdgeEndpoint(cfg) {
 		return nil, errors.New("edge has endpoint disabled or edge is eager-loaded with global config to disable endpoints for edges which are also eager-loaded")
 	}
 
