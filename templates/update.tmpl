@@ -121,7 +121,7 @@ import (
                 {{- if not $e.Unique }}
                     {{- range $prefix := list "Add" "Remove" }}
                         if v, ok := u.{{ $prefix }}{{ $e.StructField }}.Get(); ok && v != nil {
-                            builder.{{ $prefix }}{{ $e.StructField|singular }}IDs(v...)
+                            builder.{{ $prefix }}{{ $e.Name|singular|pascal }}IDs(v...)
                         }
                     {{- end }}
                     {{- if $e.Annotations.Rest.EdgeUpdateBulk }}
@@ -129,7 +129,7 @@ import (
                         if v, ok := u.{{ $e.StructField }}.Get(); ok && !u.Add{{ $e.StructField }}.Present() && !u.Remove{{ $e.StructField }}.Present() {
                             builder.Clear{{ $e.StructField }}()
                             if v != nil {
-                                builder.Add{{ $e.StructField|singular }}IDs(v...)
+                                builder.Add{{ $e.Name|singular|pascal }}IDs(v...)
                             }
                         }
                     {{- end }}
