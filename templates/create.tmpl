@@ -122,7 +122,7 @@ import (
                 {{- end }}
             {{- else }}
                 {{- if not $e.Unique }}
-                    builder.Add{{ $e.StructField|zsingular }}IDs(c.{{ $e.StructField }}...)
+                    builder.Add{{ $e.Name|zsingular|pascal }}IDs(c.{{ $e.StructField }}...)
                 {{- else if $e.Optional }}
                     if c.{{ $e.StructField }} != nil {
                         builder.Set{{ $e.StructField }}ID(*c.{{ $e.StructField }})
