@@ -9175,17 +9175,12 @@
                     },
                     "body": {
                         "type": "string"
-                    },
-                    "author": {
-                        "type": "string",
-                        "format": "uuid"
                     }
                 },
                 "required": [
                     "title",
                     "slug",
-                    "body",
-                    "author"
+                    "body"
                 ]
             },
             "PostEdges": {
@@ -9268,10 +9263,6 @@
                     },
                     "body": {
                         "type": "string"
-                    },
-                    "author": {
-                        "type": "string",
-                        "format": "uuid"
                     }
                 }
             },

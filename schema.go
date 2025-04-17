@@ -216,7 +216,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if ea.GetSkip(cfg) || ea.ReadOnly {
+			if ea.GetSkip(cfg) || ea.ReadOnly || !ea.HasOperation(cfg, op) {
 				continue
 			}
 			if op == OperationUpdate && (e.Immutable || (e.Field() != nil && e.Field().Immutable)) {
