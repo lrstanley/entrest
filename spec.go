@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"maps"
 	"net/http"
 	"slices"
 	"strconv"
@@ -163,9 +164,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 		}
 	}
 
-	for k, v := range GetSchemaType(t, op, nil) {
-		spec.Components.Schemas[k] = v
-	}
+	maps.Copy(spec.Components.Schemas, GetSchemaType(t, op, nil))
 
 	switch op {
 	case OperationCreate:
@@ -442,9 +441,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 		Schema:      idSchema,
 	}
 
-	for k, v := range GetSchemaType(t, op, e) {
-		spec.Components.Schemas[k] = v
-	}
+	maps.Copy(spec.Components.Schemas, GetSchemaType(t, op, e))
 
 	switch op {
 	case OperationRead: // Unique.
@@ -675,9 +672,7 @@ func addGlobalResponseHeaders(spec *ogen.Spec, headers map[string]*ogen.Header) 
 		spec.Components.Headers = make(map[string]*ogen.Header)
 	}
 
-	for k, v := range headers {
-		spec.Components.Headers[k] = v
-	}
+	maps.Copy(spec.Components.Headers, headers)
 
 	for pathName, pathItem := range spec.Paths {
 		spec.Paths[pathName] = PatchPathItem(pathItem, func(resp *ogen.Response) *ogen.Response {

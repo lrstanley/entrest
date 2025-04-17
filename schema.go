@@ -9,6 +9,7 @@ import (
 	"cmp"
 	"encoding/json"
 	"fmt"
+	"maps"
 	"math"
 	"slices"
 	"strings"
@@ -373,9 +374,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 			edgeSchema.Properties = append(edgeSchema.Properties, prop)
 
 			if edge == nil {
-				for k, v := range GetSchemaType(e.Type, OperationRead, e) {
-					schemas[k] = v
-				}
+				maps.Copy(schemas, GetSchemaType(e.Type, OperationRead, e))
 			}
 		}
 
@@ -457,9 +456,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		if oper == op {
 			continue
 		}
-		for k, v := range GetSchemaType(t, oper, nil) {
-			schemas[k] = v
-		}
+		maps.Copy(schemas, GetSchemaType(t, oper, nil))
 	}
 
 	return schemas

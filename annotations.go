@@ -7,6 +7,7 @@ package entrest
 import (
 	"encoding/json"
 	"fmt"
+	"maps"
 	"reflect"
 	"slices"
 	"strings"
@@ -170,25 +171,19 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 		if a.OperationSummary == nil {
 			a.OperationSummary = make(map[Operation]string)
 		}
-		for k, v := range am.OperationSummary {
-			a.OperationSummary[k] = v
-		}
+		maps.Copy(a.OperationSummary, am.OperationSummary)
 	}
 	if len(am.OperationDescription) > 0 {
 		if a.OperationDescription == nil {
 			a.OperationDescription = make(map[Operation]string)
 		}
-		for k, v := range am.OperationDescription {
-			a.OperationDescription[k] = v
-		}
+		maps.Copy(a.OperationDescription, am.OperationDescription)
 	}
 	if len(am.OperationID) > 0 {
 		if a.OperationID == nil {
 			a.OperationID = make(map[Operation]string)
 		}
-		for k, v := range am.OperationID {
-			a.OperationID[k] = v
-		}
+		maps.Copy(a.OperationID, am.OperationID)
 	}
 	if am.Description != "" {
 		a.Description = am.Description
@@ -347,12 +342,7 @@ func (a *Annotation) GetEdgeEndpoint(config *Config) bool {
 
 // HasOperation returns if the operation is allowed on the given annotation.
 func (a *Annotation) HasOperation(config *Config, op Operation) bool {
-	for _, o := range a.GetOperations(config) {
-		if o == op {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(a.GetOperations(config), op)
 }
 
 // GetOperations returns the operations annotation (or defaults from

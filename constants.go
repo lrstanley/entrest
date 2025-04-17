@@ -5,6 +5,7 @@
 package entrest
 
 import (
+	"maps"
 	"net/http"
 
 	"entgo.io/ent/entc/gen"
@@ -82,13 +83,9 @@ type RequestHeaders map[string]*ogen.Parameter
 // a new request headers map.
 func (r RequestHeaders) Append(toMerge ...RequestHeaders) RequestHeaders {
 	out := RequestHeaders{}
-	for k, v := range r {
-		out[k] = v
-	}
+	maps.Copy(out, r)
 	for _, m := range toMerge {
-		for k, v := range m {
-			out[k] = v
-		}
+		maps.Copy(out, m)
 	}
 	return out
 }
@@ -99,13 +96,9 @@ type ResponseHeaders map[string]*ogen.Header
 // a new response headers map.
 func (r ResponseHeaders) Append(toMerge ...ResponseHeaders) ResponseHeaders {
 	out := ResponseHeaders{}
-	for k, v := range r {
-		out[k] = v
-	}
+	maps.Copy(out, r)
 	for _, m := range toMerge {
-		for k, v := range m {
-			out[k] = v
-		}
+		maps.Copy(out, m)
 	}
 	return out
 }
@@ -116,13 +109,9 @@ type ErrorResponses map[int]*ogen.Schema
 // a new error responses map.
 func (r ErrorResponses) Append(toMerge ...ErrorResponses) ErrorResponses {
 	out := ErrorResponses{}
-	for k, v := range r {
-		out[k] = v
-	}
+	maps.Copy(out, r)
 	for _, m := range toMerge {
-		for k, v := range m {
-			out[k] = v
-		}
+		maps.Copy(out, m)
 	}
 	return out
 }
