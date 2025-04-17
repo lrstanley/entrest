@@ -45,6 +45,7 @@ import (
             {{- if or
                 (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
                 $e.Annotations.Rest.ReadOnly
+                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig "create"))
                 (not $e.Type.ID)
             }}
                 {{- continue }}
@@ -100,6 +101,7 @@ import (
             {{- if or
                 (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
                 $e.Annotations.Rest.ReadOnly
+                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig "create"))
                 (not $e.Type.ID)
             }}
                 {{- continue }}

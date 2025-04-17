@@ -141,6 +141,7 @@ func (User) Edges() []ent.Edge {
 				entrest.WithFilter(entrest.FilterEdge),
 				entsql.OnDelete(entsql.Cascade),
 			),
+		edge.To("posts", Post.Type).Annotations(),
 	}
 }
 

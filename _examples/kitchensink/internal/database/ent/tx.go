@@ -20,6 +20,8 @@ type Tx struct {
 	Friendship *FriendshipClient
 	// Pet is the client for interacting with the Pet builders.
 	Pet *PetClient
+	// Post is the client for interacting with the Post builders.
+	Post *PostClient
 	// Settings is the client for interacting with the Settings builders.
 	Settings *SettingsClient
 	// Skipped is the client for interacting with the Skipped builders.
@@ -161,6 +163,7 @@ func (tx *Tx) init() {
 	tx.Follows = NewFollowsClient(tx.config)
 	tx.Friendship = NewFriendshipClient(tx.config)
 	tx.Pet = NewPetClient(tx.config)
+	tx.Post = NewPostClient(tx.config)
 	tx.Settings = NewSettingsClient(tx.config)
 	tx.Skipped = NewSkippedClient(tx.config)
 	tx.User = NewUserClient(tx.config)

@@ -3799,6 +3799,544 @@
                 }
             ]
         },
+        "/posts": {
+            "summary": "List posts",
+            "description": "List Post entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "List posts",
+                "description": "List Post entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "operationId": "listPosts",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Page"
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "The number of entities to retrieve per page.",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort entity results by the given field.",
+                        "schema": {
+                            "$ref": "#/components/schemas/PostSortableFields",
+                            "default": "id"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/FilterOperation"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostCreatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostCreatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostUpdatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeHasAuthor"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorCreatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorCreatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorUpdatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorTypeNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorDescriptionIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorDescriptionContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorDescriptionContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEnabledEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorLastAuthenticatedAtIsNil"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested Post.",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostList"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Create a new post",
+                "description": "Create a new Post entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "operationId": "createPost",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "The created Post entity.",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostRead"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/ErrorConflict"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/PrettyResponse"
+                },
+                {
+                    "$ref": "#/components/parameters/X-Request-Id"
+                }
+            ]
+        },
+        "/posts/{postID}": {
+            "summary": "Operate on a single Post entity",
+            "description": "Operate on a single Post entity by its ID.",
+            "get": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Retrieve a post",
+                "description": "Retrieve a single Post entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "operationId": "getPost",
+                "responses": {
+                    "200": {
+                        "description": "The requested Post entity.",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostRead"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Delete a post",
+                "description": "Delete a single Post entity by its ID.",
+                "operationId": "deletePost",
+                "responses": {
+                    "204": {
+                        "description": "The requested Post entity.",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "patch": {
+                "tags": [
+                    "Posts"
+                ],
+                "summary": "Update a post",
+                "description": "Update an existing Post entity. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "operationId": "updatePost",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "The update Post entity.",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostRead"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "409": {
+                        "$ref": "#/components/responses/ErrorConflict"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/PrettyResponse"
+                },
+                {
+                    "$ref": "#/components/parameters/PostID"
+                },
+                {
+                    "$ref": "#/components/parameters/X-Request-Id"
+                }
+            ]
+        },
+        "/posts/{postID}/author": {
+            "summary": "Get a posts associated author",
+            "description": "Get a posts associated author (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "get": {
+                "tags": [
+                    "Posts",
+                    "Users"
+                ],
+                "summary": "Get a posts associated author",
+                "description": "Get a posts associated author (User entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "operationId": "getPostAuthor",
+                "responses": {
+                    "200": {
+                        "description": "The requested author entity.",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/UserRead"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/PrettyResponse"
+                },
+                {
+                    "$ref": "#/components/parameters/PostID"
+                },
+                {
+                    "$ref": "#/components/parameters/X-Request-Id"
+                }
+            ]
+        },
         "/settings": {
             "summary": "List settings",
             "description": "List Setting entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -7302,6 +7840,253 @@
                 }
             ]
         },
+        "/users/{userID}/posts": {
+            "summary": "List a users associated posts",
+            "description": "List a users associated posts (Post entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "get": {
+                "tags": [
+                    "Users",
+                    "Posts"
+                ],
+                "summary": "List a users associated posts",
+                "description": "List a users associated posts (Post entity type). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "operationId": "listUserPosts",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Page"
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "The number of entities to retrieve per page.",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort entity results by the given field.",
+                        "schema": {
+                            "$ref": "#/components/schemas/PostSortableFields",
+                            "default": "id"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/FilterOperation"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostCreatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostCreatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostUpdatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PostUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeHasAuthor"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorCreatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorCreatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorUpdatedAtGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorNameHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorTypeNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorDescriptionIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorDescriptionContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorDescriptionContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEnabledEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorLastAuthenticatedAtEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorLastAuthenticatedAtNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeAuthorLastAuthenticatedAtIsNil"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested posts.",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostList"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/PrettyResponse"
+                },
+                {
+                    "$ref": "#/components/parameters/UserID"
+                },
+                {
+                    "$ref": "#/components/parameters/X-Request-Id"
+                }
+            ]
+        },
         "/version": {
             "get": {
                 "tags": [
@@ -8341,6 +9126,155 @@
                     }
                 }
             },
+            "Post": {
+                "description": "A single Post entity.",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The ID of the Post entity.",
+                        "type": "integer"
+                    },
+                    "created_at": {
+                        "description": "Time in which the resource was initially created.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "description": "Time that the resource was last updated.",
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "id",
+                    "created_at",
+                    "updated_at",
+                    "title",
+                    "slug",
+                    "body"
+                ]
+            },
+            "PostCreate": {
+                "description": "A single Post entity and the fields that can be created/updated.",
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "author": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                },
+                "required": [
+                    "title",
+                    "slug",
+                    "body",
+                    "author"
+                ]
+            },
+            "PostEdges": {
+                "type": "object",
+                "properties": {
+                    "author": {
+                        "$ref": "#/components/schemas/User"
+                    }
+                },
+                "required": [
+                    "author"
+                ]
+            },
+            "PostList": {
+                "description": "A paginated result set of Post entities. Includes eager-loaded edges (if any) for each entity.",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/PagedResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "content": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/PostRead"
+                                }
+                            }
+                        },
+                        "required": [
+                            "content"
+                        ]
+                    }
+                ]
+            },
+            "PostRead": {
+                "description": "A single Post entity.",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Post"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "edges": {
+                                "$ref": "#/components/schemas/PostEdges"
+                            }
+                        },
+                        "required": [
+                            "edges"
+                        ]
+                    }
+                ]
+            },
+            "PostSortableFields": {
+                "description": "All potential sortable fields for Post entities.",
+                "type": "string",
+                "enum": [
+                    "author.created_at",
+                    "author.email",
+                    "author.id",
+                    "author.name",
+                    "author.updated_at",
+                    "created_at",
+                    "id",
+                    "random",
+                    "updated_at"
+                ],
+                "default": "id"
+            },
+            "PostUpdate": {
+                "description": "A single Post entity and the fields that can be created/updated.",
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "slug": {
+                        "type": "string"
+                    },
+                    "body": {
+                        "type": "string"
+                    },
+                    "author": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
             "Setting": {
                 "description": "Settings contains the global settings for the platform. Generally only one should ever be returned.",
                 "type": "object",
@@ -8619,6 +9553,12 @@
                             "format": "uuid"
                         }
                     },
+                    "posts": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
                     "friendships": {
                         "type": "array",
                         "items": {
@@ -8705,6 +9645,7 @@
                     "name",
                     "pets.age.sum",
                     "pets.count",
+                    "posts.count",
                     "random",
                     "updated_at"
                 ],
@@ -8807,6 +9748,18 @@
                         "items": {
                             "type": "string",
                             "format": "uuid"
+                        }
+                    },
+                    "add_posts": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
+                        }
+                    },
+                    "remove_posts": {
+                        "type": "array",
+                        "items": {
+                            "type": "integer"
                         }
                     },
                     "add_friendships": {
@@ -9050,6 +10003,344 @@
             },
             "CategoryUpdatedAtLT": {
                 "name": "updatedAt.lt",
+                "in": "query",
+                "description": "Filters field \"updated_at\" to be less than the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeAuthorCreatedAtGT": {
+                "name": "author.createdAt.gt",
+                "in": "query",
+                "description": "Filters field \"created_at\" to be greater than the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeAuthorCreatedAtLT": {
+                "name": "author.createdAt.lt",
+                "in": "query",
+                "description": "Filters field \"created_at\" to be less than the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeAuthorDescriptionContains": {
+                "name": "author.description.has",
+                "in": "query",
+                "description": "Filters field \"description\" to contain the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorDescriptionContainsFold": {
+                "name": "author.description.ihas",
+                "in": "query",
+                "description": "Filters field \"description\" to contain the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorDescriptionIsNil": {
+                "name": "author.description.null",
+                "in": "query",
+                "description": "Filters field \"description\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeAuthorEmailContains": {
+                "name": "author.email.has",
+                "in": "query",
+                "description": "Filters field \"email\" to contain the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorEmailContainsFold": {
+                "name": "author.email.ihas",
+                "in": "query",
+                "description": "Filters field \"email\" to contain the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorEmailEQ": {
+                "name": "author.email.eq",
+                "in": "query",
+                "description": "Filters field \"email\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorEmailEqualFold": {
+                "name": "author.email.ieq",
+                "in": "query",
+                "description": "Filters field \"email\" to be equal to the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorEmailHasPrefix": {
+                "name": "author.email.prefix",
+                "in": "query",
+                "description": "Filters field \"email\" to start with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorEmailHasSuffix": {
+                "name": "author.email.suffix",
+                "in": "query",
+                "description": "Filters field \"email\" to end with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorEmailIn": {
+                "name": "author.email.in",
+                "in": "query",
+                "description": "Filters field \"email\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EdgeAuthorEmailIsNil": {
+                "name": "author.email.null",
+                "in": "query",
+                "description": "Filters field \"email\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeAuthorEmailNEQ": {
+                "name": "author.email.neq",
+                "in": "query",
+                "description": "Filters field \"email\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorEmailNotIn": {
+                "name": "author.email.notIn",
+                "in": "query",
+                "description": "Filters field \"email\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EdgeAuthorEnabledEQ": {
+                "name": "author.enabled.eq",
+                "in": "query",
+                "description": "Filters field \"enabled\" to be equal to the provided value.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeAuthorIDEQ": {
+                "name": "author.id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "EdgeAuthorIDIn": {
+                "name": "author.id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "EdgeAuthorIDNEQ": {
+                "name": "author.id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "EdgeAuthorIDNotIn": {
+                "name": "author.id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "EdgeAuthorLastAuthenticatedAtEQ": {
+                "name": "author.lastAuthenticatedAt.eq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeAuthorLastAuthenticatedAtIsNil": {
+                "name": "author.lastAuthenticatedAt.null",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "EdgeAuthorLastAuthenticatedAtNEQ": {
+                "name": "author.lastAuthenticatedAt.neq",
+                "in": "query",
+                "description": "Filters field \"last_authenticated_at\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeAuthorNameContains": {
+                "name": "author.name.has",
+                "in": "query",
+                "description": "Filters field \"name\" to contain the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorNameContainsFold": {
+                "name": "author.name.ihas",
+                "in": "query",
+                "description": "Filters field \"name\" to contain the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorNameEQ": {
+                "name": "author.name.eq",
+                "in": "query",
+                "description": "Filters field \"name\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorNameEqualFold": {
+                "name": "author.name.ieq",
+                "in": "query",
+                "description": "Filters field \"name\" to be equal to the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorNameHasPrefix": {
+                "name": "author.name.prefix",
+                "in": "query",
+                "description": "Filters field \"name\" to start with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorNameHasSuffix": {
+                "name": "author.name.suffix",
+                "in": "query",
+                "description": "Filters field \"name\" to end with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorNameIn": {
+                "name": "author.name.in",
+                "in": "query",
+                "description": "Filters field \"name\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EdgeAuthorNameNEQ": {
+                "name": "author.name.neq",
+                "in": "query",
+                "description": "Filters field \"name\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "EdgeAuthorNameNotIn": {
+                "name": "author.name.notIn",
+                "in": "query",
+                "description": "Filters field \"name\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EdgeAuthorTypeEQ": {
+                "name": "author.type.eq",
+                "in": "query",
+                "description": "Filters field \"type\" to be equal to the provided value.",
+                "schema": {
+                    "$ref": "#/components/schemas/UserTypeEnum"
+                }
+            },
+            "EdgeAuthorTypeIn": {
+                "name": "author.type.in",
+                "in": "query",
+                "description": "Filters field \"type\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UserTypeEnum"
+                    }
+                }
+            },
+            "EdgeAuthorTypeNEQ": {
+                "name": "author.type.neq",
+                "in": "query",
+                "description": "Filters field \"type\" to be not equal to the provided value.",
+                "schema": {
+                    "$ref": "#/components/schemas/UserTypeEnum"
+                }
+            },
+            "EdgeAuthorTypeNotIn": {
+                "name": "author.type.notIn",
+                "in": "query",
+                "description": "Filters field \"type\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/UserTypeEnum"
+                    }
+                }
+            },
+            "EdgeAuthorUpdatedAtGT": {
+                "name": "author.updatedAt.gt",
+                "in": "query",
+                "description": "Filters field \"updated_at\" to be greater than the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "EdgeAuthorUpdatedAtLT": {
+                "name": "author.updatedAt.lt",
                 "in": "query",
                 "description": "Filters field \"updated_at\" to be less than the provided value.",
                 "schema": {
@@ -10211,6 +11502,14 @@
                         "type": "string",
                         "format": "uuid"
                     }
+                }
+            },
+            "EdgeHasAuthor": {
+                "name": "has.author",
+                "in": "query",
+                "description": "If true, only return entities that have a author edge.",
+                "schema": {
+                    "type": "boolean"
                 }
             },
             "EdgeHasCategory": {
@@ -11515,6 +12814,89 @@
                     }
                 }
             },
+            "PostCreatedAtGT": {
+                "name": "createdAt.gt",
+                "in": "query",
+                "description": "Filters field \"created_at\" to be greater than the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "PostCreatedAtLT": {
+                "name": "createdAt.lt",
+                "in": "query",
+                "description": "Filters field \"created_at\" to be less than the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "PostID": {
+                "name": "postID",
+                "in": "path",
+                "description": "The ID of the Post to act upon.",
+                "required": true,
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "PostIDEQ": {
+                "name": "id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "PostIDIn": {
+                "name": "id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "PostIDNEQ": {
+                "name": "id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "integer"
+                }
+            },
+            "PostIDNotIn": {
+                "name": "id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            },
+            "PostUpdatedAtGT": {
+                "name": "updatedAt.gt",
+                "in": "query",
+                "description": "Filters field \"updated_at\" to be greater than the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "PostUpdatedAtLT": {
+                "name": "updatedAt.lt",
+                "in": "query",
+                "description": "Filters field \"updated_at\" to be less than the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
             "PrettyResponse": {
                 "name": "pretty",
                 "in": "query",
@@ -12087,6 +13469,9 @@
         },
         {
             "name": "Users"
+        },
+        {
+            "name": "Posts"
         },
         {
             "name": "Settings",

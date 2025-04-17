@@ -16,6 +16,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/skipped"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
@@ -83,6 +84,7 @@ func checkColumn(table, column string) error {
 			follows.Table:    follows.ValidColumn,
 			friendship.Table: friendship.ValidColumn,
 			pet.Table:        pet.ValidColumn,
+			post.Table:       post.ValidColumn,
 			settings.Table:   settings.ValidColumn,
 			skipped.Table:    skipped.ValidColumn,
 			user.Table:       user.ValidColumn,

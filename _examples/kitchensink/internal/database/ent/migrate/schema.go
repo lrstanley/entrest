@@ -109,6 +109,30 @@ var (
 			},
 		},
 	}
+	// PostsColumns holds the columns for the "posts" table.
+	PostsColumns = []*schema.Column{
+		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "created_at", Type: field.TypeTime},
+		{Name: "updated_at", Type: field.TypeTime},
+		{Name: "title", Type: field.TypeString, Size: 200},
+		{Name: "slug", Type: field.TypeString},
+		{Name: "body", Type: field.TypeString},
+		{Name: "user_posts", Type: field.TypeUUID},
+	}
+	// PostsTable holds the schema information for the "posts" table.
+	PostsTable = &schema.Table{
+		Name:       "posts",
+		Columns:    PostsColumns,
+		PrimaryKey: []*schema.Column{PostsColumns[0]},
+		ForeignKeys: []*schema.ForeignKey{
+			{
+				Symbol:     "posts_users_posts",
+				Columns:    []*schema.Column{PostsColumns[6]},
+				RefColumns: []*schema.Column{UsersColumns[0]},
+				OnDelete:   schema.NoAction,
+			},
+		},
+	}
 	// SettingsColumns holds the columns for the "settings" table.
 	SettingsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
@@ -220,6 +244,7 @@ var (
 		FollowsTable,
 		FriendshipsTable,
 		PetsTable,
+		PostsTable,
 		SettingsTable,
 		SkippedsTable,
 		UsersTable,
@@ -234,6 +259,7 @@ func init() {
 	FriendshipsTable.ForeignKeys[0].RefTable = UsersTable
 	FriendshipsTable.ForeignKeys[1].RefTable = UsersTable
 	PetsTable.ForeignKeys[0].RefTable = UsersTable
+	PostsTable.ForeignKeys[0].RefTable = UsersTable
 	UsersTable.ForeignKeys[0].RefTable = SettingsTable
 	CategoryPetsTable.ForeignKeys[0].RefTable = CategoriesTable
 	CategoryPetsTable.ForeignKeys[1].RefTable = PetsTable

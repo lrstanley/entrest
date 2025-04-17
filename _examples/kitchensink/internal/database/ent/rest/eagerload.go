@@ -47,6 +47,16 @@ func EagerLoadPet(query *ent.PetQuery) *ent.PetQuery {
 	)
 }
 
+// EagerLoadPost eager-loads the edges of a Post entity, if any edges
+// were requested to be eager-loaded, based off associated annotations.
+func EagerLoadPost(query *ent.PostQuery) *ent.PostQuery {
+	return query.WithAuthor(
+		func(e *ent.UserQuery) {
+			applySortingUser(e, "name", "asc")
+		},
+	)
+}
+
 // EagerLoadSetting eager-loads the edges of a Setting entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
 func EagerLoadSetting(query *ent.SettingsQuery) *ent.SettingsQuery {

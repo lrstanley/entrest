@@ -24,6 +24,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/privacy"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
@@ -605,6 +606,12 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /pets", ReqParam(s, OperationCreate, s.CreatePet))
 	mux.HandleFunc("PATCH /pets/{id}", ReqIDParam(s, OperationUpdate, s.UpdatePet))
 	mux.HandleFunc("DELETE /pets/{id}", ReqID(s, OperationDelete, s.DeletePet))
+	mux.HandleFunc("GET /posts", ReqParam(s, OperationList, s.ListPosts))
+	mux.HandleFunc("GET /posts/{id}", ReqID(s, OperationRead, s.GetPost))
+	mux.HandleFunc("GET /posts/{id}/author", ReqID(s, OperationRead, s.GetPostAuthor))
+	mux.HandleFunc("POST /posts", ReqParam(s, OperationCreate, s.CreatePost))
+	mux.HandleFunc("PATCH /posts/{id}", ReqIDParam(s, OperationUpdate, s.UpdatePost))
+	mux.HandleFunc("DELETE /posts/{id}", ReqID(s, OperationDelete, s.DeletePost))
 	mux.HandleFunc("GET /settings", ReqParam(s, OperationList, s.ListSettings))
 	mux.HandleFunc("GET /settings/{id}", ReqID(s, OperationRead, s.GetSetting))
 	mux.HandleFunc("GET /settings/{id}/admins", ReqIDParam(s, OperationList, s.ListSettingAdmins))
@@ -614,6 +621,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /users/{id}/pets", ReqIDParam(s, OperationList, s.ListUserPets))
 	mux.HandleFunc("GET /users/{id}/followed-pets", ReqIDParam(s, OperationList, s.ListUserFollowedPets))
 	mux.HandleFunc("GET /users/{id}/friends", ReqIDParam(s, OperationList, s.ListUserFriends))
+	mux.HandleFunc("GET /users/{id}/posts", ReqIDParam(s, OperationList, s.ListUserPosts))
 	mux.HandleFunc("GET /users/{id}/friendships", ReqIDParam(s, OperationList, s.ListUserFriendships))
 	mux.HandleFunc("POST /users", ReqParam(s, OperationCreate, s.CreateUser))
 	mux.HandleFunc("PATCH /users/{id}", ReqIDParam(s, OperationUpdate, s.UpdateUser))
@@ -763,6 +771,36 @@ func (s *Server) DeletePet(r *http.Request, petID int) (*struct{}, error) {
 	return nil, s.db.Pet.DeleteOneID(petID).Exec(r.Context())
 }
 
+// ListPosts maps to "GET /posts".
+func (s *Server) ListPosts(r *http.Request, p *ListPostParams) (*PagedResponse[ent.Post], error) {
+	return p.Exec(r.Context(), s.db.Post.Query())
+}
+
+// GetPost maps to "GET /posts/{id}".
+func (s *Server) GetPost(r *http.Request, postID int) (*ent.Post, error) {
+	return EagerLoadPost(s.db.Post.Query().Where(post.ID(postID))).Only(r.Context())
+}
+
+// GetPostAuthor maps to "GET /posts/{id}/author".
+func (s *Server) GetPostAuthor(r *http.Request, postID int) (*ent.User, error) {
+	return EagerLoadUser(s.db.Post.Query().Where(post.ID(postID)).QueryAuthor()).Only(r.Context())
+}
+
+// CreatePost maps to "POST /posts".
+func (s *Server) CreatePost(r *http.Request, p *CreatePostParams) (*ent.Post, error) {
+	return p.Exec(r.Context(), s.db.Post.Create(), s.db.Post.Query())
+}
+
+// UpdatePost maps to "PATCH /posts/{id}".
+func (s *Server) UpdatePost(r *http.Request, postID int, p *UpdatePostParams) (*ent.Post, error) {
+	return p.Exec(r.Context(), s.db.Post.UpdateOneID(postID), s.db.Post.Query())
+}
+
+// DeletePost maps to "DELETE /posts/{id}".
+func (s *Server) DeletePost(r *http.Request, postID int) (*struct{}, error) {
+	return nil, s.db.Post.DeleteOneID(postID).Exec(r.Context())
+}
+
 // ListSettings maps to "GET /settings".
 func (s *Server) ListSettings(r *http.Request, p *ListSettingParams) (*PagedResponse[ent.Settings], error) {
 	return p.Exec(r.Context(), s.db.Settings.Query())
@@ -806,6 +844,11 @@ func (s *Server) ListUserFollowedPets(r *http.Request, userID uuid.UUID, p *List
 // ListUserFriends maps to "GET /users/{id}/friends".
 func (s *Server) ListUserFriends(r *http.Request, userID uuid.UUID, p *ListUserParams) (*PagedResponse[ent.User], error) {
 	return p.Exec(r.Context(), s.db.User.Query().Where(user.ID(userID)).QueryFriends())
+}
+
+// ListUserPosts maps to "GET /users/{id}/posts".
+func (s *Server) ListUserPosts(r *http.Request, userID uuid.UUID, p *ListPostParams) (*PagedResponse[ent.Post], error) {
+	return p.Exec(r.Context(), s.db.User.Query().Where(user.ID(userID)).QueryPosts())
 }
 
 // ListUserFriendships maps to "GET /users/{id}/friendships".

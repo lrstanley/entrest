@@ -13,6 +13,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 	schema "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
@@ -150,6 +151,31 @@ func (c *CreatePetParams) Exec(ctx context.Context, builder *ent.PetCreate, quer
 	return EagerLoadPet(query.Where(pet.ID(result.ID))).Only(ctx)
 }
 
+// CreatePostParams defines parameters for creating a Post via a POST request.
+type CreatePostParams struct {
+	Title string `json:"title"`
+	Slug  string `json:"slug"`
+	Body  string `json:"body"`
+}
+
+func (c *CreatePostParams) ApplyInputs(builder *ent.PostCreate) *ent.PostCreate {
+	builder.SetTitle(c.Title)
+	builder.SetSlug(c.Slug)
+	builder.SetBody(c.Body)
+	return builder
+}
+
+// Exec wraps all logic (mapping all provided values to the builder), creates the entity,
+// and does another query (using provided query as base) to get the entity, with all eager
+// loaded edges.
+func (c *CreatePostParams) Exec(ctx context.Context, builder *ent.PostCreate, query *ent.PostQuery) (*ent.Post, error) {
+	result, err := c.ApplyInputs(builder).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return EagerLoadPost(query.Where(post.ID(result.ID))).Only(ctx)
+}
+
 // CreateSettingParams defines parameters for creating a Setting via a POST request.
 type CreateSettingParams struct {
 	// Global banner text to apply to the frontend.
@@ -204,6 +230,7 @@ type CreateUserParams struct {
 	FollowedPets []int `json:"followed_pets,omitempty"`
 	// Friends of the user.
 	Friends     []uuid.UUID `json:"friends,omitempty"`
+	Posts       []int       `json:"posts,omitempty"`
 	Friendships []int       `json:"friendships,omitempty"`
 }
 
@@ -240,6 +267,7 @@ func (c *CreateUserParams) ApplyInputs(builder *ent.UserCreate) *ent.UserCreate 
 	builder.AddPetIDs(c.Pets...)
 	builder.AddFollowedPetIDs(c.FollowedPets...)
 	builder.AddFriendIDs(c.Friends...)
+	builder.AddPostIDs(c.Posts...)
 	builder.AddFriendshipIDs(c.Friendships...)
 	return builder
 }

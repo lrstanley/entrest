@@ -13,6 +13,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 )
@@ -146,6 +147,22 @@ var (
 		DefaultField: "name",
 		DefaultOrder: "asc",
 	}
+	// PostSortConfig defines the default sort configuration for Post.
+	PostSortConfig = &SortConfig{
+		Fields: []string{
+			"author.created_at",
+			"author.email",
+			"author.id",
+			"author.name",
+			"author.updated_at",
+			"created_at",
+			"id",
+			"random",
+			"updated_at",
+		},
+		DefaultField: "id",
+		DefaultOrder: "asc",
+	}
 	// SettingSortConfig defines the default sort configuration for Setting.
 	SettingSortConfig = &SortConfig{
 		Fields: []string{
@@ -172,6 +189,7 @@ var (
 			"name",
 			"pets.age.sum",
 			"pets.count",
+			"posts.count",
 			"random",
 			"updated_at",
 		},
@@ -315,6 +333,23 @@ func applySortingPet(query *ent.PetQuery, field string, order orderDirection) *e
 	return query.Order(withFieldSelector(field, order))
 }
 
+// applySortingPost applies sorting to the query based on the provided sort and
+// order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
+func applySortingPost(query *ent.PostQuery, field string, order orderDirection) *ent.PostQuery {
+	if parts := strings.Split(field, "."); len(parts) > 1 {
+		dir := withOrderTerm(order)
+
+		switch parts[0] {
+		case post.EdgeAuthor:
+			return query.Order(post.ByAuthorField(parts[1], dir))
+		}
+	}
+	if field == "random" {
+		return query.Order(sql.OrderByRand())
+	}
+	return query.Order(withFieldSelector(field, order))
+}
+
 // applySortingSetting applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
 func applySortingSetting(query *ent.SettingsQuery, field string, order orderDirection) *ent.SettingsQuery {
@@ -392,6 +427,15 @@ func applySortingUser(query *ent.UserQuery, field string, order orderDirection) 
 				return query.Order(user.ByFriends(sql.OrderBySum(parts[1], dir)))
 			default:
 				return query.Order(user.ByFriends(sql.OrderByField(parts[1], dir)))
+			}
+		case user.EdgePosts:
+			switch {
+			case isCount:
+				return query.Order(user.ByPostsCount(dir))
+			case isSum:
+				return query.Order(user.ByPosts(sql.OrderBySum(parts[1], dir)))
+			default:
+				return query.Order(user.ByPosts(sql.OrderByField(parts[1], dir)))
 			}
 		case user.EdgeFollowing:
 			switch {

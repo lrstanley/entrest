@@ -60,13 +60,15 @@ type UserEdges struct {
 	FollowedPets []*Pet `json:"followed_pets,omitempty"`
 	// Friends of the user.
 	Friends []*User `json:"friends,omitempty"`
+	// Posts holds the value of the posts edge.
+	Posts []*Post `json:"posts,omitempty"`
 	// Following holds the value of the following edge.
 	Following []*Follows `json:"following,omitempty"`
 	// Friendships holds the value of the friendships edge.
 	Friendships []*Friendship `json:"friendships,omitempty"`
 	// loadedTypes holds the information for reporting if a
 	// type was loaded (or requested) in eager-loading or not.
-	loadedTypes [5]bool
+	loadedTypes [6]bool
 }
 
 // PetsOrErr returns the Pets value or an error if the edge
@@ -96,10 +98,19 @@ func (e UserEdges) FriendsOrErr() ([]*User, error) {
 	return nil, &NotLoadedError{edge: "friends"}
 }
 
+// PostsOrErr returns the Posts value or an error if the edge
+// was not loaded in eager-loading.
+func (e UserEdges) PostsOrErr() ([]*Post, error) {
+	if e.loadedTypes[3] {
+		return e.Posts, nil
+	}
+	return nil, &NotLoadedError{edge: "posts"}
+}
+
 // FollowingOrErr returns the Following value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) FollowingOrErr() ([]*Follows, error) {
-	if e.loadedTypes[3] {
+	if e.loadedTypes[4] {
 		return e.Following, nil
 	}
 	return nil, &NotLoadedError{edge: "following"}
@@ -108,7 +119,7 @@ func (e UserEdges) FollowingOrErr() ([]*Follows, error) {
 // FriendshipsOrErr returns the Friendships value or an error if the edge
 // was not loaded in eager-loading.
 func (e UserEdges) FriendshipsOrErr() ([]*Friendship, error) {
-	if e.loadedTypes[4] {
+	if e.loadedTypes[5] {
 		return e.Friendships, nil
 	}
 	return nil, &NotLoadedError{edge: "friendships"}
@@ -264,6 +275,11 @@ func (u *User) QueryFollowedPets() *PetQuery {
 // QueryFriends queries the "friends" edge of the User entity.
 func (u *User) QueryFriends() *UserQuery {
 	return NewUserClient(u.config).QueryFriends(u)
+}
+
+// QueryPosts queries the "posts" edge of the User entity.
+func (u *User) QueryPosts() *PostQuery {
+	return NewUserClient(u.config).QueryPosts(u)
 }
 
 // QueryFollowing queries the "following" edge of the User entity.

@@ -15,6 +15,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
@@ -60,6 +61,13 @@ var (
 	// PetPageConfig defines the page configuration for LIST-related endpoints
 	// for Pet.
 	PetPageConfig = &PageConfig{
+		MinItemsPerPage: DefaultPageConfig.MinItemsPerPage,
+		ItemsPerPage:    DefaultPageConfig.ItemsPerPage,
+		MaxItemsPerPage: DefaultPageConfig.MaxItemsPerPage,
+	}
+	// PostPageConfig defines the page configuration for LIST-related endpoints
+	// for Post.
+	PostPageConfig = &PageConfig{
 		MinItemsPerPage: DefaultPageConfig.MinItemsPerPage,
 		ItemsPerPage:    DefaultPageConfig.ItemsPerPage,
 		MaxItemsPerPage: DefaultPageConfig.MaxItemsPerPage,
@@ -1605,6 +1613,300 @@ func (l *ListPetParams) Exec(ctx context.Context, query *ent.PetQuery) (results 
 		return nil, err
 	}
 	return l.ExecutePaginated(ctx, query, PetPageConfig)
+}
+
+// ListPostParams defines parameters for listing Posts via a GET request.
+type ListPostParams struct {
+	Sorted
+	Paginated[*ent.PostQuery, ent.Post]
+	Filtered[predicate.Post]
+
+	// Filters field "id" to be equal to the provided value.
+	PostIDEQ *int `form:"id.eq,omitempty" json:"post_ideq,omitempty"`
+	// Filters field "id" to be not equal to the provided value.
+	PostIDNEQ *int `form:"id.neq,omitempty" json:"post_idneq,omitempty"`
+	// Filters field "id" to be within the provided values.
+	PostIDIn []int `form:"id.in,omitempty" json:"post_id_in,omitempty"`
+	// Filters field "id" to be not within the provided values.
+	PostIDNotIn []int `form:"id.notIn,omitempty" json:"post_id_not_in,omitempty"`
+	// Filters field "created_at" to be greater than the provided value.
+	PostCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"post_created_at_gt,omitempty"`
+	// Filters field "created_at" to be less than the provided value.
+	PostCreatedAtLT *time.Time `form:"createdAt.lt,omitempty" json:"post_created_at_lt,omitempty"`
+	// Filters field "updated_at" to be greater than the provided value.
+	PostUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"post_updated_at_gt,omitempty"`
+	// Filters field "updated_at" to be less than the provided value.
+	PostUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"post_updated_at_lt,omitempty"`
+	// If true, only return entities that have a author edge.
+	EdgeHasAuthor *bool `form:"has.author,omitempty" json:"edge_has_author,omitempty"`
+	// Filters field "id" to be equal to the provided value.
+	EdgeAuthorIDEQ *uuid.UUID `form:"author.id.eq,omitempty" json:"edge_author_ideq,omitempty"`
+	// Filters field "id" to be not equal to the provided value.
+	EdgeAuthorIDNEQ *uuid.UUID `form:"author.id.neq,omitempty" json:"edge_author_idneq,omitempty"`
+	// Filters field "id" to be within the provided values.
+	EdgeAuthorIDIn []uuid.UUID `form:"author.id.in,omitempty" json:"edge_author_id_in,omitempty"`
+	// Filters field "id" to be not within the provided values.
+	EdgeAuthorIDNotIn []uuid.UUID `form:"author.id.notIn,omitempty" json:"edge_author_id_not_in,omitempty"`
+	// Filters field "created_at" to be greater than the provided value.
+	EdgeAuthorCreatedAtGT *time.Time `form:"author.createdAt.gt,omitempty" json:"edge_author_created_at_gt,omitempty"`
+	// Filters field "created_at" to be less than the provided value.
+	EdgeAuthorCreatedAtLT *time.Time `form:"author.createdAt.lt,omitempty" json:"edge_author_created_at_lt,omitempty"`
+	// Filters field "updated_at" to be greater than the provided value.
+	EdgeAuthorUpdatedAtGT *time.Time `form:"author.updatedAt.gt,omitempty" json:"edge_author_updated_at_gt,omitempty"`
+	// Filters field "updated_at" to be less than the provided value.
+	EdgeAuthorUpdatedAtLT *time.Time `form:"author.updatedAt.lt,omitempty" json:"edge_author_updated_at_lt,omitempty"`
+	// Filters field "name" to be equal to the provided value.
+	EdgeAuthorNameEQ *string `form:"author.name.eq,omitempty" json:"edge_author_name_eq,omitempty"`
+	// Filters field "name" to be not equal to the provided value.
+	EdgeAuthorNameNEQ *string `form:"author.name.neq,omitempty" json:"edge_author_name_neq,omitempty"`
+	// Filters field "name" to be within the provided values.
+	EdgeAuthorNameIn []string `form:"author.name.in,omitempty" json:"edge_author_name_in,omitempty"`
+	// Filters field "name" to be not within the provided values.
+	EdgeAuthorNameNotIn []string `form:"author.name.notIn,omitempty" json:"edge_author_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	EdgeAuthorNameEqualFold *string `form:"author.name.ieq,omitempty" json:"edge_author_name_equal_fold,omitempty"`
+	// Filters field "name" to contain the provided value.
+	EdgeAuthorNameContains *string `form:"author.name.has,omitempty" json:"edge_author_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	EdgeAuthorNameContainsFold *string `form:"author.name.ihas,omitempty" json:"edge_author_name_contains_fold,omitempty"`
+	// Filters field "name" to start with the provided value.
+	EdgeAuthorNameHasPrefix *string `form:"author.name.prefix,omitempty" json:"edge_author_name_has_prefix,omitempty"`
+	// Filters field "name" to end with the provided value.
+	EdgeAuthorNameHasSuffix *string `form:"author.name.suffix,omitempty" json:"edge_author_name_has_suffix,omitempty"`
+	// Filters field "type" to be equal to the provided value.
+	EdgeAuthorTypeEQ *user.Type `form:"author.type.eq,omitempty" json:"edge_author_type_eq,omitempty"`
+	// Filters field "type" to be not equal to the provided value.
+	EdgeAuthorTypeNEQ *user.Type `form:"author.type.neq,omitempty" json:"edge_author_type_neq,omitempty"`
+	// Filters field "type" to be within the provided values.
+	EdgeAuthorTypeIn []user.Type `form:"author.type.in,omitempty" json:"edge_author_type_in,omitempty"`
+	// Filters field "type" to be not within the provided values.
+	EdgeAuthorTypeNotIn []user.Type `form:"author.type.notIn,omitempty" json:"edge_author_type_not_in,omitempty"`
+	// Filters field "description" to be null/nil.
+	EdgeAuthorDescriptionIsNil *bool `form:"author.description.null,omitempty" json:"edge_author_description_is_nil,omitempty"`
+	// Filters field "description" to contain the provided value.
+	EdgeAuthorDescriptionContains *string `form:"author.description.has,omitempty" json:"edge_author_description_contains,omitempty"`
+	// Filters field "description" to contain the provided value, case-insensitive.
+	EdgeAuthorDescriptionContainsFold *string `form:"author.description.ihas,omitempty" json:"edge_author_description_contains_fold,omitempty"`
+	// Filters field "enabled" to be equal to the provided value.
+	EdgeAuthorEnabledEQ *bool `form:"author.enabled.eq,omitempty" json:"edge_author_enabled_eq,omitempty"`
+	// Filters field "email" to be equal to the provided value.
+	EdgeAuthorEmailEQ *string `form:"author.email.eq,omitempty" json:"edge_author_email_eq,omitempty"`
+	// Filters field "email" to be not equal to the provided value.
+	EdgeAuthorEmailNEQ *string `form:"author.email.neq,omitempty" json:"edge_author_email_neq,omitempty"`
+	// Filters field "email" to be null/nil.
+	EdgeAuthorEmailIsNil *bool `form:"author.email.null,omitempty" json:"edge_author_email_is_nil,omitempty"`
+	// Filters field "email" to be within the provided values.
+	EdgeAuthorEmailIn []string `form:"author.email.in,omitempty" json:"edge_author_email_in,omitempty"`
+	// Filters field "email" to be not within the provided values.
+	EdgeAuthorEmailNotIn []string `form:"author.email.notIn,omitempty" json:"edge_author_email_not_in,omitempty"`
+	// Filters field "email" to be equal to the provided value, case-insensitive.
+	EdgeAuthorEmailEqualFold *string `form:"author.email.ieq,omitempty" json:"edge_author_email_equal_fold,omitempty"`
+	// Filters field "email" to contain the provided value.
+	EdgeAuthorEmailContains *string `form:"author.email.has,omitempty" json:"edge_author_email_contains,omitempty"`
+	// Filters field "email" to contain the provided value, case-insensitive.
+	EdgeAuthorEmailContainsFold *string `form:"author.email.ihas,omitempty" json:"edge_author_email_contains_fold,omitempty"`
+	// Filters field "email" to start with the provided value.
+	EdgeAuthorEmailHasPrefix *string `form:"author.email.prefix,omitempty" json:"edge_author_email_has_prefix,omitempty"`
+	// Filters field "email" to end with the provided value.
+	EdgeAuthorEmailHasSuffix *string `form:"author.email.suffix,omitempty" json:"edge_author_email_has_suffix,omitempty"`
+	// Filters field "last_authenticated_at" to be equal to the provided value.
+	EdgeAuthorLastAuthenticatedAtEQ *time.Time `form:"author.lastAuthenticatedAt.eq,omitempty" json:"edge_author_last_authenticated_at_eq,omitempty"`
+	// Filters field "last_authenticated_at" to be not equal to the provided value.
+	EdgeAuthorLastAuthenticatedAtNEQ *time.Time `form:"author.lastAuthenticatedAt.neq,omitempty" json:"edge_author_last_authenticated_at_neq,omitempty"`
+	// Filters field "last_authenticated_at" to be null/nil.
+	EdgeAuthorLastAuthenticatedAtIsNil *bool `form:"author.lastAuthenticatedAt.null,omitempty" json:"edge_author_last_authenticated_at_is_nil,omitempty"`
+}
+
+// FilterPredicates returns the predicates for filter-related parameters in Post.
+func (l *ListPostParams) FilterPredicates() (predicate.Post, error) {
+	var predicates []predicate.Post
+
+	if l.PostIDEQ != nil {
+		predicates = append(predicates, post.IDEQ(*l.PostIDEQ))
+	}
+	if l.PostIDNEQ != nil {
+		predicates = append(predicates, post.IDNEQ(*l.PostIDNEQ))
+	}
+	if l.PostIDIn != nil {
+		predicates = append(predicates, post.IDIn(l.PostIDIn...))
+	}
+	if l.PostIDNotIn != nil {
+		predicates = append(predicates, post.IDNotIn(l.PostIDNotIn...))
+	}
+	if l.PostCreatedAtGT != nil {
+		predicates = append(predicates, post.CreatedAtGT(*l.PostCreatedAtGT))
+	}
+	if l.PostCreatedAtLT != nil {
+		predicates = append(predicates, post.CreatedAtLT(*l.PostCreatedAtLT))
+	}
+	if l.PostUpdatedAtGT != nil {
+		predicates = append(predicates, post.UpdatedAtGT(*l.PostUpdatedAtGT))
+	}
+	if l.PostUpdatedAtLT != nil {
+		predicates = append(predicates, post.UpdatedAtLT(*l.PostUpdatedAtLT))
+	}
+	if l.EdgeHasAuthor != nil {
+		if *l.EdgeHasAuthor {
+			predicates = append(predicates, post.HasAuthor())
+		} else {
+			predicates = append(predicates, post.Not(post.HasAuthor()))
+		}
+	}
+	if l.EdgeAuthorIDEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.IDEQ(*l.EdgeAuthorIDEQ)))
+	}
+	if l.EdgeAuthorIDNEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.IDNEQ(*l.EdgeAuthorIDNEQ)))
+	}
+	if l.EdgeAuthorIDIn != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.IDIn(l.EdgeAuthorIDIn...)))
+	}
+	if l.EdgeAuthorIDNotIn != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.IDNotIn(l.EdgeAuthorIDNotIn...)))
+	}
+	if l.EdgeAuthorCreatedAtGT != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.CreatedAtGT(*l.EdgeAuthorCreatedAtGT)))
+	}
+	if l.EdgeAuthorCreatedAtLT != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.CreatedAtLT(*l.EdgeAuthorCreatedAtLT)))
+	}
+	if l.EdgeAuthorUpdatedAtGT != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.UpdatedAtGT(*l.EdgeAuthorUpdatedAtGT)))
+	}
+	if l.EdgeAuthorUpdatedAtLT != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.UpdatedAtLT(*l.EdgeAuthorUpdatedAtLT)))
+	}
+	if l.EdgeAuthorNameEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.NameEQ(*l.EdgeAuthorNameEQ)))
+	}
+	if l.EdgeAuthorNameNEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.NameNEQ(*l.EdgeAuthorNameNEQ)))
+	}
+	if l.EdgeAuthorNameIn != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.NameIn(l.EdgeAuthorNameIn...)))
+	}
+	if l.EdgeAuthorNameNotIn != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.NameNotIn(l.EdgeAuthorNameNotIn...)))
+	}
+	if l.EdgeAuthorNameEqualFold != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.NameEqualFold(*l.EdgeAuthorNameEqualFold)))
+	}
+	if l.EdgeAuthorNameContains != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.NameContains(*l.EdgeAuthorNameContains)))
+	}
+	if l.EdgeAuthorNameContainsFold != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.NameContainsFold(*l.EdgeAuthorNameContainsFold)))
+	}
+	if l.EdgeAuthorNameHasPrefix != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.NameHasPrefix(*l.EdgeAuthorNameHasPrefix)))
+	}
+	if l.EdgeAuthorNameHasSuffix != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.NameHasSuffix(*l.EdgeAuthorNameHasSuffix)))
+	}
+	if l.EdgeAuthorTypeEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.TypeEQ(*l.EdgeAuthorTypeEQ)))
+	}
+	if l.EdgeAuthorTypeNEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.TypeNEQ(*l.EdgeAuthorTypeNEQ)))
+	}
+	if l.EdgeAuthorTypeIn != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.TypeIn(l.EdgeAuthorTypeIn...)))
+	}
+	if l.EdgeAuthorTypeNotIn != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.TypeNotIn(l.EdgeAuthorTypeNotIn...)))
+	}
+	if l.EdgeAuthorDescriptionIsNil != nil {
+		if *l.EdgeAuthorDescriptionIsNil {
+			predicates = append(predicates, post.HasAuthorWith(user.DescriptionIsNil()))
+		} else {
+			predicates = append(predicates, post.Not(post.HasAuthorWith(user.DescriptionIsNil())))
+		}
+	}
+	if l.EdgeAuthorDescriptionContains != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.DescriptionContains(*l.EdgeAuthorDescriptionContains)))
+	}
+	if l.EdgeAuthorDescriptionContainsFold != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.DescriptionContainsFold(*l.EdgeAuthorDescriptionContainsFold)))
+	}
+	if l.EdgeAuthorEnabledEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EnabledEQ(*l.EdgeAuthorEnabledEQ)))
+	}
+	if l.EdgeAuthorEmailEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EmailEQ(*l.EdgeAuthorEmailEQ)))
+	}
+	if l.EdgeAuthorEmailNEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EmailNEQ(*l.EdgeAuthorEmailNEQ)))
+	}
+	if l.EdgeAuthorEmailIsNil != nil {
+		if *l.EdgeAuthorEmailIsNil {
+			predicates = append(predicates, post.HasAuthorWith(user.EmailIsNil()))
+		} else {
+			predicates = append(predicates, post.Not(post.HasAuthorWith(user.EmailIsNil())))
+		}
+	}
+	if l.EdgeAuthorEmailIn != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EmailIn(l.EdgeAuthorEmailIn...)))
+	}
+	if l.EdgeAuthorEmailNotIn != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EmailNotIn(l.EdgeAuthorEmailNotIn...)))
+	}
+	if l.EdgeAuthorEmailEqualFold != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EmailEqualFold(*l.EdgeAuthorEmailEqualFold)))
+	}
+	if l.EdgeAuthorEmailContains != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EmailContains(*l.EdgeAuthorEmailContains)))
+	}
+	if l.EdgeAuthorEmailContainsFold != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EmailContainsFold(*l.EdgeAuthorEmailContainsFold)))
+	}
+	if l.EdgeAuthorEmailHasPrefix != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EmailHasPrefix(*l.EdgeAuthorEmailHasPrefix)))
+	}
+	if l.EdgeAuthorEmailHasSuffix != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.EmailHasSuffix(*l.EdgeAuthorEmailHasSuffix)))
+	}
+	if l.EdgeAuthorLastAuthenticatedAtEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.LastAuthenticatedAtEQ(*l.EdgeAuthorLastAuthenticatedAtEQ)))
+	}
+	if l.EdgeAuthorLastAuthenticatedAtNEQ != nil {
+		predicates = append(predicates, post.HasAuthorWith(user.LastAuthenticatedAtNEQ(*l.EdgeAuthorLastAuthenticatedAtNEQ)))
+	}
+	if l.EdgeAuthorLastAuthenticatedAtIsNil != nil {
+		if *l.EdgeAuthorLastAuthenticatedAtIsNil {
+			predicates = append(predicates, post.HasAuthorWith(user.LastAuthenticatedAtIsNil()))
+		} else {
+			predicates = append(predicates, post.Not(post.HasAuthorWith(user.LastAuthenticatedAtIsNil())))
+		}
+	}
+
+	return l.ApplyFilterOperation(predicates...)
+}
+
+// ApplySorting applies sorting to the query based on the provided sort and order fields.
+func (l *ListPostParams) ApplySorting(query *ent.PostQuery) error {
+	if err := l.Sorted.Validate(PostSortConfig); err != nil {
+		return err
+	}
+	if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
+		return nil
+	}
+	applySortingPost(query, *l.Field, *l.Order)
+	return nil
+}
+
+// Exec wraps all logic (filtering, sorting, pagination, eager loading) and
+// executes all necessary queries, returning the results.
+func (l *ListPostParams) Exec(ctx context.Context, query *ent.PostQuery) (results *PagedResponse[ent.Post], err error) {
+	predicates, err := l.FilterPredicates()
+	if err != nil {
+		return nil, err
+	}
+	query.Where(predicates)
+	err = l.ApplySorting(EagerLoadPost(query))
+	if err != nil {
+		return nil, err
+	}
+	return l.ExecutePaginated(ctx, query, PostPageConfig)
 }
 
 // ListSettingParams defines parameters for listing Settings via a GET request.

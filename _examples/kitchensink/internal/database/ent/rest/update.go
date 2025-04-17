@@ -12,6 +12,7 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 	schema "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
@@ -179,6 +180,38 @@ func (c *UpdatePetParams) Exec(ctx context.Context, builder *ent.PetUpdateOne, q
 	return EagerLoadPet(query.Where(pet.ID(result.ID))).Only(ctx)
 }
 
+// UpdatePostParams defines parameters for updating a Post via a PATCH request.
+type UpdatePostParams struct {
+	Title Option[string] `json:"title"`
+	Slug  Option[string] `json:"slug"`
+	Body  Option[string] `json:"body"`
+}
+
+func (u *UpdatePostParams) ApplyInputs(builder *ent.PostUpdateOne) *ent.PostUpdateOne {
+	if v, ok := u.Title.Get(); ok {
+		builder.SetTitle(v)
+	}
+	if v, ok := u.Slug.Get(); ok {
+		builder.SetSlug(v)
+	}
+	if v, ok := u.Body.Get(); ok {
+		builder.SetBody(v)
+	}
+
+	return builder
+}
+
+// Exec wraps all logic (mapping all provided values to the build), updates the entity,
+// and does another query (using provided query as base) to get the entity, with all eager
+// loaded edges.
+func (c *UpdatePostParams) Exec(ctx context.Context, builder *ent.PostUpdateOne, query *ent.PostQuery) (*ent.Post, error) {
+	result, err := c.ApplyInputs(builder).Save(ctx)
+	if err != nil {
+		return nil, err
+	}
+	return EagerLoadPost(query.Where(post.ID(result.ID))).Only(ctx)
+}
+
 // UpdateSettingParams defines parameters for updating a Setting via a PATCH request.
 type UpdateSettingParams struct {
 	// Global banner text to apply to the frontend.
@@ -250,6 +283,8 @@ type UpdateUserParams struct {
 	AddFriends Option[[]uuid.UUID] `json:"add_friends,omitempty"`
 	// Friends of the user.
 	RemoveFriends     Option[[]uuid.UUID] `json:"remove_friends,omitempty"`
+	AddPosts          Option[[]int]       `json:"add_posts,omitempty"`
+	RemovePosts       Option[[]int]       `json:"remove_posts,omitempty"`
 	AddFriendships    Option[[]int]       `json:"add_friendships,omitempty"`
 	RemoveFriendships Option[[]int]       `json:"remove_friendships,omitempty"`
 }
@@ -319,6 +354,12 @@ func (u *UpdateUserParams) ApplyInputs(builder *ent.UserUpdateOne) *ent.UserUpda
 	}
 	if v, ok := u.RemoveFriends.Get(); ok && v != nil {
 		builder.RemoveFriendIDs(v...)
+	}
+	if v, ok := u.AddPosts.Get(); ok && v != nil {
+		builder.AddPostIDs(v...)
+	}
+	if v, ok := u.RemovePosts.Get(); ok && v != nil {
+		builder.RemovePostIDs(v...)
 	}
 	if v, ok := u.AddFriendships.Get(); ok && v != nil {
 		builder.AddFriendshipIDs(v...)
