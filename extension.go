@@ -215,7 +215,11 @@ func (e *Extension) writeSpec(g *gen.Graph, spec *ogen.Spec) error {
 		}
 	}
 
-	if e.config.Writer == nil {
+	var enc *json.Encoder
+
+	if e.config.Writer != nil {
+		enc = json.NewEncoder(e.config.Writer)
+	} else {
 		dir := filepath.Join(g.Target, "rest")
 
 		err := os.MkdirAll(dir, 0o750)
@@ -229,10 +233,9 @@ func (e *Extension) writeSpec(g *gen.Graph, spec *ogen.Spec) error {
 		}
 		defer f.Close()
 
-		e.config.Writer = f
+		enc = json.NewEncoder(f)
 	}
 
-	enc := json.NewEncoder(e.config.Writer)
 	enc.SetIndent("", "    ")
 	return enc.Encode(spec)
 }
