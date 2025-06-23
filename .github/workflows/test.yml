@@ -20,17 +20,16 @@ on:
 jobs:
   go-test:
     uses: lrstanley/.github/.github/workflows/lang-go-test-matrix.yml@master
+    secrets: inherit
     permissions:
       contents: read
     with: { num-minor: 1, num-patch: 2 }
   go-lint:
     uses: lrstanley/.github/.github/workflows/lang-go-lint.yml@master
+    secrets: inherit
     permissions:
       checks: write
       contents: read
       pull-requests: read
       security-events: write
       statuses: write
-    secrets:
-      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
-      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
