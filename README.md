@@ -65,10 +65,6 @@
 
 ## :sparkles: Features
 
-> [!WARNING]
-> entrest is still a work in progress. we may make breaking changes to the API
-> without notice.
-
 **entrest** is an [EntGo](https://entgo.io/) extension for generating compliant OpenAPI
 specs and an HTTP handler implementation that matches that spec. It expands upon the
 approach used by [entoas](https://github.com/ent/contrib/tree/master/entoas#entoas),
