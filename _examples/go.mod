@@ -11,7 +11,7 @@ require (
 	github.com/brianvoe/gofakeit/v7 v7.2.1
 	github.com/go-chi/chi/v5 v5.2.2
 	github.com/go-playground/form/v4 v4.2.1
-	github.com/google/go-github/v66 v66.0.0
+	github.com/google/go-github/v67 v67.0.0
 	github.com/google/uuid v1.6.0
 	github.com/lrstanley/entrest v0.0.0-20250623002606-221e0ce8ee95
 	github.com/ogen-go/ogen v1.14.0
