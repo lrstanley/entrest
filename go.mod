@@ -50,7 +50,7 @@ require (
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/mailru/easyjson v0.9.0 // indirect
-	github.com/pb33f/libopenapi v0.22.3
+	github.com/pb33f/libopenapi v0.25.0
 	github.com/pb33f/libopenapi-validator v0.4.7
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spyzhov/ajson v0.9.6
