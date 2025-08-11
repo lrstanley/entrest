@@ -557,6 +557,16 @@ func GithubDataNotNil() predicate.User {
 	return predicate.User(sql.FieldNotNull(FieldGithubData))
 }
 
+// AnyDataIsNil applies the IsNil predicate on the "any_data" field.
+func AnyDataIsNil() predicate.User {
+	return predicate.User(sql.FieldIsNull(FieldAnyData))
+}
+
+// AnyDataNotNil applies the NotNil predicate on the "any_data" field.
+func AnyDataNotNil() predicate.User {
+	return predicate.User(sql.FieldNotNull(FieldAnyData))
+}
+
 // ProfileURLEQ applies the EQ predicate on the "profile_url" field.
 func ProfileURLEQ(v *schema.ExampleValuer) predicate.User {
 	return predicate.User(sql.FieldEQ(FieldProfileURL, v))

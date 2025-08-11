@@ -20,24 +20,24 @@ type SkippedCreate struct {
 }
 
 // SetName sets the "name" field.
-func (sc *SkippedCreate) SetName(s string) *SkippedCreate {
-	sc.mutation.SetName(s)
-	return sc
+func (_c *SkippedCreate) SetName(v string) *SkippedCreate {
+	_c.mutation.SetName(v)
+	return _c
 }
 
 // Mutation returns the SkippedMutation object of the builder.
-func (sc *SkippedCreate) Mutation() *SkippedMutation {
-	return sc.mutation
+func (_c *SkippedCreate) Mutation() *SkippedMutation {
+	return _c.mutation
 }
 
 // Save creates the Skipped in the database.
-func (sc *SkippedCreate) Save(ctx context.Context) (*Skipped, error) {
-	return withHooks(ctx, sc.sqlSave, sc.mutation, sc.hooks)
+func (_c *SkippedCreate) Save(ctx context.Context) (*Skipped, error) {
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (sc *SkippedCreate) SaveX(ctx context.Context) *Skipped {
-	v, err := sc.Save(ctx)
+func (_c *SkippedCreate) SaveX(ctx context.Context) *Skipped {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -45,32 +45,32 @@ func (sc *SkippedCreate) SaveX(ctx context.Context) *Skipped {
 }
 
 // Exec executes the query.
-func (sc *SkippedCreate) Exec(ctx context.Context) error {
-	_, err := sc.Save(ctx)
+func (_c *SkippedCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (sc *SkippedCreate) ExecX(ctx context.Context) {
-	if err := sc.Exec(ctx); err != nil {
+func (_c *SkippedCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (sc *SkippedCreate) check() error {
-	if _, ok := sc.mutation.Name(); !ok {
+func (_c *SkippedCreate) check() error {
+	if _, ok := _c.mutation.Name(); !ok {
 		return &ValidationError{Name: "name", err: errors.New(`ent: missing required field "Skipped.name"`)}
 	}
 	return nil
 }
 
-func (sc *SkippedCreate) sqlSave(ctx context.Context) (*Skipped, error) {
-	if err := sc.check(); err != nil {
+func (_c *SkippedCreate) sqlSave(ctx context.Context) (*Skipped, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := sc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, sc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -78,17 +78,17 @@ func (sc *SkippedCreate) sqlSave(ctx context.Context) (*Skipped, error) {
 	}
 	id := _spec.ID.Value.(int64)
 	_node.ID = int(id)
-	sc.mutation.id = &_node.ID
-	sc.mutation.done = true
+	_c.mutation.id = &_node.ID
+	_c.mutation.done = true
 	return _node, nil
 }
 
-func (sc *SkippedCreate) createSpec() (*Skipped, *sqlgraph.CreateSpec) {
+func (_c *SkippedCreate) createSpec() (*Skipped, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Skipped{config: sc.config}
+		_node = &Skipped{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(skipped.Table, sqlgraph.NewFieldSpec(skipped.FieldID, field.TypeInt))
 	)
-	if value, ok := sc.mutation.Name(); ok {
+	if value, ok := _c.mutation.Name(); ok {
 		_spec.SetField(skipped.FieldName, field.TypeString, value)
 		_node.Name = value
 	}
@@ -103,16 +103,16 @@ type SkippedCreateBulk struct {
 }
 
 // Save creates the Skipped entities in the database.
-func (scb *SkippedCreateBulk) Save(ctx context.Context) ([]*Skipped, error) {
-	if scb.err != nil {
-		return nil, scb.err
+func (_c *SkippedCreateBulk) Save(ctx context.Context) ([]*Skipped, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(scb.builders))
-	nodes := make([]*Skipped, len(scb.builders))
-	mutators := make([]Mutator, len(scb.builders))
-	for i := range scb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Skipped, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := scb.builders[i]
+			builder := _c.builders[i]
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*SkippedMutation)
 				if !ok {
@@ -125,11 +125,11 @@ func (scb *SkippedCreateBulk) Save(ctx context.Context) ([]*Skipped, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, scb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, scb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -153,7 +153,7 @@ func (scb *SkippedCreateBulk) Save(ctx context.Context) ([]*Skipped, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, scb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -161,8 +161,8 @@ func (scb *SkippedCreateBulk) Save(ctx context.Context) ([]*Skipped, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (scb *SkippedCreateBulk) SaveX(ctx context.Context) []*Skipped {
-	v, err := scb.Save(ctx)
+func (_c *SkippedCreateBulk) SaveX(ctx context.Context) []*Skipped {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -170,14 +170,14 @@ func (scb *SkippedCreateBulk) SaveX(ctx context.Context) []*Skipped {
 }
 
 // Exec executes the query.
-func (scb *SkippedCreateBulk) Exec(ctx context.Context) error {
-	_, err := scb.Save(ctx)
+func (_c *SkippedCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (scb *SkippedCreateBulk) ExecX(ctx context.Context) {
-	if err := scb.Exec(ctx); err != nil {
+func (_c *SkippedCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

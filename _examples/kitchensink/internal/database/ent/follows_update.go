@@ -26,88 +26,88 @@ type FollowsUpdate struct {
 }
 
 // Where appends a list predicates to the FollowsUpdate builder.
-func (fu *FollowsUpdate) Where(ps ...predicate.Follows) *FollowsUpdate {
-	fu.mutation.Where(ps...)
-	return fu
+func (_u *FollowsUpdate) Where(ps ...predicate.Follows) *FollowsUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetFollowedAt sets the "followed_at" field.
-func (fu *FollowsUpdate) SetFollowedAt(t time.Time) *FollowsUpdate {
-	fu.mutation.SetFollowedAt(t)
-	return fu
+func (_u *FollowsUpdate) SetFollowedAt(v time.Time) *FollowsUpdate {
+	_u.mutation.SetFollowedAt(v)
+	return _u
 }
 
 // SetNillableFollowedAt sets the "followed_at" field if the given value is not nil.
-func (fu *FollowsUpdate) SetNillableFollowedAt(t *time.Time) *FollowsUpdate {
-	if t != nil {
-		fu.SetFollowedAt(*t)
+func (_u *FollowsUpdate) SetNillableFollowedAt(v *time.Time) *FollowsUpdate {
+	if v != nil {
+		_u.SetFollowedAt(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (fu *FollowsUpdate) SetUserID(u uuid.UUID) *FollowsUpdate {
-	fu.mutation.SetUserID(u)
-	return fu
+func (_u *FollowsUpdate) SetUserID(v uuid.UUID) *FollowsUpdate {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (fu *FollowsUpdate) SetNillableUserID(u *uuid.UUID) *FollowsUpdate {
-	if u != nil {
-		fu.SetUserID(*u)
+func (_u *FollowsUpdate) SetNillableUserID(v *uuid.UUID) *FollowsUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetPetID sets the "pet_id" field.
-func (fu *FollowsUpdate) SetPetID(i int) *FollowsUpdate {
-	fu.mutation.SetPetID(i)
-	return fu
+func (_u *FollowsUpdate) SetPetID(v int) *FollowsUpdate {
+	_u.mutation.SetPetID(v)
+	return _u
 }
 
 // SetNillablePetID sets the "pet_id" field if the given value is not nil.
-func (fu *FollowsUpdate) SetNillablePetID(i *int) *FollowsUpdate {
-	if i != nil {
-		fu.SetPetID(*i)
+func (_u *FollowsUpdate) SetNillablePetID(v *int) *FollowsUpdate {
+	if v != nil {
+		_u.SetPetID(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (fu *FollowsUpdate) SetUser(u *User) *FollowsUpdate {
-	return fu.SetUserID(u.ID)
+func (_u *FollowsUpdate) SetUser(v *User) *FollowsUpdate {
+	return _u.SetUserID(v.ID)
 }
 
 // SetPet sets the "pet" edge to the Pet entity.
-func (fu *FollowsUpdate) SetPet(p *Pet) *FollowsUpdate {
-	return fu.SetPetID(p.ID)
+func (_u *FollowsUpdate) SetPet(v *Pet) *FollowsUpdate {
+	return _u.SetPetID(v.ID)
 }
 
 // Mutation returns the FollowsMutation object of the builder.
-func (fu *FollowsUpdate) Mutation() *FollowsMutation {
-	return fu.mutation
+func (_u *FollowsUpdate) Mutation() *FollowsMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (fu *FollowsUpdate) ClearUser() *FollowsUpdate {
-	fu.mutation.ClearUser()
-	return fu
+func (_u *FollowsUpdate) ClearUser() *FollowsUpdate {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // ClearPet clears the "pet" edge to the Pet entity.
-func (fu *FollowsUpdate) ClearPet() *FollowsUpdate {
-	fu.mutation.ClearPet()
-	return fu
+func (_u *FollowsUpdate) ClearPet() *FollowsUpdate {
+	_u.mutation.ClearPet()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (fu *FollowsUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, fu.sqlSave, fu.mutation, fu.hooks)
+func (_u *FollowsUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fu *FollowsUpdate) SaveX(ctx context.Context) int {
-	affected, err := fu.Save(ctx)
+func (_u *FollowsUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -115,45 +115,45 @@ func (fu *FollowsUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (fu *FollowsUpdate) Exec(ctx context.Context) error {
-	_, err := fu.Save(ctx)
+func (_u *FollowsUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fu *FollowsUpdate) ExecX(ctx context.Context) {
-	if err := fu.Exec(ctx); err != nil {
+func (_u *FollowsUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fu *FollowsUpdate) check() error {
-	if fu.mutation.UserCleared() && len(fu.mutation.UserIDs()) > 0 {
+func (_u *FollowsUpdate) check() error {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Follows.user"`)
 	}
-	if fu.mutation.PetCleared() && len(fu.mutation.PetIDs()) > 0 {
+	if _u.mutation.PetCleared() && len(_u.mutation.PetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Follows.pet"`)
 	}
 	return nil
 }
 
-func (fu *FollowsUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := fu.check(); err != nil {
-		return n, err
+func (_u *FollowsUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(follows.Table, follows.Columns, sqlgraph.NewFieldSpec(follows.FieldUserID, field.TypeUUID), sqlgraph.NewFieldSpec(follows.FieldPetID, field.TypeInt))
-	if ps := fu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fu.mutation.FollowedAt(); ok {
+	if value, ok := _u.mutation.FollowedAt(); ok {
 		_spec.SetField(follows.FieldFollowedAt, field.TypeTime, value)
 	}
-	if fu.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -166,7 +166,7 @@ func (fu *FollowsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fu.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -182,7 +182,7 @@ func (fu *FollowsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fu.mutation.PetCleared() {
+	if _u.mutation.PetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -195,7 +195,7 @@ func (fu *FollowsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fu.mutation.PetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -211,7 +211,7 @@ func (fu *FollowsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, fu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{follows.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -219,8 +219,8 @@ func (fu *FollowsUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	fu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // FollowsUpdateOne is the builder for updating a single Follows entity.
@@ -232,95 +232,95 @@ type FollowsUpdateOne struct {
 }
 
 // SetFollowedAt sets the "followed_at" field.
-func (fuo *FollowsUpdateOne) SetFollowedAt(t time.Time) *FollowsUpdateOne {
-	fuo.mutation.SetFollowedAt(t)
-	return fuo
+func (_u *FollowsUpdateOne) SetFollowedAt(v time.Time) *FollowsUpdateOne {
+	_u.mutation.SetFollowedAt(v)
+	return _u
 }
 
 // SetNillableFollowedAt sets the "followed_at" field if the given value is not nil.
-func (fuo *FollowsUpdateOne) SetNillableFollowedAt(t *time.Time) *FollowsUpdateOne {
-	if t != nil {
-		fuo.SetFollowedAt(*t)
+func (_u *FollowsUpdateOne) SetNillableFollowedAt(v *time.Time) *FollowsUpdateOne {
+	if v != nil {
+		_u.SetFollowedAt(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (fuo *FollowsUpdateOne) SetUserID(u uuid.UUID) *FollowsUpdateOne {
-	fuo.mutation.SetUserID(u)
-	return fuo
+func (_u *FollowsUpdateOne) SetUserID(v uuid.UUID) *FollowsUpdateOne {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (fuo *FollowsUpdateOne) SetNillableUserID(u *uuid.UUID) *FollowsUpdateOne {
-	if u != nil {
-		fuo.SetUserID(*u)
+func (_u *FollowsUpdateOne) SetNillableUserID(v *uuid.UUID) *FollowsUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetPetID sets the "pet_id" field.
-func (fuo *FollowsUpdateOne) SetPetID(i int) *FollowsUpdateOne {
-	fuo.mutation.SetPetID(i)
-	return fuo
+func (_u *FollowsUpdateOne) SetPetID(v int) *FollowsUpdateOne {
+	_u.mutation.SetPetID(v)
+	return _u
 }
 
 // SetNillablePetID sets the "pet_id" field if the given value is not nil.
-func (fuo *FollowsUpdateOne) SetNillablePetID(i *int) *FollowsUpdateOne {
-	if i != nil {
-		fuo.SetPetID(*i)
+func (_u *FollowsUpdateOne) SetNillablePetID(v *int) *FollowsUpdateOne {
+	if v != nil {
+		_u.SetPetID(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (fuo *FollowsUpdateOne) SetUser(u *User) *FollowsUpdateOne {
-	return fuo.SetUserID(u.ID)
+func (_u *FollowsUpdateOne) SetUser(v *User) *FollowsUpdateOne {
+	return _u.SetUserID(v.ID)
 }
 
 // SetPet sets the "pet" edge to the Pet entity.
-func (fuo *FollowsUpdateOne) SetPet(p *Pet) *FollowsUpdateOne {
-	return fuo.SetPetID(p.ID)
+func (_u *FollowsUpdateOne) SetPet(v *Pet) *FollowsUpdateOne {
+	return _u.SetPetID(v.ID)
 }
 
 // Mutation returns the FollowsMutation object of the builder.
-func (fuo *FollowsUpdateOne) Mutation() *FollowsMutation {
-	return fuo.mutation
+func (_u *FollowsUpdateOne) Mutation() *FollowsMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (fuo *FollowsUpdateOne) ClearUser() *FollowsUpdateOne {
-	fuo.mutation.ClearUser()
-	return fuo
+func (_u *FollowsUpdateOne) ClearUser() *FollowsUpdateOne {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // ClearPet clears the "pet" edge to the Pet entity.
-func (fuo *FollowsUpdateOne) ClearPet() *FollowsUpdateOne {
-	fuo.mutation.ClearPet()
-	return fuo
+func (_u *FollowsUpdateOne) ClearPet() *FollowsUpdateOne {
+	_u.mutation.ClearPet()
+	return _u
 }
 
 // Where appends a list predicates to the FollowsUpdate builder.
-func (fuo *FollowsUpdateOne) Where(ps ...predicate.Follows) *FollowsUpdateOne {
-	fuo.mutation.Where(ps...)
-	return fuo
+func (_u *FollowsUpdateOne) Where(ps ...predicate.Follows) *FollowsUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (fuo *FollowsUpdateOne) Select(field string, fields ...string) *FollowsUpdateOne {
-	fuo.fields = append([]string{field}, fields...)
-	return fuo
+func (_u *FollowsUpdateOne) Select(field string, fields ...string) *FollowsUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Follows entity.
-func (fuo *FollowsUpdateOne) Save(ctx context.Context) (*Follows, error) {
-	return withHooks(ctx, fuo.sqlSave, fuo.mutation, fuo.hooks)
+func (_u *FollowsUpdateOne) Save(ctx context.Context) (*Follows, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fuo *FollowsUpdateOne) SaveX(ctx context.Context) *Follows {
-	node, err := fuo.Save(ctx)
+func (_u *FollowsUpdateOne) SaveX(ctx context.Context) *Follows {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -328,45 +328,45 @@ func (fuo *FollowsUpdateOne) SaveX(ctx context.Context) *Follows {
 }
 
 // Exec executes the query on the entity.
-func (fuo *FollowsUpdateOne) Exec(ctx context.Context) error {
-	_, err := fuo.Save(ctx)
+func (_u *FollowsUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fuo *FollowsUpdateOne) ExecX(ctx context.Context) {
-	if err := fuo.Exec(ctx); err != nil {
+func (_u *FollowsUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fuo *FollowsUpdateOne) check() error {
-	if fuo.mutation.UserCleared() && len(fuo.mutation.UserIDs()) > 0 {
+func (_u *FollowsUpdateOne) check() error {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Follows.user"`)
 	}
-	if fuo.mutation.PetCleared() && len(fuo.mutation.PetIDs()) > 0 {
+	if _u.mutation.PetCleared() && len(_u.mutation.PetIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Follows.pet"`)
 	}
 	return nil
 }
 
-func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err error) {
-	if err := fuo.check(); err != nil {
+func (_u *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(follows.Table, follows.Columns, sqlgraph.NewFieldSpec(follows.FieldUserID, field.TypeUUID), sqlgraph.NewFieldSpec(follows.FieldPetID, field.TypeInt))
-	if id, ok := fuo.mutation.UserID(); !ok {
+	if id, ok := _u.mutation.UserID(); !ok {
 		return nil, &ValidationError{Name: "user_id", err: errors.New(`ent: missing "Follows.user_id" for update`)}
 	} else {
 		_spec.Node.CompositeID[0].Value = id
 	}
-	if id, ok := fuo.mutation.PetID(); !ok {
+	if id, ok := _u.mutation.PetID(); !ok {
 		return nil, &ValidationError{Name: "pet_id", err: errors.New(`ent: missing "Follows.pet_id" for update`)}
 	} else {
 		_spec.Node.CompositeID[1].Value = id
 	}
-	if fields := fuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, len(fields))
 		for i, f := range fields {
 			if !follows.ValidColumn(f) {
@@ -375,17 +375,17 @@ func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err e
 			_spec.Node.Columns[i] = f
 		}
 	}
-	if ps := fuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fuo.mutation.FollowedAt(); ok {
+	if value, ok := _u.mutation.FollowedAt(); ok {
 		_spec.SetField(follows.FieldFollowedAt, field.TypeTime, value)
 	}
-	if fuo.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -398,7 +398,7 @@ func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fuo.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -414,7 +414,7 @@ func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fuo.mutation.PetCleared() {
+	if _u.mutation.PetCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -427,7 +427,7 @@ func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err e
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fuo.mutation.PetIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -443,10 +443,10 @@ func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err e
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Follows{config: fuo.config}
+	_node = &Follows{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, fuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{follows.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -454,6 +454,6 @@ func (fuo *FollowsUpdateOne) sqlSave(ctx context.Context) (_node *Follows, err e
 		}
 		return nil, err
 	}
-	fuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

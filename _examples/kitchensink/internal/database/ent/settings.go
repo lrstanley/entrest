@@ -67,7 +67,7 @@ func (*Settings) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Settings fields.
-func (s *Settings) assignValues(columns []string, values []any) error {
+func (_m *Settings) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -78,28 +78,28 @@ func (s *Settings) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			s.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case settings.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				s.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case settings.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				s.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case settings.FieldGlobalBanner:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field global_banner", values[i])
 			} else if value.Valid {
-				s.GlobalBanner = new(string)
-				*s.GlobalBanner = value.String
+				_m.GlobalBanner = new(string)
+				*_m.GlobalBanner = value.String
 			}
 		default:
-			s.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -107,45 +107,45 @@ func (s *Settings) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Settings.
 // This includes values selected through modifiers, order, etc.
-func (s *Settings) Value(name string) (ent.Value, error) {
-	return s.selectValues.Get(name)
+func (_m *Settings) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryAdmins queries the "admins" edge of the Settings entity.
-func (s *Settings) QueryAdmins() *UserQuery {
-	return NewSettingsClient(s.config).QueryAdmins(s)
+func (_m *Settings) QueryAdmins() *UserQuery {
+	return NewSettingsClient(_m.config).QueryAdmins(_m)
 }
 
 // Update returns a builder for updating this Settings.
 // Note that you need to call Settings.Unwrap() before calling this method if this Settings
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (s *Settings) Update() *SettingsUpdateOne {
-	return NewSettingsClient(s.config).UpdateOne(s)
+func (_m *Settings) Update() *SettingsUpdateOne {
+	return NewSettingsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Settings entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (s *Settings) Unwrap() *Settings {
-	_tx, ok := s.config.driver.(*txDriver)
+func (_m *Settings) Unwrap() *Settings {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Settings is not a transactional entity")
 	}
-	s.config.driver = _tx.drv
-	return s
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (s *Settings) String() string {
+func (_m *Settings) String() string {
 	var builder strings.Builder
 	builder.WriteString("Settings(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", s.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_at=")
-	builder.WriteString(s.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(s.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
-	if v := s.GlobalBanner; v != nil {
+	if v := _m.GlobalBanner; v != nil {
 		builder.WriteString("global_banner=")
 		builder.WriteString(*v)
 	}

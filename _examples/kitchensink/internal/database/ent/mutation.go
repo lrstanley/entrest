@@ -4273,6 +4273,7 @@ type UserMutation struct {
 	avatar                *[]byte
 	password_hashed       *string
 	github_data           **github.User
+	any_data              **github.User
 	profile_url           **schema.ExampleValuer
 	last_authenticated_at *time.Time
 	clearedFields         map[string]struct{}
@@ -4812,6 +4813,55 @@ func (m *UserMutation) ResetGithubData() {
 	delete(m.clearedFields, user.FieldGithubData)
 }
 
+// SetAnyData sets the "any_data" field.
+func (m *UserMutation) SetAnyData(gi *github.User) {
+	m.any_data = &gi
+}
+
+// AnyData returns the value of the "any_data" field in the mutation.
+func (m *UserMutation) AnyData() (r *github.User, exists bool) {
+	v := m.any_data
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldAnyData returns the old "any_data" field's value of the User entity.
+// If the User object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *UserMutation) OldAnyData(ctx context.Context) (v *github.User, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldAnyData is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldAnyData requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldAnyData: %w", err)
+	}
+	return oldValue.AnyData, nil
+}
+
+// ClearAnyData clears the value of the "any_data" field.
+func (m *UserMutation) ClearAnyData() {
+	m.any_data = nil
+	m.clearedFields[user.FieldAnyData] = struct{}{}
+}
+
+// AnyDataCleared returns if the "any_data" field was cleared in this mutation.
+func (m *UserMutation) AnyDataCleared() bool {
+	_, ok := m.clearedFields[user.FieldAnyData]
+	return ok
+}
+
+// ResetAnyData resets all changes to the "any_data" field.
+func (m *UserMutation) ResetAnyData() {
+	m.any_data = nil
+	delete(m.clearedFields, user.FieldAnyData)
+}
+
 // SetProfileURL sets the "profile_url" field.
 func (m *UserMutation) SetProfileURL(sv *schema.ExampleValuer) {
 	m.profile_url = &sv
@@ -5214,7 +5264,7 @@ func (m *UserMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *UserMutation) Fields() []string {
-	fields := make([]string, 0, 12)
+	fields := make([]string, 0, 13)
 	if m.created_at != nil {
 		fields = append(fields, user.FieldCreatedAt)
 	}
@@ -5244,6 +5294,9 @@ func (m *UserMutation) Fields() []string {
 	}
 	if m.github_data != nil {
 		fields = append(fields, user.FieldGithubData)
+	}
+	if m.any_data != nil {
+		fields = append(fields, user.FieldAnyData)
 	}
 	if m.profile_url != nil {
 		fields = append(fields, user.FieldProfileURL)
@@ -5279,6 +5332,8 @@ func (m *UserMutation) Field(name string) (ent.Value, bool) {
 		return m.PasswordHashed()
 	case user.FieldGithubData:
 		return m.GithubData()
+	case user.FieldAnyData:
+		return m.AnyData()
 	case user.FieldProfileURL:
 		return m.ProfileURL()
 	case user.FieldLastAuthenticatedAt:
@@ -5312,6 +5367,8 @@ func (m *UserMutation) OldField(ctx context.Context, name string) (ent.Value, er
 		return m.OldPasswordHashed(ctx)
 	case user.FieldGithubData:
 		return m.OldGithubData(ctx)
+	case user.FieldAnyData:
+		return m.OldAnyData(ctx)
 	case user.FieldProfileURL:
 		return m.OldProfileURL(ctx)
 	case user.FieldLastAuthenticatedAt:
@@ -5395,6 +5452,13 @@ func (m *UserMutation) SetField(name string, value ent.Value) error {
 		}
 		m.SetGithubData(v)
 		return nil
+	case user.FieldAnyData:
+		v, ok := value.(*github.User)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetAnyData(v)
+		return nil
 	case user.FieldProfileURL:
 		v, ok := value.(*schema.ExampleValuer)
 		if !ok {
@@ -5451,6 +5515,9 @@ func (m *UserMutation) ClearedFields() []string {
 	if m.FieldCleared(user.FieldGithubData) {
 		fields = append(fields, user.FieldGithubData)
 	}
+	if m.FieldCleared(user.FieldAnyData) {
+		fields = append(fields, user.FieldAnyData)
+	}
 	if m.FieldCleared(user.FieldProfileURL) {
 		fields = append(fields, user.FieldProfileURL)
 	}
@@ -5482,6 +5549,9 @@ func (m *UserMutation) ClearField(name string) error {
 		return nil
 	case user.FieldGithubData:
 		m.ClearGithubData()
+		return nil
+	case user.FieldAnyData:
+		m.ClearAnyData()
 		return nil
 	case user.FieldProfileURL:
 		m.ClearProfileURL()
@@ -5526,6 +5596,9 @@ func (m *UserMutation) ResetField(name string) error {
 		return nil
 	case user.FieldGithubData:
 		m.ResetGithubData()
+		return nil
+	case user.FieldAnyData:
+		m.ResetAnyData()
 		return nil
 	case user.FieldProfileURL:
 		m.ResetProfileURL()

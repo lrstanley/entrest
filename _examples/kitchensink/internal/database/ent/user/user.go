@@ -37,6 +37,8 @@ const (
 	FieldPasswordHashed = "password_hashed"
 	// FieldGithubData holds the string denoting the github_data field in the database.
 	FieldGithubData = "github_data"
+	// FieldAnyData holds the string denoting the any_data field in the database.
+	FieldAnyData = "any_data"
 	// FieldProfileURL holds the string denoting the profile_url field in the database.
 	FieldProfileURL = "profile_url"
 	// FieldLastAuthenticatedAt holds the string denoting the last_authenticated_at field in the database.
@@ -105,6 +107,7 @@ var Columns = []string{
 	FieldAvatar,
 	FieldPasswordHashed,
 	FieldGithubData,
+	FieldAnyData,
 	FieldProfileURL,
 	FieldLastAuthenticatedAt,
 }

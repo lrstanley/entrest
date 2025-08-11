@@ -25,165 +25,165 @@ type CategoryUpdate struct {
 }
 
 // Where appends a list predicates to the CategoryUpdate builder.
-func (cu *CategoryUpdate) Where(ps ...predicate.Category) *CategoryUpdate {
-	cu.mutation.Where(ps...)
-	return cu
+func (_u *CategoryUpdate) Where(ps ...predicate.Category) *CategoryUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cu *CategoryUpdate) SetUpdatedAt(t time.Time) *CategoryUpdate {
-	cu.mutation.SetUpdatedAt(t)
-	return cu
+func (_u *CategoryUpdate) SetUpdatedAt(v time.Time) *CategoryUpdate {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (cu *CategoryUpdate) SetName(s string) *CategoryUpdate {
-	cu.mutation.SetName(s)
-	return cu
+func (_u *CategoryUpdate) SetName(v string) *CategoryUpdate {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (cu *CategoryUpdate) SetNillableName(s *string) *CategoryUpdate {
-	if s != nil {
-		cu.SetName(*s)
+func (_u *CategoryUpdate) SetNillableName(v *string) *CategoryUpdate {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return cu
+	return _u
 }
 
 // SetReadonly sets the "readonly" field.
-func (cu *CategoryUpdate) SetReadonly(s string) *CategoryUpdate {
-	cu.mutation.SetReadonly(s)
-	return cu
+func (_u *CategoryUpdate) SetReadonly(v string) *CategoryUpdate {
+	_u.mutation.SetReadonly(v)
+	return _u
 }
 
 // SetNillableReadonly sets the "readonly" field if the given value is not nil.
-func (cu *CategoryUpdate) SetNillableReadonly(s *string) *CategoryUpdate {
-	if s != nil {
-		cu.SetReadonly(*s)
+func (_u *CategoryUpdate) SetNillableReadonly(v *string) *CategoryUpdate {
+	if v != nil {
+		_u.SetReadonly(*v)
 	}
-	return cu
+	return _u
 }
 
 // SetSkipInSpec sets the "skip_in_spec" field.
-func (cu *CategoryUpdate) SetSkipInSpec(s string) *CategoryUpdate {
-	cu.mutation.SetSkipInSpec(s)
-	return cu
+func (_u *CategoryUpdate) SetSkipInSpec(v string) *CategoryUpdate {
+	_u.mutation.SetSkipInSpec(v)
+	return _u
 }
 
 // SetNillableSkipInSpec sets the "skip_in_spec" field if the given value is not nil.
-func (cu *CategoryUpdate) SetNillableSkipInSpec(s *string) *CategoryUpdate {
-	if s != nil {
-		cu.SetSkipInSpec(*s)
+func (_u *CategoryUpdate) SetNillableSkipInSpec(v *string) *CategoryUpdate {
+	if v != nil {
+		_u.SetSkipInSpec(*v)
 	}
-	return cu
+	return _u
 }
 
 // ClearSkipInSpec clears the value of the "skip_in_spec" field.
-func (cu *CategoryUpdate) ClearSkipInSpec() *CategoryUpdate {
-	cu.mutation.ClearSkipInSpec()
-	return cu
+func (_u *CategoryUpdate) ClearSkipInSpec() *CategoryUpdate {
+	_u.mutation.ClearSkipInSpec()
+	return _u
 }
 
 // SetNillable sets the "nillable" field.
-func (cu *CategoryUpdate) SetNillable(s string) *CategoryUpdate {
-	cu.mutation.SetNillable(s)
-	return cu
+func (_u *CategoryUpdate) SetNillable(v string) *CategoryUpdate {
+	_u.mutation.SetNillable(v)
+	return _u
 }
 
 // SetNillableNillable sets the "nillable" field if the given value is not nil.
-func (cu *CategoryUpdate) SetNillableNillable(s *string) *CategoryUpdate {
-	if s != nil {
-		cu.SetNillable(*s)
+func (_u *CategoryUpdate) SetNillableNillable(v *string) *CategoryUpdate {
+	if v != nil {
+		_u.SetNillable(*v)
 	}
-	return cu
+	return _u
 }
 
 // SetStrings sets the "strings" field.
-func (cu *CategoryUpdate) SetStrings(s []string) *CategoryUpdate {
-	cu.mutation.SetStrings(s)
-	return cu
+func (_u *CategoryUpdate) SetStrings(v []string) *CategoryUpdate {
+	_u.mutation.SetStrings(v)
+	return _u
 }
 
-// AppendStrings appends s to the "strings" field.
-func (cu *CategoryUpdate) AppendStrings(s []string) *CategoryUpdate {
-	cu.mutation.AppendStrings(s)
-	return cu
+// AppendStrings appends value to the "strings" field.
+func (_u *CategoryUpdate) AppendStrings(v []string) *CategoryUpdate {
+	_u.mutation.AppendStrings(v)
+	return _u
 }
 
 // ClearStrings clears the value of the "strings" field.
-func (cu *CategoryUpdate) ClearStrings() *CategoryUpdate {
-	cu.mutation.ClearStrings()
-	return cu
+func (_u *CategoryUpdate) ClearStrings() *CategoryUpdate {
+	_u.mutation.ClearStrings()
+	return _u
 }
 
 // SetInts sets the "ints" field.
-func (cu *CategoryUpdate) SetInts(i []int) *CategoryUpdate {
-	cu.mutation.SetInts(i)
-	return cu
+func (_u *CategoryUpdate) SetInts(v []int) *CategoryUpdate {
+	_u.mutation.SetInts(v)
+	return _u
 }
 
-// AppendInts appends i to the "ints" field.
-func (cu *CategoryUpdate) AppendInts(i []int) *CategoryUpdate {
-	cu.mutation.AppendInts(i)
-	return cu
+// AppendInts appends value to the "ints" field.
+func (_u *CategoryUpdate) AppendInts(v []int) *CategoryUpdate {
+	_u.mutation.AppendInts(v)
+	return _u
 }
 
 // ClearInts clears the value of the "ints" field.
-func (cu *CategoryUpdate) ClearInts() *CategoryUpdate {
-	cu.mutation.ClearInts()
-	return cu
+func (_u *CategoryUpdate) ClearInts() *CategoryUpdate {
+	_u.mutation.ClearInts()
+	return _u
 }
 
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
-func (cu *CategoryUpdate) AddPetIDs(ids ...int) *CategoryUpdate {
-	cu.mutation.AddPetIDs(ids...)
-	return cu
+func (_u *CategoryUpdate) AddPetIDs(ids ...int) *CategoryUpdate {
+	_u.mutation.AddPetIDs(ids...)
+	return _u
 }
 
 // AddPets adds the "pets" edges to the Pet entity.
-func (cu *CategoryUpdate) AddPets(p ...*Pet) *CategoryUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *CategoryUpdate) AddPets(v ...*Pet) *CategoryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cu.AddPetIDs(ids...)
+	return _u.AddPetIDs(ids...)
 }
 
 // Mutation returns the CategoryMutation object of the builder.
-func (cu *CategoryUpdate) Mutation() *CategoryMutation {
-	return cu.mutation
+func (_u *CategoryUpdate) Mutation() *CategoryMutation {
+	return _u.mutation
 }
 
 // ClearPets clears all "pets" edges to the Pet entity.
-func (cu *CategoryUpdate) ClearPets() *CategoryUpdate {
-	cu.mutation.ClearPets()
-	return cu
+func (_u *CategoryUpdate) ClearPets() *CategoryUpdate {
+	_u.mutation.ClearPets()
+	return _u
 }
 
 // RemovePetIDs removes the "pets" edge to Pet entities by IDs.
-func (cu *CategoryUpdate) RemovePetIDs(ids ...int) *CategoryUpdate {
-	cu.mutation.RemovePetIDs(ids...)
-	return cu
+func (_u *CategoryUpdate) RemovePetIDs(ids ...int) *CategoryUpdate {
+	_u.mutation.RemovePetIDs(ids...)
+	return _u
 }
 
 // RemovePets removes "pets" edges to Pet entities.
-func (cu *CategoryUpdate) RemovePets(p ...*Pet) *CategoryUpdate {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *CategoryUpdate) RemovePets(v ...*Pet) *CategoryUpdate {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cu.RemovePetIDs(ids...)
+	return _u.RemovePetIDs(ids...)
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (cu *CategoryUpdate) Save(ctx context.Context) (int, error) {
-	cu.defaults()
-	return withHooks(ctx, cu.sqlSave, cu.mutation, cu.hooks)
+func (_u *CategoryUpdate) Save(ctx context.Context) (int, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cu *CategoryUpdate) SaveX(ctx context.Context) int {
-	affected, err := cu.Save(ctx)
+func (_u *CategoryUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -191,76 +191,76 @@ func (cu *CategoryUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (cu *CategoryUpdate) Exec(ctx context.Context) error {
-	_, err := cu.Save(ctx)
+func (_u *CategoryUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cu *CategoryUpdate) ExecX(ctx context.Context) {
-	if err := cu.Exec(ctx); err != nil {
+func (_u *CategoryUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (cu *CategoryUpdate) defaults() {
-	if _, ok := cu.mutation.UpdatedAt(); !ok {
+func (_u *CategoryUpdate) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := category.UpdateDefaultUpdatedAt()
-		cu.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
+func (_u *CategoryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	_spec := sqlgraph.NewUpdateSpec(category.Table, category.Columns, sqlgraph.NewFieldSpec(category.FieldID, field.TypeInt))
-	if ps := cu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cu.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(category.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := cu.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(category.FieldName, field.TypeString, value)
 	}
-	if value, ok := cu.mutation.Readonly(); ok {
+	if value, ok := _u.mutation.Readonly(); ok {
 		_spec.SetField(category.FieldReadonly, field.TypeString, value)
 	}
-	if value, ok := cu.mutation.SkipInSpec(); ok {
+	if value, ok := _u.mutation.SkipInSpec(); ok {
 		_spec.SetField(category.FieldSkipInSpec, field.TypeString, value)
 	}
-	if cu.mutation.SkipInSpecCleared() {
+	if _u.mutation.SkipInSpecCleared() {
 		_spec.ClearField(category.FieldSkipInSpec, field.TypeString)
 	}
-	if value, ok := cu.mutation.Nillable(); ok {
+	if value, ok := _u.mutation.Nillable(); ok {
 		_spec.SetField(category.FieldNillable, field.TypeString, value)
 	}
-	if value, ok := cu.mutation.Strings(); ok {
+	if value, ok := _u.mutation.Strings(); ok {
 		_spec.SetField(category.FieldStrings, field.TypeJSON, value)
 	}
-	if value, ok := cu.mutation.AppendedStrings(); ok {
+	if value, ok := _u.mutation.AppendedStrings(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, category.FieldStrings, value)
 		})
 	}
-	if cu.mutation.StringsCleared() {
+	if _u.mutation.StringsCleared() {
 		_spec.ClearField(category.FieldStrings, field.TypeJSON)
 	}
-	if value, ok := cu.mutation.Ints(); ok {
+	if value, ok := _u.mutation.Ints(); ok {
 		_spec.SetField(category.FieldInts, field.TypeJSON, value)
 	}
-	if value, ok := cu.mutation.AppendedInts(); ok {
+	if value, ok := _u.mutation.AppendedInts(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, category.FieldInts, value)
 		})
 	}
-	if cu.mutation.IntsCleared() {
+	if _u.mutation.IntsCleared() {
 		_spec.ClearField(category.FieldInts, field.TypeJSON)
 	}
-	if cu.mutation.PetsCleared() {
+	if _u.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -273,7 +273,7 @@ func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.RemovedPetsIDs(); len(nodes) > 0 && !cu.mutation.PetsCleared() {
+	if nodes := _u.mutation.RemovedPetsIDs(); len(nodes) > 0 && !_u.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -289,7 +289,7 @@ func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cu.mutation.PetsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -305,7 +305,7 @@ func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, cu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{category.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -313,8 +313,8 @@ func (cu *CategoryUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	cu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // CategoryUpdateOne is the builder for updating a single Category entity.
@@ -326,172 +326,172 @@ type CategoryUpdateOne struct {
 }
 
 // SetUpdatedAt sets the "updated_at" field.
-func (cuo *CategoryUpdateOne) SetUpdatedAt(t time.Time) *CategoryUpdateOne {
-	cuo.mutation.SetUpdatedAt(t)
-	return cuo
+func (_u *CategoryUpdateOne) SetUpdatedAt(v time.Time) *CategoryUpdateOne {
+	_u.mutation.SetUpdatedAt(v)
+	return _u
 }
 
 // SetName sets the "name" field.
-func (cuo *CategoryUpdateOne) SetName(s string) *CategoryUpdateOne {
-	cuo.mutation.SetName(s)
-	return cuo
+func (_u *CategoryUpdateOne) SetName(v string) *CategoryUpdateOne {
+	_u.mutation.SetName(v)
+	return _u
 }
 
 // SetNillableName sets the "name" field if the given value is not nil.
-func (cuo *CategoryUpdateOne) SetNillableName(s *string) *CategoryUpdateOne {
-	if s != nil {
-		cuo.SetName(*s)
+func (_u *CategoryUpdateOne) SetNillableName(v *string) *CategoryUpdateOne {
+	if v != nil {
+		_u.SetName(*v)
 	}
-	return cuo
+	return _u
 }
 
 // SetReadonly sets the "readonly" field.
-func (cuo *CategoryUpdateOne) SetReadonly(s string) *CategoryUpdateOne {
-	cuo.mutation.SetReadonly(s)
-	return cuo
+func (_u *CategoryUpdateOne) SetReadonly(v string) *CategoryUpdateOne {
+	_u.mutation.SetReadonly(v)
+	return _u
 }
 
 // SetNillableReadonly sets the "readonly" field if the given value is not nil.
-func (cuo *CategoryUpdateOne) SetNillableReadonly(s *string) *CategoryUpdateOne {
-	if s != nil {
-		cuo.SetReadonly(*s)
+func (_u *CategoryUpdateOne) SetNillableReadonly(v *string) *CategoryUpdateOne {
+	if v != nil {
+		_u.SetReadonly(*v)
 	}
-	return cuo
+	return _u
 }
 
 // SetSkipInSpec sets the "skip_in_spec" field.
-func (cuo *CategoryUpdateOne) SetSkipInSpec(s string) *CategoryUpdateOne {
-	cuo.mutation.SetSkipInSpec(s)
-	return cuo
+func (_u *CategoryUpdateOne) SetSkipInSpec(v string) *CategoryUpdateOne {
+	_u.mutation.SetSkipInSpec(v)
+	return _u
 }
 
 // SetNillableSkipInSpec sets the "skip_in_spec" field if the given value is not nil.
-func (cuo *CategoryUpdateOne) SetNillableSkipInSpec(s *string) *CategoryUpdateOne {
-	if s != nil {
-		cuo.SetSkipInSpec(*s)
+func (_u *CategoryUpdateOne) SetNillableSkipInSpec(v *string) *CategoryUpdateOne {
+	if v != nil {
+		_u.SetSkipInSpec(*v)
 	}
-	return cuo
+	return _u
 }
 
 // ClearSkipInSpec clears the value of the "skip_in_spec" field.
-func (cuo *CategoryUpdateOne) ClearSkipInSpec() *CategoryUpdateOne {
-	cuo.mutation.ClearSkipInSpec()
-	return cuo
+func (_u *CategoryUpdateOne) ClearSkipInSpec() *CategoryUpdateOne {
+	_u.mutation.ClearSkipInSpec()
+	return _u
 }
 
 // SetNillable sets the "nillable" field.
-func (cuo *CategoryUpdateOne) SetNillable(s string) *CategoryUpdateOne {
-	cuo.mutation.SetNillable(s)
-	return cuo
+func (_u *CategoryUpdateOne) SetNillable(v string) *CategoryUpdateOne {
+	_u.mutation.SetNillable(v)
+	return _u
 }
 
 // SetNillableNillable sets the "nillable" field if the given value is not nil.
-func (cuo *CategoryUpdateOne) SetNillableNillable(s *string) *CategoryUpdateOne {
-	if s != nil {
-		cuo.SetNillable(*s)
+func (_u *CategoryUpdateOne) SetNillableNillable(v *string) *CategoryUpdateOne {
+	if v != nil {
+		_u.SetNillable(*v)
 	}
-	return cuo
+	return _u
 }
 
 // SetStrings sets the "strings" field.
-func (cuo *CategoryUpdateOne) SetStrings(s []string) *CategoryUpdateOne {
-	cuo.mutation.SetStrings(s)
-	return cuo
+func (_u *CategoryUpdateOne) SetStrings(v []string) *CategoryUpdateOne {
+	_u.mutation.SetStrings(v)
+	return _u
 }
 
-// AppendStrings appends s to the "strings" field.
-func (cuo *CategoryUpdateOne) AppendStrings(s []string) *CategoryUpdateOne {
-	cuo.mutation.AppendStrings(s)
-	return cuo
+// AppendStrings appends value to the "strings" field.
+func (_u *CategoryUpdateOne) AppendStrings(v []string) *CategoryUpdateOne {
+	_u.mutation.AppendStrings(v)
+	return _u
 }
 
 // ClearStrings clears the value of the "strings" field.
-func (cuo *CategoryUpdateOne) ClearStrings() *CategoryUpdateOne {
-	cuo.mutation.ClearStrings()
-	return cuo
+func (_u *CategoryUpdateOne) ClearStrings() *CategoryUpdateOne {
+	_u.mutation.ClearStrings()
+	return _u
 }
 
 // SetInts sets the "ints" field.
-func (cuo *CategoryUpdateOne) SetInts(i []int) *CategoryUpdateOne {
-	cuo.mutation.SetInts(i)
-	return cuo
+func (_u *CategoryUpdateOne) SetInts(v []int) *CategoryUpdateOne {
+	_u.mutation.SetInts(v)
+	return _u
 }
 
-// AppendInts appends i to the "ints" field.
-func (cuo *CategoryUpdateOne) AppendInts(i []int) *CategoryUpdateOne {
-	cuo.mutation.AppendInts(i)
-	return cuo
+// AppendInts appends value to the "ints" field.
+func (_u *CategoryUpdateOne) AppendInts(v []int) *CategoryUpdateOne {
+	_u.mutation.AppendInts(v)
+	return _u
 }
 
 // ClearInts clears the value of the "ints" field.
-func (cuo *CategoryUpdateOne) ClearInts() *CategoryUpdateOne {
-	cuo.mutation.ClearInts()
-	return cuo
+func (_u *CategoryUpdateOne) ClearInts() *CategoryUpdateOne {
+	_u.mutation.ClearInts()
+	return _u
 }
 
 // AddPetIDs adds the "pets" edge to the Pet entity by IDs.
-func (cuo *CategoryUpdateOne) AddPetIDs(ids ...int) *CategoryUpdateOne {
-	cuo.mutation.AddPetIDs(ids...)
-	return cuo
+func (_u *CategoryUpdateOne) AddPetIDs(ids ...int) *CategoryUpdateOne {
+	_u.mutation.AddPetIDs(ids...)
+	return _u
 }
 
 // AddPets adds the "pets" edges to the Pet entity.
-func (cuo *CategoryUpdateOne) AddPets(p ...*Pet) *CategoryUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *CategoryUpdateOne) AddPets(v ...*Pet) *CategoryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cuo.AddPetIDs(ids...)
+	return _u.AddPetIDs(ids...)
 }
 
 // Mutation returns the CategoryMutation object of the builder.
-func (cuo *CategoryUpdateOne) Mutation() *CategoryMutation {
-	return cuo.mutation
+func (_u *CategoryUpdateOne) Mutation() *CategoryMutation {
+	return _u.mutation
 }
 
 // ClearPets clears all "pets" edges to the Pet entity.
-func (cuo *CategoryUpdateOne) ClearPets() *CategoryUpdateOne {
-	cuo.mutation.ClearPets()
-	return cuo
+func (_u *CategoryUpdateOne) ClearPets() *CategoryUpdateOne {
+	_u.mutation.ClearPets()
+	return _u
 }
 
 // RemovePetIDs removes the "pets" edge to Pet entities by IDs.
-func (cuo *CategoryUpdateOne) RemovePetIDs(ids ...int) *CategoryUpdateOne {
-	cuo.mutation.RemovePetIDs(ids...)
-	return cuo
+func (_u *CategoryUpdateOne) RemovePetIDs(ids ...int) *CategoryUpdateOne {
+	_u.mutation.RemovePetIDs(ids...)
+	return _u
 }
 
 // RemovePets removes "pets" edges to Pet entities.
-func (cuo *CategoryUpdateOne) RemovePets(p ...*Pet) *CategoryUpdateOne {
-	ids := make([]int, len(p))
-	for i := range p {
-		ids[i] = p[i].ID
+func (_u *CategoryUpdateOne) RemovePets(v ...*Pet) *CategoryUpdateOne {
+	ids := make([]int, len(v))
+	for i := range v {
+		ids[i] = v[i].ID
 	}
-	return cuo.RemovePetIDs(ids...)
+	return _u.RemovePetIDs(ids...)
 }
 
 // Where appends a list predicates to the CategoryUpdate builder.
-func (cuo *CategoryUpdateOne) Where(ps ...predicate.Category) *CategoryUpdateOne {
-	cuo.mutation.Where(ps...)
-	return cuo
+func (_u *CategoryUpdateOne) Where(ps ...predicate.Category) *CategoryUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (cuo *CategoryUpdateOne) Select(field string, fields ...string) *CategoryUpdateOne {
-	cuo.fields = append([]string{field}, fields...)
-	return cuo
+func (_u *CategoryUpdateOne) Select(field string, fields ...string) *CategoryUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Category entity.
-func (cuo *CategoryUpdateOne) Save(ctx context.Context) (*Category, error) {
-	cuo.defaults()
-	return withHooks(ctx, cuo.sqlSave, cuo.mutation, cuo.hooks)
+func (_u *CategoryUpdateOne) Save(ctx context.Context) (*Category, error) {
+	_u.defaults()
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (cuo *CategoryUpdateOne) SaveX(ctx context.Context) *Category {
-	node, err := cuo.Save(ctx)
+func (_u *CategoryUpdateOne) SaveX(ctx context.Context) *Category {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -499,34 +499,34 @@ func (cuo *CategoryUpdateOne) SaveX(ctx context.Context) *Category {
 }
 
 // Exec executes the query on the entity.
-func (cuo *CategoryUpdateOne) Exec(ctx context.Context) error {
-	_, err := cuo.Save(ctx)
+func (_u *CategoryUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (cuo *CategoryUpdateOne) ExecX(ctx context.Context) {
-	if err := cuo.Exec(ctx); err != nil {
+func (_u *CategoryUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (cuo *CategoryUpdateOne) defaults() {
-	if _, ok := cuo.mutation.UpdatedAt(); !ok {
+func (_u *CategoryUpdateOne) defaults() {
+	if _, ok := _u.mutation.UpdatedAt(); !ok {
 		v := category.UpdateDefaultUpdatedAt()
-		cuo.mutation.SetUpdatedAt(v)
+		_u.mutation.SetUpdatedAt(v)
 	}
 }
 
-func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err error) {
+func (_u *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err error) {
 	_spec := sqlgraph.NewUpdateSpec(category.Table, category.Columns, sqlgraph.NewFieldSpec(category.FieldID, field.TypeInt))
-	id, ok := cuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Category.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := cuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, category.FieldID)
 		for _, f := range fields {
@@ -538,54 +538,54 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 			}
 		}
 	}
-	if ps := cuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := cuo.mutation.UpdatedAt(); ok {
+	if value, ok := _u.mutation.UpdatedAt(); ok {
 		_spec.SetField(category.FieldUpdatedAt, field.TypeTime, value)
 	}
-	if value, ok := cuo.mutation.Name(); ok {
+	if value, ok := _u.mutation.Name(); ok {
 		_spec.SetField(category.FieldName, field.TypeString, value)
 	}
-	if value, ok := cuo.mutation.Readonly(); ok {
+	if value, ok := _u.mutation.Readonly(); ok {
 		_spec.SetField(category.FieldReadonly, field.TypeString, value)
 	}
-	if value, ok := cuo.mutation.SkipInSpec(); ok {
+	if value, ok := _u.mutation.SkipInSpec(); ok {
 		_spec.SetField(category.FieldSkipInSpec, field.TypeString, value)
 	}
-	if cuo.mutation.SkipInSpecCleared() {
+	if _u.mutation.SkipInSpecCleared() {
 		_spec.ClearField(category.FieldSkipInSpec, field.TypeString)
 	}
-	if value, ok := cuo.mutation.Nillable(); ok {
+	if value, ok := _u.mutation.Nillable(); ok {
 		_spec.SetField(category.FieldNillable, field.TypeString, value)
 	}
-	if value, ok := cuo.mutation.Strings(); ok {
+	if value, ok := _u.mutation.Strings(); ok {
 		_spec.SetField(category.FieldStrings, field.TypeJSON, value)
 	}
-	if value, ok := cuo.mutation.AppendedStrings(); ok {
+	if value, ok := _u.mutation.AppendedStrings(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, category.FieldStrings, value)
 		})
 	}
-	if cuo.mutation.StringsCleared() {
+	if _u.mutation.StringsCleared() {
 		_spec.ClearField(category.FieldStrings, field.TypeJSON)
 	}
-	if value, ok := cuo.mutation.Ints(); ok {
+	if value, ok := _u.mutation.Ints(); ok {
 		_spec.SetField(category.FieldInts, field.TypeJSON, value)
 	}
-	if value, ok := cuo.mutation.AppendedInts(); ok {
+	if value, ok := _u.mutation.AppendedInts(); ok {
 		_spec.AddModifier(func(u *sql.UpdateBuilder) {
 			sqljson.Append(u, category.FieldInts, value)
 		})
 	}
-	if cuo.mutation.IntsCleared() {
+	if _u.mutation.IntsCleared() {
 		_spec.ClearField(category.FieldInts, field.TypeJSON)
 	}
-	if cuo.mutation.PetsCleared() {
+	if _u.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -598,7 +598,7 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.RemovedPetsIDs(); len(nodes) > 0 && !cuo.mutation.PetsCleared() {
+	if nodes := _u.mutation.RemovedPetsIDs(); len(nodes) > 0 && !_u.mutation.PetsCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -614,7 +614,7 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := cuo.mutation.PetsIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.PetsIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2M,
 			Inverse: false,
@@ -630,10 +630,10 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Category{config: cuo.config}
+	_node = &Category{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, cuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{category.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -641,6 +641,6 @@ func (cuo *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err
 		}
 		return nil, err
 	}
-	cuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

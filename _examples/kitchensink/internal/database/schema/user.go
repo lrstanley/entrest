@@ -101,6 +101,12 @@ func (User) Fields() []ent.Field {
 				entrest.WithSchema(entrest.SchemaObjectAny),
 			).
 			Comment("The github user raw JSON data."),
+		field.JSON("any_data", &github.User{}).
+			Optional().
+			Annotations(
+				entrest.WithSchema(entrest.SchemaAny),
+			).
+			Comment("Any data that is not defined in the schema."),
 		field.Other("profile_url", &ExampleValuer{}).
 			Optional().
 			SchemaType(map[string]string{

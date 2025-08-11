@@ -170,6 +170,7 @@ var (
 		{Name: "avatar", Type: field.TypeBytes, Nullable: true, Size: 1048576},
 		{Name: "password_hashed", Type: field.TypeString},
 		{Name: "github_data", Type: field.TypeJSON, Nullable: true},
+		{Name: "any_data", Type: field.TypeJSON, Nullable: true},
 		{Name: "profile_url", Type: field.TypeOther, Nullable: true, SchemaType: map[string]string{"postgres": "varchar", "sqlite3": "text"}},
 		{Name: "last_authenticated_at", Type: field.TypeTime, Nullable: true},
 		{Name: "settings_admins", Type: field.TypeInt, Nullable: true},
@@ -182,7 +183,7 @@ var (
 		ForeignKeys: []*schema.ForeignKey{
 			{
 				Symbol:     "users_settings_admins",
-				Columns:    []*schema.Column{UsersColumns[13]},
+				Columns:    []*schema.Column{UsersColumns[14]},
 				RefColumns: []*schema.Column{SettingsColumns[0]},
 				OnDelete:   schema.SetNull,
 			},

@@ -9449,6 +9449,9 @@
                         "type": "object",
                         "additionalProperties": true
                     },
+                    "any_data": {
+                        "description": "Any data that is not defined in the schema."
+                    },
                     "profile_url": {
                         "type": "string",
                         "default": "http://127.0.0.1/"
@@ -9515,6 +9518,9 @@
                         "description": "The github user raw JSON data.",
                         "type": "object",
                         "additionalProperties": true
+                    },
+                    "any_data": {
+                        "description": "Any data that is not defined in the schema."
                     },
                     "profile_url": {
                         "type": "string",
@@ -9693,6 +9699,9 @@
                         "description": "The github user raw JSON data.",
                         "type": "object",
                         "additionalProperties": true
+                    },
+                    "any_data": {
+                        "description": "Any data that is not defined in the schema."
                     },
                     "profile_url": {
                         "type": "string",

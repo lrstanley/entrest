@@ -41,6 +41,8 @@ type User struct {
 	PasswordHashed string `json:"-"`
 	// The github user raw JSON data.
 	GithubData *github.User `json:"github_data"`
+	// Any data that is not defined in the schema.
+	AnyData *github.User `json:"any_data"`
 	// ProfileURL holds the value of the "profile_url" field.
 	ProfileURL *schema.ExampleValuer `json:"profile_url"`
 	// LastAuthenticatedAt holds the value of the "last_authenticated_at" field.
@@ -130,7 +132,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case user.FieldAvatar, user.FieldGithubData:
+		case user.FieldAvatar, user.FieldGithubData, user.FieldAnyData:
 			values[i] = new([]byte)
 		case user.FieldProfileURL:
 			values[i] = new(schema.ExampleValuer)
@@ -153,7 +155,7 @@ func (*User) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the User fields.
-func (u *User) assignValues(columns []string, values []any) error {
+func (_m *User) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -163,94 +165,102 @@ func (u *User) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field id", values[i])
 			} else if value != nil {
-				u.ID = *value
+				_m.ID = *value
 			}
 		case user.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				u.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case user.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				u.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case user.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				u.Name = value.String
+				_m.Name = value.String
 			}
 		case user.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				u.Type = user.Type(value.String)
+				_m.Type = user.Type(value.String)
 			}
 		case user.FieldDescription:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field description", values[i])
 			} else if value.Valid {
-				u.Description = new(string)
-				*u.Description = value.String
+				_m.Description = new(string)
+				*_m.Description = value.String
 			}
 		case user.FieldEnabled:
 			if value, ok := values[i].(*sql.NullBool); !ok {
 				return fmt.Errorf("unexpected type %T for field enabled", values[i])
 			} else if value.Valid {
-				u.Enabled = value.Bool
+				_m.Enabled = value.Bool
 			}
 		case user.FieldEmail:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field email", values[i])
 			} else if value.Valid {
-				u.Email = new(string)
-				*u.Email = value.String
+				_m.Email = new(string)
+				*_m.Email = value.String
 			}
 		case user.FieldAvatar:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field avatar", values[i])
 			} else if value != nil {
-				u.Avatar = value
+				_m.Avatar = value
 			}
 		case user.FieldPasswordHashed:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field password_hashed", values[i])
 			} else if value.Valid {
-				u.PasswordHashed = value.String
+				_m.PasswordHashed = value.String
 			}
 		case user.FieldGithubData:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field github_data", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &u.GithubData); err != nil {
+				if err := json.Unmarshal(*value, &_m.GithubData); err != nil {
 					return fmt.Errorf("unmarshal field github_data: %w", err)
+				}
+			}
+		case user.FieldAnyData:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field any_data", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.AnyData); err != nil {
+					return fmt.Errorf("unmarshal field any_data: %w", err)
 				}
 			}
 		case user.FieldProfileURL:
 			if value, ok := values[i].(*schema.ExampleValuer); !ok {
 				return fmt.Errorf("unexpected type %T for field profile_url", values[i])
 			} else if value != nil {
-				u.ProfileURL = value
+				_m.ProfileURL = value
 			}
 		case user.FieldLastAuthenticatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field last_authenticated_at", values[i])
 			} else if value.Valid {
-				u.LastAuthenticatedAt = new(time.Time)
-				*u.LastAuthenticatedAt = value.Time
+				_m.LastAuthenticatedAt = new(time.Time)
+				*_m.LastAuthenticatedAt = value.Time
 			}
 		case user.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for edge-field settings_admins", value)
 			} else if value.Valid {
-				u.settings_admins = new(int)
-				*u.settings_admins = int(value.Int64)
+				_m.settings_admins = new(int)
+				*_m.settings_admins = int(value.Int64)
 			}
 		default:
-			u.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -258,89 +268,89 @@ func (u *User) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the User.
 // This includes values selected through modifiers, order, etc.
-func (u *User) Value(name string) (ent.Value, error) {
-	return u.selectValues.Get(name)
+func (_m *User) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryPets queries the "pets" edge of the User entity.
-func (u *User) QueryPets() *PetQuery {
-	return NewUserClient(u.config).QueryPets(u)
+func (_m *User) QueryPets() *PetQuery {
+	return NewUserClient(_m.config).QueryPets(_m)
 }
 
 // QueryFollowedPets queries the "followed_pets" edge of the User entity.
-func (u *User) QueryFollowedPets() *PetQuery {
-	return NewUserClient(u.config).QueryFollowedPets(u)
+func (_m *User) QueryFollowedPets() *PetQuery {
+	return NewUserClient(_m.config).QueryFollowedPets(_m)
 }
 
 // QueryFriends queries the "friends" edge of the User entity.
-func (u *User) QueryFriends() *UserQuery {
-	return NewUserClient(u.config).QueryFriends(u)
+func (_m *User) QueryFriends() *UserQuery {
+	return NewUserClient(_m.config).QueryFriends(_m)
 }
 
 // QueryPosts queries the "posts" edge of the User entity.
-func (u *User) QueryPosts() *PostQuery {
-	return NewUserClient(u.config).QueryPosts(u)
+func (_m *User) QueryPosts() *PostQuery {
+	return NewUserClient(_m.config).QueryPosts(_m)
 }
 
 // QueryFollowing queries the "following" edge of the User entity.
-func (u *User) QueryFollowing() *FollowsQuery {
-	return NewUserClient(u.config).QueryFollowing(u)
+func (_m *User) QueryFollowing() *FollowsQuery {
+	return NewUserClient(_m.config).QueryFollowing(_m)
 }
 
 // QueryFriendships queries the "friendships" edge of the User entity.
-func (u *User) QueryFriendships() *FriendshipQuery {
-	return NewUserClient(u.config).QueryFriendships(u)
+func (_m *User) QueryFriendships() *FriendshipQuery {
+	return NewUserClient(_m.config).QueryFriendships(_m)
 }
 
 // Update returns a builder for updating this User.
 // Note that you need to call User.Unwrap() before calling this method if this User
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (u *User) Update() *UserUpdateOne {
-	return NewUserClient(u.config).UpdateOne(u)
+func (_m *User) Update() *UserUpdateOne {
+	return NewUserClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the User entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (u *User) Unwrap() *User {
-	_tx, ok := u.config.driver.(*txDriver)
+func (_m *User) Unwrap() *User {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: User is not a transactional entity")
 	}
-	u.config.driver = _tx.drv
-	return u
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (u *User) String() string {
+func (_m *User) String() string {
 	var builder strings.Builder
 	builder.WriteString("User(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", u.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_at=")
-	builder.WriteString(u.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(u.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(u.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("type=")
-	builder.WriteString(fmt.Sprintf("%v", u.Type))
+	builder.WriteString(fmt.Sprintf("%v", _m.Type))
 	builder.WriteString(", ")
-	if v := u.Description; v != nil {
+	if v := _m.Description; v != nil {
 		builder.WriteString("description=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	builder.WriteString("enabled=")
-	builder.WriteString(fmt.Sprintf("%v", u.Enabled))
+	builder.WriteString(fmt.Sprintf("%v", _m.Enabled))
 	builder.WriteString(", ")
-	if v := u.Email; v != nil {
+	if v := _m.Email; v != nil {
 		builder.WriteString("email=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
-	if v := u.Avatar; v != nil {
+	if v := _m.Avatar; v != nil {
 		builder.WriteString("avatar=")
 		builder.WriteString(fmt.Sprintf("%v", *v))
 	}
@@ -348,12 +358,15 @@ func (u *User) String() string {
 	builder.WriteString("password_hashed=<sensitive>")
 	builder.WriteString(", ")
 	builder.WriteString("github_data=")
-	builder.WriteString(fmt.Sprintf("%v", u.GithubData))
+	builder.WriteString(fmt.Sprintf("%v", _m.GithubData))
+	builder.WriteString(", ")
+	builder.WriteString("any_data=")
+	builder.WriteString(fmt.Sprintf("%v", _m.AnyData))
 	builder.WriteString(", ")
 	builder.WriteString("profile_url=")
-	builder.WriteString(fmt.Sprintf("%v", u.ProfileURL))
+	builder.WriteString(fmt.Sprintf("%v", _m.ProfileURL))
 	builder.WriteString(", ")
-	if v := u.LastAuthenticatedAt; v != nil {
+	if v := _m.LastAuthenticatedAt; v != nil {
 		builder.WriteString("last_authenticated_at=")
 		builder.WriteString(v.Format(time.ANSIC))
 	}

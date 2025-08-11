@@ -80,7 +80,7 @@ func (*Category) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Category fields.
-func (c *Category) assignValues(columns []string, values []any) error {
+func (_m *Category) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -91,49 +91,49 @@ func (c *Category) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			c.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case category.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				c.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case category.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				c.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case category.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				c.Name = value.String
+				_m.Name = value.String
 			}
 		case category.FieldReadonly:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field readonly", values[i])
 			} else if value.Valid {
-				c.Readonly = value.String
+				_m.Readonly = value.String
 			}
 		case category.FieldSkipInSpec:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field skip_in_spec", values[i])
 			} else if value.Valid {
-				c.SkipInSpec = value.String
+				_m.SkipInSpec = value.String
 			}
 		case category.FieldNillable:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field nillable", values[i])
 			} else if value.Valid {
-				c.Nillable = new(string)
-				*c.Nillable = value.String
+				_m.Nillable = new(string)
+				*_m.Nillable = value.String
 			}
 		case category.FieldStrings:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field strings", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &c.Strings); err != nil {
+				if err := json.Unmarshal(*value, &_m.Strings); err != nil {
 					return fmt.Errorf("unmarshal field strings: %w", err)
 				}
 			}
@@ -141,12 +141,12 @@ func (c *Category) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field ints", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &c.Ints); err != nil {
+				if err := json.Unmarshal(*value, &_m.Ints); err != nil {
 					return fmt.Errorf("unmarshal field ints: %w", err)
 				}
 			}
 		default:
-			c.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -154,63 +154,63 @@ func (c *Category) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Category.
 // This includes values selected through modifiers, order, etc.
-func (c *Category) Value(name string) (ent.Value, error) {
-	return c.selectValues.Get(name)
+func (_m *Category) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryPets queries the "pets" edge of the Category entity.
-func (c *Category) QueryPets() *PetQuery {
-	return NewCategoryClient(c.config).QueryPets(c)
+func (_m *Category) QueryPets() *PetQuery {
+	return NewCategoryClient(_m.config).QueryPets(_m)
 }
 
 // Update returns a builder for updating this Category.
 // Note that you need to call Category.Unwrap() before calling this method if this Category
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (c *Category) Update() *CategoryUpdateOne {
-	return NewCategoryClient(c.config).UpdateOne(c)
+func (_m *Category) Update() *CategoryUpdateOne {
+	return NewCategoryClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Category entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (c *Category) Unwrap() *Category {
-	_tx, ok := c.config.driver.(*txDriver)
+func (_m *Category) Unwrap() *Category {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Category is not a transactional entity")
 	}
-	c.config.driver = _tx.drv
-	return c
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (c *Category) String() string {
+func (_m *Category) String() string {
 	var builder strings.Builder
 	builder.WriteString("Category(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", c.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_at=")
-	builder.WriteString(c.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(c.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("name=")
-	builder.WriteString(c.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("readonly=")
-	builder.WriteString(c.Readonly)
+	builder.WriteString(_m.Readonly)
 	builder.WriteString(", ")
 	builder.WriteString("skip_in_spec=")
-	builder.WriteString(c.SkipInSpec)
+	builder.WriteString(_m.SkipInSpec)
 	builder.WriteString(", ")
-	if v := c.Nillable; v != nil {
+	if v := _m.Nillable; v != nil {
 		builder.WriteString("nillable=")
 		builder.WriteString(*v)
 	}
 	builder.WriteString(", ")
 	builder.WriteString("strings=")
-	builder.WriteString(fmt.Sprintf("%v", c.Strings))
+	builder.WriteString(fmt.Sprintf("%v", _m.Strings))
 	builder.WriteString(", ")
 	builder.WriteString("ints=")
-	builder.WriteString(fmt.Sprintf("%v", c.Ints))
+	builder.WriteString(fmt.Sprintf("%v", _m.Ints))
 	builder.WriteByte(')')
 	return builder.String()
 }

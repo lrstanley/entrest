@@ -25,88 +25,88 @@ type FriendshipUpdate struct {
 }
 
 // Where appends a list predicates to the FriendshipUpdate builder.
-func (fu *FriendshipUpdate) Where(ps ...predicate.Friendship) *FriendshipUpdate {
-	fu.mutation.Where(ps...)
-	return fu
+func (_u *FriendshipUpdate) Where(ps ...predicate.Friendship) *FriendshipUpdate {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fu *FriendshipUpdate) SetCreatedAt(t time.Time) *FriendshipUpdate {
-	fu.mutation.SetCreatedAt(t)
-	return fu
+func (_u *FriendshipUpdate) SetCreatedAt(v time.Time) *FriendshipUpdate {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fu *FriendshipUpdate) SetNillableCreatedAt(t *time.Time) *FriendshipUpdate {
-	if t != nil {
-		fu.SetCreatedAt(*t)
+func (_u *FriendshipUpdate) SetNillableCreatedAt(v *time.Time) *FriendshipUpdate {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (fu *FriendshipUpdate) SetUserID(u uuid.UUID) *FriendshipUpdate {
-	fu.mutation.SetUserID(u)
-	return fu
+func (_u *FriendshipUpdate) SetUserID(v uuid.UUID) *FriendshipUpdate {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (fu *FriendshipUpdate) SetNillableUserID(u *uuid.UUID) *FriendshipUpdate {
-	if u != nil {
-		fu.SetUserID(*u)
+func (_u *FriendshipUpdate) SetNillableUserID(v *uuid.UUID) *FriendshipUpdate {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetFriendID sets the "friend_id" field.
-func (fu *FriendshipUpdate) SetFriendID(u uuid.UUID) *FriendshipUpdate {
-	fu.mutation.SetFriendID(u)
-	return fu
+func (_u *FriendshipUpdate) SetFriendID(v uuid.UUID) *FriendshipUpdate {
+	_u.mutation.SetFriendID(v)
+	return _u
 }
 
 // SetNillableFriendID sets the "friend_id" field if the given value is not nil.
-func (fu *FriendshipUpdate) SetNillableFriendID(u *uuid.UUID) *FriendshipUpdate {
-	if u != nil {
-		fu.SetFriendID(*u)
+func (_u *FriendshipUpdate) SetNillableFriendID(v *uuid.UUID) *FriendshipUpdate {
+	if v != nil {
+		_u.SetFriendID(*v)
 	}
-	return fu
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (fu *FriendshipUpdate) SetUser(u *User) *FriendshipUpdate {
-	return fu.SetUserID(u.ID)
+func (_u *FriendshipUpdate) SetUser(v *User) *FriendshipUpdate {
+	return _u.SetUserID(v.ID)
 }
 
 // SetFriend sets the "friend" edge to the User entity.
-func (fu *FriendshipUpdate) SetFriend(u *User) *FriendshipUpdate {
-	return fu.SetFriendID(u.ID)
+func (_u *FriendshipUpdate) SetFriend(v *User) *FriendshipUpdate {
+	return _u.SetFriendID(v.ID)
 }
 
 // Mutation returns the FriendshipMutation object of the builder.
-func (fu *FriendshipUpdate) Mutation() *FriendshipMutation {
-	return fu.mutation
+func (_u *FriendshipUpdate) Mutation() *FriendshipMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (fu *FriendshipUpdate) ClearUser() *FriendshipUpdate {
-	fu.mutation.ClearUser()
-	return fu
+func (_u *FriendshipUpdate) ClearUser() *FriendshipUpdate {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // ClearFriend clears the "friend" edge to the User entity.
-func (fu *FriendshipUpdate) ClearFriend() *FriendshipUpdate {
-	fu.mutation.ClearFriend()
-	return fu
+func (_u *FriendshipUpdate) ClearFriend() *FriendshipUpdate {
+	_u.mutation.ClearFriend()
+	return _u
 }
 
 // Save executes the query and returns the number of nodes affected by the update operation.
-func (fu *FriendshipUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks(ctx, fu.sqlSave, fu.mutation, fu.hooks)
+func (_u *FriendshipUpdate) Save(ctx context.Context) (int, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fu *FriendshipUpdate) SaveX(ctx context.Context) int {
-	affected, err := fu.Save(ctx)
+func (_u *FriendshipUpdate) SaveX(ctx context.Context) int {
+	affected, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -114,45 +114,45 @@ func (fu *FriendshipUpdate) SaveX(ctx context.Context) int {
 }
 
 // Exec executes the query.
-func (fu *FriendshipUpdate) Exec(ctx context.Context) error {
-	_, err := fu.Save(ctx)
+func (_u *FriendshipUpdate) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fu *FriendshipUpdate) ExecX(ctx context.Context) {
-	if err := fu.Exec(ctx); err != nil {
+func (_u *FriendshipUpdate) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fu *FriendshipUpdate) check() error {
-	if fu.mutation.UserCleared() && len(fu.mutation.UserIDs()) > 0 {
+func (_u *FriendshipUpdate) check() error {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Friendship.user"`)
 	}
-	if fu.mutation.FriendCleared() && len(fu.mutation.FriendIDs()) > 0 {
+	if _u.mutation.FriendCleared() && len(_u.mutation.FriendIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Friendship.friend"`)
 	}
 	return nil
 }
 
-func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
-	if err := fu.check(); err != nil {
-		return n, err
+func (_u *FriendshipUpdate) sqlSave(ctx context.Context) (_node int, err error) {
+	if err := _u.check(); err != nil {
+		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(friendship.Table, friendship.Columns, sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt))
-	if ps := fu.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fu.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(friendship.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fu.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -165,7 +165,7 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fu.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -181,7 +181,7 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fu.mutation.FriendCleared() {
+	if _u.mutation.FriendCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -194,7 +194,7 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fu.mutation.FriendIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FriendIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -210,7 +210,7 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if n, err = sqlgraph.UpdateNodes(ctx, fu.driver, _spec); err != nil {
+	if _node, err = sqlgraph.UpdateNodes(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{friendship.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -218,8 +218,8 @@ func (fu *FriendshipUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		}
 		return 0, err
 	}
-	fu.mutation.done = true
-	return n, nil
+	_u.mutation.done = true
+	return _node, nil
 }
 
 // FriendshipUpdateOne is the builder for updating a single Friendship entity.
@@ -231,95 +231,95 @@ type FriendshipUpdateOne struct {
 }
 
 // SetCreatedAt sets the "created_at" field.
-func (fuo *FriendshipUpdateOne) SetCreatedAt(t time.Time) *FriendshipUpdateOne {
-	fuo.mutation.SetCreatedAt(t)
-	return fuo
+func (_u *FriendshipUpdateOne) SetCreatedAt(v time.Time) *FriendshipUpdateOne {
+	_u.mutation.SetCreatedAt(v)
+	return _u
 }
 
 // SetNillableCreatedAt sets the "created_at" field if the given value is not nil.
-func (fuo *FriendshipUpdateOne) SetNillableCreatedAt(t *time.Time) *FriendshipUpdateOne {
-	if t != nil {
-		fuo.SetCreatedAt(*t)
+func (_u *FriendshipUpdateOne) SetNillableCreatedAt(v *time.Time) *FriendshipUpdateOne {
+	if v != nil {
+		_u.SetCreatedAt(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetUserID sets the "user_id" field.
-func (fuo *FriendshipUpdateOne) SetUserID(u uuid.UUID) *FriendshipUpdateOne {
-	fuo.mutation.SetUserID(u)
-	return fuo
+func (_u *FriendshipUpdateOne) SetUserID(v uuid.UUID) *FriendshipUpdateOne {
+	_u.mutation.SetUserID(v)
+	return _u
 }
 
 // SetNillableUserID sets the "user_id" field if the given value is not nil.
-func (fuo *FriendshipUpdateOne) SetNillableUserID(u *uuid.UUID) *FriendshipUpdateOne {
-	if u != nil {
-		fuo.SetUserID(*u)
+func (_u *FriendshipUpdateOne) SetNillableUserID(v *uuid.UUID) *FriendshipUpdateOne {
+	if v != nil {
+		_u.SetUserID(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetFriendID sets the "friend_id" field.
-func (fuo *FriendshipUpdateOne) SetFriendID(u uuid.UUID) *FriendshipUpdateOne {
-	fuo.mutation.SetFriendID(u)
-	return fuo
+func (_u *FriendshipUpdateOne) SetFriendID(v uuid.UUID) *FriendshipUpdateOne {
+	_u.mutation.SetFriendID(v)
+	return _u
 }
 
 // SetNillableFriendID sets the "friend_id" field if the given value is not nil.
-func (fuo *FriendshipUpdateOne) SetNillableFriendID(u *uuid.UUID) *FriendshipUpdateOne {
-	if u != nil {
-		fuo.SetFriendID(*u)
+func (_u *FriendshipUpdateOne) SetNillableFriendID(v *uuid.UUID) *FriendshipUpdateOne {
+	if v != nil {
+		_u.SetFriendID(*v)
 	}
-	return fuo
+	return _u
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (fuo *FriendshipUpdateOne) SetUser(u *User) *FriendshipUpdateOne {
-	return fuo.SetUserID(u.ID)
+func (_u *FriendshipUpdateOne) SetUser(v *User) *FriendshipUpdateOne {
+	return _u.SetUserID(v.ID)
 }
 
 // SetFriend sets the "friend" edge to the User entity.
-func (fuo *FriendshipUpdateOne) SetFriend(u *User) *FriendshipUpdateOne {
-	return fuo.SetFriendID(u.ID)
+func (_u *FriendshipUpdateOne) SetFriend(v *User) *FriendshipUpdateOne {
+	return _u.SetFriendID(v.ID)
 }
 
 // Mutation returns the FriendshipMutation object of the builder.
-func (fuo *FriendshipUpdateOne) Mutation() *FriendshipMutation {
-	return fuo.mutation
+func (_u *FriendshipUpdateOne) Mutation() *FriendshipMutation {
+	return _u.mutation
 }
 
 // ClearUser clears the "user" edge to the User entity.
-func (fuo *FriendshipUpdateOne) ClearUser() *FriendshipUpdateOne {
-	fuo.mutation.ClearUser()
-	return fuo
+func (_u *FriendshipUpdateOne) ClearUser() *FriendshipUpdateOne {
+	_u.mutation.ClearUser()
+	return _u
 }
 
 // ClearFriend clears the "friend" edge to the User entity.
-func (fuo *FriendshipUpdateOne) ClearFriend() *FriendshipUpdateOne {
-	fuo.mutation.ClearFriend()
-	return fuo
+func (_u *FriendshipUpdateOne) ClearFriend() *FriendshipUpdateOne {
+	_u.mutation.ClearFriend()
+	return _u
 }
 
 // Where appends a list predicates to the FriendshipUpdate builder.
-func (fuo *FriendshipUpdateOne) Where(ps ...predicate.Friendship) *FriendshipUpdateOne {
-	fuo.mutation.Where(ps...)
-	return fuo
+func (_u *FriendshipUpdateOne) Where(ps ...predicate.Friendship) *FriendshipUpdateOne {
+	_u.mutation.Where(ps...)
+	return _u
 }
 
 // Select allows selecting one or more fields (columns) of the returned entity.
 // The default is selecting all fields defined in the entity schema.
-func (fuo *FriendshipUpdateOne) Select(field string, fields ...string) *FriendshipUpdateOne {
-	fuo.fields = append([]string{field}, fields...)
-	return fuo
+func (_u *FriendshipUpdateOne) Select(field string, fields ...string) *FriendshipUpdateOne {
+	_u.fields = append([]string{field}, fields...)
+	return _u
 }
 
 // Save executes the query and returns the updated Friendship entity.
-func (fuo *FriendshipUpdateOne) Save(ctx context.Context) (*Friendship, error) {
-	return withHooks(ctx, fuo.sqlSave, fuo.mutation, fuo.hooks)
+func (_u *FriendshipUpdateOne) Save(ctx context.Context) (*Friendship, error) {
+	return withHooks(ctx, _u.sqlSave, _u.mutation, _u.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fuo *FriendshipUpdateOne) SaveX(ctx context.Context) *Friendship {
-	node, err := fuo.Save(ctx)
+func (_u *FriendshipUpdateOne) SaveX(ctx context.Context) *Friendship {
+	node, err := _u.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -327,40 +327,40 @@ func (fuo *FriendshipUpdateOne) SaveX(ctx context.Context) *Friendship {
 }
 
 // Exec executes the query on the entity.
-func (fuo *FriendshipUpdateOne) Exec(ctx context.Context) error {
-	_, err := fuo.Save(ctx)
+func (_u *FriendshipUpdateOne) Exec(ctx context.Context) error {
+	_, err := _u.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fuo *FriendshipUpdateOne) ExecX(ctx context.Context) {
-	if err := fuo.Exec(ctx); err != nil {
+func (_u *FriendshipUpdateOne) ExecX(ctx context.Context) {
+	if err := _u.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fuo *FriendshipUpdateOne) check() error {
-	if fuo.mutation.UserCleared() && len(fuo.mutation.UserIDs()) > 0 {
+func (_u *FriendshipUpdateOne) check() error {
+	if _u.mutation.UserCleared() && len(_u.mutation.UserIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Friendship.user"`)
 	}
-	if fuo.mutation.FriendCleared() && len(fuo.mutation.FriendIDs()) > 0 {
+	if _u.mutation.FriendCleared() && len(_u.mutation.FriendIDs()) > 0 {
 		return errors.New(`ent: clearing a required unique edge "Friendship.friend"`)
 	}
 	return nil
 }
 
-func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship, err error) {
-	if err := fuo.check(); err != nil {
+func (_u *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship, err error) {
+	if err := _u.check(); err != nil {
 		return _node, err
 	}
 	_spec := sqlgraph.NewUpdateSpec(friendship.Table, friendship.Columns, sqlgraph.NewFieldSpec(friendship.FieldID, field.TypeInt))
-	id, ok := fuo.mutation.ID()
+	id, ok := _u.mutation.ID()
 	if !ok {
 		return nil, &ValidationError{Name: "id", err: errors.New(`ent: missing "Friendship.id" for update`)}
 	}
 	_spec.Node.ID.Value = id
-	if fields := fuo.fields; len(fields) > 0 {
+	if fields := _u.fields; len(fields) > 0 {
 		_spec.Node.Columns = make([]string, 0, len(fields))
 		_spec.Node.Columns = append(_spec.Node.Columns, friendship.FieldID)
 		for _, f := range fields {
@@ -372,17 +372,17 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 			}
 		}
 	}
-	if ps := fuo.mutation.predicates; len(ps) > 0 {
+	if ps := _u.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
 			for i := range ps {
 				ps[i](selector)
 			}
 		}
 	}
-	if value, ok := fuo.mutation.CreatedAt(); ok {
+	if value, ok := _u.mutation.CreatedAt(); ok {
 		_spec.SetField(friendship.FieldCreatedAt, field.TypeTime, value)
 	}
-	if fuo.mutation.UserCleared() {
+	if _u.mutation.UserCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -395,7 +395,7 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fuo.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -411,7 +411,7 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	if fuo.mutation.FriendCleared() {
+	if _u.mutation.FriendCleared() {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -424,7 +424,7 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		_spec.Edges.Clear = append(_spec.Edges.Clear, edge)
 	}
-	if nodes := fuo.mutation.FriendIDs(); len(nodes) > 0 {
+	if nodes := _u.mutation.FriendIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -440,10 +440,10 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		_spec.Edges.Add = append(_spec.Edges.Add, edge)
 	}
-	_node = &Friendship{config: fuo.config}
+	_node = &Friendship{config: _u.config}
 	_spec.Assign = _node.assignValues
 	_spec.ScanValues = _node.scanValues
-	if err = sqlgraph.UpdateNode(ctx, fuo.driver, _spec); err != nil {
+	if err = sqlgraph.UpdateNode(ctx, _u.driver, _spec); err != nil {
 		if _, ok := err.(*sqlgraph.NotFoundError); ok {
 			err = &NotFoundError{friendship.Label}
 		} else if sqlgraph.IsConstraintError(err) {
@@ -451,6 +451,6 @@ func (fuo *FriendshipUpdateOne) sqlSave(ctx context.Context) (_node *Friendship,
 		}
 		return nil, err
 	}
-	fuo.mutation.done = true
+	_u.mutation.done = true
 	return _node, nil
 }

@@ -83,7 +83,7 @@ func (*Follows) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Follows fields.
-func (f *Follows) assignValues(columns []string, values []any) error {
+func (_m *Follows) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -93,22 +93,22 @@ func (f *Follows) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field followed_at", values[i])
 			} else if value.Valid {
-				f.FollowedAt = value.Time
+				_m.FollowedAt = value.Time
 			}
 		case follows.FieldUserID:
 			if value, ok := values[i].(*uuid.UUID); !ok {
 				return fmt.Errorf("unexpected type %T for field user_id", values[i])
 			} else if value != nil {
-				f.UserID = *value
+				_m.UserID = *value
 			}
 		case follows.FieldPetID:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field pet_id", values[i])
 			} else if value.Valid {
-				f.PetID = int(value.Int64)
+				_m.PetID = int(value.Int64)
 			}
 		default:
-			f.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -116,50 +116,50 @@ func (f *Follows) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Follows.
 // This includes values selected through modifiers, order, etc.
-func (f *Follows) Value(name string) (ent.Value, error) {
-	return f.selectValues.Get(name)
+func (_m *Follows) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryUser queries the "user" edge of the Follows entity.
-func (f *Follows) QueryUser() *UserQuery {
-	return NewFollowsClient(f.config).QueryUser(f)
+func (_m *Follows) QueryUser() *UserQuery {
+	return NewFollowsClient(_m.config).QueryUser(_m)
 }
 
 // QueryPet queries the "pet" edge of the Follows entity.
-func (f *Follows) QueryPet() *PetQuery {
-	return NewFollowsClient(f.config).QueryPet(f)
+func (_m *Follows) QueryPet() *PetQuery {
+	return NewFollowsClient(_m.config).QueryPet(_m)
 }
 
 // Update returns a builder for updating this Follows.
 // Note that you need to call Follows.Unwrap() before calling this method if this Follows
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (f *Follows) Update() *FollowsUpdateOne {
-	return NewFollowsClient(f.config).UpdateOne(f)
+func (_m *Follows) Update() *FollowsUpdateOne {
+	return NewFollowsClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Follows entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (f *Follows) Unwrap() *Follows {
-	_tx, ok := f.config.driver.(*txDriver)
+func (_m *Follows) Unwrap() *Follows {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Follows is not a transactional entity")
 	}
-	f.config.driver = _tx.drv
-	return f
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (f *Follows) String() string {
+func (_m *Follows) String() string {
 	var builder strings.Builder
 	builder.WriteString("Follows(")
 	builder.WriteString("followed_at=")
-	builder.WriteString(f.FollowedAt.Format(time.ANSIC))
+	builder.WriteString(_m.FollowedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("user_id=")
-	builder.WriteString(fmt.Sprintf("%v", f.UserID))
+	builder.WriteString(fmt.Sprintf("%v", _m.UserID))
 	builder.WriteString(", ")
 	builder.WriteString("pet_id=")
-	builder.WriteString(fmt.Sprintf("%v", f.PetID))
+	builder.WriteString(fmt.Sprintf("%v", _m.PetID))
 	builder.WriteByte(')')
 	return builder.String()
 }

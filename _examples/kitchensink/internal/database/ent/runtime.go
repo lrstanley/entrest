@@ -219,7 +219,7 @@ func init() {
 	// user.PasswordHashedValidator is a validator for the "password_hashed" field. It is called by the builders before save.
 	user.PasswordHashedValidator = userDescPasswordHashed.Validators[0].(func(string) error)
 	// userDescProfileURL is the schema descriptor for profile_url field.
-	userDescProfileURL := userFields[9].Descriptor()
+	userDescProfileURL := userFields[10].Descriptor()
 	// user.DefaultProfileURL holds the default value on creation for the profile_url field.
 	user.DefaultProfileURL = userDescProfileURL.Default.(*schema.ExampleValuer)
 	// userDescID is the schema descriptor for id field.

@@ -39,7 +39,7 @@ func (*Skipped) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Skipped fields.
-func (s *Skipped) assignValues(columns []string, values []any) error {
+func (_m *Skipped) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -50,15 +50,15 @@ func (s *Skipped) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			s.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case skipped.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				s.Name = value.String
+				_m.Name = value.String
 			}
 		default:
-			s.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -66,35 +66,35 @@ func (s *Skipped) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Skipped.
 // This includes values selected through modifiers, order, etc.
-func (s *Skipped) Value(name string) (ent.Value, error) {
-	return s.selectValues.Get(name)
+func (_m *Skipped) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // Update returns a builder for updating this Skipped.
 // Note that you need to call Skipped.Unwrap() before calling this method if this Skipped
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (s *Skipped) Update() *SkippedUpdateOne {
-	return NewSkippedClient(s.config).UpdateOne(s)
+func (_m *Skipped) Update() *SkippedUpdateOne {
+	return NewSkippedClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Skipped entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (s *Skipped) Unwrap() *Skipped {
-	_tx, ok := s.config.driver.(*txDriver)
+func (_m *Skipped) Unwrap() *Skipped {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Skipped is not a transactional entity")
 	}
-	s.config.driver = _tx.drv
-	return s
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (s *Skipped) String() string {
+func (_m *Skipped) String() string {
 	var builder strings.Builder
 	builder.WriteString("Skipped(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", s.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(s.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteByte(')')
 	return builder.String()
 }

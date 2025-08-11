@@ -24,55 +24,55 @@ type FollowsCreate struct {
 }
 
 // SetFollowedAt sets the "followed_at" field.
-func (fc *FollowsCreate) SetFollowedAt(t time.Time) *FollowsCreate {
-	fc.mutation.SetFollowedAt(t)
-	return fc
+func (_c *FollowsCreate) SetFollowedAt(v time.Time) *FollowsCreate {
+	_c.mutation.SetFollowedAt(v)
+	return _c
 }
 
 // SetNillableFollowedAt sets the "followed_at" field if the given value is not nil.
-func (fc *FollowsCreate) SetNillableFollowedAt(t *time.Time) *FollowsCreate {
-	if t != nil {
-		fc.SetFollowedAt(*t)
+func (_c *FollowsCreate) SetNillableFollowedAt(v *time.Time) *FollowsCreate {
+	if v != nil {
+		_c.SetFollowedAt(*v)
 	}
-	return fc
+	return _c
 }
 
 // SetUserID sets the "user_id" field.
-func (fc *FollowsCreate) SetUserID(u uuid.UUID) *FollowsCreate {
-	fc.mutation.SetUserID(u)
-	return fc
+func (_c *FollowsCreate) SetUserID(v uuid.UUID) *FollowsCreate {
+	_c.mutation.SetUserID(v)
+	return _c
 }
 
 // SetPetID sets the "pet_id" field.
-func (fc *FollowsCreate) SetPetID(i int) *FollowsCreate {
-	fc.mutation.SetPetID(i)
-	return fc
+func (_c *FollowsCreate) SetPetID(v int) *FollowsCreate {
+	_c.mutation.SetPetID(v)
+	return _c
 }
 
 // SetUser sets the "user" edge to the User entity.
-func (fc *FollowsCreate) SetUser(u *User) *FollowsCreate {
-	return fc.SetUserID(u.ID)
+func (_c *FollowsCreate) SetUser(v *User) *FollowsCreate {
+	return _c.SetUserID(v.ID)
 }
 
 // SetPet sets the "pet" edge to the Pet entity.
-func (fc *FollowsCreate) SetPet(p *Pet) *FollowsCreate {
-	return fc.SetPetID(p.ID)
+func (_c *FollowsCreate) SetPet(v *Pet) *FollowsCreate {
+	return _c.SetPetID(v.ID)
 }
 
 // Mutation returns the FollowsMutation object of the builder.
-func (fc *FollowsCreate) Mutation() *FollowsMutation {
-	return fc.mutation
+func (_c *FollowsCreate) Mutation() *FollowsMutation {
+	return _c.mutation
 }
 
 // Save creates the Follows in the database.
-func (fc *FollowsCreate) Save(ctx context.Context) (*Follows, error) {
-	fc.defaults()
-	return withHooks(ctx, fc.sqlSave, fc.mutation, fc.hooks)
+func (_c *FollowsCreate) Save(ctx context.Context) (*Follows, error) {
+	_c.defaults()
+	return withHooks(ctx, _c.sqlSave, _c.mutation, _c.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
-func (fc *FollowsCreate) SaveX(ctx context.Context) *Follows {
-	v, err := fc.Save(ctx)
+func (_c *FollowsCreate) SaveX(ctx context.Context) *Follows {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -80,52 +80,52 @@ func (fc *FollowsCreate) SaveX(ctx context.Context) *Follows {
 }
 
 // Exec executes the query.
-func (fc *FollowsCreate) Exec(ctx context.Context) error {
-	_, err := fc.Save(ctx)
+func (_c *FollowsCreate) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fc *FollowsCreate) ExecX(ctx context.Context) {
-	if err := fc.Exec(ctx); err != nil {
+func (_c *FollowsCreate) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }
 
 // defaults sets the default values of the builder before save.
-func (fc *FollowsCreate) defaults() {
-	if _, ok := fc.mutation.FollowedAt(); !ok {
+func (_c *FollowsCreate) defaults() {
+	if _, ok := _c.mutation.FollowedAt(); !ok {
 		v := follows.DefaultFollowedAt()
-		fc.mutation.SetFollowedAt(v)
+		_c.mutation.SetFollowedAt(v)
 	}
 }
 
 // check runs all checks and user-defined validators on the builder.
-func (fc *FollowsCreate) check() error {
-	if _, ok := fc.mutation.FollowedAt(); !ok {
+func (_c *FollowsCreate) check() error {
+	if _, ok := _c.mutation.FollowedAt(); !ok {
 		return &ValidationError{Name: "followed_at", err: errors.New(`ent: missing required field "Follows.followed_at"`)}
 	}
-	if _, ok := fc.mutation.UserID(); !ok {
+	if _, ok := _c.mutation.UserID(); !ok {
 		return &ValidationError{Name: "user_id", err: errors.New(`ent: missing required field "Follows.user_id"`)}
 	}
-	if _, ok := fc.mutation.PetID(); !ok {
+	if _, ok := _c.mutation.PetID(); !ok {
 		return &ValidationError{Name: "pet_id", err: errors.New(`ent: missing required field "Follows.pet_id"`)}
 	}
-	if len(fc.mutation.UserIDs()) == 0 {
+	if len(_c.mutation.UserIDs()) == 0 {
 		return &ValidationError{Name: "user", err: errors.New(`ent: missing required edge "Follows.user"`)}
 	}
-	if len(fc.mutation.PetIDs()) == 0 {
+	if len(_c.mutation.PetIDs()) == 0 {
 		return &ValidationError{Name: "pet", err: errors.New(`ent: missing required edge "Follows.pet"`)}
 	}
 	return nil
 }
 
-func (fc *FollowsCreate) sqlSave(ctx context.Context) (*Follows, error) {
-	if err := fc.check(); err != nil {
+func (_c *FollowsCreate) sqlSave(ctx context.Context) (*Follows, error) {
+	if err := _c.check(); err != nil {
 		return nil, err
 	}
-	_node, _spec := fc.createSpec()
-	if err := sqlgraph.CreateNode(ctx, fc.driver, _spec); err != nil {
+	_node, _spec := _c.createSpec()
+	if err := sqlgraph.CreateNode(ctx, _c.driver, _spec); err != nil {
 		if sqlgraph.IsConstraintError(err) {
 			err = &ConstraintError{msg: err.Error(), wrap: err}
 		}
@@ -134,16 +134,16 @@ func (fc *FollowsCreate) sqlSave(ctx context.Context) (*Follows, error) {
 	return _node, nil
 }
 
-func (fc *FollowsCreate) createSpec() (*Follows, *sqlgraph.CreateSpec) {
+func (_c *FollowsCreate) createSpec() (*Follows, *sqlgraph.CreateSpec) {
 	var (
-		_node = &Follows{config: fc.config}
+		_node = &Follows{config: _c.config}
 		_spec = sqlgraph.NewCreateSpec(follows.Table, nil)
 	)
-	if value, ok := fc.mutation.FollowedAt(); ok {
+	if value, ok := _c.mutation.FollowedAt(); ok {
 		_spec.SetField(follows.FieldFollowedAt, field.TypeTime, value)
 		_node.FollowedAt = value
 	}
-	if nodes := fc.mutation.UserIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.UserIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -160,7 +160,7 @@ func (fc *FollowsCreate) createSpec() (*Follows, *sqlgraph.CreateSpec) {
 		_node.UserID = nodes[0]
 		_spec.Edges = append(_spec.Edges, edge)
 	}
-	if nodes := fc.mutation.PetIDs(); len(nodes) > 0 {
+	if nodes := _c.mutation.PetIDs(); len(nodes) > 0 {
 		edge := &sqlgraph.EdgeSpec{
 			Rel:     sqlgraph.M2O,
 			Inverse: false,
@@ -188,16 +188,16 @@ type FollowsCreateBulk struct {
 }
 
 // Save creates the Follows entities in the database.
-func (fcb *FollowsCreateBulk) Save(ctx context.Context) ([]*Follows, error) {
-	if fcb.err != nil {
-		return nil, fcb.err
+func (_c *FollowsCreateBulk) Save(ctx context.Context) ([]*Follows, error) {
+	if _c.err != nil {
+		return nil, _c.err
 	}
-	specs := make([]*sqlgraph.CreateSpec, len(fcb.builders))
-	nodes := make([]*Follows, len(fcb.builders))
-	mutators := make([]Mutator, len(fcb.builders))
-	for i := range fcb.builders {
+	specs := make([]*sqlgraph.CreateSpec, len(_c.builders))
+	nodes := make([]*Follows, len(_c.builders))
+	mutators := make([]Mutator, len(_c.builders))
+	for i := range _c.builders {
 		func(i int, root context.Context) {
-			builder := fcb.builders[i]
+			builder := _c.builders[i]
 			builder.defaults()
 			var mut Mutator = MutateFunc(func(ctx context.Context, m Mutation) (Value, error) {
 				mutation, ok := m.(*FollowsMutation)
@@ -211,11 +211,11 @@ func (fcb *FollowsCreateBulk) Save(ctx context.Context) ([]*Follows, error) {
 				var err error
 				nodes[i], specs[i] = builder.createSpec()
 				if i < len(mutators)-1 {
-					_, err = mutators[i+1].Mutate(root, fcb.builders[i+1].mutation)
+					_, err = mutators[i+1].Mutate(root, _c.builders[i+1].mutation)
 				} else {
 					spec := &sqlgraph.BatchCreateSpec{Nodes: specs}
 					// Invoke the actual operation on the latest mutation in the chain.
-					if err = sqlgraph.BatchCreate(ctx, fcb.driver, spec); err != nil {
+					if err = sqlgraph.BatchCreate(ctx, _c.driver, spec); err != nil {
 						if sqlgraph.IsConstraintError(err) {
 							err = &ConstraintError{msg: err.Error(), wrap: err}
 						}
@@ -234,7 +234,7 @@ func (fcb *FollowsCreateBulk) Save(ctx context.Context) ([]*Follows, error) {
 		}(i, ctx)
 	}
 	if len(mutators) > 0 {
-		if _, err := mutators[0].Mutate(ctx, fcb.builders[0].mutation); err != nil {
+		if _, err := mutators[0].Mutate(ctx, _c.builders[0].mutation); err != nil {
 			return nil, err
 		}
 	}
@@ -242,8 +242,8 @@ func (fcb *FollowsCreateBulk) Save(ctx context.Context) ([]*Follows, error) {
 }
 
 // SaveX is like Save, but panics if an error occurs.
-func (fcb *FollowsCreateBulk) SaveX(ctx context.Context) []*Follows {
-	v, err := fcb.Save(ctx)
+func (_c *FollowsCreateBulk) SaveX(ctx context.Context) []*Follows {
+	v, err := _c.Save(ctx)
 	if err != nil {
 		panic(err)
 	}
@@ -251,14 +251,14 @@ func (fcb *FollowsCreateBulk) SaveX(ctx context.Context) []*Follows {
 }
 
 // Exec executes the query.
-func (fcb *FollowsCreateBulk) Exec(ctx context.Context) error {
-	_, err := fcb.Save(ctx)
+func (_c *FollowsCreateBulk) Exec(ctx context.Context) error {
+	_, err := _c.Save(ctx)
 	return err
 }
 
 // ExecX is like Exec, but panics if an error occurs.
-func (fcb *FollowsCreateBulk) ExecX(ctx context.Context) {
-	if err := fcb.Exec(ctx); err != nil {
+func (_c *FollowsCreateBulk) ExecX(ctx context.Context) {
+	if err := _c.Exec(ctx); err != nil {
 		panic(err)
 	}
 }

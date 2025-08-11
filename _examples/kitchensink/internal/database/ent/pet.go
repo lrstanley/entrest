@@ -120,7 +120,7 @@ func (*Pet) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Pet fields.
-func (pe *Pet) assignValues(columns []string, values []any) error {
+func (_m *Pet) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -131,18 +131,18 @@ func (pe *Pet) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			pe.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case pet.FieldName:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field name", values[i])
 			} else if value.Valid {
-				pe.Name = value.String
+				_m.Name = value.String
 			}
 		case pet.FieldNicknames:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field nicknames", values[i])
 			} else if value != nil && len(*value) > 0 {
-				if err := json.Unmarshal(*value, &pe.Nicknames); err != nil {
+				if err := json.Unmarshal(*value, &_m.Nicknames); err != nil {
 					return fmt.Errorf("unmarshal field nicknames: %w", err)
 				}
 			}
@@ -150,23 +150,23 @@ func (pe *Pet) assignValues(columns []string, values []any) error {
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field age", values[i])
 			} else if value.Valid {
-				pe.Age = int(value.Int64)
+				_m.Age = int(value.Int64)
 			}
 		case pet.FieldType:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
 			} else if value.Valid {
-				pe.Type = pet.Type(value.String)
+				_m.Type = pet.Type(value.String)
 			}
 		case pet.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field user_pets", values[i])
 			} else if value.Valid {
-				pe.user_pets = new(uuid.UUID)
-				*pe.user_pets = *value.S.(*uuid.UUID)
+				_m.user_pets = new(uuid.UUID)
+				*_m.user_pets = *value.S.(*uuid.UUID)
 			}
 		default:
-			pe.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -174,69 +174,69 @@ func (pe *Pet) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Pet.
 // This includes values selected through modifiers, order, etc.
-func (pe *Pet) Value(name string) (ent.Value, error) {
-	return pe.selectValues.Get(name)
+func (_m *Pet) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryCategories queries the "categories" edge of the Pet entity.
-func (pe *Pet) QueryCategories() *CategoryQuery {
-	return NewPetClient(pe.config).QueryCategories(pe)
+func (_m *Pet) QueryCategories() *CategoryQuery {
+	return NewPetClient(_m.config).QueryCategories(_m)
 }
 
 // QueryOwner queries the "owner" edge of the Pet entity.
-func (pe *Pet) QueryOwner() *UserQuery {
-	return NewPetClient(pe.config).QueryOwner(pe)
+func (_m *Pet) QueryOwner() *UserQuery {
+	return NewPetClient(_m.config).QueryOwner(_m)
 }
 
 // QueryFriends queries the "friends" edge of the Pet entity.
-func (pe *Pet) QueryFriends() *PetQuery {
-	return NewPetClient(pe.config).QueryFriends(pe)
+func (_m *Pet) QueryFriends() *PetQuery {
+	return NewPetClient(_m.config).QueryFriends(_m)
 }
 
 // QueryFollowedBy queries the "followed_by" edge of the Pet entity.
-func (pe *Pet) QueryFollowedBy() *UserQuery {
-	return NewPetClient(pe.config).QueryFollowedBy(pe)
+func (_m *Pet) QueryFollowedBy() *UserQuery {
+	return NewPetClient(_m.config).QueryFollowedBy(_m)
 }
 
 // QueryFollowing queries the "following" edge of the Pet entity.
-func (pe *Pet) QueryFollowing() *FollowsQuery {
-	return NewPetClient(pe.config).QueryFollowing(pe)
+func (_m *Pet) QueryFollowing() *FollowsQuery {
+	return NewPetClient(_m.config).QueryFollowing(_m)
 }
 
 // Update returns a builder for updating this Pet.
 // Note that you need to call Pet.Unwrap() before calling this method if this Pet
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (pe *Pet) Update() *PetUpdateOne {
-	return NewPetClient(pe.config).UpdateOne(pe)
+func (_m *Pet) Update() *PetUpdateOne {
+	return NewPetClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Pet entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (pe *Pet) Unwrap() *Pet {
-	_tx, ok := pe.config.driver.(*txDriver)
+func (_m *Pet) Unwrap() *Pet {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Pet is not a transactional entity")
 	}
-	pe.config.driver = _tx.drv
-	return pe
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (pe *Pet) String() string {
+func (_m *Pet) String() string {
 	var builder strings.Builder
 	builder.WriteString("Pet(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", pe.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("name=")
-	builder.WriteString(pe.Name)
+	builder.WriteString(_m.Name)
 	builder.WriteString(", ")
 	builder.WriteString("nicknames=")
-	builder.WriteString(fmt.Sprintf("%v", pe.Nicknames))
+	builder.WriteString(fmt.Sprintf("%v", _m.Nicknames))
 	builder.WriteString(", ")
 	builder.WriteString("age=")
-	builder.WriteString(fmt.Sprintf("%v", pe.Age))
+	builder.WriteString(fmt.Sprintf("%v", _m.Age))
 	builder.WriteString(", ")
 	builder.WriteString("type=")
-	builder.WriteString(fmt.Sprintf("%v", pe.Type))
+	builder.WriteString(fmt.Sprintf("%v", _m.Type))
 	builder.WriteByte(')')
 	return builder.String()
 }

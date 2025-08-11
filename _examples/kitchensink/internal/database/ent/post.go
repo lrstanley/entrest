@@ -78,7 +78,7 @@ func (*Post) scanValues(columns []string) ([]any, error) {
 
 // assignValues assigns the values that were returned from sql.Rows (after scanning)
 // to the Post fields.
-func (po *Post) assignValues(columns []string, values []any) error {
+func (_m *Post) assignValues(columns []string, values []any) error {
 	if m, n := len(values), len(columns); m < n {
 		return fmt.Errorf("mismatch number of scan values: %d != %d", m, n)
 	}
@@ -89,46 +89,46 @@ func (po *Post) assignValues(columns []string, values []any) error {
 			if !ok {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
-			po.ID = int(value.Int64)
+			_m.ID = int(value.Int64)
 		case post.FieldCreatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field created_at", values[i])
 			} else if value.Valid {
-				po.CreatedAt = value.Time
+				_m.CreatedAt = value.Time
 			}
 		case post.FieldUpdatedAt:
 			if value, ok := values[i].(*sql.NullTime); !ok {
 				return fmt.Errorf("unexpected type %T for field updated_at", values[i])
 			} else if value.Valid {
-				po.UpdatedAt = value.Time
+				_m.UpdatedAt = value.Time
 			}
 		case post.FieldTitle:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field title", values[i])
 			} else if value.Valid {
-				po.Title = value.String
+				_m.Title = value.String
 			}
 		case post.FieldSlug:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field slug", values[i])
 			} else if value.Valid {
-				po.Slug = value.String
+				_m.Slug = value.String
 			}
 		case post.FieldBody:
 			if value, ok := values[i].(*sql.NullString); !ok {
 				return fmt.Errorf("unexpected type %T for field body", values[i])
 			} else if value.Valid {
-				po.Body = value.String
+				_m.Body = value.String
 			}
 		case post.ForeignKeys[0]:
 			if value, ok := values[i].(*sql.NullScanner); !ok {
 				return fmt.Errorf("unexpected type %T for field user_posts", values[i])
 			} else if value.Valid {
-				po.user_posts = new(uuid.UUID)
-				*po.user_posts = *value.S.(*uuid.UUID)
+				_m.user_posts = new(uuid.UUID)
+				*_m.user_posts = *value.S.(*uuid.UUID)
 			}
 		default:
-			po.selectValues.Set(columns[i], values[i])
+			_m.selectValues.Set(columns[i], values[i])
 		}
 	}
 	return nil
@@ -136,52 +136,52 @@ func (po *Post) assignValues(columns []string, values []any) error {
 
 // Value returns the ent.Value that was dynamically selected and assigned to the Post.
 // This includes values selected through modifiers, order, etc.
-func (po *Post) Value(name string) (ent.Value, error) {
-	return po.selectValues.Get(name)
+func (_m *Post) Value(name string) (ent.Value, error) {
+	return _m.selectValues.Get(name)
 }
 
 // QueryAuthor queries the "author" edge of the Post entity.
-func (po *Post) QueryAuthor() *UserQuery {
-	return NewPostClient(po.config).QueryAuthor(po)
+func (_m *Post) QueryAuthor() *UserQuery {
+	return NewPostClient(_m.config).QueryAuthor(_m)
 }
 
 // Update returns a builder for updating this Post.
 // Note that you need to call Post.Unwrap() before calling this method if this Post
 // was returned from a transaction, and the transaction was committed or rolled back.
-func (po *Post) Update() *PostUpdateOne {
-	return NewPostClient(po.config).UpdateOne(po)
+func (_m *Post) Update() *PostUpdateOne {
+	return NewPostClient(_m.config).UpdateOne(_m)
 }
 
 // Unwrap unwraps the Post entity that was returned from a transaction after it was closed,
 // so that all future queries will be executed through the driver which created the transaction.
-func (po *Post) Unwrap() *Post {
-	_tx, ok := po.config.driver.(*txDriver)
+func (_m *Post) Unwrap() *Post {
+	_tx, ok := _m.config.driver.(*txDriver)
 	if !ok {
 		panic("ent: Post is not a transactional entity")
 	}
-	po.config.driver = _tx.drv
-	return po
+	_m.config.driver = _tx.drv
+	return _m
 }
 
 // String implements the fmt.Stringer.
-func (po *Post) String() string {
+func (_m *Post) String() string {
 	var builder strings.Builder
 	builder.WriteString("Post(")
-	builder.WriteString(fmt.Sprintf("id=%v, ", po.ID))
+	builder.WriteString(fmt.Sprintf("id=%v, ", _m.ID))
 	builder.WriteString("created_at=")
-	builder.WriteString(po.CreatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.CreatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("updated_at=")
-	builder.WriteString(po.UpdatedAt.Format(time.ANSIC))
+	builder.WriteString(_m.UpdatedAt.Format(time.ANSIC))
 	builder.WriteString(", ")
 	builder.WriteString("title=")
-	builder.WriteString(po.Title)
+	builder.WriteString(_m.Title)
 	builder.WriteString(", ")
 	builder.WriteString("slug=")
-	builder.WriteString(po.Slug)
+	builder.WriteString(_m.Slug)
 	builder.WriteString(", ")
 	builder.WriteString("body=")
-	builder.WriteString(po.Body)
+	builder.WriteString(_m.Body)
 	builder.WriteByte(')')
 	return builder.String()
 }
