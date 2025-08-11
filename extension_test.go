@@ -207,7 +207,7 @@ func buildSpec(t *testing.T, config *Config) (*testSpecResult, error) {
 		})
 	}
 	slices.Sort(ids)
-	assert.Equal(t, len(slices.Compact(ids)), len(ids), "operation IDs are not unique")
+	assert.Len(t, ids, len(slices.Compact(ids)), "operation IDs are not unique")
 
 	return result, nil
 }

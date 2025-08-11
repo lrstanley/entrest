@@ -165,3 +165,8 @@ var SchemaObjectAny = &ogen.Schema{
 		Bool: ptr(true), // https://github.com/ogen-go/ogen/issues/1221
 	},
 }
+
+// SchemaAny can be used to define a schema which may contain any unknown type.
+// This is different from [SchemaObjectAny] in that it can contain more than an
+// object, and can contain any type of data.
+var SchemaAny = &ogen.Schema{}
