@@ -198,21 +198,34 @@ var (
 	}
 )
 
+// isSpecializedSort checks if the sort field is a specialized sort field.
+func isSpecializedSort(parts []string) (isCount, isSum bool) {
+	switch {
+	case len(parts) == 3:
+		switch parts[2] {
+		case "count":
+			isCount = true
+		case "sum":
+			isSum = true
+		}
+	case len(parts) == 2:
+		switch parts[1] {
+		case "count":
+			isCount = true
+		case "sum":
+			isSum = true
+		}
+	}
+	return isCount, isSum
+}
+
 // applySortingCategory applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
 func applySortingCategory(query *ent.CategoryQuery, field string, order orderDirection) *ent.CategoryQuery {
 	if parts := strings.Split(field, "."); len(parts) > 1 {
 		dir := withOrderTerm(order)
 
-		var isCount, isSum bool
-		if len(parts) > 2 {
-			switch parts[2] {
-			case "count":
-				isCount = true
-			case "sum":
-				isSum = true
-			}
-		}
+		isCount, isSum := isSpecializedSort(parts)
 
 		switch parts[0] {
 		case category.EdgePets:
@@ -276,15 +289,7 @@ func applySortingPet(query *ent.PetQuery, field string, order orderDirection) *e
 	if parts := strings.Split(field, "."); len(parts) > 1 {
 		dir := withOrderTerm(order)
 
-		var isCount, isSum bool
-		if len(parts) > 2 {
-			switch parts[2] {
-			case "count":
-				isCount = true
-			case "sum":
-				isSum = true
-			}
-		}
+		isCount, isSum := isSpecializedSort(parts)
 
 		switch parts[0] {
 		case pet.EdgeCategories:
@@ -356,15 +361,7 @@ func applySortingSetting(query *ent.SettingsQuery, field string, order orderDire
 	if parts := strings.Split(field, "."); len(parts) > 1 {
 		dir := withOrderTerm(order)
 
-		var isCount, isSum bool
-		if len(parts) > 2 {
-			switch parts[2] {
-			case "count":
-				isCount = true
-			case "sum":
-				isSum = true
-			}
-		}
+		isCount, isSum := isSpecializedSort(parts)
 
 		switch parts[0] {
 		case settings.EdgeAdmins:
@@ -390,15 +387,7 @@ func applySortingUser(query *ent.UserQuery, field string, order orderDirection) 
 	if parts := strings.Split(field, "."); len(parts) > 1 {
 		dir := withOrderTerm(order)
 
-		var isCount, isSum bool
-		if len(parts) > 2 {
-			switch parts[2] {
-			case "count":
-				isCount = true
-			case "sum":
-				isSum = true
-			}
-		}
+		isCount, isSum := isSpecializedSort(parts)
 
 		switch parts[0] {
 		case user.EdgePets:

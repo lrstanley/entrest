@@ -92,6 +92,27 @@ var (
     {{- end }}
 )
 
+// isSpecializedSort checks if the sort field is a specialized sort field.
+func isSpecializedSort(parts []string) (isCount, isSum bool) {
+    switch {
+    case len(parts) == 3:
+        switch parts[2] {
+        case "count":
+            isCount = true
+        case "sum":
+            isSum = true
+        }
+    case len(parts) == 2:
+        switch parts[1] {
+        case "count":
+            isCount = true
+        case "sum":
+            isSum = true
+        }
+    }
+    return isCount, isSum
+}
+
 {{- range $t := $.Nodes }}
     {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
 
@@ -104,15 +125,7 @@ var (
 
             {{- range $e := $t.Edges }}
                 {{ if not $e.Unique }}
-                    var isCount, isSum bool
-                    if len(parts) > 2 {
-                        switch parts[2] {
-                        case "count":
-                            isCount = true
-                        case "sum":
-                            isSum = true
-                        }
-                    }
+                    isCount, isSum := isSpecializedSort(parts)
                     {{ break }}
                 {{ end }}
             {{ end }}
@@ -124,10 +137,14 @@ var (
                         return query.Order({{ $t.Package }}.By{{ $e.StructField }}Field(parts[1], dir))
                     {{- else }}
                         switch {
+                        {{- if ne $e.Name "count" }}
                         case isCount:
                             return query.Order({{ $t.Package }}.By{{ $e.StructField }}Count(dir))
+                        {{- end }}
+                        {{- if ne $e.Name "sum" }}
                         case isSum:
                             return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderBySum(parts[1], dir)))
+                        {{- end }}
                         default:
                             return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderByField(parts[1], dir)))
                         }
