@@ -432,17 +432,25 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		}
 
 		if !ta.GetPagination(cfg, nil) {
-			schema := ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "Read").AsArray()
-			schema.Description = fmt.Sprintf("A list of %s entities. Includes eager-loaded edges (if any) for each entity.", entityName)
-			schemas[entityName+"List"] = schema
-			return schemas
-		}
+			if !cfg.WrapUnpagedResults {
+				schema := ogen.NewSchema().SetRef("#/components/schemas/" + entityName + "Read").AsArray()
+				schema.Description = fmt.Sprintf("A list of %s entities. Includes eager-loaded edges (if any) for each entity.", entityName)
+				schemas[entityName+"List"] = schema
+				return schemas
+			}
 
-		schemas[entityName+"List"] = toPagedSchema(
-			ogen.NewSchema().
-				SetRef("#/components/schemas/" + entityName + "Read").
-				SetDescription(fmt.Sprintf("A paginated result set of %s entities. Includes eager-loaded edges (if any) for each entity.", entityName)),
-		)
+			schemas[entityName+"List"] = toListSchema(
+				ogen.NewSchema().
+					SetRef("#/components/schemas/" + entityName + "Read").
+					SetDescription(fmt.Sprintf("A result set of %s entities. Includes eager-loaded edges (if any) for each entity.", entityName)),
+			)
+		} else {
+			schemas[entityName+"List"] = toPagedSchema(
+				ogen.NewSchema().
+					SetRef("#/components/schemas/" + entityName + "Read").
+					SetDescription(fmt.Sprintf("A paginated result set of %s entities. Includes eager-loaded edges (if any) for each entity.", entityName)),
+			)
+		}
 
 		dependencies = append(dependencies, OperationRead)
 	case OperationDelete:
@@ -523,5 +531,26 @@ func toPagedSchema(schema *ogen.Schema) *ogen.Schema {
 				Required: []string{"content"},
 			},
 		},
+	}
+}
+
+// tolistSchema converts a response schema to a List response schema, hoisting the
+// description from the response schema to the paged response schema.
+func toListSchema(schema *ogen.Schema) *ogen.Schema {
+	desc := schema.Description
+	schema.Description = ""
+
+	if schema.Items == nil {
+		schema = schema.AsArray()
+	}
+
+	return &ogen.Schema{
+		Description: desc,
+		Type:        "object",
+		Properties: ogen.Properties{{
+			Name:   "content",
+			Schema: schema,
+		}},
+		Required: []string{"content"},
 	}
 }

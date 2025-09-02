@@ -37,6 +37,11 @@ type Config struct {
 	// It scan still be enabled on a per-schema basis with annotations.
 	DisablePagination bool
 
+	// WrapUnpagedResults if set to true, wraps unpaged list results in response objects
+	// instead of the default plain arrays.
+	// Only applicable if pagination is disabled for an endpoint or globally.
+	WrapUnpagedResults bool
+
 	// MinItemsPerPage controls the default minimum number of items per page, for
 	// paginated calls. This can be overridden on a per-schema basis with annotations.
 	MinItemsPerPage int
