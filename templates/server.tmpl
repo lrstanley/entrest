@@ -280,9 +280,14 @@ func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
 
     {{- /* list nodes */}}
     {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig "list" }}
+        {{- $pagination := (($t|getAnnotation).GetPagination $t.Config.Annotations.RestConfig nil) }}
         {{- $opID := getOperationIDName "list" $t nil | zpascal }}
         // {{ $opID }} maps to "GET {{ getPathName "list" $t nil false }}".
+        {{- if $pagination }}
         func (s *Server) {{ $opID }}(r *http.Request, p *List{{ $t.Name|zsingular }}Params) (*PagedResponse[ent.{{ $t.Name }}], error) {
+        {{- else }}
+        func (s *Server) {{ $opID }}(r *http.Request, p *List{{ $t.Name|zsingular }}Params) (*ListResponse[ent.{{ $t.Name }}], error) {
+        {{- end }}
             return p.Exec(r.Context(), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
