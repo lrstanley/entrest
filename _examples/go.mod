@@ -16,7 +16,7 @@ require (
 	github.com/lrstanley/entrest v1.0.1
 	github.com/ogen-go/ogen v1.14.0
 	github.com/stretchr/testify v1.10.0
-	modernc.org/sqlite v1.38.2
+	modernc.org/sqlite v1.39.1
 )
 
 require (
