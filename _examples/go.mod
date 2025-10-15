@@ -14,7 +14,7 @@ require (
 	github.com/google/go-github/v66 v66.0.0
 	github.com/google/uuid v1.6.0
 	github.com/lrstanley/entrest v1.0.1
-	github.com/ogen-go/ogen v1.14.0
+	github.com/ogen-go/ogen v1.16.0
 	github.com/stretchr/testify v1.10.0
 	modernc.org/sqlite v1.38.2
 )
