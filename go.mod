@@ -54,6 +54,6 @@ require (
 	github.com/pb33f/libopenapi-validator v0.4.7
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spyzhov/ajson v0.9.6
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
