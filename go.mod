@@ -2,7 +2,7 @@ module github.com/lrstanley/entrest
 
 go 1.24.0
 
-toolchain go1.24.4
+toolchain go1.25.3
 
 require (
 	entgo.io/ent v0.14.5
