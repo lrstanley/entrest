@@ -11,6 +11,16 @@ import (
     {{- template "helper/rest/schema-imports" . }}
 )
 
+{{- if $.Annotations.RestConfig.WrapUnpagedResults }}
+// ListResponse is the JSON response structure for non-paginated list queries.
+type ListResponse[T any] struct {
+	Content []*T `json:"content"` // List data.
+}
+{{- else }}
+// ListResponse is the JSON response array for non-paginated list queries.
+type ListResponse[T any] []*T
+{{- end }}
+
 type PageConfig struct {
     MinItemsPerPage int `json:"min_items_per_page"`
     ItemsPerPage    int `json:"items_per_page"`
@@ -293,7 +303,7 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
     {{- else }}
         // Exec wraps all logic (filtering, sorting, and eager loading) and
         // executes all necessary queries, returning the results.
-        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, query *ent.{{ $t.Name }}Query) (results []*ent.{{ $t.Name }}, err error) {
+        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, query *ent.{{ $t.Name }}Query) (results *ListResponse[ent.{{ $t.Name }}], err error) {
             {{- if or $filters $groups }}
                 predicates, err := l.FilterPredicates()
                 if err != nil {
@@ -307,7 +317,19 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
                 return nil, err
             }
 
-            return query.All(ctx)
+            data, err := query.All(ctx)
+            if err != nil {
+                return nil, err
+            }
+
+            {{- if $.Annotations.RestConfig.WrapUnpagedResults }}
+            response := ListResponse[ent.{{ $t.Name }}] {
+	            Content: data,
+            }
+            {{- else }}
+            response := ListResponse[ent.{{ $t.Name }}](data)
+            {{- end }}
+            return &response, nil
         }
     {{- end }}
 {{- end }}{{/* end range */}}
