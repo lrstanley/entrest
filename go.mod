@@ -1,8 +1,8 @@
 module github.com/lrstanley/entrest
 
-go 1.24.0
+go 1.24.7
 
-toolchain go1.24.4
+toolchain go1.24.9
 
 require (
 	entgo.io/ent v0.14.5
@@ -28,7 +28,8 @@ require (
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
-	github.com/pb33f/ordered-map/v2 v2.2.0 // indirect
+	github.com/pb33f/jsonpath v0.1.2 // indirect
+	github.com/pb33f/ordered-map/v2 v2.3.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.2 // indirect
 	github.com/segmentio/asm v1.2.0 // indirect
 	github.com/speakeasy-api/jsonpath v0.6.2 // indirect
@@ -36,6 +37,7 @@ require (
 	github.com/zclconf/go-cty-yaml v1.1.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
+	go.yaml.in/yaml/v4 v4.0.0-rc.2 // indirect
 	golang.org/x/exp v0.0.0-20250808145144-a408d31f581a // indirect
 	golang.org/x/mod v0.27.0 // indirect
 	golang.org/x/sync v0.16.0 // indirect
@@ -50,10 +52,10 @@ require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/pb33f/libopenapi v0.25.3
+	github.com/pb33f/libopenapi v0.28.1
 	github.com/pb33f/libopenapi-validator v0.4.7
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spyzhov/ajson v0.9.6
-	github.com/stretchr/testify v1.10.0
+	github.com/stretchr/testify v1.11.1
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
