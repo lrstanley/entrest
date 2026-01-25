@@ -4,6 +4,8 @@ import starlightLinksValidator from "starlight-links-validator";
 import { rehypeHeadingIds } from "@astrojs/markdown-remark";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
+process.env.ASTRO_TELEMETRY_DISABLED = "1";
+
 // https://astro.build/config
 export default defineConfig({
     site: "https://lrstanley.github.io",
@@ -20,10 +22,18 @@ export default defineConfig({
                 replacesTitle: true,
             },
             favicon: "/favicon.png",
-            social: {
-                github: "https://github.com/lrstanley/entrest",
-                discord: "https://liam.sh/chat",
-            },
+            social: [
+                {
+                    icon: "github",
+                    label: "GitHub",
+                    href: "https://github.com/lrstanley/entrest",
+                },
+                {
+                    icon: "discord",
+                    label: "Discord",
+                    href: "https://liam.sh/chat",
+                },
+            ],
             lastUpdated: true,
             editLink: {
                 baseUrl: "https://github.com/lrstanley/entrest/edit/master/docs/",
