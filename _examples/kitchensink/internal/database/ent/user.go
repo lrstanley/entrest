@@ -10,7 +10,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/google/go-github/v66/github"
+	"github.com/google/go-github/v81/github"
 	"github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"

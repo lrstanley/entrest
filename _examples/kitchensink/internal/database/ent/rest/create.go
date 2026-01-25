@@ -6,7 +6,7 @@ import (
 	"context"
 	"time"
 
-	github "github.com/google/go-github/v66/github"
+	github "github.com/google/go-github/v81/github"
 	uuid "github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
