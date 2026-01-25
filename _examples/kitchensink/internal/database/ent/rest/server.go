@@ -345,15 +345,24 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
             {url: window.location.origin + window.location.pathname.replace(/\/docs$/g, "")}
         ],
         {{- end }}
+        layout: "modern",
         theme: "kepler",
+        showSidebar: true,
+        showDeveloperTools: "never",
+        showToolbar: "never",
+        operationTitleSource: "summary",
+        persistAuth: true,
+        telemetry: false,
+        showOperationId: true,
+        hideDarkModeToggle: true,
         isEditable: false,
         hideDownloadButton: true,
         customCss: ".darklight-reference-promo, .darklight-reference { visibility: hidden !important; height: 0 !important; } .open-api-client-button { display: none !important; }",
       });
     </script>
     <script
-      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.34.2"
-      integrity="sha256-bK7lwgB91h3j4DGWFMTu+Ow2m4+AkDhviMkmqUTNCqQ="
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.43.15"
+      integrity="sha256-pqwDaBniTU1C43GvSTW9z0XVC2iVqQHgyzMg6Zh0/28="
       crossorigin="anonymous"
     ></script>
   </body>
