@@ -12,7 +12,7 @@
   "dependencies": {
     "@astrojs/check": "^0.9.6",
     "@astrojs/markdown-remark": "^6.3.10",
-    "@astrojs/starlight": "^0.37.4",
+    "@astrojs/starlight": "^0.38.0",
     "astro": "^5.16.15",
     "rehype-autolink-headings": "^7.1.0",
     "sharp": "^0.32.5",
