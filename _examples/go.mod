@@ -5,9 +5,9 @@ go 1.25.0
 replace github.com/lrstanley/entrest => ../
 
 require (
-	entgo.io/ent v0.14.5
-	github.com/brianvoe/gofakeit/v7 v7.14.0
-	github.com/go-chi/chi/v5 v5.2.4
+	entgo.io/ent v0.14.6
+	github.com/brianvoe/gofakeit/v7 v7.14.1
+	github.com/go-chi/chi/v5 v5.2.5
 	github.com/go-playground/form/v4 v4.3.0
 	github.com/google/go-github/v81 v81.0.0
 	github.com/google/uuid v1.6.0
