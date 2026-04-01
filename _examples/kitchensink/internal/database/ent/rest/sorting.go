@@ -221,9 +221,9 @@ func isSpecializedSort(parts []string) (isCount, isSum bool) {
 
 // applySortingCategory applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingCategory(query *ent.CategoryQuery, field string, order orderDirection) *ent.CategoryQuery {
+func applySortingCategory(query *ent.CategoryQuery, field string, erOrder orderDirection) *ent.CategoryQuery {
 	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+		dir := withOrderTerm(erOrder)
 
 		isCount, isSum := isSpecializedSort(parts)
 
@@ -242,14 +242,14 @@ func applySortingCategory(query *ent.CategoryQuery, field string, order orderDir
 	if field == "random" {
 		return query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return query.Order(withFieldSelector(field, erOrder))
 }
 
 // applySortingFollow applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingFollow(query *ent.FollowsQuery, field string, order orderDirection) *ent.FollowsQuery {
+func applySortingFollow(query *ent.FollowsQuery, field string, erOrder orderDirection) *ent.FollowsQuery {
 	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+		dir := withOrderTerm(erOrder)
 
 		switch parts[0] {
 		case follows.EdgeUser:
@@ -261,14 +261,14 @@ func applySortingFollow(query *ent.FollowsQuery, field string, order orderDirect
 	if field == "random" {
 		return query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return query.Order(withFieldSelector(field, erOrder))
 }
 
 // applySortingFriendship applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingFriendship(query *ent.FriendshipQuery, field string, order orderDirection) *ent.FriendshipQuery {
+func applySortingFriendship(query *ent.FriendshipQuery, field string, erOrder orderDirection) *ent.FriendshipQuery {
 	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+		dir := withOrderTerm(erOrder)
 
 		switch parts[0] {
 		case friendship.EdgeUser:
@@ -280,14 +280,14 @@ func applySortingFriendship(query *ent.FriendshipQuery, field string, order orde
 	if field == "random" {
 		return query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return query.Order(withFieldSelector(field, erOrder))
 }
 
 // applySortingPet applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingPet(query *ent.PetQuery, field string, order orderDirection) *ent.PetQuery {
+func applySortingPet(query *ent.PetQuery, field string, erOrder orderDirection) *ent.PetQuery {
 	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+		dir := withOrderTerm(erOrder)
 
 		isCount, isSum := isSpecializedSort(parts)
 
@@ -335,14 +335,14 @@ func applySortingPet(query *ent.PetQuery, field string, order orderDirection) *e
 	if field == "random" {
 		return query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return query.Order(withFieldSelector(field, erOrder))
 }
 
 // applySortingPost applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingPost(query *ent.PostQuery, field string, order orderDirection) *ent.PostQuery {
+func applySortingPost(query *ent.PostQuery, field string, erOrder orderDirection) *ent.PostQuery {
 	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+		dir := withOrderTerm(erOrder)
 
 		switch parts[0] {
 		case post.EdgeAuthor:
@@ -352,14 +352,14 @@ func applySortingPost(query *ent.PostQuery, field string, order orderDirection) 
 	if field == "random" {
 		return query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return query.Order(withFieldSelector(field, erOrder))
 }
 
 // applySortingSetting applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingSetting(query *ent.SettingsQuery, field string, order orderDirection) *ent.SettingsQuery {
+func applySortingSetting(query *ent.SettingsQuery, field string, erOrder orderDirection) *ent.SettingsQuery {
 	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+		dir := withOrderTerm(erOrder)
 
 		isCount, isSum := isSpecializedSort(parts)
 
@@ -378,14 +378,14 @@ func applySortingSetting(query *ent.SettingsQuery, field string, order orderDire
 	if field == "random" {
 		return query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return query.Order(withFieldSelector(field, erOrder))
 }
 
 // applySortingUser applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingUser(query *ent.UserQuery, field string, order orderDirection) *ent.UserQuery {
+func applySortingUser(query *ent.UserQuery, field string, erOrder orderDirection) *ent.UserQuery {
 	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+		dir := withOrderTerm(erOrder)
 
 		isCount, isSum := isSpecializedSort(parts)
 
@@ -449,5 +449,5 @@ func applySortingUser(query *ent.UserQuery, field string, order orderDirection) 
 	if field == "random" {
 		return query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return query.Order(withFieldSelector(field, erOrder))
 }

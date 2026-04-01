@@ -118,10 +118,10 @@ func isSpecializedSort(parts []string) (isCount, isSum bool) {
 
     // applySorting{{ $t.Name|zsingular }} applies sorting to the query based on the provided sort and
     // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-    func applySorting{{ $t.Name|zsingular }}(query *ent.{{ $t.Name }}Query, field string, order orderDirection) *ent.{{ $t.Name }}Query {
+    func applySorting{{ $t.Name|zsingular }}(query *ent.{{ $t.Name }}Query, field string, erOrder orderDirection) *ent.{{ $t.Name }}Query {
         {{- if $t.Edges }}
         if parts := strings.Split(field, "."); len(parts) > 1 {
-            dir := withOrderTerm(order)
+            dir := withOrderTerm(erOrder)
 
             {{- range $e := $t.Edges }}
                 {{ if not $e.Unique }}
@@ -156,7 +156,7 @@ func isSpecializedSort(parts []string) (isCount, isSum bool) {
         if field == "random" {
             return query.Order(sql.OrderByRand())
         }
-        return query.Order(withFieldSelector(field, order))
+        return query.Order(withFieldSelector(field, erOrder))
     }
 {{- end }}{{/* end range */}}
 {{- end }}{{/* end template */}}
