@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"database/sql"
+	"math/rand"
 	"net/http"
 
 	"entgo.io/ent/dialect/sql/schema"
@@ -74,6 +75,12 @@ func main() {
 			pet.TypeOther,
 		}
 
+		var nicknames []string
+
+		for range rand.Intn(10) {
+			nicknames = append(nicknames, gofakeit.PetName())
+		}
+
 		db.Pet.Create().
 			SetName(gofakeit.PetName()).
 			SetOwner(john).
@@ -81,6 +88,7 @@ func main() {
 			AddFollowedBy(john).
 			SetAge(gofakeit.Number(1, 15)).
 			SetType(types[gofakeit.Number(0, len(types)-1)]).
+			SetNicknames(nicknames).
 			ExecX(ctx)
 	}
 

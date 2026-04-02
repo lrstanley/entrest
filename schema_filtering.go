@@ -219,6 +219,10 @@ func (f *FilterableFieldOp) StructTag() string {
 	)
 }
 
+func asSQLSelector(input string) string {
+	return fmt.Sprintf("func(s *sql.Selector) { s.Where(%s) }", input)
+}
+
 func generatePredicateBuilder(
 	t *gen.Type,
 	f *gen.Field,
@@ -226,6 +230,15 @@ func generatePredicateBuilder(
 	op gen.Op,
 	structName, componentName string,
 ) string {
+	if f != nil && f.IsJSON() && supportedJSONArrayOps[f.Type.Ident] != nil {
+		switch op {
+		case gen.GT, gen.GTE, gen.LT, gen.LTE:
+			return asSQLSelector(fmt.Sprintf("sqljson.Len%s(%s.Field%s, *%s.%s)", op.Name(), t.Package(), f.StructField(), structName, componentName))
+		case gen.In, gen.NotIn:
+			return asSQLSelector(fmt.Sprintf("sqljson.Value%s(%s.Field%s, toAnySlice(%s.%s))", op.Name(), t.Package(), f.StructField(), structName, componentName))
+		}
+	}
+
 	if op.Niladic() {
 		if e != nil {
 			if f == nil {
@@ -298,6 +311,17 @@ func (f *FilterableFieldOp) TypeString() string {
 	if (f.Edge != nil && f.Field == nil) || f.Operation.Niladic() {
 		return "*bool"
 	}
+
+	if f.Field.IsJSON() && supportedJSONArrayOps[f.Field.Type.Ident] != nil {
+		switch f.Operation {
+		// LT/GT/etc on JSON arrays would be ints, since it's checking the length
+		// of the array, not the type of the array elements.
+		case gen.GT, gen.LT, gen.GTE, gen.LTE:
+			return "*int"
+		}
+		return f.Field.Type.String()
+	}
+
 	if f.Operation.Variadic() {
 		return "[]" + f.Field.Type.String()
 	}
@@ -366,6 +390,22 @@ func (f *FilterableFieldOp) Parameter() *ogen.Parameter {
 	}
 }
 
+func fieldOps(f *gen.Field) []gen.Op {
+	if !f.IsJSON() {
+		return f.Ops()
+	}
+
+	if f.Type.PkgName != "" {
+		return f.Ops()
+	}
+
+	if ops, ok := supportedJSONArrayOps[f.Type.Ident]; ok {
+		return appendCompact(f.Ops(), ops)
+	}
+
+	return f.Ops()
+}
+
 // GetFilterableFields returns a list of filterable fields for the given type, where
 // the key is the component name, and the value is the parameter which includes the
 // name, description and schema for the parameter.
@@ -395,7 +435,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 			continue
 		}
 
-		for _, op := range intersectSorted(f.Ops(), fa.Filter.Explode()) {
+		for _, op := range intersectSorted(fieldOps(f), fa.Filter.Explode()) {
 			if f.IsBool() && op == gen.NEQ {
 				continue // Since you can use EQ=false instead.
 			}
@@ -513,6 +553,9 @@ func (g *FilterGroup) TypeString(op gen.Op) string {
 		return "*bool"
 	}
 	if op.Variadic() {
+		if strings.HasPrefix(g.FieldType.Ident, "[]") {
+			return g.FieldType.String()
+		}
 		return "[]" + g.FieldType.String()
 	}
 	return "*" + g.FieldType.String()
@@ -556,7 +599,7 @@ func GetFilterGroups(t *gen.Type, edge *gen.Edge) []*FilterGroup {
 			))
 		}
 
-		ops := intersectSorted(f.Ops(), fa.Filter.Explode())
+		ops := intersectSorted(fieldOps(f), fa.Filter.Explode())
 
 		if f.IsBool() {
 			ops = slices.DeleteFunc(ops, func(op gen.Op) bool {

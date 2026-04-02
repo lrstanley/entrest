@@ -32,6 +32,8 @@ type Category struct {
 	Nillable *string `json:"nillable"`
 	// Strings holds the value of the "strings" field.
 	Strings []string `json:"strings"`
+	// Strings2 holds the value of the "strings2" field.
+	Strings2 []string `json:"strings2"`
 	// Ints holds the value of the "ints" field.
 	Ints []int `json:"ints"`
 	// Edges holds the relations/edges for other nodes in the graph.
@@ -63,7 +65,7 @@ func (*Category) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case category.FieldStrings, category.FieldInts:
+		case category.FieldStrings, category.FieldStrings2, category.FieldInts:
 			values[i] = new([]byte)
 		case category.FieldID:
 			values[i] = new(sql.NullInt64)
@@ -137,6 +139,14 @@ func (_m *Category) assignValues(columns []string, values []any) error {
 					return fmt.Errorf("unmarshal field strings: %w", err)
 				}
 			}
+		case category.FieldStrings2:
+			if value, ok := values[i].(*[]byte); !ok {
+				return fmt.Errorf("unexpected type %T for field strings2", values[i])
+			} else if value != nil && len(*value) > 0 {
+				if err := json.Unmarshal(*value, &_m.Strings2); err != nil {
+					return fmt.Errorf("unmarshal field strings2: %w", err)
+				}
+			}
 		case category.FieldInts:
 			if value, ok := values[i].(*[]byte); !ok {
 				return fmt.Errorf("unexpected type %T for field ints", values[i])
@@ -208,6 +218,9 @@ func (_m *Category) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("strings=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Strings))
+	builder.WriteString(", ")
+	builder.WriteString("strings2=")
+	builder.WriteString(fmt.Sprintf("%v", _m.Strings2))
 	builder.WriteString(", ")
 	builder.WriteString("ints=")
 	builder.WriteString(fmt.Sprintf("%v", _m.Ints))

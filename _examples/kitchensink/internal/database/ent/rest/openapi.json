@@ -78,6 +78,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/CategoryUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryStrings2GT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryStrings2LT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryStrings2In"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryStrings2NotIn"
                     }
                 ],
                 "responses": {
@@ -452,7 +464,19 @@
                         "$ref": "#/components/parameters/PetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeEQ"
@@ -510,6 +534,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeCategoryUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2GT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2LT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2In"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2NotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
@@ -671,7 +707,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeEQ"
@@ -1893,7 +1941,19 @@
                         "$ref": "#/components/parameters/PetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeEQ"
@@ -1951,6 +2011,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeCategoryUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2GT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2LT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2In"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2NotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
@@ -2112,7 +2184,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeEQ"
@@ -2606,6 +2690,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/CategoryUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryStrings2GT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryStrings2LT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryStrings2In"
+                    },
+                    {
+                        "$ref": "#/components/parameters/CategoryStrings2NotIn"
                     }
                 ],
                 "responses": {
@@ -2870,7 +2966,19 @@
                         "$ref": "#/components/parameters/EdgePetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetAgeEQ"
@@ -2945,7 +3053,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeEQ"
@@ -3308,7 +3428,19 @@
                         "$ref": "#/components/parameters/PetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeEQ"
@@ -3366,6 +3498,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeCategoryUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2GT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2LT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2In"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2NotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
@@ -3527,7 +3671,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeEQ"
@@ -4783,7 +4939,19 @@
                         "$ref": "#/components/parameters/EdgePetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetAgeEQ"
@@ -4858,7 +5026,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeEQ"
@@ -5338,7 +5518,19 @@
                         "$ref": "#/components/parameters/EdgePetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetAgeEQ"
@@ -5413,7 +5605,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeEQ"
@@ -6004,7 +6208,19 @@
                         "$ref": "#/components/parameters/PetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeEQ"
@@ -6062,6 +6278,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeCategoryUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2GT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2LT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2In"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2NotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
@@ -6223,7 +6451,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeEQ"
@@ -6637,7 +6877,19 @@
                         "$ref": "#/components/parameters/EdgePetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgePetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgePetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgePetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgePetAgeEQ"
@@ -6712,7 +6964,19 @@
                         "$ref": "#/components/parameters/EdgeFollowedPetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFollowedPetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFollowedPetAgeEQ"
@@ -7414,7 +7678,19 @@
                         "$ref": "#/components/parameters/PetNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/PetNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/PetNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/PetNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/PetAgeEQ"
@@ -7472,6 +7748,18 @@
                     },
                     {
                         "$ref": "#/components/parameters/EdgeCategoryUpdatedAtLT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2GT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2LT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2In"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeCategoryStrings2NotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeHasOwner"
@@ -7633,7 +7921,19 @@
                         "$ref": "#/components/parameters/EdgeFriendNameHasSuffix"
                     },
                     {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesGT"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesLT"
+                    },
+                    {
                         "$ref": "#/components/parameters/EdgeFriendNicknamesIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/EdgeFriendNicknamesNotIn"
                     },
                     {
                         "$ref": "#/components/parameters/EdgeFriendAgeEQ"
@@ -8221,6 +8521,12 @@
                             "$ref": "#/components/schemas/CategoryStringsEnum"
                         }
                     },
+                    "strings2": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
                     "ints": {
                         "type": "array",
                         "items": {
@@ -8234,7 +8540,8 @@
                     "updated_at",
                     "name",
                     "readonly",
-                    "nillable"
+                    "nillable",
+                    "strings2"
                 ]
             },
             "CategoryCreate": {
@@ -8255,6 +8562,12 @@
                             "$ref": "#/components/schemas/CategoryStringsEnum"
                         }
                     },
+                    "strings2": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        }
+                    },
                     "ints": {
                         "type": "array",
                         "items": {
@@ -8269,7 +8582,8 @@
                     }
                 },
                 "required": [
-                    "name"
+                    "name",
+                    "strings2"
                 ]
             },
             "CategoryList": {
@@ -8334,6 +8648,12 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/CategoryStringsEnum"
+                        }
+                    },
+                    "strings2": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
                         }
                     },
                     "ints": {
@@ -9992,6 +10312,50 @@
                     }
                 }
             },
+            "CategoryStrings2GT": {
+                "name": "strings2.gt",
+                "in": "query",
+                "description": "Filters field \"strings2\" to be greater than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "CategoryStrings2In": {
+                "name": "strings2.in",
+                "in": "query",
+                "description": "Filters field \"strings2\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CategoryStrings2LT": {
+                "name": "strings2.lt",
+                "in": "query",
+                "description": "Filters field \"strings2\" to be less than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "CategoryStrings2NotIn": {
+                "name": "strings2.notIn",
+                "in": "query",
+                "description": "Filters field \"strings2\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
             "CategoryUpdatedAtGT": {
                 "name": "updatedAt.gt",
                 "in": "query",
@@ -10401,6 +10765,50 @@
                     "type": "array",
                     "items": {
                         "type": "integer"
+                    }
+                }
+            },
+            "EdgeCategoryStrings2GT": {
+                "name": "category.strings2.gt",
+                "in": "query",
+                "description": "Filters field \"strings2\" to be greater than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "EdgeCategoryStrings2In": {
+                "name": "category.strings2.in",
+                "in": "query",
+                "description": "Filters field \"strings2\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "EdgeCategoryStrings2LT": {
+                "name": "category.strings2.lt",
+                "in": "query",
+                "description": "Filters field \"strings2\" to be less than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "EdgeCategoryStrings2NotIn": {
+                "name": "category.strings2.notIn",
+                "in": "query",
+                "description": "Filters field \"strings2\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 }
             },
@@ -10930,6 +11338,28 @@
                     }
                 }
             },
+            "EdgeFollowedPetNicknamesGT": {
+                "name": "followedPet.nicknames.gt",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be greater than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "EdgeFollowedPetNicknamesIn": {
+                "name": "followedPet.nicknames.in",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
             "EdgeFollowedPetNicknamesIsNil": {
                 "name": "followedPet.nicknames.null",
                 "in": "query",
@@ -10938,6 +11368,28 @@
                     "type": "array",
                     "items": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "EdgeFollowedPetNicknamesLT": {
+                "name": "followedPet.nicknames.lt",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be less than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "EdgeFollowedPetNicknamesNotIn": {
+                "name": "followedPet.nicknames.notIn",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 }
             },
@@ -11315,6 +11767,28 @@
                     }
                 }
             },
+            "EdgeFriendNicknamesGT": {
+                "name": "friend.nicknames.gt",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be greater than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "EdgeFriendNicknamesIn": {
+                "name": "friend.nicknames.in",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
             "EdgeFriendNicknamesIsNil": {
                 "name": "friend.nicknames.null",
                 "in": "query",
@@ -11323,6 +11797,28 @@
                     "type": "array",
                     "items": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "EdgeFriendNicknamesLT": {
+                "name": "friend.nicknames.lt",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be less than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "EdgeFriendNicknamesNotIn": {
+                "name": "friend.nicknames.notIn",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 }
             },
@@ -12092,6 +12588,28 @@
                     }
                 }
             },
+            "EdgePetNicknamesGT": {
+                "name": "pet.nicknames.gt",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be greater than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "EdgePetNicknamesIn": {
+                "name": "pet.nicknames.in",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
             "EdgePetNicknamesIsNil": {
                 "name": "pet.nicknames.null",
                 "in": "query",
@@ -12100,6 +12618,28 @@
                     "type": "array",
                     "items": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "EdgePetNicknamesLT": {
+                "name": "pet.nicknames.lt",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be less than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "EdgePetNicknamesNotIn": {
+                "name": "pet.nicknames.notIn",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 }
             },
@@ -12765,6 +13305,28 @@
                     }
                 }
             },
+            "PetNicknamesGT": {
+                "name": "nicknames.gt",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be greater than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "PetNicknamesIn": {
+                "name": "nicknames.in",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
             "PetNicknamesIsNil": {
                 "name": "nicknames.null",
                 "in": "query",
@@ -12773,6 +13335,28 @@
                     "type": "array",
                     "items": {
                         "type": "boolean"
+                    }
+                }
+            },
+            "PetNicknamesLT": {
+                "name": "nicknames.lt",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be less than the provided value.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "number"
+                    }
+                }
+            },
+            "PetNicknamesNotIn": {
+                "name": "nicknames.notIn",
+                "in": "query",
+                "description": "Filters field \"nicknames\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
                     }
                 }
             },

@@ -23,6 +23,7 @@ type UpdateCategoryParams struct {
 	Name       Option[string]   `json:"name"`
 	Nillable   Option[*string]  `json:"nillable"`
 	Strings    Option[[]string] `json:"strings,omitempty"`
+	Strings2   Option[[]string] `json:"strings2"`
 	Ints       Option[[]int]    `json:"ints,omitempty"`
 	AddPets    Option[[]int]    `json:"add_pets,omitempty"`
 	RemovePets Option[[]int]    `json:"remove_pets,omitempty"`
@@ -39,6 +40,9 @@ func (u *UpdateCategoryParams) ApplyInputs(builder *ent.CategoryUpdateOne) *ent.
 	}
 	if v, ok := u.Strings.Get(); ok {
 		builder.SetStrings(v)
+	}
+	if v, ok := u.Strings2.Get(); ok {
+		builder.SetStrings2(v)
 	}
 	if v, ok := u.Ints.Get(); ok {
 		builder.SetInts(v)

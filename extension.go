@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log/slog"
 	"os"
 	"path/filepath"
 	"slices"
@@ -76,7 +77,10 @@ func (e *Extension) Hooks() []gen.Hook {
 }
 
 func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
+	l := slog.With("src", "entrest.Extension.Generate")
+
 	// Validate all annotations first.
+	l.Info("validating annotations")
 	err := ValidateAnnotations(g.Nodes...)
 	if err != nil {
 		return nil, fmt.Errorf("failed to validate annotations: %w", err)
@@ -86,6 +90,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 
 	if spec == nil {
 		if e.config.SpecFromPath != "" {
+			l.Info("reading spec from path", "path", e.config.SpecFromPath)
 			var f *os.File
 			f, err = os.Open(e.config.SpecFromPath)
 			if err != nil {
@@ -107,6 +112,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	}
 
 	if e.config.PreGenerateHook != nil {
+		l.Info("running pre-generate hook")
 		err = e.config.PreGenerateHook(g, spec)
 		if err != nil {
 			return nil, err
@@ -130,9 +136,13 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	var ops []Operation
 
 	for _, t := range g.Nodes {
+		tl := l.With("type", t.Name)
+		tl.Info("generating spec for type")
+
 		ta := GetAnnotation(t)
 
 		if ta.GetSkip(e.config) {
+			tl.Info("type is skipped")
 			continue
 		}
 
@@ -142,6 +152,8 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 			if t.ID == nil && (op != OperationList && op != OperationCreate) {
 				continue
 			}
+
+			tl.Info("generating spec for operation", "operation", op)
 			tspec, err = GetSpecType(t, op)
 			if err != nil {
 				panic(err)
@@ -150,6 +162,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 		}
 
 		if t.ID == nil {
+			tl.Info("type has no ID, skipping")
 			continue
 		}
 
@@ -159,18 +172,24 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 				// which likely shouldn't be queryable.
 				continue
 			}
+
+			et := tl.With("edge", edge.Name)
+
 			ea := GetAnnotation(edge)
 
 			if ea.GetSkip(e.config) || !ea.GetEdgeEndpoint(e.config) {
+				et.Info("edge is skipped or endpoint is disabled")
 				continue
 			}
 
 			ops = ta.GetOperations(e.config)
 
 			if edge.Unique && slices.Contains(ops, OperationRead) {
+				et.Info("generating spec for read operation")
 				tspec, err = GetSpecEdge(t, edge, OperationRead)
 			}
 			if !edge.Unique && slices.Contains(ops, OperationList) {
+				et.Info("generating spec for list operation")
 				tspec, err = GetSpecEdge(t, edge, OperationList)
 			}
 
@@ -185,6 +204,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 		specs = append(specs, addOpenAPIEndpoint("/openapi.json"))
 	}
 
+	l.Info("merging specs")
 	err = MergeSpecOverlap(spec, specs...)
 	if err != nil {
 		panic(err)
@@ -201,8 +221,11 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 		}
 	}
 
+	l.Info("adding global error responses")
 	addGlobalErrorResponses(e.config, spec, e.config.GlobalErrorResponses)
+	l.Info("adding global request headers")
 	addGlobalRequestHeaders(spec, e.config.GlobalRequestHeaders)
+	l.Info("adding global response headers")
 	addGlobalResponseHeaders(spec, e.config.GlobalResponseHeaders)
 
 	return spec, nil

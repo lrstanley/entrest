@@ -95,6 +95,12 @@ func (_c *CategoryCreate) SetStrings(v []string) *CategoryCreate {
 	return _c
 }
 
+// SetStrings2 sets the "strings2" field.
+func (_c *CategoryCreate) SetStrings2(v []string) *CategoryCreate {
+	_c.mutation.SetStrings2(v)
+	return _c
+}
+
 // SetInts sets the "ints" field.
 func (_c *CategoryCreate) SetInts(v []int) *CategoryCreate {
 	_c.mutation.SetInts(v)
@@ -182,6 +188,9 @@ func (_c *CategoryCreate) check() error {
 	if _, ok := _c.mutation.Nillable(); !ok {
 		return &ValidationError{Name: "nillable", err: errors.New(`ent: missing required field "Category.nillable"`)}
 	}
+	if _, ok := _c.mutation.Strings2(); !ok {
+		return &ValidationError{Name: "strings2", err: errors.New(`ent: missing required field "Category.strings2"`)}
+	}
 	return nil
 }
 
@@ -235,6 +244,10 @@ func (_c *CategoryCreate) createSpec() (*Category, *sqlgraph.CreateSpec) {
 	if value, ok := _c.mutation.Strings(); ok {
 		_spec.SetField(category.FieldStrings, field.TypeJSON, value)
 		_node.Strings = value
+	}
+	if value, ok := _c.mutation.Strings2(); ok {
+		_spec.SetField(category.FieldStrings2, field.TypeJSON, value)
+		_node.Strings2 = value
 	}
 	if value, ok := _c.mutation.Ints(); ok {
 		_spec.SetField(category.FieldInts, field.TypeJSON, value)

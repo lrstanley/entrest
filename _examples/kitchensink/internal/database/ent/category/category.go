@@ -28,6 +28,8 @@ const (
 	FieldNillable = "nillable"
 	// FieldStrings holds the string denoting the strings field in the database.
 	FieldStrings = "strings"
+	// FieldStrings2 holds the string denoting the strings2 field in the database.
+	FieldStrings2 = "strings2"
 	// FieldInts holds the string denoting the ints field in the database.
 	FieldInts = "ints"
 	// EdgePets holds the string denoting the pets edge name in mutations.
@@ -51,6 +53,7 @@ var Columns = []string{
 	FieldSkipInSpec,
 	FieldNillable,
 	FieldStrings,
+	FieldStrings2,
 	FieldInts,
 }
 

@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"entgo.io/ent/dialect/sql"
+	"entgo.io/ent/dialect/sql/sqljson"
 	uuid "github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
@@ -239,6 +240,14 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
 	return sql.OrPredicates(predicates...), nil
 }
 
+func toAnySlice[T any](v []T) []any {
+	out := make([]any, len(v))
+	for i, v := range v {
+		out[i] = v
+	}
+	return out
+}
+
 // ListCategoryParams defines parameters for listing Categories via a GET request.
 type ListCategoryParams struct {
 	Sorted
@@ -261,6 +270,14 @@ type ListCategoryParams struct {
 	CategoryUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"category_updated_at_gt,omitempty"`
 	// Filters field "updated_at" to be less than the provided value.
 	CategoryUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"category_updated_at_lt,omitempty"`
+	// Filters field "strings2" to be greater than the provided value.
+	CategoryStrings2GT *int `form:"strings2.gt,omitempty" json:"category_strings2gt,omitempty"`
+	// Filters field "strings2" to be less than the provided value.
+	CategoryStrings2LT *int `form:"strings2.lt,omitempty" json:"category_strings2lt,omitempty"`
+	// Filters field "strings2" to be within the provided values.
+	CategoryStrings2In []string `form:"strings2.in,omitempty" json:"category_strings2in,omitempty"`
+	// Filters field "strings2" to be not within the provided values.
+	CategoryStrings2NotIn []string `form:"strings2.notIn,omitempty" json:"category_strings2not_in,omitempty"`
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Category.
@@ -290,6 +307,22 @@ func (l *ListCategoryParams) FilterPredicates() (predicate.Category, error) {
 	}
 	if l.CategoryUpdatedAtLT != nil {
 		predicates = append(predicates, category.UpdatedAtLT(*l.CategoryUpdatedAtLT))
+	}
+	if l.CategoryStrings2GT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenGT(category.FieldStrings2, *l.CategoryStrings2GT)) })
+	}
+	if l.CategoryStrings2LT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenLT(category.FieldStrings2, *l.CategoryStrings2LT)) })
+	}
+	if l.CategoryStrings2In != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueIn(category.FieldStrings2, toAnySlice(l.CategoryStrings2In)))
+		})
+	}
+	if l.CategoryStrings2NotIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueNotIn(category.FieldStrings2, toAnySlice(l.CategoryStrings2NotIn)))
+		})
 	}
 
 	return l.ApplyFilterOperation(predicates...)
@@ -867,8 +900,16 @@ type ListPetParams struct {
 	PetNameHasPrefix *string `form:"name.prefix,omitempty" json:"pet_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	PetNameHasSuffix *string `form:"name.suffix,omitempty" json:"pet_name_has_suffix,omitempty"`
+	// Filters field "nicknames" to be greater than the provided value.
+	PetNicknamesGT *int `form:"nicknames.gt,omitempty" json:"pet_nicknames_gt,omitempty"`
+	// Filters field "nicknames" to be less than the provided value.
+	PetNicknamesLT *int `form:"nicknames.lt,omitempty" json:"pet_nicknames_lt,omitempty"`
 	// Filters field "nicknames" to be null/nil.
 	PetNicknamesIsNil *bool `form:"nicknames.null,omitempty" json:"pet_nicknames_is_nil,omitempty"`
+	// Filters field "nicknames" to be within the provided values.
+	PetNicknamesIn []string `form:"nicknames.in,omitempty" json:"pet_nicknames_in,omitempty"`
+	// Filters field "nicknames" to be not within the provided values.
+	PetNicknamesNotIn []string `form:"nicknames.notIn,omitempty" json:"pet_nicknames_not_in,omitempty"`
 	// Filters field "age" to be equal to the provided value.
 	PetAgeEQ *int `form:"age.eq,omitempty" json:"pet_age_eq,omitempty"`
 	// Filters field "age" to be not equal to the provided value.
@@ -907,6 +948,14 @@ type ListPetParams struct {
 	EdgeCategoryUpdatedAtGT *time.Time `form:"category.updatedAt.gt,omitempty" json:"edge_category_updated_at_gt,omitempty"`
 	// Filters field "updated_at" to be less than the provided value.
 	EdgeCategoryUpdatedAtLT *time.Time `form:"category.updatedAt.lt,omitempty" json:"edge_category_updated_at_lt,omitempty"`
+	// Filters field "strings2" to be greater than the provided value.
+	EdgeCategoryStrings2GT *int `form:"category.strings2.gt,omitempty" json:"edge_category_strings2gt,omitempty"`
+	// Filters field "strings2" to be less than the provided value.
+	EdgeCategoryStrings2LT *int `form:"category.strings2.lt,omitempty" json:"edge_category_strings2lt,omitempty"`
+	// Filters field "strings2" to be within the provided values.
+	EdgeCategoryStrings2In []string `form:"category.strings2.in,omitempty" json:"edge_category_strings2in,omitempty"`
+	// Filters field "strings2" to be not within the provided values.
+	EdgeCategoryStrings2NotIn []string `form:"category.strings2.notIn,omitempty" json:"edge_category_strings2not_in,omitempty"`
 	// If true, only return entities that have a owner edge.
 	EdgeHasOwner *bool `form:"has.owner,omitempty" json:"edge_has_owner,omitempty"`
 	// Filters field "id" to be equal to the provided value.
@@ -1013,8 +1062,16 @@ type ListPetParams struct {
 	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitempty"`
+	// Filters field "nicknames" to be greater than the provided value.
+	EdgeFriendNicknamesGT *int `form:"friend.nicknames.gt,omitempty" json:"edge_friend_nicknames_gt,omitempty"`
+	// Filters field "nicknames" to be less than the provided value.
+	EdgeFriendNicknamesLT *int `form:"friend.nicknames.lt,omitempty" json:"edge_friend_nicknames_lt,omitempty"`
 	// Filters field "nicknames" to be null/nil.
 	EdgeFriendNicknamesIsNil *bool `form:"friend.nicknames.null,omitempty" json:"edge_friend_nicknames_is_nil,omitempty"`
+	// Filters field "nicknames" to be within the provided values.
+	EdgeFriendNicknamesIn []string `form:"friend.nicknames.in,omitempty" json:"edge_friend_nicknames_in,omitempty"`
+	// Filters field "nicknames" to be not within the provided values.
+	EdgeFriendNicknamesNotIn []string `form:"friend.nicknames.notIn,omitempty" json:"edge_friend_nicknames_not_in,omitempty"`
 	// Filters field "age" to be equal to the provided value.
 	EdgeFriendAgeEQ *int `form:"friend.age.eq,omitempty" json:"edge_friend_age_eq,omitempty"`
 	// Filters field "age" to be not equal to the provided value.
@@ -1160,12 +1217,26 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.PetNameHasSuffix != nil {
 		predicates = append(predicates, pet.NameHasSuffix(*l.PetNameHasSuffix))
 	}
+	if l.PetNicknamesGT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenGT(pet.FieldNicknames, *l.PetNicknamesGT)) })
+	}
+	if l.PetNicknamesLT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenLT(pet.FieldNicknames, *l.PetNicknamesLT)) })
+	}
 	if l.PetNicknamesIsNil != nil {
 		if *l.PetNicknamesIsNil {
 			predicates = append(predicates, pet.NicknamesIsNil())
 		} else {
 			predicates = append(predicates, pet.Not(pet.NicknamesIsNil()))
 		}
+	}
+	if l.PetNicknamesIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.ValueIn(pet.FieldNicknames, toAnySlice(l.PetNicknamesIn))) })
+	}
+	if l.PetNicknamesNotIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueNotIn(pet.FieldNicknames, toAnySlice(l.PetNicknamesNotIn)))
+		})
 	}
 	if l.PetAgeEQ != nil {
 		predicates = append(predicates, pet.AgeEQ(*l.PetAgeEQ))
@@ -1227,6 +1298,22 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	}
 	if l.EdgeCategoryUpdatedAtLT != nil {
 		predicates = append(predicates, pet.HasCategoriesWith(category.UpdatedAtLT(*l.EdgeCategoryUpdatedAtLT)))
+	}
+	if l.EdgeCategoryStrings2GT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenGT(category.FieldStrings2, *l.EdgeCategoryStrings2GT)) })
+	}
+	if l.EdgeCategoryStrings2LT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenLT(category.FieldStrings2, *l.EdgeCategoryStrings2LT)) })
+	}
+	if l.EdgeCategoryStrings2In != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueIn(category.FieldStrings2, toAnySlice(l.EdgeCategoryStrings2In)))
+		})
+	}
+	if l.EdgeCategoryStrings2NotIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueNotIn(category.FieldStrings2, toAnySlice(l.EdgeCategoryStrings2NotIn)))
+		})
 	}
 	if l.EdgeHasOwner != nil {
 		if *l.EdgeHasOwner {
@@ -1407,12 +1494,28 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 	if l.EdgeFriendNameHasSuffix != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
 	}
+	if l.EdgeFriendNicknamesGT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenGT(pet.FieldNicknames, *l.EdgeFriendNicknamesGT)) })
+	}
+	if l.EdgeFriendNicknamesLT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenLT(pet.FieldNicknames, *l.EdgeFriendNicknamesLT)) })
+	}
 	if l.EdgeFriendNicknamesIsNil != nil {
 		if *l.EdgeFriendNicknamesIsNil {
 			predicates = append(predicates, pet.HasFriendsWith(pet.NicknamesIsNil()))
 		} else {
 			predicates = append(predicates, pet.Not(pet.HasFriendsWith(pet.NicknamesIsNil())))
 		}
+	}
+	if l.EdgeFriendNicknamesIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueIn(pet.FieldNicknames, toAnySlice(l.EdgeFriendNicknamesIn)))
+		})
+	}
+	if l.EdgeFriendNicknamesNotIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueNotIn(pet.FieldNicknames, toAnySlice(l.EdgeFriendNicknamesNotIn)))
+		})
 	}
 	if l.EdgeFriendAgeEQ != nil {
 		predicates = append(predicates, pet.HasFriendsWith(pet.AgeEQ(*l.EdgeFriendAgeEQ)))
@@ -2102,8 +2205,16 @@ type ListUserParams struct {
 	EdgePetNameHasPrefix *string `form:"pet.name.prefix,omitempty" json:"edge_pet_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgePetNameHasSuffix *string `form:"pet.name.suffix,omitempty" json:"edge_pet_name_has_suffix,omitempty"`
+	// Filters field "nicknames" to be greater than the provided value.
+	EdgePetNicknamesGT *int `form:"pet.nicknames.gt,omitempty" json:"edge_pet_nicknames_gt,omitempty"`
+	// Filters field "nicknames" to be less than the provided value.
+	EdgePetNicknamesLT *int `form:"pet.nicknames.lt,omitempty" json:"edge_pet_nicknames_lt,omitempty"`
 	// Filters field "nicknames" to be null/nil.
 	EdgePetNicknamesIsNil *bool `form:"pet.nicknames.null,omitempty" json:"edge_pet_nicknames_is_nil,omitempty"`
+	// Filters field "nicknames" to be within the provided values.
+	EdgePetNicknamesIn []string `form:"pet.nicknames.in,omitempty" json:"edge_pet_nicknames_in,omitempty"`
+	// Filters field "nicknames" to be not within the provided values.
+	EdgePetNicknamesNotIn []string `form:"pet.nicknames.notIn,omitempty" json:"edge_pet_nicknames_not_in,omitempty"`
 	// Filters field "age" to be equal to the provided value.
 	EdgePetAgeEQ *int `form:"pet.age.eq,omitempty" json:"edge_pet_age_eq,omitempty"`
 	// Filters field "age" to be not equal to the provided value.
@@ -2152,8 +2263,16 @@ type ListUserParams struct {
 	EdgeFollowedPetNameHasPrefix *string `form:"followedPet.name.prefix,omitempty" json:"edge_followed_pet_name_has_prefix,omitempty"`
 	// Filters field "name" to end with the provided value.
 	EdgeFollowedPetNameHasSuffix *string `form:"followedPet.name.suffix,omitempty" json:"edge_followed_pet_name_has_suffix,omitempty"`
+	// Filters field "nicknames" to be greater than the provided value.
+	EdgeFollowedPetNicknamesGT *int `form:"followedPet.nicknames.gt,omitempty" json:"edge_followed_pet_nicknames_gt,omitempty"`
+	// Filters field "nicknames" to be less than the provided value.
+	EdgeFollowedPetNicknamesLT *int `form:"followedPet.nicknames.lt,omitempty" json:"edge_followed_pet_nicknames_lt,omitempty"`
 	// Filters field "nicknames" to be null/nil.
 	EdgeFollowedPetNicknamesIsNil *bool `form:"followedPet.nicknames.null,omitempty" json:"edge_followed_pet_nicknames_is_nil,omitempty"`
+	// Filters field "nicknames" to be within the provided values.
+	EdgeFollowedPetNicknamesIn []string `form:"followedPet.nicknames.in,omitempty" json:"edge_followed_pet_nicknames_in,omitempty"`
+	// Filters field "nicknames" to be not within the provided values.
+	EdgeFollowedPetNicknamesNotIn []string `form:"followedPet.nicknames.notIn,omitempty" json:"edge_followed_pet_nicknames_not_in,omitempty"`
 	// Filters field "age" to be equal to the provided value.
 	EdgeFollowedPetAgeEQ *int `form:"followedPet.age.eq,omitempty" json:"edge_followed_pet_age_eq,omitempty"`
 	// Filters field "age" to be not equal to the provided value.
@@ -2477,12 +2596,26 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgePetNameHasSuffix != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.NameHasSuffix(*l.EdgePetNameHasSuffix)))
 	}
+	if l.EdgePetNicknamesGT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenGT(pet.FieldNicknames, *l.EdgePetNicknamesGT)) })
+	}
+	if l.EdgePetNicknamesLT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenLT(pet.FieldNicknames, *l.EdgePetNicknamesLT)) })
+	}
 	if l.EdgePetNicknamesIsNil != nil {
 		if *l.EdgePetNicknamesIsNil {
 			predicates = append(predicates, user.HasPetsWith(pet.NicknamesIsNil()))
 		} else {
 			predicates = append(predicates, user.Not(user.HasPetsWith(pet.NicknamesIsNil())))
 		}
+	}
+	if l.EdgePetNicknamesIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.ValueIn(pet.FieldNicknames, toAnySlice(l.EdgePetNicknamesIn))) })
+	}
+	if l.EdgePetNicknamesNotIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueNotIn(pet.FieldNicknames, toAnySlice(l.EdgePetNicknamesNotIn)))
+		})
 	}
 	if l.EdgePetAgeEQ != nil {
 		predicates = append(predicates, user.HasPetsWith(pet.AgeEQ(*l.EdgePetAgeEQ)))
@@ -2560,12 +2693,28 @@ func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
 	if l.EdgeFollowedPetNameHasSuffix != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.NameHasSuffix(*l.EdgeFollowedPetNameHasSuffix)))
 	}
+	if l.EdgeFollowedPetNicknamesGT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenGT(pet.FieldNicknames, *l.EdgeFollowedPetNicknamesGT)) })
+	}
+	if l.EdgeFollowedPetNicknamesLT != nil {
+		predicates = append(predicates, func(s *sql.Selector) { s.Where(sqljson.LenLT(pet.FieldNicknames, *l.EdgeFollowedPetNicknamesLT)) })
+	}
 	if l.EdgeFollowedPetNicknamesIsNil != nil {
 		if *l.EdgeFollowedPetNicknamesIsNil {
 			predicates = append(predicates, user.HasFollowedPetsWith(pet.NicknamesIsNil()))
 		} else {
 			predicates = append(predicates, user.Not(user.HasFollowedPetsWith(pet.NicknamesIsNil())))
 		}
+	}
+	if l.EdgeFollowedPetNicknamesIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueIn(pet.FieldNicknames, toAnySlice(l.EdgeFollowedPetNicknamesIn)))
+		})
+	}
+	if l.EdgeFollowedPetNicknamesNotIn != nil {
+		predicates = append(predicates, func(s *sql.Selector) {
+			s.Where(sqljson.ValueNotIn(pet.FieldNicknames, toAnySlice(l.EdgeFollowedPetNicknamesNotIn)))
+		})
 	}
 	if l.EdgeFollowedPetAgeEQ != nil {
 		predicates = append(predicates, user.HasFollowedPetsWith(pet.AgeEQ(*l.EdgeFollowedPetAgeEQ)))

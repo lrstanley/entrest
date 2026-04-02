@@ -24,6 +24,7 @@ type CreateCategoryParams struct {
 	Name     string   `json:"name"`
 	Nillable *string  `json:"nillable"`
 	Strings  []string `json:"strings,omitempty"`
+	Strings2 []string `json:"strings2"`
 	Ints     []int    `json:"ints,omitempty"`
 	Pets     []int    `json:"pets,omitempty"`
 }
@@ -36,6 +37,7 @@ func (c *CreateCategoryParams) ApplyInputs(builder *ent.CategoryCreate) *ent.Cat
 	if c.Strings != nil {
 		builder.SetStrings(c.Strings)
 	}
+	builder.SetStrings2(c.Strings2)
 	if c.Ints != nil {
 		builder.SetInts(c.Ints)
 	}

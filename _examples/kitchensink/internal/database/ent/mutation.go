@@ -47,26 +47,28 @@ const (
 // CategoryMutation represents an operation that mutates the Category nodes in the graph.
 type CategoryMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	created_at    *time.Time
-	updated_at    *time.Time
-	name          *string
-	readonly      *string
-	skip_in_spec  *string
-	nillable      *string
-	strings       *[]string
-	appendstrings []string
-	ints          *[]int
-	appendints    []int
-	clearedFields map[string]struct{}
-	pets          map[int]struct{}
-	removedpets   map[int]struct{}
-	clearedpets   bool
-	done          bool
-	oldValue      func(context.Context) (*Category, error)
-	predicates    []predicate.Category
+	op             Op
+	typ            string
+	id             *int
+	created_at     *time.Time
+	updated_at     *time.Time
+	name           *string
+	readonly       *string
+	skip_in_spec   *string
+	nillable       *string
+	strings        *[]string
+	appendstrings  []string
+	strings2       *[]string
+	appendstrings2 []string
+	ints           *[]int
+	appendints     []int
+	clearedFields  map[string]struct{}
+	pets           map[int]struct{}
+	removedpets    map[int]struct{}
+	clearedpets    bool
+	done           bool
+	oldValue       func(context.Context) (*Category, error)
+	predicates     []predicate.Category
 }
 
 var _ ent.Mutation = (*CategoryMutation)(nil)
@@ -461,6 +463,57 @@ func (m *CategoryMutation) ResetStrings() {
 	delete(m.clearedFields, category.FieldStrings)
 }
 
+// SetStrings2 sets the "strings2" field.
+func (m *CategoryMutation) SetStrings2(s []string) {
+	m.strings2 = &s
+	m.appendstrings2 = nil
+}
+
+// Strings2 returns the value of the "strings2" field in the mutation.
+func (m *CategoryMutation) Strings2() (r []string, exists bool) {
+	v := m.strings2
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldStrings2 returns the old "strings2" field's value of the Category entity.
+// If the Category object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *CategoryMutation) OldStrings2(ctx context.Context) (v []string, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldStrings2 is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldStrings2 requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldStrings2: %w", err)
+	}
+	return oldValue.Strings2, nil
+}
+
+// AppendStrings2 adds s to the "strings2" field.
+func (m *CategoryMutation) AppendStrings2(s []string) {
+	m.appendstrings2 = append(m.appendstrings2, s...)
+}
+
+// AppendedStrings2 returns the list of values that were appended to the "strings2" field in this mutation.
+func (m *CategoryMutation) AppendedStrings2() ([]string, bool) {
+	if len(m.appendstrings2) == 0 {
+		return nil, false
+	}
+	return m.appendstrings2, true
+}
+
+// ResetStrings2 resets all changes to the "strings2" field.
+func (m *CategoryMutation) ResetStrings2() {
+	m.strings2 = nil
+	m.appendstrings2 = nil
+}
+
 // SetInts sets the "ints" field.
 func (m *CategoryMutation) SetInts(i []int) {
 	m.ints = &i
@@ -614,7 +667,7 @@ func (m *CategoryMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *CategoryMutation) Fields() []string {
-	fields := make([]string, 0, 8)
+	fields := make([]string, 0, 9)
 	if m.created_at != nil {
 		fields = append(fields, category.FieldCreatedAt)
 	}
@@ -635,6 +688,9 @@ func (m *CategoryMutation) Fields() []string {
 	}
 	if m.strings != nil {
 		fields = append(fields, category.FieldStrings)
+	}
+	if m.strings2 != nil {
+		fields = append(fields, category.FieldStrings2)
 	}
 	if m.ints != nil {
 		fields = append(fields, category.FieldInts)
@@ -661,6 +717,8 @@ func (m *CategoryMutation) Field(name string) (ent.Value, bool) {
 		return m.Nillable()
 	case category.FieldStrings:
 		return m.Strings()
+	case category.FieldStrings2:
+		return m.Strings2()
 	case category.FieldInts:
 		return m.Ints()
 	}
@@ -686,6 +744,8 @@ func (m *CategoryMutation) OldField(ctx context.Context, name string) (ent.Value
 		return m.OldNillable(ctx)
 	case category.FieldStrings:
 		return m.OldStrings(ctx)
+	case category.FieldStrings2:
+		return m.OldStrings2(ctx)
 	case category.FieldInts:
 		return m.OldInts(ctx)
 	}
@@ -745,6 +805,13 @@ func (m *CategoryMutation) SetField(name string, value ent.Value) error {
 			return fmt.Errorf("unexpected type %T for field %s", value, name)
 		}
 		m.SetStrings(v)
+		return nil
+	case category.FieldStrings2:
+		v, ok := value.([]string)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetStrings2(v)
 		return nil
 	case category.FieldInts:
 		v, ok := value.([]int)
@@ -843,6 +910,9 @@ func (m *CategoryMutation) ResetField(name string) error {
 		return nil
 	case category.FieldStrings:
 		m.ResetStrings()
+		return nil
+	case category.FieldStrings2:
+		m.ResetStrings2()
 		return nil
 	case category.FieldInts:
 		m.ResetInts()

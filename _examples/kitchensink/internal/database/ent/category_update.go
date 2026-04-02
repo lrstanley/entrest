@@ -116,6 +116,18 @@ func (_u *CategoryUpdate) ClearStrings() *CategoryUpdate {
 	return _u
 }
 
+// SetStrings2 sets the "strings2" field.
+func (_u *CategoryUpdate) SetStrings2(v []string) *CategoryUpdate {
+	_u.mutation.SetStrings2(v)
+	return _u
+}
+
+// AppendStrings2 appends value to the "strings2" field.
+func (_u *CategoryUpdate) AppendStrings2(v []string) *CategoryUpdate {
+	_u.mutation.AppendStrings2(v)
+	return _u
+}
+
 // SetInts sets the "ints" field.
 func (_u *CategoryUpdate) SetInts(v []int) *CategoryUpdate {
 	_u.mutation.SetInts(v)
@@ -248,6 +260,14 @@ func (_u *CategoryUpdate) sqlSave(ctx context.Context) (_node int, err error) {
 	}
 	if _u.mutation.StringsCleared() {
 		_spec.ClearField(category.FieldStrings, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.Strings2(); ok {
+		_spec.SetField(category.FieldStrings2, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedStrings2(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, category.FieldStrings2, value)
+		})
 	}
 	if value, ok := _u.mutation.Ints(); ok {
 		_spec.SetField(category.FieldInts, field.TypeJSON, value)
@@ -408,6 +428,18 @@ func (_u *CategoryUpdateOne) AppendStrings(v []string) *CategoryUpdateOne {
 // ClearStrings clears the value of the "strings" field.
 func (_u *CategoryUpdateOne) ClearStrings() *CategoryUpdateOne {
 	_u.mutation.ClearStrings()
+	return _u
+}
+
+// SetStrings2 sets the "strings2" field.
+func (_u *CategoryUpdateOne) SetStrings2(v []string) *CategoryUpdateOne {
+	_u.mutation.SetStrings2(v)
+	return _u
+}
+
+// AppendStrings2 appends value to the "strings2" field.
+func (_u *CategoryUpdateOne) AppendStrings2(v []string) *CategoryUpdateOne {
+	_u.mutation.AppendStrings2(v)
 	return _u
 }
 
@@ -573,6 +605,14 @@ func (_u *CategoryUpdateOne) sqlSave(ctx context.Context) (_node *Category, err 
 	}
 	if _u.mutation.StringsCleared() {
 		_spec.ClearField(category.FieldStrings, field.TypeJSON)
+	}
+	if value, ok := _u.mutation.Strings2(); ok {
+		_spec.SetField(category.FieldStrings2, field.TypeJSON, value)
+	}
+	if value, ok := _u.mutation.AppendedStrings2(); ok {
+		_spec.AddModifier(func(u *sql.UpdateBuilder) {
+			sqljson.Append(u, category.FieldStrings2, value)
+		})
 	}
 	if value, ok := _u.mutation.Ints(); ok {
 		_spec.SetField(category.FieldInts, field.TypeJSON, value)

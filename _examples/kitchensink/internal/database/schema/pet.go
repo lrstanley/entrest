@@ -29,7 +29,7 @@ func (Pet) Fields() []ent.Field {
 		field.JSON("nicknames", []string{}).
 			Optional().
 			Annotations(
-				entrest.WithFilter(entrest.FilterGroupEqual | entrest.FilterGroupArray),
+				entrest.WithFilter(entrest.FilterGroupEqual | entrest.FilterGroupArray | entrest.FilterGroupLength),
 			),
 		field.Int("age").
 			Min(0).Max(50).

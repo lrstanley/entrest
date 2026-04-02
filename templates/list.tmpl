@@ -190,6 +190,14 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
     return sql.OrPredicates(predicates...), nil
 }
 
+func toAnySlice[T any](v []T) []any {
+    out := make([]any, len(v))
+    for i, v := range v {
+        out[i] = v
+    }
+    return out
+}
+
 {{- range $t := $.Nodes }}
     {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
 

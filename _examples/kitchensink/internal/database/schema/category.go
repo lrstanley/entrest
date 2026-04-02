@@ -41,6 +41,9 @@ func (Category) Fields() []ent.Field {
 			Annotations(
 				entrest.WithSchema(ogen.String().SetEnum(mustEnum([]string{"FOO", "BAR", "BAZ"})).AsArray()),
 			),
+		field.Strings("strings2").Annotations(
+			entrest.WithFilter(entrest.FilterGroupEqual | entrest.FilterGroupArray | entrest.FilterGroupLength),
+		),
 		field.Ints("ints").
 			Optional(),
 	}

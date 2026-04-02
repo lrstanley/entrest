@@ -4,6 +4,8 @@
   the LICENSE file.
 */ -}}
 {{- define "helper/rest/standard-imports" }}
+    "entgo.io/ent/dialect/sql"
+    "entgo.io/ent/dialect/sql/sqljson"
     "{{ $.Config.Package }}"
     "{{ $.Config.Package }}/predicate"
     {{- with $.Config.FeatureEnabled "privacy" }}

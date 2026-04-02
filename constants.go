@@ -170,3 +170,30 @@ var SchemaObjectAny = &ogen.Schema{
 // This is different from [SchemaObjectAny] in that it can contain more than an
 // object, and can contain any type of data.
 var SchemaAny = &ogen.Schema{}
+
+// // allowedJSONArrayTypes is a list of allowed JSON array types for filtering.
+// // Ent does not support automatic creation of predicates for these, so we must
+// // generate them ourselves.
+// var allowedJSONArrayTypes = []string{
+// 	"[]string",
+// 	"[]int",
+// 	"[]float64",
+// }
+
+var supportedJSONArrayOps = map[string][]gen.Op{
+	"[]string": {
+		gen.In, gen.NotIn,
+		gen.GT, gen.GTE,
+		gen.LT, gen.LTE,
+	},
+	"[]int": {
+		gen.In, gen.NotIn,
+		gen.GT, gen.GTE,
+		gen.LT, gen.LTE,
+	},
+	"[]float64": {
+		gen.In, gen.NotIn,
+		gen.GT, gen.GTE,
+		gen.LT, gen.LTE,
+	},
+}
