@@ -16,8 +16,8 @@ import (
 
     // EagerLoad{{ $t.Name|zsingular }} eager-loads the edges of a {{ $t.Name|zsingular }} entity, if any edges
     // were requested to be eager-loaded, based off associated annotations.
-    func EagerLoad{{ $t.Name|zsingular }}(query *ent.{{ $t.Name }}Query) *ent.{{ $t.Name }}Query {
-        return query
+    func EagerLoad{{ $t.Name|zsingular }}(_query *ent.{{ $t.Name }}Query) *ent.{{ $t.Name }}Query {
+        return _query
         {{- range $e := $t.Edges -}}
             {{- if not (($e|getAnnotation).GetEagerLoad $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
             .With{{ $e.StructField }}(

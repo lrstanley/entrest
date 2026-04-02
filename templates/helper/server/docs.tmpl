@@ -74,8 +74,8 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
 </html>`))
 
 func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
-    var buf bytes.Buffer
-    err := scalarTemplate.Execute(&buf, map[string]any{
+    var _buf bytes.Buffer
+    err := scalarTemplate.Execute(&_buf, map[string]any{
         "SpecPath": s.config.BasePath + "/openapi.json",
         {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
           "DisableSpecInjectServer": s.config.DisableSpecInjectServer,
@@ -92,6 +92,6 @@ func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Referrer-Policy", "no-referrer-when-downgrade")
     w.Header().Set("Permissions-Policy", "clipboard-write=(self)")
     w.WriteHeader(http.StatusOK)
-    _, _ = w.Write(buf.Bytes())
+    _, _ = w.Write(_buf.Bytes())
 }
 {{- end }}{{/* end template */}}

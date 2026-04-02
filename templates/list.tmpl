@@ -87,7 +87,7 @@ type Paginated[P PagableQuery[P, T], T any] struct {
 
 // ApplyPagination applies offsets and limits, and also runs a count query on the
 // provided query to calculate total results and what the last page number is.
-func (p *Paginated[P, T]) ApplyPagination(ctx context.Context, query P, pageConfig *PageConfig) (P, error) {
+func (p *Paginated[P, T]) ApplyPagination(ctx context.Context, _query P, pageConfig *PageConfig) (P, error) {
     if pageConfig == nil {
         pageConfig = DefaultPageConfig
     }
@@ -101,22 +101,22 @@ func (p *Paginated[P, T]) ApplyPagination(ctx context.Context, query P, pageConf
     }
 
     if *p.ItemsPerPage < pageConfig.MinItemsPerPage {
-        return query, &ErrBadRequest{Err: fmt.Errorf("per_page %d is out of bounds, must be >= %d", *p.ItemsPerPage, pageConfig.MinItemsPerPage)}
+        return _query, &ErrBadRequest{Err: fmt.Errorf("per_page %d is out of bounds, must be >= %d", *p.ItemsPerPage, pageConfig.MinItemsPerPage)}
     }
 
     if *p.ItemsPerPage > pageConfig.MaxItemsPerPage {
-        return query, &ErrBadRequest{Err: fmt.Errorf("per_page %d is out of bounds, must be <= %d", *p.ItemsPerPage, pageConfig.MaxItemsPerPage)}
+        return _query, &ErrBadRequest{Err: fmt.Errorf("per_page %d is out of bounds, must be <= %d", *p.ItemsPerPage, pageConfig.MaxItemsPerPage)}
     }
 
     if *p.Page < 1 {
-        return query, &ErrBadRequest{Err: fmt.Errorf("page %d is out of bounds, must be >= 1", *p.Page)}
+        return _query, &ErrBadRequest{Err: fmt.Errorf("page %d is out of bounds, must be >= 1", *p.Page)}
     }
 
     var err error
 
-    p.ResultCount, err = query.Count(ctx)
+    p.ResultCount, err = _query.Count(ctx)
     if err != nil {
-        return query, err
+        return _query, err
     }
 
     // TODO: how to calculate this without knowing the total count?
@@ -127,25 +127,25 @@ func (p *Paginated[P, T]) ApplyPagination(ctx context.Context, query P, pageConf
     }
 
     if *p.Page > p.LastPage {
-        return query, &ErrBadRequest{Err: fmt.Errorf("page %d is out of bounds, last page is %d", *p.Page, p.LastPage)}
+        return _query, &ErrBadRequest{Err: fmt.Errorf("page %d is out of bounds, last page is %d", *p.Page, p.LastPage)}
     }
 
     p.hasApplied = true
-    return query.Limit(*p.ItemsPerPage).Offset((*p.Page - 1) * *p.ItemsPerPage), nil
+    return _query.Limit(*p.ItemsPerPage).Offset((*p.Page - 1) * *p.ItemsPerPage), nil
 }
 
 // ExecutePaginated executes the query and returns a paged response. If ApplyPagination
 // was not called before, it will be called here.
-func (p *Paginated[P, T]) ExecutePaginated(ctx context.Context, query P, pageConfig *PageConfig) (*PagedResponse[T], error) {
+func (p *Paginated[P, T]) ExecutePaginated(ctx context.Context, _query P, pageConfig *PageConfig) (*PagedResponse[T], error) {
     if !p.hasApplied {
         var err error
-        query, err = p.ApplyPagination(ctx, query, pageConfig)
+        _query, err = p.ApplyPagination(ctx, _query, pageConfig)
         if err != nil {
             return nil, err
         }
     }
 
-    data, err := query.All(ctx)
+    _data, err := _query.All(ctx)
     if err != nil {
         return nil, err
     }
@@ -155,7 +155,7 @@ func (p *Paginated[P, T]) ExecutePaginated(ctx context.Context, query P, pageCon
         TotalCount: p.ResultCount,
         LastPage:   p.LastPage,
         IsLastPage: *p.Page == p.LastPage,
-        Content:    data,
+        Content:    _data,
     }, nil
 }
 
@@ -180,14 +180,14 @@ type Filtered[P ~func(*sql.Selector)] struct {
 // ApplyFilterOperation applies the requested filter operation (if provided) to the
 // provided predicates. If no filter operation is provided, the predicates are
 // returned with AND.
-func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
+func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
     if f.FilterOperation == nil || *f.FilterOperation == FilterOperationAnd {
-        return sql.AndPredicates(predicates...), nil
+        return sql.AndPredicates(_predicates...), nil
     }
     if !slices.Contains(FilterOperations, *f.FilterOperation) {
         return nil, &ErrBadRequest{Err: fmt.Errorf("invalid filter method: %s", *f.FilterOperation)}
     }
-    return sql.OrPredicates(predicates...), nil
+    return sql.OrPredicates(_predicates...), nil
 }
 
 {{- range $t := $.Nodes }}
@@ -227,18 +227,18 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
     {{ if or $filters $groups }}
         // FilterPredicates returns the predicates for filter-related parameters in {{ $t.Name|singular }}.
         func (l *List{{ $t.Name|zsingular }}Params) FilterPredicates() (predicate.{{ $t.Name }}, error) {
-            var predicates []predicate.{{ $t.Name }}
+            var _predicates []predicate.{{ $t.Name }}
 
             {{ range $f := $filters }}
                 if l.{{ $f.ComponentName }} != nil {
                     {{- if $f.Operation.Niladic }}
                         if *l.{{ $f.ComponentName }} {
-                            predicates = append(predicates, {{ $f.PredicateBuilder "l" }})
+                            _predicates = append(_predicates, {{ $f.PredicateBuilder "l" }})
                         } else {
-                            predicates = append(predicates, {{ $t.Package }}.Not({{ $f.PredicateBuilder "l" }}))
+                            _predicates = append(_predicates, {{ $t.Package }}.Not({{ $f.PredicateBuilder "l" }}))
                         }
                     {{- else }}
-                        predicates = append(predicates, {{ $f.PredicateBuilder "l" }})
+                        _predicates = append(_predicates, {{ $f.PredicateBuilder "l" }})
                     {{- end }}{{/* end niladic */}}
                 }
             {{- end }}{{/* end range filtering */}}
@@ -247,67 +247,67 @@ func (f *Filtered[P]) ApplyFilterOperation(predicates ...P) (P, error) {
                     if l.{{ $g.ComponentName $op }} != nil {
                         {{- if $op.Niladic }}
                             if *l.{{ $g.ComponentName $op }} {
-                                predicates = append(predicates, {{ $g.PredicateBuilder "l" $op }})
+                                _predicates = append(_predicates, {{ $g.PredicateBuilder "l" $op }})
                             } else {
-                                predicates = append(predicates, {{ $t.Package }}.Not({{ $g.PredicateBuilder "l" $op }}))
+                                _predicates = append(_predicates, {{ $t.Package }}.Not({{ $g.PredicateBuilder "l" $op }}))
                             }
                         {{- else }}
-                            predicates = append(predicates, {{ $g.PredicateBuilder "l" $op }})
+                            _predicates = append(_predicates, {{ $g.PredicateBuilder "l" $op }})
                         {{- end }}{{/* end niladic */}}
                     }
                 {{- end }}
             {{- end }}{{/* end range filtering */}}
-            return l.ApplyFilterOperation(predicates...)
+            return l.ApplyFilterOperation(_predicates...)
         }
     {{- end }}{{/* end filters */}}
 
     // ApplySorting applies sorting to the query based on the provided sort and order fields.
-    func (l *List{{ $t.Name|zsingular }}Params) ApplySorting(query *ent.{{ $t.Name }}Query) error {
+    func (l *List{{ $t.Name|zsingular }}Params) ApplySorting(_query *ent.{{ $t.Name }}Query) error {
         if err := l.Sorted.Validate({{ $t.Name|zsingular }}SortConfig); err != nil {
             return err
         }
         if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
             return nil
         }
-        applySorting{{ $t.Name|zsingular }}(query, *l.Field, *l.Order)
+        applySorting{{ $t.Name|zsingular }}(_query, *l.Field, *l.Order)
         return nil
     }
 
     {{- if $pagination }}
         // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
         // executes all necessary queries, returning the results.
-        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, query *ent.{{ $t.Name }}Query) (results *PagedResponse[ent.{{ $t.Name }}], err error) {
+        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _query *ent.{{ $t.Name }}Query) (_results *PagedResponse[ent.{{ $t.Name }}], err error) {
             {{- if or $filters $groups }}
-                predicates, err := l.FilterPredicates()
+                _predicates, err := l.FilterPredicates()
                 if err != nil {
                     return nil, err
                 }
-                query.Where(predicates)
+                _query.Where(_predicates)
             {{- end }}
-            err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(query))
+            err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(_query))
             if err != nil {
                 return nil, err
             }
-            return l.ExecutePaginated(ctx, query, {{ $t.Name|zsingular }}PageConfig)
+            return l.ExecutePaginated(ctx, _query, {{ $t.Name|zsingular }}PageConfig)
         }
     {{- else }}
         // Exec wraps all logic (filtering, sorting, and eager loading) and
         // executes all necessary queries, returning the results.
-        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, query *ent.{{ $t.Name }}Query) (results []*ent.{{ $t.Name }}, err error) {
+        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _query *ent.{{ $t.Name }}Query) (_results []*ent.{{ $t.Name }}, err error) {
             {{- if or $filters $groups }}
-                predicates, err := l.FilterPredicates()
+                _predicates, err := l.FilterPredicates()
                 if err != nil {
                     return nil, err
                 }
-                query.Where(predicates)
+                _query.Where(_predicates)
             {{- end }}
 
-            err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(query))
+            err = l.ApplySorting(EagerLoad{{ $t.Name|zsingular }}(_query))
             if err != nil {
                 return nil, err
             }
 
-            return query.All(ctx)
+            return _query.All(ctx)
         }
     {{- end }}
 {{- end }}{{/* end range */}}

@@ -29,18 +29,18 @@ type Sorted struct {
 }
 
 // Validate validates the sorting fields and applies any necessary defaults.
-func (s *Sorted) Validate(cfg *SortConfig) error {
+func (s *Sorted) Validate(_cfg *SortConfig) error {
 	if s.Field == nil {
-		if cfg.DefaultField == "" {
+		if _cfg.DefaultField == "" {
 			return nil
 		}
-		s.Field = &cfg.DefaultField
+		s.Field = &_cfg.DefaultField
 	}
 	if s.Order == nil {
-		s.Order = &cfg.DefaultOrder
+		s.Order = &_cfg.DefaultOrder
 	}
 
-	if !slices.Contains(cfg.Fields, *s.Field) {
+	if !slices.Contains(_cfg.Fields, *s.Field) {
 		return &ErrBadRequest{Err: fmt.Errorf("invalid sort field: %s", *s.Field)}
 	}
 
@@ -52,18 +52,18 @@ func (s *Sorted) Validate(cfg *SortConfig) error {
 }
 
 // withOrderTerm returns the OrderTermOption (asc/desc) based on the provided order string.
-func withOrderTerm(order orderDirection) sql.OrderTermOption {
-	if order == orderAsc {
+func withOrderTerm(_order orderDirection) sql.OrderTermOption {
+	if _order == orderAsc {
 		return sql.OrderAsc()
 	}
 	return sql.OrderDesc()
 }
 
-func withFieldSelector(field string, order orderDirection) func(*sql.Selector) {
-	if order == orderAsc {
-		return ent.Asc(field)
+func withFieldSelector(_field string, _order orderDirection) func(*sql.Selector) {
+	if _order == orderAsc {
+		return ent.Asc(_field)
 	}
-	return ent.Desc(field)
+	return ent.Desc(_field)
 }
 
 type SortConfig struct {
@@ -199,17 +199,17 @@ var (
 )
 
 // isSpecializedSort checks if the sort field is a specialized sort field.
-func isSpecializedSort(parts []string) (isCount, isSum bool) {
+func isSpecializedSort(_parts []string) (isCount, isSum bool) {
 	switch {
-	case len(parts) == 3:
-		switch parts[2] {
+	case len(_parts) == 3:
+		switch _parts[2] {
 		case "count":
 			isCount = true
 		case "sum":
 			isSum = true
 		}
-	case len(parts) == 2:
-		switch parts[1] {
+	case len(_parts) == 2:
+		switch _parts[1] {
 		case "count":
 			isCount = true
 		case "sum":
@@ -221,233 +221,233 @@ func isSpecializedSort(parts []string) (isCount, isSum bool) {
 
 // applySortingCategory applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingCategory(query *ent.CategoryQuery, field string, order orderDirection) *ent.CategoryQuery {
-	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+func applySortingCategory(_query *ent.CategoryQuery, _field string, _order orderDirection) *ent.CategoryQuery {
+	if _parts := strings.Split(_field, "."); len(_parts) > 1 {
+		_dir := withOrderTerm(_order)
 
-		isCount, isSum := isSpecializedSort(parts)
+		isCount, isSum := isSpecializedSort(_parts)
 
-		switch parts[0] {
+		switch _parts[0] {
 		case category.EdgePets:
 			switch {
 			case isCount:
-				return query.Order(category.ByPetsCount(dir))
+				return _query.Order(category.ByPetsCount(_dir))
 			case isSum:
-				return query.Order(category.ByPets(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(category.ByPets(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(category.ByPets(sql.OrderByField(parts[1], dir)))
+				return _query.Order(category.ByPets(sql.OrderByField(_parts[1], _dir)))
 			}
 		}
 	}
-	if field == "random" {
-		return query.Order(sql.OrderByRand())
+	if _field == "random" {
+		return _query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return _query.Order(withFieldSelector(_field, _order))
 }
 
 // applySortingFollow applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingFollow(query *ent.FollowsQuery, field string, order orderDirection) *ent.FollowsQuery {
-	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+func applySortingFollow(_query *ent.FollowsQuery, _field string, _order orderDirection) *ent.FollowsQuery {
+	if _parts := strings.Split(_field, "."); len(_parts) > 1 {
+		_dir := withOrderTerm(_order)
 
-		switch parts[0] {
+		switch _parts[0] {
 		case follows.EdgeUser:
-			return query.Order(follows.ByUserField(parts[1], dir))
+			return _query.Order(follows.ByUserField(_parts[1], _dir))
 		case follows.EdgePet:
-			return query.Order(follows.ByPetField(parts[1], dir))
+			return _query.Order(follows.ByPetField(_parts[1], _dir))
 		}
 	}
-	if field == "random" {
-		return query.Order(sql.OrderByRand())
+	if _field == "random" {
+		return _query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return _query.Order(withFieldSelector(_field, _order))
 }
 
 // applySortingFriendship applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingFriendship(query *ent.FriendshipQuery, field string, order orderDirection) *ent.FriendshipQuery {
-	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+func applySortingFriendship(_query *ent.FriendshipQuery, _field string, _order orderDirection) *ent.FriendshipQuery {
+	if _parts := strings.Split(_field, "."); len(_parts) > 1 {
+		_dir := withOrderTerm(_order)
 
-		switch parts[0] {
+		switch _parts[0] {
 		case friendship.EdgeUser:
-			return query.Order(friendship.ByUserField(parts[1], dir))
+			return _query.Order(friendship.ByUserField(_parts[1], _dir))
 		case friendship.EdgeFriend:
-			return query.Order(friendship.ByFriendField(parts[1], dir))
+			return _query.Order(friendship.ByFriendField(_parts[1], _dir))
 		}
 	}
-	if field == "random" {
-		return query.Order(sql.OrderByRand())
+	if _field == "random" {
+		return _query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return _query.Order(withFieldSelector(_field, _order))
 }
 
 // applySortingPet applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingPet(query *ent.PetQuery, field string, order orderDirection) *ent.PetQuery {
-	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+func applySortingPet(_query *ent.PetQuery, _field string, _order orderDirection) *ent.PetQuery {
+	if _parts := strings.Split(_field, "."); len(_parts) > 1 {
+		_dir := withOrderTerm(_order)
 
-		isCount, isSum := isSpecializedSort(parts)
+		isCount, isSum := isSpecializedSort(_parts)
 
-		switch parts[0] {
+		switch _parts[0] {
 		case pet.EdgeCategories:
 			switch {
 			case isCount:
-				return query.Order(pet.ByCategoriesCount(dir))
+				return _query.Order(pet.ByCategoriesCount(_dir))
 			case isSum:
-				return query.Order(pet.ByCategories(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(pet.ByCategories(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(pet.ByCategories(sql.OrderByField(parts[1], dir)))
+				return _query.Order(pet.ByCategories(sql.OrderByField(_parts[1], _dir)))
 			}
 		case pet.EdgeOwner:
-			return query.Order(pet.ByOwnerField(parts[1], dir))
+			return _query.Order(pet.ByOwnerField(_parts[1], _dir))
 		case pet.EdgeFriends:
 			switch {
 			case isCount:
-				return query.Order(pet.ByFriendsCount(dir))
+				return _query.Order(pet.ByFriendsCount(_dir))
 			case isSum:
-				return query.Order(pet.ByFriends(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(pet.ByFriends(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(pet.ByFriends(sql.OrderByField(parts[1], dir)))
+				return _query.Order(pet.ByFriends(sql.OrderByField(_parts[1], _dir)))
 			}
 		case pet.EdgeFollowedBy:
 			switch {
 			case isCount:
-				return query.Order(pet.ByFollowedByCount(dir))
+				return _query.Order(pet.ByFollowedByCount(_dir))
 			case isSum:
-				return query.Order(pet.ByFollowedBy(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(pet.ByFollowedBy(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(pet.ByFollowedBy(sql.OrderByField(parts[1], dir)))
+				return _query.Order(pet.ByFollowedBy(sql.OrderByField(_parts[1], _dir)))
 			}
 		case pet.EdgeFollowing:
 			switch {
 			case isCount:
-				return query.Order(pet.ByFollowingCount(dir))
+				return _query.Order(pet.ByFollowingCount(_dir))
 			case isSum:
-				return query.Order(pet.ByFollowing(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(pet.ByFollowing(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(pet.ByFollowing(sql.OrderByField(parts[1], dir)))
+				return _query.Order(pet.ByFollowing(sql.OrderByField(_parts[1], _dir)))
 			}
 		}
 	}
-	if field == "random" {
-		return query.Order(sql.OrderByRand())
+	if _field == "random" {
+		return _query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return _query.Order(withFieldSelector(_field, _order))
 }
 
 // applySortingPost applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingPost(query *ent.PostQuery, field string, order orderDirection) *ent.PostQuery {
-	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+func applySortingPost(_query *ent.PostQuery, _field string, _order orderDirection) *ent.PostQuery {
+	if _parts := strings.Split(_field, "."); len(_parts) > 1 {
+		_dir := withOrderTerm(_order)
 
-		switch parts[0] {
+		switch _parts[0] {
 		case post.EdgeAuthor:
-			return query.Order(post.ByAuthorField(parts[1], dir))
+			return _query.Order(post.ByAuthorField(_parts[1], _dir))
 		}
 	}
-	if field == "random" {
-		return query.Order(sql.OrderByRand())
+	if _field == "random" {
+		return _query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return _query.Order(withFieldSelector(_field, _order))
 }
 
 // applySortingSetting applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingSetting(query *ent.SettingsQuery, field string, order orderDirection) *ent.SettingsQuery {
-	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+func applySortingSetting(_query *ent.SettingsQuery, _field string, _order orderDirection) *ent.SettingsQuery {
+	if _parts := strings.Split(_field, "."); len(_parts) > 1 {
+		_dir := withOrderTerm(_order)
 
-		isCount, isSum := isSpecializedSort(parts)
+		isCount, isSum := isSpecializedSort(_parts)
 
-		switch parts[0] {
+		switch _parts[0] {
 		case settings.EdgeAdmins:
 			switch {
 			case isCount:
-				return query.Order(settings.ByAdminsCount(dir))
+				return _query.Order(settings.ByAdminsCount(_dir))
 			case isSum:
-				return query.Order(settings.ByAdmins(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(settings.ByAdmins(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(settings.ByAdmins(sql.OrderByField(parts[1], dir)))
+				return _query.Order(settings.ByAdmins(sql.OrderByField(_parts[1], _dir)))
 			}
 		}
 	}
-	if field == "random" {
-		return query.Order(sql.OrderByRand())
+	if _field == "random" {
+		return _query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return _query.Order(withFieldSelector(_field, _order))
 }
 
 // applySortingUser applies sorting to the query based on the provided sort and
 // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-func applySortingUser(query *ent.UserQuery, field string, order orderDirection) *ent.UserQuery {
-	if parts := strings.Split(field, "."); len(parts) > 1 {
-		dir := withOrderTerm(order)
+func applySortingUser(_query *ent.UserQuery, _field string, _order orderDirection) *ent.UserQuery {
+	if _parts := strings.Split(_field, "."); len(_parts) > 1 {
+		_dir := withOrderTerm(_order)
 
-		isCount, isSum := isSpecializedSort(parts)
+		isCount, isSum := isSpecializedSort(_parts)
 
-		switch parts[0] {
+		switch _parts[0] {
 		case user.EdgePets:
 			switch {
 			case isCount:
-				return query.Order(user.ByPetsCount(dir))
+				return _query.Order(user.ByPetsCount(_dir))
 			case isSum:
-				return query.Order(user.ByPets(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(user.ByPets(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(user.ByPets(sql.OrderByField(parts[1], dir)))
+				return _query.Order(user.ByPets(sql.OrderByField(_parts[1], _dir)))
 			}
 		case user.EdgeFollowedPets:
 			switch {
 			case isCount:
-				return query.Order(user.ByFollowedPetsCount(dir))
+				return _query.Order(user.ByFollowedPetsCount(_dir))
 			case isSum:
-				return query.Order(user.ByFollowedPets(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(user.ByFollowedPets(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(user.ByFollowedPets(sql.OrderByField(parts[1], dir)))
+				return _query.Order(user.ByFollowedPets(sql.OrderByField(_parts[1], _dir)))
 			}
 		case user.EdgeFriends:
 			switch {
 			case isCount:
-				return query.Order(user.ByFriendsCount(dir))
+				return _query.Order(user.ByFriendsCount(_dir))
 			case isSum:
-				return query.Order(user.ByFriends(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(user.ByFriends(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(user.ByFriends(sql.OrderByField(parts[1], dir)))
+				return _query.Order(user.ByFriends(sql.OrderByField(_parts[1], _dir)))
 			}
 		case user.EdgePosts:
 			switch {
 			case isCount:
-				return query.Order(user.ByPostsCount(dir))
+				return _query.Order(user.ByPostsCount(_dir))
 			case isSum:
-				return query.Order(user.ByPosts(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(user.ByPosts(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(user.ByPosts(sql.OrderByField(parts[1], dir)))
+				return _query.Order(user.ByPosts(sql.OrderByField(_parts[1], _dir)))
 			}
 		case user.EdgeFollowing:
 			switch {
 			case isCount:
-				return query.Order(user.ByFollowingCount(dir))
+				return _query.Order(user.ByFollowingCount(_dir))
 			case isSum:
-				return query.Order(user.ByFollowing(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(user.ByFollowing(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(user.ByFollowing(sql.OrderByField(parts[1], dir)))
+				return _query.Order(user.ByFollowing(sql.OrderByField(_parts[1], _dir)))
 			}
 		case user.EdgeFriendships:
 			switch {
 			case isCount:
-				return query.Order(user.ByFriendshipsCount(dir))
+				return _query.Order(user.ByFriendshipsCount(_dir))
 			case isSum:
-				return query.Order(user.ByFriendships(sql.OrderBySum(parts[1], dir)))
+				return _query.Order(user.ByFriendships(sql.OrderBySum(_parts[1], _dir)))
 			default:
-				return query.Order(user.ByFriendships(sql.OrderByField(parts[1], dir)))
+				return _query.Order(user.ByFriendships(sql.OrderByField(_parts[1], _dir)))
 			}
 		}
 	}
-	if field == "random" {
-		return query.Order(sql.OrderByRand())
+	if _field == "random" {
+		return _query.Order(sql.OrderByRand())
 	}
-	return query.Order(withFieldSelector(field, order))
+	return _query.Order(withFieldSelector(_field, _order))
 }

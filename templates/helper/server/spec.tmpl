@@ -27,11 +27,11 @@
 {{- define "helper/rest/server/spec/setup" }}
     {{- if not $.Annotations.RestConfig.DisableSpecHandler }}
         if s.config.BaseURL != "" && s.config.BasePath == "" {
-            uri, err := url.Parse(s.config.BaseURL)
+            _uri, err := url.Parse(s.config.BaseURL)
             if err != nil {
                 return nil, fmt.Errorf("failed to parse BaseURL: %w", err)
             }
-            s.config.BasePath = uri.Path
+            s.config.BasePath = _uri.Path
         }
         if s.config.BaseURL == "" {
             s.config.DisableSpecInjectServer = true
@@ -64,8 +64,8 @@
         func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
             w.Header().Set("Content-Type", "application/json")
             if !s.config.DisableSpecInjectServer && s.config.BaseURL != "" {
-                spec := map[string]any{}
-                err := json.Unmarshal(OpenAPI, &spec)
+                _spec := map[string]any{}
+                err := json.Unmarshal(OpenAPI, &_spec)
                 if err != nil {
                     panic(fmt.Sprintf("failed to unmarshal spec: %v", err))
                 }
@@ -74,9 +74,9 @@
                     URL string `json:"url"`
                 }
 
-                if _, ok := spec["servers"]; !ok {
-                    spec["servers"] = []Server{ {URL: s.config.BaseURL} }
-                    JSON(w, r, http.StatusOK, spec)
+                if _, ok := _spec["servers"]; !ok {
+                    _spec["servers"] = []Server{ {URL: s.config.BaseURL} }
+                    JSON(w, r, http.StatusOK, _spec)
                     return
                 }
             }

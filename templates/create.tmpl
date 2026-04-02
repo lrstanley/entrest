@@ -74,10 +74,10 @@ import (
         {{- end }}
     }
 
-    func (c *Create{{ $t.Name|zsingular }}Params) ApplyInputs(builder *ent.{{ $t.Name }}Create) *ent.{{ $t.Name }}Create {
+    func (c *Create{{ $t.Name|zsingular }}Params) ApplyInputs(_builder *ent.{{ $t.Name }}Create) *ent.{{ $t.Name }}Create {
         {{- if and (($t|getAnnotation).GetAllowClientIDs $.Annotations.RestConfig) $t.ID }}
             if c.{{ $t.ID.StructField }} != nil {
-                builder.Set{{ $t.ID.StructField }}(*c.{{ $t.ID.StructField }})
+                _builder.Set{{ $t.ID.StructField }}(*c.{{ $t.ID.StructField }})
             }
         {{- end }}
 
@@ -87,13 +87,13 @@ import (
             {{- if or $f.Optional $f.Default }}
                 if c.{{ $f.StructField }} != nil {
                 {{- if or (hasPrefix $f.Type.Ident "[]") (hasPrefix $f.Type.Ident "*") $f.IsBytes }}
-                    builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
+                    _builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
                 {{- else }}
-                    builder.Set{{ $f.StructField }}(*c.{{ $f.StructField }})
+                    _builder.Set{{ $f.StructField }}(*c.{{ $f.StructField }})
                 {{- end }}
                 }
             {{- else }}
-                builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
+                _builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
             {{- end }}
         {{- end }}
 
@@ -113,47 +113,47 @@ import (
 
                 {{- if $f.Nillable }}
                     if c.{{ $f.StructField }} != nil {
-                        builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
+                        _builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
                     }
                 {{- else if or $f.Default $f.Optional }}
                     if c.{{ $f.StructField }} != nil {
-                        builder.Set{{ $f.StructField }}(*c.{{ $f.StructField }})
+                        _builder.Set{{ $f.StructField }}(*c.{{ $f.StructField }})
                     }
                 {{- else }}
-                    builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
+                    _builder.Set{{ $f.StructField }}(c.{{ $f.StructField }})
                 {{- end }}
             {{- else }}
                 {{- if not $e.Unique }}
-                    builder.Add{{ $e.Name|zsingular|pascal }}IDs(c.{{ $e.StructField }}...)
+                    _builder.Add{{ $e.Name|zsingular|pascal }}IDs(c.{{ $e.StructField }}...)
                 {{- else if $e.Optional }}
                     if c.{{ $e.StructField }} != nil {
-                        builder.Set{{ $e.StructField }}ID(*c.{{ $e.StructField }})
+                        _builder.Set{{ $e.StructField }}ID(*c.{{ $e.StructField }})
                     }
                 {{- else }}
-                    builder.Set{{ $e.StructField }}ID(c.{{ $e.StructField }})
+                    _builder.Set{{ $e.StructField }}ID(c.{{ $e.StructField }})
                 {{- end }}
             {{- end }}
         {{- end }}
-        return builder
+        return _builder
     }
 
     // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
     // and does another query (using provided query as base) to get the entity, with all eager
     // loaded edges.
-    func (c *Create{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, builder *ent.{{ $t.Name }}Create, query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}, error) {
-        result, err := c.ApplyInputs(builder).Save(ctx)
+    func (c *Create{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _builder *ent.{{ $t.Name }}Create, _query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}, error) {
+        _result, err := c.ApplyInputs(_builder).Save(ctx)
         if err != nil {
             return nil, err
         }
         {{- if $t.ID }}
-            return EagerLoad{{ $t.Name|zsingular }}(query.Where({{ $t.Package }}.ID(result.ID))).Only(ctx)
+            return EagerLoad{{ $t.Name|zsingular }}(_query.Where({{ $t.Package }}.ID(_result.ID))).Only(ctx)
         {{- else }}
             // Since {{ $t.Name|zsingular }} entities have a composite ID, we have to query by all known FK fields.
-            return EagerLoad{{ $t.Name|zsingular }}(query.Where(
+            return EagerLoad{{ $t.Name|zsingular }}(_query.Where(
                 {{ range $f := $t.Fields }}
                     {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly $f.Optional }}{{ continue }}{{ end -}}
 
-                    {{ $t.Package }}.{{ $f.StructField }}EQ(result.{{ $f.StructField }}),
+                    {{ $t.Package }}.{{ $f.StructField }}EQ(_result.{{ $f.StructField }}),
                 {{ end }}
             )).Only(ctx)
         {{- end }}

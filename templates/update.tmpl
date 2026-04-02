@@ -66,7 +66,7 @@ import (
         {{- end }}
     }
 
-    func (u *Update{{ $t.Name|zsingular }}Params) ApplyInputs(builder *ent.{{ $t.Name }}UpdateOne) *ent.{{ $t.Name }}UpdateOne {
+    func (u *Update{{ $t.Name|zsingular }}Params) ApplyInputs(_builder *ent.{{ $t.Name }}UpdateOne) *ent.{{ $t.Name }}UpdateOne {
         {{- range $f := $t.Fields }}
             {{- if or
                 (($f|getAnnotation).GetSkip $.Annotations.RestConfig)
@@ -79,13 +79,13 @@ import (
             if v, ok := u.{{ $f.StructField }}.Get(); ok {
                 {{- if $f.Nillable }}
                     if v != nil {
-                        builder.Set{{ $f.StructField }}(*v)
+                        _builder.Set{{ $f.StructField }}(*v)
                     } {{- if $f.Optional }} else {
-                        builder.Clear{{ $f.StructField }}()
+                        _builder.Clear{{ $f.StructField }}()
                     }
                     {{- end }}
                 {{- else }}
-                    builder.Set{{ $f.StructField }}(v)
+                    _builder.Set{{ $f.StructField }}(v)
                 {{- end }}
             }
         {{ end -}}
@@ -110,58 +110,58 @@ import (
                 if v, ok := u.{{ $e.Field.StructField }}.Get(); ok {
                     {{- if $e.Field.Nillable }}
                         if v != nil {
-                            builder.Set{{ $e.Field.StructField }}(v)
+                            _builder.Set{{ $e.Field.StructField }}(v)
                         } {{- if $e.Field.Optional }} else {
-                            builder.Clear{{ $e.Field.StructField }}()
+                            _builder.Clear{{ $e.Field.StructField }}()
                         }
                         {{- end }}
                     {{- else }}
-                        builder.Set{{ $e.Field.StructField }}(v)
+                        _builder.Set{{ $e.Field.StructField }}(v)
                     {{- end }}
                 }
             {{- else }}
                 {{- if not $e.Unique }}
                     {{- range $prefix := list "Add" "Remove" }}
                         if v, ok := u.{{ $prefix }}{{ $e.StructField }}.Get(); ok && v != nil {
-                            builder.{{ $prefix }}{{ $e.Name|singular|pascal }}IDs(v...)
+                            _builder.{{ $prefix }}{{ $e.Name|singular|pascal }}IDs(v...)
                         }
                     {{- end }}
                     {{- if $e.Annotations.Rest.EdgeUpdateBulk }}
                         // If add_<edge> or remove_<edge> is provided, don't clear or use this field.
                         if v, ok := u.{{ $e.StructField }}.Get(); ok && !u.Add{{ $e.StructField }}.Present() && !u.Remove{{ $e.StructField }}.Present() {
-                            builder.Clear{{ $e.StructField }}()
+                            _builder.Clear{{ $e.StructField }}()
                             if v != nil {
-                                builder.Add{{ $e.Name|singular|pascal }}IDs(v...)
+                                _builder.Add{{ $e.Name|singular|pascal }}IDs(v...)
                             }
                         }
                     {{- end }}
                 {{- else if $e.Optional }}
                     if v, ok := u.{{ $e.StructField }}.Get(); ok {
                         if v != nil {
-                            builder.Set{{ $e.StructField }}ID(*v)
+                            _builder.Set{{ $e.StructField }}ID(*v)
                         } else {
-                            builder.Clear{{ $e.StructField }}()
+                            _builder.Clear{{ $e.StructField }}()
                         }
                     }
                 {{- else }}
                     if v, ok := u.{{ $e.StructField }}.Get(); ok {
-                        builder.Set{{ $e.StructField }}ID(v)
+                        _builder.Set{{ $e.StructField }}ID(v)
                     }
                 {{- end }}
             {{- end }}
         {{- end }}
-        return builder
+        return _builder
     }
 
     // Exec wraps all logic (mapping all provided values to the build), updates the entity,
     // and does another query (using provided query as base) to get the entity, with all eager
     // loaded edges.
-    func (c *Update{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, builder *ent.{{ $t.Name }}UpdateOne, query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}, error) {
-        result, err := c.ApplyInputs(builder).Save(ctx)
+    func (c *Update{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _builder *ent.{{ $t.Name }}UpdateOne, _query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}, error) {
+        _result, err := c.ApplyInputs(_builder).Save(ctx)
         if err != nil {
             return nil, err
         }
-        return EagerLoad{{ $t.Name|zsingular }}(query.Where({{ $t.Package }}.ID(result.ID))).Only(ctx)
+        return EagerLoad{{ $t.Name|zsingular }}(_query.Where({{ $t.Package }}.ID(_result.ID))).Only(ctx)
     }
 {{- end }}{{/* end range */}}
 {{- end }}{{/* end template */}}

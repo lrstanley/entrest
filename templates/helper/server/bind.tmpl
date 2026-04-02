@@ -29,12 +29,12 @@
         case http.MethodPost, http.MethodPut, http.MethodPatch:
             switch {
             case strings.HasPrefix(r.Header.Get("Content-Type"), "application/json"):
-                dec := json.NewDecoder(r.Body)
+                _dec := json.NewDecoder(r.Body)
                 {{- if $.Annotations.RestConfig.StrictMutate }}
-                    dec.DisallowUnknownFields()
+                    _dec.DisallowUnknownFields()
                 {{- end }}
                 defer r.Body.Close()
-                err = dec.Decode(v)
+                err = _dec.Decode(v)
             case strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data"):
                 err = r.ParseMultipartForm(DefaultDecodeMaxMemory)
                 if err == nil {

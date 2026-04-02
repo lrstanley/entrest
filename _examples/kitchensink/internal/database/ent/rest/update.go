@@ -28,40 +28,40 @@ type UpdateCategoryParams struct {
 	RemovePets Option[[]int]    `json:"remove_pets,omitempty"`
 }
 
-func (u *UpdateCategoryParams) ApplyInputs(builder *ent.CategoryUpdateOne) *ent.CategoryUpdateOne {
+func (u *UpdateCategoryParams) ApplyInputs(_builder *ent.CategoryUpdateOne) *ent.CategoryUpdateOne {
 	if v, ok := u.Name.Get(); ok {
-		builder.SetName(v)
+		_builder.SetName(v)
 	}
 	if v, ok := u.Nillable.Get(); ok {
 		if v != nil {
-			builder.SetNillable(*v)
+			_builder.SetNillable(*v)
 		}
 	}
 	if v, ok := u.Strings.Get(); ok {
-		builder.SetStrings(v)
+		_builder.SetStrings(v)
 	}
 	if v, ok := u.Ints.Get(); ok {
-		builder.SetInts(v)
+		_builder.SetInts(v)
 	}
 
 	if v, ok := u.AddPets.Get(); ok && v != nil {
-		builder.AddPetIDs(v...)
+		_builder.AddPetIDs(v...)
 	}
 	if v, ok := u.RemovePets.Get(); ok && v != nil {
-		builder.RemovePetIDs(v...)
+		_builder.RemovePetIDs(v...)
 	}
-	return builder
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdateCategoryParams) Exec(ctx context.Context, builder *ent.CategoryUpdateOne, query *ent.CategoryQuery) (*ent.Category, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *UpdateCategoryParams) Exec(ctx context.Context, _builder *ent.CategoryUpdateOne, _query *ent.CategoryQuery) (*ent.Category, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadCategory(query.Where(category.ID(result.ID))).Only(ctx)
+	return EagerLoadCategory(_query.Where(category.ID(_result.ID))).Only(ctx)
 }
 
 // UpdateFriendshipParams defines parameters for updating a Friendship via a PATCH request.
@@ -71,29 +71,29 @@ type UpdateFriendshipParams struct {
 	FriendID  Option[uuid.UUID] `json:"friend_id"`
 }
 
-func (u *UpdateFriendshipParams) ApplyInputs(builder *ent.FriendshipUpdateOne) *ent.FriendshipUpdateOne {
+func (u *UpdateFriendshipParams) ApplyInputs(_builder *ent.FriendshipUpdateOne) *ent.FriendshipUpdateOne {
 	if v, ok := u.CreatedAt.Get(); ok {
-		builder.SetCreatedAt(v)
+		_builder.SetCreatedAt(v)
 	}
 	if v, ok := u.UserID.Get(); ok {
-		builder.SetUserID(v)
+		_builder.SetUserID(v)
 	}
 	if v, ok := u.FriendID.Get(); ok {
-		builder.SetFriendID(v)
+		_builder.SetFriendID(v)
 	}
 
-	return builder
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdateFriendshipParams) Exec(ctx context.Context, builder *ent.FriendshipUpdateOne, query *ent.FriendshipQuery) (*ent.Friendship, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *UpdateFriendshipParams) Exec(ctx context.Context, _builder *ent.FriendshipUpdateOne, _query *ent.FriendshipQuery) (*ent.Friendship, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadFriendship(query.Where(friendship.ID(result.ID))).Only(ctx)
+	return EagerLoadFriendship(_query.Where(friendship.ID(_result.ID))).Only(ctx)
 }
 
 // UpdatePetParams defines parameters for updating a Pet via a PATCH request.
@@ -120,64 +120,64 @@ type UpdatePetParams struct {
 	RemoveFollowedBy Option[[]uuid.UUID] `json:"remove_followed_by,omitempty"`
 }
 
-func (u *UpdatePetParams) ApplyInputs(builder *ent.PetUpdateOne) *ent.PetUpdateOne {
+func (u *UpdatePetParams) ApplyInputs(_builder *ent.PetUpdateOne) *ent.PetUpdateOne {
 	if v, ok := u.Name.Get(); ok {
-		builder.SetName(v)
+		_builder.SetName(v)
 	}
 	if v, ok := u.Nicknames.Get(); ok {
-		builder.SetNicknames(v)
+		_builder.SetNicknames(v)
 	}
 	if v, ok := u.Age.Get(); ok {
-		builder.SetAge(v)
+		_builder.SetAge(v)
 	}
 	if v, ok := u.Type.Get(); ok {
-		builder.SetType(v)
+		_builder.SetType(v)
 	}
 
 	if v, ok := u.AddCategories.Get(); ok && v != nil {
-		builder.AddCategoryIDs(v...)
+		_builder.AddCategoryIDs(v...)
 	}
 	if v, ok := u.RemoveCategories.Get(); ok && v != nil {
-		builder.RemoveCategoryIDs(v...)
+		_builder.RemoveCategoryIDs(v...)
 	}
 	// If add_<edge> or remove_<edge> is provided, don't clear or use this field.
 	if v, ok := u.Categories.Get(); ok && !u.AddCategories.Present() && !u.RemoveCategories.Present() {
-		builder.ClearCategories()
+		_builder.ClearCategories()
 		if v != nil {
-			builder.AddCategoryIDs(v...)
+			_builder.AddCategoryIDs(v...)
 		}
 	}
 	if v, ok := u.Owner.Get(); ok {
 		if v != nil {
-			builder.SetOwnerID(*v)
+			_builder.SetOwnerID(*v)
 		} else {
-			builder.ClearOwner()
+			_builder.ClearOwner()
 		}
 	}
 	if v, ok := u.AddFriends.Get(); ok && v != nil {
-		builder.AddFriendIDs(v...)
+		_builder.AddFriendIDs(v...)
 	}
 	if v, ok := u.RemoveFriends.Get(); ok && v != nil {
-		builder.RemoveFriendIDs(v...)
+		_builder.RemoveFriendIDs(v...)
 	}
 	if v, ok := u.AddFollowedBy.Get(); ok && v != nil {
-		builder.AddFollowedByIDs(v...)
+		_builder.AddFollowedByIDs(v...)
 	}
 	if v, ok := u.RemoveFollowedBy.Get(); ok && v != nil {
-		builder.RemoveFollowedByIDs(v...)
+		_builder.RemoveFollowedByIDs(v...)
 	}
-	return builder
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdatePetParams) Exec(ctx context.Context, builder *ent.PetUpdateOne, query *ent.PetQuery) (*ent.Pet, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *UpdatePetParams) Exec(ctx context.Context, _builder *ent.PetUpdateOne, _query *ent.PetQuery) (*ent.Pet, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadPet(query.Where(pet.ID(result.ID))).Only(ctx)
+	return EagerLoadPet(_query.Where(pet.ID(_result.ID))).Only(ctx)
 }
 
 // UpdatePostParams defines parameters for updating a Post via a PATCH request.
@@ -187,29 +187,29 @@ type UpdatePostParams struct {
 	Body  Option[string] `json:"body"`
 }
 
-func (u *UpdatePostParams) ApplyInputs(builder *ent.PostUpdateOne) *ent.PostUpdateOne {
+func (u *UpdatePostParams) ApplyInputs(_builder *ent.PostUpdateOne) *ent.PostUpdateOne {
 	if v, ok := u.Title.Get(); ok {
-		builder.SetTitle(v)
+		_builder.SetTitle(v)
 	}
 	if v, ok := u.Slug.Get(); ok {
-		builder.SetSlug(v)
+		_builder.SetSlug(v)
 	}
 	if v, ok := u.Body.Get(); ok {
-		builder.SetBody(v)
+		_builder.SetBody(v)
 	}
 
-	return builder
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdatePostParams) Exec(ctx context.Context, builder *ent.PostUpdateOne, query *ent.PostQuery) (*ent.Post, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *UpdatePostParams) Exec(ctx context.Context, _builder *ent.PostUpdateOne, _query *ent.PostQuery) (*ent.Post, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadPost(query.Where(post.ID(result.ID))).Only(ctx)
+	return EagerLoadPost(_query.Where(post.ID(_result.ID))).Only(ctx)
 }
 
 // UpdateSettingParams defines parameters for updating a Setting via a PATCH request.
@@ -222,33 +222,33 @@ type UpdateSettingParams struct {
 	RemoveAdmins Option[[]uuid.UUID] `json:"remove_admins,omitempty"`
 }
 
-func (u *UpdateSettingParams) ApplyInputs(builder *ent.SettingsUpdateOne) *ent.SettingsUpdateOne {
+func (u *UpdateSettingParams) ApplyInputs(_builder *ent.SettingsUpdateOne) *ent.SettingsUpdateOne {
 	if v, ok := u.GlobalBanner.Get(); ok {
 		if v != nil {
-			builder.SetGlobalBanner(*v)
+			_builder.SetGlobalBanner(*v)
 		} else {
-			builder.ClearGlobalBanner()
+			_builder.ClearGlobalBanner()
 		}
 	}
 
 	if v, ok := u.AddAdmins.Get(); ok && v != nil {
-		builder.AddAdminIDs(v...)
+		_builder.AddAdminIDs(v...)
 	}
 	if v, ok := u.RemoveAdmins.Get(); ok && v != nil {
-		builder.RemoveAdminIDs(v...)
+		_builder.RemoveAdminIDs(v...)
 	}
-	return builder
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdateSettingParams) Exec(ctx context.Context, builder *ent.SettingsUpdateOne, query *ent.SettingsQuery) (*ent.Settings, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *UpdateSettingParams) Exec(ctx context.Context, _builder *ent.SettingsUpdateOne, _query *ent.SettingsQuery) (*ent.Settings, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadSetting(query.Where(settings.ID(result.ID))).Only(ctx)
+	return EagerLoadSetting(_query.Where(settings.ID(_result.ID))).Only(ctx)
 }
 
 // UpdateUserParams defines parameters for updating a User via a PATCH request.
@@ -291,97 +291,97 @@ type UpdateUserParams struct {
 	RemoveFriendships Option[[]int]       `json:"remove_friendships,omitempty"`
 }
 
-func (u *UpdateUserParams) ApplyInputs(builder *ent.UserUpdateOne) *ent.UserUpdateOne {
+func (u *UpdateUserParams) ApplyInputs(_builder *ent.UserUpdateOne) *ent.UserUpdateOne {
 	if v, ok := u.Name.Get(); ok {
-		builder.SetName(v)
+		_builder.SetName(v)
 	}
 	if v, ok := u.Type.Get(); ok {
-		builder.SetType(v)
+		_builder.SetType(v)
 	}
 	if v, ok := u.Description.Get(); ok {
 		if v != nil {
-			builder.SetDescription(*v)
+			_builder.SetDescription(*v)
 		} else {
-			builder.ClearDescription()
+			_builder.ClearDescription()
 		}
 	}
 	if v, ok := u.Enabled.Get(); ok {
-		builder.SetEnabled(v)
+		_builder.SetEnabled(v)
 	}
 	if v, ok := u.Email.Get(); ok {
 		if v != nil {
-			builder.SetEmail(*v)
+			_builder.SetEmail(*v)
 		} else {
-			builder.ClearEmail()
+			_builder.ClearEmail()
 		}
 	}
 	if v, ok := u.Avatar.Get(); ok {
 		if v != nil {
-			builder.SetAvatar(*v)
+			_builder.SetAvatar(*v)
 		} else {
-			builder.ClearAvatar()
+			_builder.ClearAvatar()
 		}
 	}
 	if v, ok := u.PasswordHashed.Get(); ok {
-		builder.SetPasswordHashed(v)
+		_builder.SetPasswordHashed(v)
 	}
 	if v, ok := u.GithubData.Get(); ok {
-		builder.SetGithubData(v)
+		_builder.SetGithubData(v)
 	}
 	if v, ok := u.AnyData.Get(); ok {
-		builder.SetAnyData(v)
+		_builder.SetAnyData(v)
 	}
 	if v, ok := u.ProfileURL.Get(); ok {
-		builder.SetProfileURL(v)
+		_builder.SetProfileURL(v)
 	}
 	if v, ok := u.LastAuthenticatedAt.Get(); ok {
 		if v != nil {
-			builder.SetLastAuthenticatedAt(*v)
+			_builder.SetLastAuthenticatedAt(*v)
 		} else {
-			builder.ClearLastAuthenticatedAt()
+			_builder.ClearLastAuthenticatedAt()
 		}
 	}
 
 	if v, ok := u.AddPets.Get(); ok && v != nil {
-		builder.AddPetIDs(v...)
+		_builder.AddPetIDs(v...)
 	}
 	if v, ok := u.RemovePets.Get(); ok && v != nil {
-		builder.RemovePetIDs(v...)
+		_builder.RemovePetIDs(v...)
 	}
 	if v, ok := u.AddFollowedPets.Get(); ok && v != nil {
-		builder.AddFollowedPetIDs(v...)
+		_builder.AddFollowedPetIDs(v...)
 	}
 	if v, ok := u.RemoveFollowedPets.Get(); ok && v != nil {
-		builder.RemoveFollowedPetIDs(v...)
+		_builder.RemoveFollowedPetIDs(v...)
 	}
 	if v, ok := u.AddFriends.Get(); ok && v != nil {
-		builder.AddFriendIDs(v...)
+		_builder.AddFriendIDs(v...)
 	}
 	if v, ok := u.RemoveFriends.Get(); ok && v != nil {
-		builder.RemoveFriendIDs(v...)
+		_builder.RemoveFriendIDs(v...)
 	}
 	if v, ok := u.AddPosts.Get(); ok && v != nil {
-		builder.AddPostIDs(v...)
+		_builder.AddPostIDs(v...)
 	}
 	if v, ok := u.RemovePosts.Get(); ok && v != nil {
-		builder.RemovePostIDs(v...)
+		_builder.RemovePostIDs(v...)
 	}
 	if v, ok := u.AddFriendships.Get(); ok && v != nil {
-		builder.AddFriendshipIDs(v...)
+		_builder.AddFriendshipIDs(v...)
 	}
 	if v, ok := u.RemoveFriendships.Get(); ok && v != nil {
-		builder.RemoveFriendshipIDs(v...)
+		_builder.RemoveFriendshipIDs(v...)
 	}
-	return builder
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdateUserParams) Exec(ctx context.Context, builder *ent.UserUpdateOne, query *ent.UserQuery) (*ent.User, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *UpdateUserParams) Exec(ctx context.Context, _builder *ent.UserUpdateOne, _query *ent.UserQuery) (*ent.User, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadUser(query.Where(user.ID(result.ID))).Only(ctx)
+	return EagerLoadUser(_query.Where(user.ID(_result.ID))).Only(ctx)
 }

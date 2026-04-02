@@ -42,7 +42,7 @@ type ServerConfig struct {
     // error handling logic will be used. If you want to run logic on errors, but
     // not actually handle the error yourself, you can still call [Server.DefaultErrorHandler]
     // after your logic.
-    ErrorHandler func(w http.ResponseWriter, r *http.Request, op Operation, err error)
+    ErrorHandler func(w http.ResponseWriter, r *http.Request, _op Operation, err error)
 
     // GetReqID returns the request ID for the given request. If not provided, the
     // default implementation will use the X-Request-Id header, otherwise an empty
@@ -58,10 +58,10 @@ type Server struct {
 // NewServer returns a new auto-generated server implementation for your ent schema.
 // [Server.Handler] returns a ready-to-use http.Handler that mounts all of the
 // necessary endpoints.
-func NewServer(db *ent.Client, config *ServerConfig) (*Server, error) {
+func NewServer(_db *ent.Client, _config *ServerConfig) (*Server, error) {
     s := &Server{
-        db: db,
-        config: config,
+        db: _db,
+        config: _config,
     }
     if s.config == nil {
         s.config = &ServerConfig{}
@@ -71,10 +71,10 @@ func NewServer(db *ent.Client, config *ServerConfig) (*Server, error) {
 }
 
 // DefaultErrorHandler is the default error handler for the Server.
-func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op Operation, err error) {
+func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, _op Operation, err error) {
     ts := time.Now().UTC().Format(time.RFC3339)
 
-    resp := ErrorResponse{
+    _resp := ErrorResponse{
         Error:     err.Error(),
         Timestamp: ts,
     }
@@ -83,74 +83,74 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op 
 
     switch {
     case IsEndpointNotFound(err):
-        resp.Code = http.StatusNotFound
+        _resp.Code = http.StatusNotFound
     case IsMethodNotAllowed(err):
-        resp.Code = http.StatusMethodNotAllowed
+        _resp.Code = http.StatusMethodNotAllowed
     case IsBadRequest(err):
-        resp.Code = http.StatusBadRequest
+        _resp.Code = http.StatusBadRequest
     case IsInvalidID(err):
-        resp.Code = http.StatusBadRequest
+        _resp.Code = http.StatusBadRequest
     {{- with $.Config.FeatureEnabled "privacy" }}
         case errors.Is(err, privacy.Deny):
-            resp.Code = http.StatusForbidden
+            _resp.Code = http.StatusForbidden
     {{- end }}
     case ent.IsNotFound(err):
-        resp.Code = http.StatusNotFound
+        _resp.Code = http.StatusNotFound
     case ent.IsConstraintError(err), ent.IsNotSingular(err):
-        resp.Code = http.StatusConflict
+        _resp.Code = http.StatusConflict
     case ent.IsValidationError(err):
-        resp.Code = http.StatusBadRequest
+        _resp.Code = http.StatusBadRequest
     case errors.As(err, &numErr):
-        resp.Code = http.StatusBadRequest
-        resp.Error = fmt.Sprintf("invalid ID provided: %v", err)
+        _resp.Code = http.StatusBadRequest
+        _resp.Error = fmt.Sprintf("invalid ID provided: %v", err)
     default:
-        resp.Code = http.StatusInternalServerError
+        _resp.Code = http.StatusInternalServerError
     }
 
-    if resp.Type == "" {
-        resp.Type = http.StatusText(resp.Code)
+    if _resp.Type == "" {
+        _resp.Type = http.StatusText(_resp.Code)
     }
     if s.config.MaskErrors {
-        resp.Error = http.StatusText(resp.Code)
+        _resp.Error = http.StatusText(_resp.Code)
     }
     if s.config.GetReqID != nil {
-        resp.RequestID = s.config.GetReqID(r)
+        _resp.RequestID = s.config.GetReqID(r)
     } else {
         {{- if eq $.Annotations.RestConfig.Handler "chi" }}
-            resp.RequestID = middleware.GetReqID(r.Context())
+            _resp.RequestID = middleware.GetReqID(r.Context())
         {{- else }}
-            resp.RequestID = r.Header.Get("X-Request-Id")
+            _resp.RequestID = r.Header.Get("X-Request-Id")
         {{- end }}
     }
-    JSON(w, r, resp.Code, resp)
+    JSON(w, r, _resp.Code, _resp)
 }
 
-func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, op Operation, resp *Resp, err error) {
+func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, _op Operation, _resp *Resp, err error) {
     {{- template "helper/rest/server/links/handler" . -}}
 
     if err != nil {
         if s.config.ErrorHandler != nil {
-            s.config.ErrorHandler(w, r, op, err)
+            s.config.ErrorHandler(w, r, _op, err)
             return
         }
-        s.DefaultErrorHandler(w, r, op, err)
+        s.DefaultErrorHandler(w, r, _op, err)
         return
     }
-    if resp != nil {
+    if _resp != nil {
         type pagedResp interface {
             GetTotalCount() int
         }
         {{- if $.Annotations.RestConfig.ListNotFound }}
-        if v, ok := any(resp).(pagedResp); ok && v.GetTotalCount() == 0 && r.Method == http.MethodGet {
-            JSON(w, r, http.StatusNotFound, resp)
+        if v, ok := any(_resp).(pagedResp); ok && v.GetTotalCount() == 0 && r.Method == http.MethodGet {
+            JSON(w, r, http.StatusNotFound, _resp)
             return
         }
         {{- end }}
         if r.Method == http.MethodPost {
-            JSON(w, r, http.StatusCreated, resp)
+            JSON(w, r, http.StatusCreated, _resp)
             return
         }
-        JSON(w, r, http.StatusOK, resp)
+        JSON(w, r, http.StatusOK, _resp)
         return
     }
     w.WriteHeader(http.StatusNoContent)
@@ -160,10 +160,10 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
 // by other middleware, or ent privacy layers. Note that the server will do this
 // by default, so you don't need to do this manually, unless it's a context that's
 // not being passed to the server and is being consumed elsewhere.
-func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
-    return func(next http.Handler) http.Handler {
+func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
+    return func(_next http.Handler) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            next.ServeHTTP(w, r.WithContext(ent.NewContext(r.Context(), db)))
+            _next.ServeHTTP(w, r.WithContext(ent.NewContext(r.Context(), _db)))
         })
     }
 }
@@ -175,7 +175,7 @@ func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
 {{- else }}
     // Handler returns a ready-to-use http.Handler that mounts all of the necessary endpoints.
     func (s *Server) Handler() http.Handler {
-        mux := http.NewServeMux()
+        _mux := http.NewServeMux()
 {{- end }}
 
     {{- range $t := $.Nodes }}
@@ -270,7 +270,7 @@ func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
     {{ template "helper/rest/server/not-found" . }}
 
     {{- if eq $.Annotations.RestConfig.Handler "stdlib" }}
-        return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(mux))
+        return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(_mux))
     {{- end }}
 }
 

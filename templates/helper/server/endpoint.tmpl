@@ -7,6 +7,6 @@
     {{- if eq $.Handler "chi" }}
         r.{{ $.Method|lower|zpascal }}("{{ $.Path }}", {{ $.Func }})
     {{- else }}
-        mux.HandleFunc("{{ $.Method }} {{ $.Path }}", {{ $.Func }})
+        _mux.HandleFunc("{{ $.Method }} {{ $.Path }}", {{ $.Func }})
     {{- end }}
 {{- end }}{{/* end template */}}

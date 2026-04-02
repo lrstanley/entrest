@@ -29,9 +29,9 @@ func (o Option[T]) Get() (T, bool) {
 }
 
 // OrElse returns value if present, or the provided default value.
-func (o Option[T]) OrElse(fallback T) T {
+func (o Option[T]) OrElse(_fallback T) T {
 	if !o.present {
-		return fallback
+		return _fallback
 	}
 	return o.value
 }
@@ -75,6 +75,6 @@ func (o Option[T]) MarshalText() ([]byte, error) {
 }
 
 // UnmarshalText implements the encoding.TextUnmarshaler interface.
-func (o *Option[T]) UnmarshalText(data []byte) error {
-	return json.Unmarshal(data, o)
+func (o *Option[T]) UnmarshalText(_data []byte) error {
+	return json.Unmarshal(_data, o)
 }

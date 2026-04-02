@@ -27,8 +27,8 @@
 
     // IsBadRequest returns true if the unwrapped/underlying error is of type ErrBadRequest.
     func IsBadRequest(err error) bool {
-        var target *ErrBadRequest
-        return errors.As(err, &target)
+        var _target *ErrBadRequest
+        return errors.As(err, &_target)
     }
 
     var ErrEndpointNotFound = errors.New("endpoint not found")
@@ -60,7 +60,7 @@
 
     // IsInvalidID returns true if the unwrapped/underlying error is of type ErrInvalidID.
     func IsInvalidID(err error) bool {
-        var target *ErrInvalidID
-	    return errors.As(err, &target)
+        var _target *ErrInvalidID
+	    return errors.As(err, &_target)
     }
 {{- end }}{{/* end template */}}

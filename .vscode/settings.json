@@ -1,31 +1,25 @@
 {
-    "files.associations": {
-        "**/*.gotmpl": "go-template",
-    },
-    "files.exclude": {
-        "**/*.example": true,
-        "**/*.log": true,
-        "**/*.sum": true,
-        "**/.*ignore": true,
-        "**/.golangci.yml": true,
-        "**/LICENSE": true,
-        "**/tmp": true,
-        "**/.astro": true,
-    },
-    "go.lintTool": "golangci-lint",
-    "go.lintFlags": [
-        "--fix"
-    ],
-    "gopls": {
-        "formatting.gofumpt": true
-    },
-    "excalidraw.theme": "dark",
-    "excalidraw.image": {
-        "exportScale": 1,
-        "exportWithBackground": true,
-        "exportWithDarkMode": true
-    },
-    "[mdx]": {
-        "editor.defaultFormatter": "unifiedjs.vscode-mdx"
-    }
+  "files.associations": {
+    "**/*.gotmpl": "go-template",
+  },
+  "files.exclude": {
+    "**/*.example": true,
+    "**/*.log": true,
+    "**/*.sum": true,
+    "**/.*ignore": true,
+    "**/.golangci.yml": true,
+    "**/LICENSE": true,
+    "**/tmp": true,
+    "**/.astro": true,
+  },
+  "go.lintTool": "golangci-lint",
+  "go.lintFlags": [
+    "--fix"
+  ],
+  "gopls": {
+    "formatting.gofumpt": true
+  },
+  "[mdx]": {
+    "editor.defaultFormatter": "unifiedjs.vscode-mdx"
+  }
 }

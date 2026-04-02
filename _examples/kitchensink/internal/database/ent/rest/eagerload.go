@@ -8,14 +8,14 @@ import (
 
 // EagerLoadCategory eager-loads the edges of a Category entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadCategory(query *ent.CategoryQuery) *ent.CategoryQuery {
-	return query
+func EagerLoadCategory(_query *ent.CategoryQuery) *ent.CategoryQuery {
+	return _query
 }
 
 // EagerLoadFollow eager-loads the edges of a Follow entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadFollow(query *ent.FollowsQuery) *ent.FollowsQuery {
-	return query.WithUser(
+func EagerLoadFollow(_query *ent.FollowsQuery) *ent.FollowsQuery {
+	return _query.WithUser(
 		func(e *ent.UserQuery) {
 			applySortingUser(e, "name", "asc")
 		},
@@ -28,14 +28,14 @@ func EagerLoadFollow(query *ent.FollowsQuery) *ent.FollowsQuery {
 
 // EagerLoadFriendship eager-loads the edges of a Friendship entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadFriendship(query *ent.FriendshipQuery) *ent.FriendshipQuery {
-	return query
+func EagerLoadFriendship(_query *ent.FriendshipQuery) *ent.FriendshipQuery {
+	return _query
 }
 
 // EagerLoadPet eager-loads the edges of a Pet entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadPet(query *ent.PetQuery) *ent.PetQuery {
-	return query.WithCategories(
+func EagerLoadPet(_query *ent.PetQuery) *ent.PetQuery {
+	return _query.WithCategories(
 		func(e *ent.CategoryQuery) {
 			applySortingCategory(e, "id", "asc")
 			e.Limit(1000)
@@ -49,8 +49,8 @@ func EagerLoadPet(query *ent.PetQuery) *ent.PetQuery {
 
 // EagerLoadPost eager-loads the edges of a Post entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadPost(query *ent.PostQuery) *ent.PostQuery {
-	return query.WithAuthor(
+func EagerLoadPost(_query *ent.PostQuery) *ent.PostQuery {
+	return _query.WithAuthor(
 		func(e *ent.UserQuery) {
 			applySortingUser(e, "name", "asc")
 		},
@@ -59,8 +59,8 @@ func EagerLoadPost(query *ent.PostQuery) *ent.PostQuery {
 
 // EagerLoadSetting eager-loads the edges of a Setting entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadSetting(query *ent.SettingsQuery) *ent.SettingsQuery {
-	return query.WithAdmins(
+func EagerLoadSetting(_query *ent.SettingsQuery) *ent.SettingsQuery {
+	return _query.WithAdmins(
 		func(e *ent.UserQuery) {
 			applySortingUser(e, "name", "asc")
 			e.Limit(1000)
@@ -70,8 +70,8 @@ func EagerLoadSetting(query *ent.SettingsQuery) *ent.SettingsQuery {
 
 // EagerLoadUser eager-loads the edges of a User entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadUser(query *ent.UserQuery) *ent.UserQuery {
-	return query.WithPets(
+func EagerLoadUser(_query *ent.UserQuery) *ent.UserQuery {
+	return _query.WithPets(
 		func(e *ent.PetQuery) {
 			applySortingPet(e, "name", "asc")
 		},

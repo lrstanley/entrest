@@ -23,18 +23,18 @@ type TestServer struct {
 // NewServer instantiates a new TestServer and HTTP handler with the provided ent client
 // and configuration. If you want to load custom middleware or similar, you can use  [WithExisting]
 // instead, to pass in your own router/handler.
-func NewServer(t *testing.T, db *ent.Client, cfg *rest.ServerConfig) *TestServer {
-    srv, err := rest.NewServer(db, cfg)
+func NewServer(t *testing.T, _db *ent.Client, _cfg *rest.ServerConfig) *TestServer {
+    _srv, err := rest.NewServer(_db, _cfg)
     if err != nil {
         t.Fatalf("failed to create server: %v", err)
         return nil
     }
     {{- if eq $.Annotations.RestConfig.Handler "chi" }}
         r := chi.NewRouter()
-        r.Route("/", srv.Handler)
+        r.Route("/", _srv.Handler)
         return WithExisting(t, r)
     {{- else }}
-        return WithExisting(t, srv.Handler())
+        return WithExisting(t, _srv.Handler())
     {{- end }}
 }
 
@@ -47,9 +47,9 @@ func WithExisting(t *testing.T, r http.Handler) *TestServer {
 }
 
 // WithLogResponses enables logging of all responses to the internal handler.
-func (ts *TestServer) WithLogResponses(v bool) *TestServer {
-    ts.logResponses = v
-    return ts
+func (s *TestServer) WithLogResponses(v bool) *TestServer {
+    s.logResponses = v
+    return s
 }
 
 // Response encapsulates the raw response, unmarshalled value, and error response (if any).
@@ -70,74 +70,74 @@ func (r Response[T]) Must(t *testing.T) Response[T] {
 // Request executes a request against the TestServer, and returns the response recorder and
 // response, auto-marshalling JSON to the provided type. If T is "string", the response body
 // is returned as-is.
-func Request[T any](ctx context.Context, ts *TestServer, method, path string, data any) (resp Response[T]) {
-    ts.t.Helper()
+func Request[T any](ctx context.Context, s *TestServer, _method, _path string, _data any) (_resp Response[T]) {
+    s.t.Helper()
 
-    var body io.Reader
+    var _body io.Reader
 
-    if data != nil && data != http.NoBody {
-        buf := &bytes.Buffer{}
-        enc := json.NewEncoder(buf)
-        err := enc.Encode(data)
+    if _data != nil && _data != http.NoBody {
+        _buf := &bytes.Buffer{}
+        _enc := json.NewEncoder(_buf)
+        err := _enc.Encode(_data)
         if err != nil {
-            ts.t.Fatalf("failed to encode request body: %v", err)
+            s.t.Fatalf("failed to encode request body: %v", err)
         }
-        body = buf
+        _body = _buf
     }
 
-    req := httptest.NewRequest(method, path, body).WithContext(ctx)
+    _req := httptest.NewRequest(_method, _path, _body).WithContext(ctx)
 
-    if data != nil && data != http.NoBody {
-        req.Header.Set("Content-Type", "application/json")
+    if _data != nil && _data != http.NoBody {
+        _req.Header.Set("Content-Type", "application/json")
     }
 
-    resp.Data = httptest.NewRecorder()
-    resp.Data.Body = &bytes.Buffer{}
+    _resp.Data = httptest.NewRecorder()
+    _resp.Data.Body = &bytes.Buffer{}
 
-    ts.handler.ServeHTTP(resp.Data, req)
+    s.handler.ServeHTTP(_resp.Data, _req)
 
-    if ts.logResponses {
-        ts.t.Logf("request:\nmethod:%q\npath:%q\ncode:%d\nresponse:\n%s", method, path, resp.Data.Code, resp.Data.Body.String())
+    if s.logResponses {
+        s.t.Logf("request:\nmethod:%q\npath:%q\ncode:%d\nresponse:\n%s", _method, _path, _resp.Data.Code, _resp.Data.Body.String())
     }
 
-    if resp.Data.Code == http.StatusNoContent || resp.Data.Code < 200 || resp.Data.Code >= 300 {
-        if resp.Data.Code == http.StatusNoContent {
-            return resp
+    if _resp.Data.Code == http.StatusNoContent || _resp.Data.Code < 200 || _resp.Data.Code >= 300 {
+        if _resp.Data.Code == http.StatusNoContent {
+            return _resp
         }
 
         errResp := &rest.ErrorResponse{}
-        err := json.Unmarshal(resp.Data.Body.Bytes(), errResp)
+        err := json.Unmarshal(_resp.Data.Body.Bytes(), errResp)
         if err != nil {
-            ts.t.Fatalf("failed to decode error response: %v", err)
+            s.t.Fatalf("failed to decode error response: %v", err)
         }
         if errResp.Error != "" {
-            resp.Error = errResp
-            return resp
+            _resp.Error = errResp
+            return _resp
         }
     }
 
-    if _, ok := any(resp.Value).(string); ok {
-        *resp.Value = any(resp.Data.Body.String()).(T) //nolint:erespcheck
-        return resp
+    if _, ok := any(_resp.Value).(string); ok {
+        *_resp.Value = any(_resp.Data.Body.String()).(T) //nolint:erespcheck
+        return _resp
     }
 
-    resp.Value = new(T)
-    err := json.Unmarshal(resp.Data.Body.Bytes(), resp.Value)
+    _resp.Value = new(T)
+    err := json.Unmarshal(_resp.Data.Body.Bytes(), _resp.Value)
     if err != nil {
-        ts.t.Fatalf("failed to decode response: %v", err)
+        s.t.Fatalf("failed to decode response: %v", err)
     }
-    return resp
+    return _resp
 }
 
 // Creator represents a function that creates a new entity (returns an *ent.<type>Create).
 type Creator[T any] func(*ent.Client) *T
 
 // Multiple creates n entities using the provided creator function.
-func Multiple[T any](fn Creator[T], db *ent.Client, n int) []*T {
-    var items []*T
+func Multiple[T any](_fn Creator[T], _db *ent.Client, n int) []*T {
+    var _items []*T
     for range n {
-        items = append(items, fn(db))
+        _items = append(_items, _fn(_db))
     }
-    return items
+    return _items
 }
 {{ end }}

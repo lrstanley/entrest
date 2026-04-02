@@ -28,30 +28,30 @@ type CreateCategoryParams struct {
 	Pets     []int    `json:"pets,omitempty"`
 }
 
-func (c *CreateCategoryParams) ApplyInputs(builder *ent.CategoryCreate) *ent.CategoryCreate {
-	builder.SetName(c.Name)
+func (c *CreateCategoryParams) ApplyInputs(_builder *ent.CategoryCreate) *ent.CategoryCreate {
+	_builder.SetName(c.Name)
 	if c.Nillable != nil {
-		builder.SetNillable(*c.Nillable)
+		_builder.SetNillable(*c.Nillable)
 	}
 	if c.Strings != nil {
-		builder.SetStrings(c.Strings)
+		_builder.SetStrings(c.Strings)
 	}
 	if c.Ints != nil {
-		builder.SetInts(c.Ints)
+		_builder.SetInts(c.Ints)
 	}
-	builder.AddPetIDs(c.Pets...)
-	return builder
+	_builder.AddPetIDs(c.Pets...)
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *CreateCategoryParams) Exec(ctx context.Context, builder *ent.CategoryCreate, query *ent.CategoryQuery) (*ent.Category, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *CreateCategoryParams) Exec(ctx context.Context, _builder *ent.CategoryCreate, _query *ent.CategoryQuery) (*ent.Category, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadCategory(query.Where(category.ID(result.ID))).Only(ctx)
+	return EagerLoadCategory(_query.Where(category.ID(_result.ID))).Only(ctx)
 }
 
 // CreateFollowParams defines parameters for creating a Follow via a POST request.
@@ -60,24 +60,24 @@ type CreateFollowParams struct {
 	PetID  int       `json:"pet_id"`
 }
 
-func (c *CreateFollowParams) ApplyInputs(builder *ent.FollowsCreate) *ent.FollowsCreate {
-	builder.SetUserID(c.UserID)
-	builder.SetPetID(c.PetID)
-	return builder
+func (c *CreateFollowParams) ApplyInputs(_builder *ent.FollowsCreate) *ent.FollowsCreate {
+	_builder.SetUserID(c.UserID)
+	_builder.SetPetID(c.PetID)
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *CreateFollowParams) Exec(ctx context.Context, builder *ent.FollowsCreate, query *ent.FollowsQuery) (*ent.Follows, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *CreateFollowParams) Exec(ctx context.Context, _builder *ent.FollowsCreate, _query *ent.FollowsQuery) (*ent.Follows, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
 	// Since Follow entities have a composite ID, we have to query by all known FK fields.
-	return EagerLoadFollow(query.Where(
-		follows.UserIDEQ(result.UserID),
-		follows.PetIDEQ(result.PetID),
+	return EagerLoadFollow(_query.Where(
+		follows.UserIDEQ(_result.UserID),
+		follows.PetIDEQ(_result.PetID),
 	)).Only(ctx)
 }
 
@@ -88,24 +88,24 @@ type CreateFriendshipParams struct {
 	FriendID  uuid.UUID  `json:"friend_id"`
 }
 
-func (c *CreateFriendshipParams) ApplyInputs(builder *ent.FriendshipCreate) *ent.FriendshipCreate {
+func (c *CreateFriendshipParams) ApplyInputs(_builder *ent.FriendshipCreate) *ent.FriendshipCreate {
 	if c.CreatedAt != nil {
-		builder.SetCreatedAt(*c.CreatedAt)
+		_builder.SetCreatedAt(*c.CreatedAt)
 	}
-	builder.SetUserID(c.UserID)
-	builder.SetFriendID(c.FriendID)
-	return builder
+	_builder.SetUserID(c.UserID)
+	_builder.SetFriendID(c.FriendID)
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *CreateFriendshipParams) Exec(ctx context.Context, builder *ent.FriendshipCreate, query *ent.FriendshipQuery) (*ent.Friendship, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *CreateFriendshipParams) Exec(ctx context.Context, _builder *ent.FriendshipCreate, _query *ent.FriendshipQuery) (*ent.Friendship, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadFriendship(query.Where(friendship.ID(result.ID))).Only(ctx)
+	return EagerLoadFriendship(_query.Where(friendship.ID(_result.ID))).Only(ctx)
 }
 
 // CreatePetParams defines parameters for creating a Pet via a POST request.
@@ -124,31 +124,31 @@ type CreatePetParams struct {
 	FollowedBy []uuid.UUID `json:"followed_by,omitempty"`
 }
 
-func (c *CreatePetParams) ApplyInputs(builder *ent.PetCreate) *ent.PetCreate {
-	builder.SetName(c.Name)
+func (c *CreatePetParams) ApplyInputs(_builder *ent.PetCreate) *ent.PetCreate {
+	_builder.SetName(c.Name)
 	if c.Nicknames != nil {
-		builder.SetNicknames(c.Nicknames)
+		_builder.SetNicknames(c.Nicknames)
 	}
-	builder.SetAge(c.Age)
-	builder.SetType(c.Type)
-	builder.AddCategoryIDs(c.Categories...)
+	_builder.SetAge(c.Age)
+	_builder.SetType(c.Type)
+	_builder.AddCategoryIDs(c.Categories...)
 	if c.Owner != nil {
-		builder.SetOwnerID(*c.Owner)
+		_builder.SetOwnerID(*c.Owner)
 	}
-	builder.AddFriendIDs(c.Friends...)
-	builder.AddFollowedByIDs(c.FollowedBy...)
-	return builder
+	_builder.AddFriendIDs(c.Friends...)
+	_builder.AddFollowedByIDs(c.FollowedBy...)
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *CreatePetParams) Exec(ctx context.Context, builder *ent.PetCreate, query *ent.PetQuery) (*ent.Pet, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *CreatePetParams) Exec(ctx context.Context, _builder *ent.PetCreate, _query *ent.PetQuery) (*ent.Pet, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadPet(query.Where(pet.ID(result.ID))).Only(ctx)
+	return EagerLoadPet(_query.Where(pet.ID(_result.ID))).Only(ctx)
 }
 
 // CreatePostParams defines parameters for creating a Post via a POST request.
@@ -158,22 +158,22 @@ type CreatePostParams struct {
 	Body  string `json:"body"`
 }
 
-func (c *CreatePostParams) ApplyInputs(builder *ent.PostCreate) *ent.PostCreate {
-	builder.SetTitle(c.Title)
-	builder.SetSlug(c.Slug)
-	builder.SetBody(c.Body)
-	return builder
+func (c *CreatePostParams) ApplyInputs(_builder *ent.PostCreate) *ent.PostCreate {
+	_builder.SetTitle(c.Title)
+	_builder.SetSlug(c.Slug)
+	_builder.SetBody(c.Body)
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *CreatePostParams) Exec(ctx context.Context, builder *ent.PostCreate, query *ent.PostQuery) (*ent.Post, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *CreatePostParams) Exec(ctx context.Context, _builder *ent.PostCreate, _query *ent.PostQuery) (*ent.Post, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadPost(query.Where(post.ID(result.ID))).Only(ctx)
+	return EagerLoadPost(_query.Where(post.ID(_result.ID))).Only(ctx)
 }
 
 // CreateSettingParams defines parameters for creating a Setting via a POST request.
@@ -184,23 +184,23 @@ type CreateSettingParams struct {
 	Admins []uuid.UUID `json:"admins,omitempty"`
 }
 
-func (c *CreateSettingParams) ApplyInputs(builder *ent.SettingsCreate) *ent.SettingsCreate {
+func (c *CreateSettingParams) ApplyInputs(_builder *ent.SettingsCreate) *ent.SettingsCreate {
 	if c.GlobalBanner != nil {
-		builder.SetGlobalBanner(*c.GlobalBanner)
+		_builder.SetGlobalBanner(*c.GlobalBanner)
 	}
-	builder.AddAdminIDs(c.Admins...)
-	return builder
+	_builder.AddAdminIDs(c.Admins...)
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *CreateSettingParams) Exec(ctx context.Context, builder *ent.SettingsCreate, query *ent.SettingsQuery) (*ent.Settings, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *CreateSettingParams) Exec(ctx context.Context, _builder *ent.SettingsCreate, _query *ent.SettingsQuery) (*ent.Settings, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadSetting(query.Where(settings.ID(result.ID))).Only(ctx)
+	return EagerLoadSetting(_query.Where(settings.ID(_result.ID))).Only(ctx)
 }
 
 // CreateUserParams defines parameters for creating a User via a POST request.
@@ -236,54 +236,54 @@ type CreateUserParams struct {
 	Friendships []int       `json:"friendships,omitempty"`
 }
 
-func (c *CreateUserParams) ApplyInputs(builder *ent.UserCreate) *ent.UserCreate {
+func (c *CreateUserParams) ApplyInputs(_builder *ent.UserCreate) *ent.UserCreate {
 	if c.ID != nil {
-		builder.SetID(*c.ID)
+		_builder.SetID(*c.ID)
 	}
-	builder.SetName(c.Name)
+	_builder.SetName(c.Name)
 	if c.Type != nil {
-		builder.SetType(*c.Type)
+		_builder.SetType(*c.Type)
 	}
 	if c.Description != nil {
-		builder.SetDescription(*c.Description)
+		_builder.SetDescription(*c.Description)
 	}
 	if c.Enabled != nil {
-		builder.SetEnabled(*c.Enabled)
+		_builder.SetEnabled(*c.Enabled)
 	}
 	if c.Email != nil {
-		builder.SetEmail(*c.Email)
+		_builder.SetEmail(*c.Email)
 	}
 	if c.Avatar != nil {
-		builder.SetAvatar(c.Avatar)
+		_builder.SetAvatar(c.Avatar)
 	}
-	builder.SetPasswordHashed(c.PasswordHashed)
+	_builder.SetPasswordHashed(c.PasswordHashed)
 	if c.GithubData != nil {
-		builder.SetGithubData(c.GithubData)
+		_builder.SetGithubData(c.GithubData)
 	}
 	if c.AnyData != nil {
-		builder.SetAnyData(c.AnyData)
+		_builder.SetAnyData(c.AnyData)
 	}
 	if c.ProfileURL != nil {
-		builder.SetProfileURL(c.ProfileURL)
+		_builder.SetProfileURL(c.ProfileURL)
 	}
 	if c.LastAuthenticatedAt != nil {
-		builder.SetLastAuthenticatedAt(*c.LastAuthenticatedAt)
+		_builder.SetLastAuthenticatedAt(*c.LastAuthenticatedAt)
 	}
-	builder.AddPetIDs(c.Pets...)
-	builder.AddFollowedPetIDs(c.FollowedPets...)
-	builder.AddFriendIDs(c.Friends...)
-	builder.AddPostIDs(c.Posts...)
-	builder.AddFriendshipIDs(c.Friendships...)
-	return builder
+	_builder.AddPetIDs(c.Pets...)
+	_builder.AddFollowedPetIDs(c.FollowedPets...)
+	_builder.AddFriendIDs(c.Friends...)
+	_builder.AddPostIDs(c.Posts...)
+	_builder.AddFriendshipIDs(c.Friendships...)
+	return _builder
 }
 
 // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *CreateUserParams) Exec(ctx context.Context, builder *ent.UserCreate, query *ent.UserQuery) (*ent.User, error) {
-	result, err := c.ApplyInputs(builder).Save(ctx)
+func (c *CreateUserParams) Exec(ctx context.Context, _builder *ent.UserCreate, _query *ent.UserQuery) (*ent.User, error) {
+	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadUser(query.Where(user.ID(result.ID))).Only(ctx)
+	return EagerLoadUser(_query.Where(user.ID(_result.ID))).Only(ctx)
 }

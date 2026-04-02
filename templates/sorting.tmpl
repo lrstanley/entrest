@@ -22,18 +22,18 @@ type Sorted struct {
 }
 
 // Validate validates the sorting fields and applies any necessary defaults.
-func (s *Sorted) Validate(cfg *SortConfig) error {
+func (s *Sorted) Validate(_cfg *SortConfig) error {
     if s.Field == nil {
-        if cfg.DefaultField == "" {
+        if _cfg.DefaultField == "" {
             return nil
         }
-        s.Field = &cfg.DefaultField
+        s.Field = &_cfg.DefaultField
     }
     if s.Order == nil {
-        s.Order = &cfg.DefaultOrder
+        s.Order = &_cfg.DefaultOrder
     }
 
-    if !slices.Contains(cfg.Fields, *s.Field) {
+    if !slices.Contains(_cfg.Fields, *s.Field) {
         return &ErrBadRequest{Err: fmt.Errorf("invalid sort field: %s", *s.Field)}
     }
 
@@ -45,18 +45,18 @@ func (s *Sorted) Validate(cfg *SortConfig) error {
 }
 
 // withOrderTerm returns the OrderTermOption (asc/desc) based on the provided order string.
-func withOrderTerm(order orderDirection) sql.OrderTermOption {
-    if order == orderAsc {
+func withOrderTerm(_order orderDirection) sql.OrderTermOption {
+    if _order == orderAsc {
         return sql.OrderAsc()
     }
     return sql.OrderDesc()
 }
 
-func withFieldSelector(field string, order orderDirection) func(*sql.Selector) {
-    if order == orderAsc {
-        return ent.Asc(field)
+func withFieldSelector(_field string, _order orderDirection) func(*sql.Selector) {
+    if _order == orderAsc {
+        return ent.Asc(_field)
     }
-    return ent.Desc(field)
+    return ent.Desc(_field)
 }
 
 type SortConfig struct {
@@ -93,17 +93,17 @@ var (
 )
 
 // isSpecializedSort checks if the sort field is a specialized sort field.
-func isSpecializedSort(parts []string) (isCount, isSum bool) {
+func isSpecializedSort(_parts []string) (isCount, isSum bool) {
     switch {
-    case len(parts) == 3:
-        switch parts[2] {
+    case len(_parts) == 3:
+        switch _parts[2] {
         case "count":
             isCount = true
         case "sum":
             isSum = true
         }
-    case len(parts) == 2:
-        switch parts[1] {
+    case len(_parts) == 2:
+        switch _parts[1] {
         case "count":
             isCount = true
         case "sum":
@@ -118,45 +118,45 @@ func isSpecializedSort(parts []string) (isCount, isSum bool) {
 
     // applySorting{{ $t.Name|zsingular }} applies sorting to the query based on the provided sort and
     // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
-    func applySorting{{ $t.Name|zsingular }}(query *ent.{{ $t.Name }}Query, field string, order orderDirection) *ent.{{ $t.Name }}Query {
+    func applySorting{{ $t.Name|zsingular }}(_query *ent.{{ $t.Name }}Query, _field string, _order orderDirection) *ent.{{ $t.Name }}Query {
         {{- if $t.Edges }}
-        if parts := strings.Split(field, "."); len(parts) > 1 {
-            dir := withOrderTerm(order)
+        if _parts := strings.Split(_field, "."); len(_parts) > 1 {
+            _dir := withOrderTerm(_order)
 
             {{- range $e := $t.Edges }}
                 {{ if not $e.Unique }}
-                    isCount, isSum := isSpecializedSort(parts)
+                    isCount, isSum := isSpecializedSort(_parts)
                     {{ break }}
                 {{ end }}
             {{ end }}
 
-            switch parts[0] {
+            switch _parts[0] {
             {{- range $e := $t.Edges }}
                 case {{ $t.Package }}.Edge{{ $e.StructField }}:
                     {{- if $e.Unique }}
-                        return query.Order({{ $t.Package }}.By{{ $e.StructField }}Field(parts[1], dir))
+                        return _query.Order({{ $t.Package }}.By{{ $e.StructField }}Field(_parts[1], _dir))
                     {{- else }}
                         switch {
                         {{- if ne $e.Name "count" }}
                         case isCount:
-                            return query.Order({{ $t.Package }}.By{{ $e.StructField }}Count(dir))
+                            return _query.Order({{ $t.Package }}.By{{ $e.StructField }}Count(_dir))
                         {{- end }}
                         {{- if ne $e.Name "sum" }}
                         case isSum:
-                            return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderBySum(parts[1], dir)))
+                            return _query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderBySum(_parts[1], _dir)))
                         {{- end }}
                         default:
-                            return query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderByField(parts[1], dir)))
+                            return _query.Order({{ $t.Package }}.By{{ $e.StructField }}(sql.OrderByField(_parts[1], _dir)))
                         }
                     {{- end }}
             {{- end }}
             }
         }
         {{- end }}
-        if field == "random" {
-            return query.Order(sql.OrderByRand())
+        if _field == "random" {
+            return _query.Order(sql.OrderByRand())
         }
-        return query.Order(withFieldSelector(field, order))
+        return _query.Order(withFieldSelector(_field, _order))
     }
 {{- end }}{{/* end range */}}
 {{- end }}{{/* end template */}}

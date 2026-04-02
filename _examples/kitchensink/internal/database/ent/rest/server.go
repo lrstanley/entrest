@@ -72,8 +72,8 @@ func (e ErrBadRequest) Unwrap() error {
 
 // IsBadRequest returns true if the unwrapped/underlying error is of type ErrBadRequest.
 func IsBadRequest(err error) bool {
-	var target *ErrBadRequest
-	return errors.As(err, &target)
+	var _target *ErrBadRequest
+	return errors.As(err, &_target)
 }
 
 var ErrEndpointNotFound = errors.New("endpoint not found")
@@ -105,8 +105,8 @@ func (e ErrInvalidID) Unwrap() error {
 
 // IsInvalidID returns true if the unwrapped/underlying error is of type ErrInvalidID.
 func IsInvalidID(err error) bool {
-	var target *ErrInvalidID
-	return errors.As(err, &target)
+	var _target *ErrInvalidID
+	return errors.As(err, &_target)
 }
 
 // JSON marshals 'v' to JSON, and setting the Content-Type as application/json.
@@ -115,16 +115,16 @@ func IsInvalidID(err error) bool {
 //
 // JSON also supports prettification when the origin request has a query parameter
 // of "pretty" set to true.
-func JSON(w http.ResponseWriter, r *http.Request, status int, v any) {
+func JSON(w http.ResponseWriter, r *http.Request, _status int, v any) {
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(status)
-	enc := json.NewEncoder(w)
+	w.WriteHeader(_status)
+	_enc := json.NewEncoder(w)
 
-	if pretty, _ := strconv.ParseBool(r.FormValue("pretty")); pretty {
-		enc.SetIndent("", "    ")
+	if _pretty, _ := strconv.ParseBool(r.FormValue("pretty")); _pretty {
+		_enc.SetIndent("", "    ")
 	}
 
-	if err := enc.Encode(v); err != nil && err != io.EOF {
+	if err := _enc.Encode(v); err != nil && err != io.EOF {
 		panic(fmt.Sprintf("failed to marshal response: %v", err))
 	}
 }
@@ -157,10 +157,10 @@ func Bind(r *http.Request, v any) error {
 	case http.MethodPost, http.MethodPut, http.MethodPatch:
 		switch {
 		case strings.HasPrefix(r.Header.Get("Content-Type"), "application/json"):
-			dec := json.NewDecoder(r.Body)
-			dec.DisallowUnknownFields()
+			_dec := json.NewDecoder(r.Body)
+			_dec.DisallowUnknownFields()
 			defer r.Body.Close()
-			err = dec.Decode(v)
+			err = _dec.Decode(v)
 		case strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data"):
 			err = r.ParseMultipartForm(DefaultDecodeMaxMemory)
 			if err == nil {
@@ -182,98 +182,98 @@ func Bind(r *http.Request, v any) error {
 // Req simplifies making an HTTP handler that returns a single result, and an error.
 // The result, if not nil, must be JSON-marshalable. If result is nil, [http.StatusNoContent]
 // will be returned.
-func Req[Resp any](s *Server, op Operation, fn func(*http.Request) (*Resp, error)) http.HandlerFunc {
+func Req[Resp any](s *Server, _op Operation, _fn func(*http.Request) (*Resp, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		results, err := fn(r)
-		handleResponse(s, w, r, op, results, err)
+		_results, err := _fn(r)
+		handleResponse(s, w, r, _op, _results, err)
 	}
 }
 
 // resolveID resolves the ID from the request path, and unmarshals it into the provided type.
 // Only supports string, int, and types that support UnmarshalText, UnmarshalJSON, or UnmarshalBinary
 // (in that order).
-func resolveID[T any](r *http.Request) (id T, err error) {
-	value := r.PathValue("id")
+func resolveID[T any](r *http.Request) (_id T, err error) {
+	_value := r.PathValue("id")
 
-	switch any(id).(type) {
+	switch any(_id).(type) {
 	case string:
-		id = any(value).(T)
+		_id = any(_value).(T)
 	case int:
-		rid, err := strconv.Atoi(value)
+		_rid, err := strconv.Atoi(_value)
 		if err == nil {
-			id = any(rid).(T)
+			_id = any(_rid).(T)
 		}
 	default:
 		hasUnmarshal := false
 
 		// Check if the underlying type supports UnmarshalText, UnmarshalJSON, or UnmarshalBinary.
-		if u, ok := any(&id).(encoding.TextUnmarshaler); ok {
+		if u, ok := any(&_id).(encoding.TextUnmarshaler); ok {
 			hasUnmarshal = true
-			err = u.UnmarshalText([]byte(value))
-		} else if u, ok := any(&id).(json.Unmarshaler); ok {
+			err = u.UnmarshalText([]byte(_value))
+		} else if u, ok := any(&_id).(json.Unmarshaler); ok {
 			hasUnmarshal = true
-			err = u.UnmarshalJSON([]byte(value))
-		} else if u, ok := any(&id).(encoding.BinaryUnmarshaler); ok {
+			err = u.UnmarshalJSON([]byte(_value))
+		} else if u, ok := any(&_id).(encoding.BinaryUnmarshaler); ok {
 			hasUnmarshal = true
-			err = u.UnmarshalBinary([]byte(value))
+			err = u.UnmarshalBinary([]byte(_value))
 		}
 
 		if !hasUnmarshal {
-			panic(fmt.Sprintf("unsupported ID type (cannot unmarshal): %T", id))
+			panic(fmt.Sprintf("unsupported ID type (cannot unmarshal): %T", _id))
 		}
 	}
 
 	if err != nil {
-		return id, &ErrInvalidID{ID: value, Err: err}
+		return _id, &ErrInvalidID{ID: _value, Err: err}
 	}
-	return id, nil
+	return _id, nil
 }
 
 // ReqID is similar to Req, but also processes an "id" path parameter and provides it to the
 // handler function.
-func ReqID[Resp, I any](s *Server, op Operation, fn func(*http.Request, I) (*Resp, error)) http.HandlerFunc {
+func ReqID[Resp, I any](s *Server, _op Operation, _fn func(*http.Request, I) (*Resp, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, err := resolveID[I](r)
+		_id, err := resolveID[I](r)
 		if err != nil {
-			handleResponse[Resp](s, w, r, op, nil, err)
+			handleResponse[Resp](s, w, r, _op, nil, err)
 			return
 		}
-		results, err := fn(r, id)
-		handleResponse(s, w, r, op, results, err)
+		_results, err := _fn(r, _id)
+		handleResponse(s, w, r, _op, _results, err)
 	}
 }
 
 // ReqParam is similar to Req, but also processes a request body/query params and provides it
 // to the handler function.
-func ReqParam[Params, Resp any](s *Server, op Operation, fn func(*http.Request, *Params) (*Resp, error)) http.HandlerFunc {
+func ReqParam[Params, Resp any](s *Server, _op Operation, _fn func(*http.Request, *Params) (*Resp, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		params := new(Params)
-		if err := Bind(r, params); err != nil {
-			handleResponse[Resp](s, w, r, op, nil, err)
+		_params := new(Params)
+		if err := Bind(r, _params); err != nil {
+			handleResponse[Resp](s, w, r, _op, nil, err)
 			return
 		}
-		results, err := fn(r, params)
-		handleResponse(s, w, r, op, results, err)
+		_results, err := _fn(r, _params)
+		handleResponse(s, w, r, _op, _results, err)
 	}
 }
 
 // ReqIDParam is similar to ReqParam, but also processes an "id" path parameter and request
 // body/query params, and provides it to the handler function.
-func ReqIDParam[Params, Resp, I any](s *Server, op Operation, fn func(*http.Request, I, *Params) (*Resp, error)) http.HandlerFunc {
+func ReqIDParam[Params, Resp, I any](s *Server, _op Operation, _fn func(*http.Request, I, *Params) (*Resp, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		id, err := resolveID[I](r)
+		_id, err := resolveID[I](r)
 		if err != nil {
-			handleResponse[Resp](s, w, r, op, nil, err)
+			handleResponse[Resp](s, w, r, _op, nil, err)
 			return
 		}
-		params := new(Params)
-		err = Bind(r, params)
+		_params := new(Params)
+		err = Bind(r, _params)
 		if err != nil {
-			handleResponse[Resp](s, w, r, op, nil, err)
+			handleResponse[Resp](s, w, r, _op, nil, err)
 			return
 		}
-		results, err := fn(r, id, params)
-		handleResponse(s, w, r, op, results, err)
+		_results, err := _fn(r, _id, _params)
+		handleResponse(s, w, r, _op, _results, err)
 	}
 }
 
@@ -282,16 +282,16 @@ func ReqIDParam[Params, Resp, I any](s *Server, op Operation, fn func(*http.Requ
 type Links map[string]string
 
 func (l Links) String() string {
-	var links []string
-	var keys []string
+	var _links []string
+	var _keys []string
 	for k := range l {
-		keys = append(keys, k)
+		_keys = append(_keys, k)
 	}
-	slices.Sort(keys)
-	for _, k := range keys {
-		links = append(links, fmt.Sprintf(`<%s>; rel=%q`, l[k], k))
+	slices.Sort(_keys)
+	for _, k := range _keys {
+		_links = append(_links, fmt.Sprintf(`<%s>; rel=%q`, l[k], k))
 	}
-	return strings.Join(links, ", ")
+	return strings.Join(_links, ", ")
 }
 
 type linkablePagedResource interface {
@@ -303,8 +303,8 @@ type linkablePagedResource interface {
 func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	if !s.config.DisableSpecInjectServer && s.config.BaseURL != "" {
-		spec := map[string]any{}
-		err := json.Unmarshal(OpenAPI, &spec)
+		_spec := map[string]any{}
+		err := json.Unmarshal(OpenAPI, &_spec)
 		if err != nil {
 			panic(fmt.Sprintf("failed to unmarshal spec: %v", err))
 		}
@@ -313,9 +313,9 @@ func (s *Server) Spec(w http.ResponseWriter, r *http.Request) {
 			URL string `json:"url"`
 		}
 
-		if _, ok := spec["servers"]; !ok {
-			spec["servers"] = []Server{{URL: s.config.BaseURL}}
-			JSON(w, r, http.StatusOK, spec)
+		if _, ok := _spec["servers"]; !ok {
+			_spec["servers"] = []Server{{URL: s.config.BaseURL}}
+			JSON(w, r, http.StatusOK, _spec)
 			return
 		}
 	}
@@ -369,8 +369,8 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
 </html>`))
 
 func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
-	var buf bytes.Buffer
-	err := scalarTemplate.Execute(&buf, map[string]any{
+	var _buf bytes.Buffer
+	err := scalarTemplate.Execute(&_buf, map[string]any{
 		"SpecPath":                s.config.BasePath + "/openapi.json",
 		"DisableSpecInjectServer": s.config.DisableSpecInjectServer,
 	})
@@ -385,7 +385,7 @@ func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Referrer-Policy", "no-referrer-when-downgrade")
 	w.Header().Set("Permissions-Policy", "clipboard-write=(self)")
 	w.WriteHeader(http.StatusOK)
-	_, _ = w.Write(buf.Bytes())
+	_, _ = w.Write(_buf.Bytes())
 }
 
 type ServerConfig struct {
@@ -424,7 +424,7 @@ type ServerConfig struct {
 	// error handling logic will be used. If you want to run logic on errors, but
 	// not actually handle the error yourself, you can still call [Server.DefaultErrorHandler]
 	// after your logic.
-	ErrorHandler func(w http.ResponseWriter, r *http.Request, op Operation, err error)
+	ErrorHandler func(w http.ResponseWriter, r *http.Request, _op Operation, err error)
 
 	// GetReqID returns the request ID for the given request. If not provided, the
 	// default implementation will use the X-Request-Id header, otherwise an empty
@@ -440,20 +440,20 @@ type Server struct {
 // NewServer returns a new auto-generated server implementation for your ent schema.
 // [Server.Handler] returns a ready-to-use http.Handler that mounts all of the
 // necessary endpoints.
-func NewServer(db *ent.Client, config *ServerConfig) (*Server, error) {
+func NewServer(_db *ent.Client, _config *ServerConfig) (*Server, error) {
 	s := &Server{
-		db:     db,
-		config: config,
+		db:     _db,
+		config: _config,
 	}
 	if s.config == nil {
 		s.config = &ServerConfig{}
 	}
 	if s.config.BaseURL != "" && s.config.BasePath == "" {
-		uri, err := url.Parse(s.config.BaseURL)
+		_uri, err := url.Parse(s.config.BaseURL)
 		if err != nil {
 			return nil, fmt.Errorf("failed to parse BaseURL: %w", err)
 		}
-		s.config.BasePath = uri.Path
+		s.config.BasePath = _uri.Path
 	}
 	if s.config.BaseURL == "" {
 		s.config.DisableSpecInjectServer = true
@@ -468,10 +468,10 @@ func NewServer(db *ent.Client, config *ServerConfig) (*Server, error) {
 }
 
 // DefaultErrorHandler is the default error handler for the Server.
-func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op Operation, err error) {
+func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, _op Operation, err error) {
 	ts := time.Now().UTC().Format(time.RFC3339)
 
-	resp := ErrorResponse{
+	_resp := ErrorResponse{
 		Error:     err.Error(),
 		Timestamp: ts,
 	}
@@ -480,97 +480,97 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, op 
 
 	switch {
 	case IsEndpointNotFound(err):
-		resp.Code = http.StatusNotFound
+		_resp.Code = http.StatusNotFound
 	case IsMethodNotAllowed(err):
-		resp.Code = http.StatusMethodNotAllowed
+		_resp.Code = http.StatusMethodNotAllowed
 	case IsBadRequest(err):
-		resp.Code = http.StatusBadRequest
+		_resp.Code = http.StatusBadRequest
 	case IsInvalidID(err):
-		resp.Code = http.StatusBadRequest
+		_resp.Code = http.StatusBadRequest
 	case errors.Is(err, privacy.Deny):
-		resp.Code = http.StatusForbidden
+		_resp.Code = http.StatusForbidden
 	case ent.IsNotFound(err):
-		resp.Code = http.StatusNotFound
+		_resp.Code = http.StatusNotFound
 	case ent.IsConstraintError(err), ent.IsNotSingular(err):
-		resp.Code = http.StatusConflict
+		_resp.Code = http.StatusConflict
 	case ent.IsValidationError(err):
-		resp.Code = http.StatusBadRequest
+		_resp.Code = http.StatusBadRequest
 	case errors.As(err, &numErr):
-		resp.Code = http.StatusBadRequest
-		resp.Error = fmt.Sprintf("invalid ID provided: %v", err)
+		_resp.Code = http.StatusBadRequest
+		_resp.Error = fmt.Sprintf("invalid ID provided: %v", err)
 	default:
-		resp.Code = http.StatusInternalServerError
+		_resp.Code = http.StatusInternalServerError
 	}
 
-	if resp.Type == "" {
-		resp.Type = http.StatusText(resp.Code)
+	if _resp.Type == "" {
+		_resp.Type = http.StatusText(_resp.Code)
 	}
 	if s.config.MaskErrors {
-		resp.Error = http.StatusText(resp.Code)
+		_resp.Error = http.StatusText(_resp.Code)
 	}
 	if s.config.GetReqID != nil {
-		resp.RequestID = s.config.GetReqID(r)
+		_resp.RequestID = s.config.GetReqID(r)
 	} else {
-		resp.RequestID = r.Header.Get("X-Request-Id")
+		_resp.RequestID = r.Header.Get("X-Request-Id")
 	}
-	JSON(w, r, resp.Code, resp)
+	JSON(w, r, _resp.Code, _resp)
 }
 
-func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, op Operation, resp *Resp, err error) {
+func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, _op Operation, _resp *Resp, err error) {
 	if s.config.EnableLinks {
-		links := Links{}
+		_links := Links{}
 		if !s.config.DisableSpecHandler {
-			links["service-desc"] = s.config.BasePath + "/openapi.json"
-			links["describedby"] = s.config.BasePath + "/openapi.json"
+			_links["service-desc"] = s.config.BasePath + "/openapi.json"
+			_links["describedby"] = s.config.BasePath + "/openapi.json"
 		}
 
-		if err == nil && resp != nil && op == OperationList {
-			if lr, ok := any(resp).(linkablePagedResource); ok {
-				query := r.URL.Query()
-				if page := lr.GetPage(); page > 1 {
-					query.Set("page", strconv.Itoa(page-1))
-					r.URL.RawQuery = query.Encode()
-					links["prev"] = r.URL.String()
-					if !strings.HasPrefix(links["prev"], s.config.BasePath) {
-						links["prev"] = s.config.BasePath + links["prev"]
+		if err == nil && _resp != nil && _op == OperationList {
+			if _lr, ok := any(_resp).(linkablePagedResource); ok {
+				_query := r.URL.Query()
+				if _page := _lr.GetPage(); _page > 1 {
+					_query.Set("page", strconv.Itoa(_page-1))
+					r.URL.RawQuery = _query.Encode()
+					_links["prev"] = r.URL.String()
+					if !strings.HasPrefix(_links["prev"], s.config.BasePath) {
+						_links["prev"] = s.config.BasePath + _links["prev"]
 					}
 				}
-				if !lr.GetIsLastPage() {
-					query.Set("page", strconv.Itoa(lr.GetPage()+1))
-					r.URL.RawQuery = query.Encode()
-					links["next"] = r.URL.String()
-					if !strings.HasPrefix(links["next"], s.config.BasePath) {
-						links["next"] = s.config.BasePath + links["next"]
+				if !_lr.GetIsLastPage() {
+					_query.Set("page", strconv.Itoa(_lr.GetPage()+1))
+					r.URL.RawQuery = _query.Encode()
+					_links["next"] = r.URL.String()
+					if !strings.HasPrefix(_links["next"], s.config.BasePath) {
+						_links["next"] = s.config.BasePath + _links["next"]
 					}
 				}
 			}
 		}
 
-		if v := links.String(); v != "" {
+		if v := _links.String(); v != "" {
 			w.Header().Set("Link", v)
 		}
 	}
 	if err != nil {
 		if s.config.ErrorHandler != nil {
-			s.config.ErrorHandler(w, r, op, err)
+			s.config.ErrorHandler(w, r, _op, err)
 			return
 		}
-		s.DefaultErrorHandler(w, r, op, err)
+		s.DefaultErrorHandler(w, r, _op, err)
 		return
 	}
-	if resp != nil {
+	if _resp != nil {
 		type pagedResp interface {
 			GetTotalCount() int
 		}
-		if v, ok := any(resp).(pagedResp); ok && v.GetTotalCount() == 0 && r.Method == http.MethodGet {
-			JSON(w, r, http.StatusNotFound, resp)
+		if v, ok := any(_resp).(pagedResp); ok && v.GetTotalCount() == 0 && r.Method == http.MethodGet {
+			JSON(w, r, http.StatusNotFound, _resp)
 			return
 		}
 		if r.Method == http.MethodPost {
-			JSON(w, r, http.StatusCreated, resp)
+			JSON(w, r, http.StatusCreated, _resp)
 			return
 		}
-		JSON(w, r, http.StatusOK, resp)
+		JSON(w, r, http.StatusOK, _resp)
 		return
 	}
 	w.WriteHeader(http.StatusNoContent)
@@ -580,71 +580,71 @@ func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request,
 // by other middleware, or ent privacy layers. Note that the server will do this
 // by default, so you don't need to do this manually, unless it's a context that's
 // not being passed to the server and is being consumed elsewhere.
-func UseEntContext(db *ent.Client) func(next http.Handler) http.Handler {
-	return func(next http.Handler) http.Handler {
+func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
+	return func(_next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			next.ServeHTTP(w, r.WithContext(ent.NewContext(r.Context(), db)))
+			_next.ServeHTTP(w, r.WithContext(ent.NewContext(r.Context(), _db)))
 		})
 	}
 }
 
 // Handler returns a ready-to-use http.Handler that mounts all of the necessary endpoints.
 func (s *Server) Handler() http.Handler {
-	mux := http.NewServeMux()
-	mux.HandleFunc("GET /categories", ReqParam(s, OperationList, s.ListCategories))
-	mux.HandleFunc("GET /categories/{id}", ReqID(s, OperationRead, s.GetCategory))
-	mux.HandleFunc("GET /categories/{id}/pets", ReqIDParam(s, OperationList, s.ListCategoryPets))
-	mux.HandleFunc("POST /categories", ReqParam(s, OperationCreate, s.CreateCategory))
-	mux.HandleFunc("PATCH /categories/{id}", ReqIDParam(s, OperationUpdate, s.UpdateCategory))
-	mux.HandleFunc("DELETE /categories/{id}", ReqID(s, OperationDelete, s.DeleteCategory))
-	mux.HandleFunc("GET /follows", ReqParam(s, OperationList, s.ListFollows))
-	mux.HandleFunc("POST /follows", ReqParam(s, OperationCreate, s.CreateFollow))
-	mux.HandleFunc("GET /friendships", ReqParam(s, OperationList, s.ListFriendships))
-	mux.HandleFunc("GET /friendships/{id}", ReqID(s, OperationRead, s.GetFriendship))
-	mux.HandleFunc("GET /friendships/{id}/user", ReqID(s, OperationRead, s.GetFriendshipUser))
-	mux.HandleFunc("GET /friendships/{id}/friend", ReqID(s, OperationRead, s.GetFriendshipFriend))
-	mux.HandleFunc("POST /friendships", ReqParam(s, OperationCreate, s.CreateFriendship))
-	mux.HandleFunc("PATCH /friendships/{id}", ReqIDParam(s, OperationUpdate, s.UpdateFriendship))
-	mux.HandleFunc("DELETE /friendships/{id}", ReqID(s, OperationDelete, s.DeleteFriendship))
-	mux.HandleFunc("GET /pets", ReqParam(s, OperationList, s.ListPets))
-	mux.HandleFunc("GET /pets/{id}", ReqID(s, OperationRead, s.GetPet))
-	mux.HandleFunc("GET /pets/{id}/categories", ReqIDParam(s, OperationList, s.ListPetCategories))
-	mux.HandleFunc("GET /pets/{id}/owner", ReqID(s, OperationRead, s.GetPetOwner))
-	mux.HandleFunc("GET /pets/{id}/friends", ReqIDParam(s, OperationList, s.ListPetFriends))
-	mux.HandleFunc("GET /pets/{id}/followed-by", ReqIDParam(s, OperationList, s.ListPetFollowedBys))
-	mux.HandleFunc("POST /pets", ReqParam(s, OperationCreate, s.CreatePet))
-	mux.HandleFunc("PATCH /pets/{id}", ReqIDParam(s, OperationUpdate, s.UpdatePet))
-	mux.HandleFunc("DELETE /pets/{id}", ReqID(s, OperationDelete, s.DeletePet))
-	mux.HandleFunc("GET /posts", ReqParam(s, OperationList, s.ListPosts))
-	mux.HandleFunc("GET /posts/{id}", ReqID(s, OperationRead, s.GetPost))
-	mux.HandleFunc("GET /posts/{id}/author", ReqID(s, OperationRead, s.GetPostAuthor))
-	mux.HandleFunc("POST /posts", ReqParam(s, OperationCreate, s.CreatePost))
-	mux.HandleFunc("PATCH /posts/{id}", ReqIDParam(s, OperationUpdate, s.UpdatePost))
-	mux.HandleFunc("DELETE /posts/{id}", ReqID(s, OperationDelete, s.DeletePost))
-	mux.HandleFunc("GET /settings", ReqParam(s, OperationList, s.ListSettings))
-	mux.HandleFunc("GET /settings/{id}", ReqID(s, OperationRead, s.GetSetting))
-	mux.HandleFunc("GET /settings/{id}/admins", ReqIDParam(s, OperationList, s.ListSettingAdmins))
-	mux.HandleFunc("PATCH /settings/{id}", ReqIDParam(s, OperationUpdate, s.UpdateSetting))
-	mux.HandleFunc("GET /users", ReqParam(s, OperationList, s.ListUsers))
-	mux.HandleFunc("GET /users/{id}", ReqID(s, OperationRead, s.GetUser))
-	mux.HandleFunc("GET /users/{id}/pets", ReqIDParam(s, OperationList, s.ListUserPets))
-	mux.HandleFunc("GET /users/{id}/followed-pets", ReqIDParam(s, OperationList, s.ListUserFollowedPets))
-	mux.HandleFunc("GET /users/{id}/friends", ReqIDParam(s, OperationList, s.ListUserFriends))
-	mux.HandleFunc("GET /users/{id}/posts", ReqIDParam(s, OperationList, s.ListUserPosts))
-	mux.HandleFunc("GET /users/{id}/friendships", ReqIDParam(s, OperationList, s.ListUserFriendships))
-	mux.HandleFunc("POST /users", ReqParam(s, OperationCreate, s.CreateUser))
-	mux.HandleFunc("PATCH /users/{id}", ReqIDParam(s, OperationUpdate, s.UpdateUser))
-	mux.HandleFunc("DELETE /users/{id}", ReqID(s, OperationDelete, s.DeleteUser))
+	_mux := http.NewServeMux()
+	_mux.HandleFunc("GET /categories", ReqParam(s, OperationList, s.ListCategories))
+	_mux.HandleFunc("GET /categories/{id}", ReqID(s, OperationRead, s.GetCategory))
+	_mux.HandleFunc("GET /categories/{id}/pets", ReqIDParam(s, OperationList, s.ListCategoryPets))
+	_mux.HandleFunc("POST /categories", ReqParam(s, OperationCreate, s.CreateCategory))
+	_mux.HandleFunc("PATCH /categories/{id}", ReqIDParam(s, OperationUpdate, s.UpdateCategory))
+	_mux.HandleFunc("DELETE /categories/{id}", ReqID(s, OperationDelete, s.DeleteCategory))
+	_mux.HandleFunc("GET /follows", ReqParam(s, OperationList, s.ListFollows))
+	_mux.HandleFunc("POST /follows", ReqParam(s, OperationCreate, s.CreateFollow))
+	_mux.HandleFunc("GET /friendships", ReqParam(s, OperationList, s.ListFriendships))
+	_mux.HandleFunc("GET /friendships/{id}", ReqID(s, OperationRead, s.GetFriendship))
+	_mux.HandleFunc("GET /friendships/{id}/user", ReqID(s, OperationRead, s.GetFriendshipUser))
+	_mux.HandleFunc("GET /friendships/{id}/friend", ReqID(s, OperationRead, s.GetFriendshipFriend))
+	_mux.HandleFunc("POST /friendships", ReqParam(s, OperationCreate, s.CreateFriendship))
+	_mux.HandleFunc("PATCH /friendships/{id}", ReqIDParam(s, OperationUpdate, s.UpdateFriendship))
+	_mux.HandleFunc("DELETE /friendships/{id}", ReqID(s, OperationDelete, s.DeleteFriendship))
+	_mux.HandleFunc("GET /pets", ReqParam(s, OperationList, s.ListPets))
+	_mux.HandleFunc("GET /pets/{id}", ReqID(s, OperationRead, s.GetPet))
+	_mux.HandleFunc("GET /pets/{id}/categories", ReqIDParam(s, OperationList, s.ListPetCategories))
+	_mux.HandleFunc("GET /pets/{id}/owner", ReqID(s, OperationRead, s.GetPetOwner))
+	_mux.HandleFunc("GET /pets/{id}/friends", ReqIDParam(s, OperationList, s.ListPetFriends))
+	_mux.HandleFunc("GET /pets/{id}/followed-by", ReqIDParam(s, OperationList, s.ListPetFollowedBys))
+	_mux.HandleFunc("POST /pets", ReqParam(s, OperationCreate, s.CreatePet))
+	_mux.HandleFunc("PATCH /pets/{id}", ReqIDParam(s, OperationUpdate, s.UpdatePet))
+	_mux.HandleFunc("DELETE /pets/{id}", ReqID(s, OperationDelete, s.DeletePet))
+	_mux.HandleFunc("GET /posts", ReqParam(s, OperationList, s.ListPosts))
+	_mux.HandleFunc("GET /posts/{id}", ReqID(s, OperationRead, s.GetPost))
+	_mux.HandleFunc("GET /posts/{id}/author", ReqID(s, OperationRead, s.GetPostAuthor))
+	_mux.HandleFunc("POST /posts", ReqParam(s, OperationCreate, s.CreatePost))
+	_mux.HandleFunc("PATCH /posts/{id}", ReqIDParam(s, OperationUpdate, s.UpdatePost))
+	_mux.HandleFunc("DELETE /posts/{id}", ReqID(s, OperationDelete, s.DeletePost))
+	_mux.HandleFunc("GET /settings", ReqParam(s, OperationList, s.ListSettings))
+	_mux.HandleFunc("GET /settings/{id}", ReqID(s, OperationRead, s.GetSetting))
+	_mux.HandleFunc("GET /settings/{id}/admins", ReqIDParam(s, OperationList, s.ListSettingAdmins))
+	_mux.HandleFunc("PATCH /settings/{id}", ReqIDParam(s, OperationUpdate, s.UpdateSetting))
+	_mux.HandleFunc("GET /users", ReqParam(s, OperationList, s.ListUsers))
+	_mux.HandleFunc("GET /users/{id}", ReqID(s, OperationRead, s.GetUser))
+	_mux.HandleFunc("GET /users/{id}/pets", ReqIDParam(s, OperationList, s.ListUserPets))
+	_mux.HandleFunc("GET /users/{id}/followed-pets", ReqIDParam(s, OperationList, s.ListUserFollowedPets))
+	_mux.HandleFunc("GET /users/{id}/friends", ReqIDParam(s, OperationList, s.ListUserFriends))
+	_mux.HandleFunc("GET /users/{id}/posts", ReqIDParam(s, OperationList, s.ListUserPosts))
+	_mux.HandleFunc("GET /users/{id}/friendships", ReqIDParam(s, OperationList, s.ListUserFriendships))
+	_mux.HandleFunc("POST /users", ReqParam(s, OperationCreate, s.CreateUser))
+	_mux.HandleFunc("PATCH /users/{id}", ReqIDParam(s, OperationUpdate, s.UpdateUser))
+	_mux.HandleFunc("DELETE /users/{id}", ReqID(s, OperationDelete, s.DeleteUser))
 
 	if !s.config.DisableSpecHandler {
-		mux.HandleFunc("GET /openapi.json", s.Spec)
+		_mux.HandleFunc("GET /openapi.json", s.Spec)
 	}
 
 	if !s.config.DisableSpecHandler && !s.config.DisableDocsHandler {
-		mux.HandleFunc("GET /docs", s.Docs)
+		_mux.HandleFunc("GET /docs", s.Docs)
 	}
 
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+	_mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if !s.config.DisableSpecHandler && !s.config.DisableDocsHandler && r.URL.Path == "/" && r.Method == http.MethodGet {
 			// If specs are enabled, it's safe to provide documentation, and if they don't override the
 			// root endpoint, we can redirect to the docs.
@@ -657,7 +657,7 @@ func (s *Server) Handler() http.Handler {
 		}
 		handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
 	})
-	return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(mux))
+	return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(_mux))
 }
 
 // ListCategories maps to "GET /categories".

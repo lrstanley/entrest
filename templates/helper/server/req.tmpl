@@ -7,98 +7,98 @@
     // Req simplifies making an HTTP handler that returns a single result, and an error.
     // The result, if not nil, must be JSON-marshalable. If result is nil, [http.StatusNoContent]
     // will be returned.
-    func Req[Resp any](s *Server, op Operation, fn func(*http.Request) (*Resp, error)) http.HandlerFunc {
+    func Req[Resp any](s *Server, _op Operation, _fn func(*http.Request) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
-            results, err := fn(r)
-            handleResponse(s, w, r, op, results, err)
+            _results, err := _fn(r)
+            handleResponse(s, w, r, _op, _results, err)
         }
     }
 
     // resolveID resolves the ID from the request path, and unmarshals it into the provided type.
     // Only supports string, int, and types that support UnmarshalText, UnmarshalJSON, or UnmarshalBinary
     // (in that order).
-    func resolveID[T any](r *http.Request) (id T, err error) {
-        value := r.PathValue("id")
+    func resolveID[T any](r *http.Request) (_id T, err error) {
+        _value := r.PathValue("id")
 
-        switch any(id).(type) {
+        switch any(_id).(type) {
         case string:
-            id = any(value).(T)
+            _id = any(_value).(T)
         case int:
-            rid, err := strconv.Atoi(value)
+            _rid, err := strconv.Atoi(_value)
             if err == nil {
-                id = any(rid).(T)
+                _id = any(_rid).(T)
             }
         default:
             hasUnmarshal := false
 
             // Check if the underlying type supports UnmarshalText, UnmarshalJSON, or UnmarshalBinary.
-            if u, ok := any(&id).(encoding.TextUnmarshaler); ok {
+            if u, ok := any(&_id).(encoding.TextUnmarshaler); ok {
                 hasUnmarshal = true
-                err = u.UnmarshalText([]byte(value))
-            } else if u, ok := any(&id).(json.Unmarshaler); ok {
+                err = u.UnmarshalText([]byte(_value))
+            } else if u, ok := any(&_id).(json.Unmarshaler); ok {
                 hasUnmarshal = true
-                err = u.UnmarshalJSON([]byte(value))
-            } else if u, ok := any(&id).(encoding.BinaryUnmarshaler); ok {
+                err = u.UnmarshalJSON([]byte(_value))
+            } else if u, ok := any(&_id).(encoding.BinaryUnmarshaler); ok {
                 hasUnmarshal = true
-                err = u.UnmarshalBinary([]byte(value))
+                err = u.UnmarshalBinary([]byte(_value))
             }
 
             if !hasUnmarshal {
-                panic(fmt.Sprintf("unsupported ID type (cannot unmarshal): %T", id))
+                panic(fmt.Sprintf("unsupported ID type (cannot unmarshal): %T", _id))
             }
         }
 
         if err != nil {
-            return id, &ErrInvalidID{ID: value, Err: err}
+            return _id, &ErrInvalidID{ID: _value, Err: err}
         }
-        return id, nil
+        return _id, nil
     }
 
     // ReqID is similar to Req, but also processes an "id" path parameter and provides it to the
     // handler function.
-    func ReqID[Resp, I any](s *Server, op Operation, fn func(*http.Request, I) (*Resp, error)) http.HandlerFunc {
+    func ReqID[Resp, I any](s *Server, _op Operation, _fn func(*http.Request, I) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
-            id, err := resolveID[I](r)
+            _id, err := resolveID[I](r)
             if err != nil {
-                handleResponse[Resp](s, w, r, op, nil, err)
+                handleResponse[Resp](s, w, r, _op, nil, err)
                 return
             }
-            results, err := fn(r, id)
-            handleResponse(s, w, r, op, results, err)
+            _results, err := _fn(r, _id)
+            handleResponse(s, w, r, _op, _results, err)
         }
     }
 
     // ReqParam is similar to Req, but also processes a request body/query params and provides it
     // to the handler function.
-    func ReqParam[Params, Resp any](s *Server, op Operation, fn func(*http.Request, *Params) (*Resp, error)) http.HandlerFunc {
+    func ReqParam[Params, Resp any](s *Server, _op Operation, _fn func(*http.Request, *Params) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
-            params := new(Params)
-            if err := Bind(r, params); err != nil {
-                handleResponse[Resp](s, w, r, op, nil, err)
+            _params := new(Params)
+            if err := Bind(r, _params); err != nil {
+                handleResponse[Resp](s, w, r, _op, nil, err)
                 return
             }
-            results, err := fn(r, params)
-            handleResponse(s, w, r, op, results, err)
+            _results, err := _fn(r, _params)
+            handleResponse(s, w, r, _op, _results, err)
         }
     }
 
     // ReqIDParam is similar to ReqParam, but also processes an "id" path parameter and request
     // body/query params, and provides it to the handler function.
-    func ReqIDParam[Params, Resp, I any](s *Server, op Operation, fn func(*http.Request, I, *Params) (*Resp, error)) http.HandlerFunc {
+    func ReqIDParam[Params, Resp, I any](s *Server, _op Operation, _fn func(*http.Request, I, *Params) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
-            id, err := resolveID[I](r)
+            _id, err := resolveID[I](r)
             if err != nil {
-                handleResponse[Resp](s, w, r, op, nil, err)
+                handleResponse[Resp](s, w, r, _op, nil, err)
                 return
             }
-            params := new(Params)
-            err = Bind(r, params)
+            _params := new(Params)
+            err = Bind(r, _params)
             if err != nil {
-                handleResponse[Resp](s, w, r, op, nil, err)
+                handleResponse[Resp](s, w, r, _op, nil, err)
                 return
             }
-            results, err := fn(r, id, params)
-            handleResponse(s, w, r, op, results, err)
+            _results, err := _fn(r, _id, _params)
+            handleResponse(s, w, r, _op, _results, err)
         }
     }
 {{- end }}{{/* end template */}}
