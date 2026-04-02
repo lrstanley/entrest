@@ -1,16 +1,16 @@
 .DEFAULT_GOAL := generate
 
 docs-prepare:
-	cd docs && pnpm install
+	cd docs && bun install
 
 docs-debug: docs-prepare
-	cd docs && pnpm dev
+	cd docs && bun run dev
 
 docs-build: docs-prepare
-	cd docs && pnpm build
+	cd docs && bun run build
 
 docs-preview: docs-build
-	cd docs && pnpm preview
+	cd docs && bun run preview
 
 up:
 	$(eval SCALAR_VERSION=$(shell curl -sSq https://registry.npmjs.org/@scalar/api-reference/latest | jq -r '.version'))

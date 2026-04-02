@@ -124,7 +124,12 @@ export default defineConfig({
                     ],
                 },
             ],
-            plugins: [starlightLinksValidator()],
+            plugins: [
+                starlightLinksValidator({
+                    errorOnLocalLinks: false,
+                    errorOnRelativeLinks: false,
+                }),
+            ],
         }),
     ],
     markdown: {

@@ -62,12 +62,15 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
         hideDarkModeToggle: true,
         isEditable: false,
         hideDownloadButton: true,
+        agent: {
+          disabled: true,
+        },
         customCss: ".darklight-reference-promo, .darklight-reference { visibility: hidden !important; height: 0 !important; } .open-api-client-button { display: none !important; }",
       });
     </script>
     <script
-      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.43.15"
-      integrity="sha256-pqwDaBniTU1C43GvSTW9z0XVC2iVqQHgyzMg6Zh0/28="
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.49.8"
+      integrity="sha256-RkYBEpcx5RI8DCrtNu48V8KJBHfbIidWsAmvgFbtSik="
       crossorigin="anonymous"
     ></script>
   </body>

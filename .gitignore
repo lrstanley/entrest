@@ -1,6 +1,5 @@
 **/*.test
 **/*.prof
-**/*.lock
 **/*.txt
 **/*.log
 **/*.db
