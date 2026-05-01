@@ -5,7 +5,7 @@ go 1.25.0
 require (
 	entgo.io/ent v0.14.6
 	github.com/go-openapi/inflect v0.21.5
-	github.com/ogen-go/ogen v1.20.2
+	github.com/ogen-go/ogen v1.20.3
 	github.com/stoewer/go-strcase v1.3.1
 )
 
@@ -15,14 +15,14 @@ require (
 	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/basgys/goxml2json v1.1.1-0.20231018121955-e66ee54ceaad // indirect
 	github.com/bmatcuk/doublestar v1.3.4 // indirect
-	github.com/dlclark/regexp2 v1.11.5 // indirect
+	github.com/dlclark/regexp2 v1.12.0 // indirect
 	github.com/fatih/color v1.19.0 // indirect
 	github.com/ghodss/yaml v1.0.0 // indirect
 	github.com/go-faster/errors v0.7.1 // indirect
 	github.com/go-faster/jx v1.2.0 // indirect
 	github.com/go-faster/yaml v0.4.6 // indirect
-	github.com/go-openapi/jsonpointer v0.22.5 // indirect
-	github.com/go-openapi/swag/jsonname v0.25.5 // indirect
+	github.com/go-openapi/jsonpointer v0.23.1 // indirect
+	github.com/go-openapi/swag/jsonname v0.26.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/hcl/v2 v2.24.0 // indirect
@@ -54,8 +54,8 @@ require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/pb33f/libopenapi v0.34.4
-	github.com/pb33f/libopenapi-validator v0.13.3
+	github.com/pb33f/libopenapi v0.36.1
+	github.com/pb33f/libopenapi-validator v0.13.7
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spyzhov/ajson v0.9.6
 	github.com/stretchr/testify v1.11.1

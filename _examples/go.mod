@@ -11,8 +11,8 @@ require (
 	github.com/go-playground/form/v4 v4.3.0
 	github.com/google/go-github/v81 v81.0.0
 	github.com/google/uuid v1.6.0
-	github.com/lrstanley/entrest v1.0.2
-	github.com/ogen-go/ogen v1.20.2
+	github.com/lrstanley/entrest v1.0.3
+	github.com/ogen-go/ogen v1.20.3
 	github.com/stretchr/testify v1.11.1
 	modernc.org/sqlite v1.48.0
 )
