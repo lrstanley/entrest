@@ -54,7 +54,7 @@ require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/pb33f/libopenapi v0.34.4
+	github.com/pb33f/libopenapi v0.36.3
 	github.com/pb33f/libopenapi-validator v0.13.3
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/spyzhov/ajson v0.9.6
