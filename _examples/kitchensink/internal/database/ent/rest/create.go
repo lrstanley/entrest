@@ -14,7 +14,6 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 	schema "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
@@ -174,33 +173,6 @@ func (c *CreatePostParams) Exec(ctx context.Context, _builder *ent.PostCreate, _
 		return nil, err
 	}
 	return EagerLoadPost(_query.Where(post.ID(_result.ID))).Only(ctx)
-}
-
-// CreateSettingParams defines parameters for creating a Setting via a POST request.
-type CreateSettingParams struct {
-	// Global banner text to apply to the frontend.
-	GlobalBanner *string `json:"global_banner,omitempty"`
-	// Administrators for the platform.
-	Admins []uuid.UUID `json:"admins,omitempty"`
-}
-
-func (c *CreateSettingParams) ApplyInputs(_builder *ent.SettingsCreate) *ent.SettingsCreate {
-	if c.GlobalBanner != nil {
-		_builder.SetGlobalBanner(*c.GlobalBanner)
-	}
-	_builder.AddAdminIDs(c.Admins...)
-	return _builder
-}
-
-// Exec wraps all logic (mapping all provided values to the builder), creates the entity,
-// and does another query (using provided query as base) to get the entity, with all eager
-// loaded edges.
-func (c *CreateSettingParams) Exec(ctx context.Context, _builder *ent.SettingsCreate, _query *ent.SettingsQuery) (*ent.Settings, error) {
-	_result, err := c.ApplyInputs(_builder).Save(ctx)
-	if err != nil {
-		return nil, err
-	}
-	return EagerLoadSetting(_query.Where(settings.ID(_result.ID))).Only(ctx)
 }
 
 // CreateUserParams defines parameters for creating a User via a POST request.

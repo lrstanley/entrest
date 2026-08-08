@@ -15,6 +15,7 @@ import (
     {{- if or
         (($t|getAnnotation).GetSkip $.Annotations.RestConfig)
         (not $t.ID)
+        (not (($t|getAnnotation).HasOperation $.Annotations.RestConfig nil "update"))
     }}
         {{- continue }}
     {{ end }}

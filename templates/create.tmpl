@@ -12,7 +12,10 @@ import (
 )
 
 {{- range $t := $.Nodes }}
-    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+    {{- if or
+        (($t|getAnnotation).GetSkip $.Annotations.RestConfig)
+        (not (($t|getAnnotation).HasOperation $.Annotations.RestConfig nil "create"))
+    }}{{ continue }}{{ end }}
 
     // Create{{ $t.Name|zsingular }}Params defines parameters for creating a {{ $t.Name|zsingular }} via a POST request.
     type Create{{ $t.Name|zsingular }}Params struct {

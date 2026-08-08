@@ -287,4 +287,20 @@ func TestAnnotation_IncludeOperationsEdgeInheritance(t *testing.T) {
 		assert.Nil(t, r.json(`$.components.schemas.PetUpdate.properties.add_friends`))
 		assert.Nil(t, r.json(`$.components.schemas.PetUpdate.properties.remove_friends`))
 	})
+
+	t.Run("schema-exclude-create-omits-create-schema", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet", WithExcludeOperations(OperationCreate, OperationDelete))
+				return nil
+			},
+		})
+
+		assert.Nil(t, r.json(`$.paths./pets.post`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}.delete`))
+		assert.Nil(t, r.json(`$.components.schemas.PetCreate`))
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}.patch`))
+		assert.NotNil(t, r.json(`$.components.schemas.PetUpdate`))
+	})
 }
