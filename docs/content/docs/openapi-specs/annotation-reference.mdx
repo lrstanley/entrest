@@ -46,8 +46,8 @@ Depending on the annotation used, it can only be applied in specific locations, 
 | [WithEdgeUpdateBulk](#withedgeupdatebulk) | <Usage types={["edge"]} /> | Sets the edge to be bulk updated on the entities associated with the edge. |
 | [WithHandler](#withhandler) | <Usage types={["schema", "edge"]} /> | Sets the schema/edge to be an HTTP handler generated for it. |
 | [WithDeprecated](#withdeprecated) | <Usage types={["schema", "edge", "field"]} /> | Sets the OpenAPI deprecated flag for the specified schema/edge/field. |
-| [WithIncludeOperations](#withincludeoperations) | <Usage types={["schema", "edge"]} /> | Includes the specified operations in the REST API for the schema. |
-| [WithExcludeOperations](#withexcludeoperations) | <Usage types={["schema", "edge"]} /> | Excludes the specified operations in the REST API for the schema. |
+| [WithIncludeOperations](#withincludeoperations) | <Usage types={["schema", "edge"]} /> | Includes the specified operations in the REST API for the schema or edge. Schema ops are inherited by edges unless overridden. |
+| [WithExcludeOperations](#withexcludeoperations) | <Usage types={["schema", "edge"]} /> | Excludes the specified operations in the REST API for the schema or edge. |
 
 ### `WithSkip`
 
@@ -631,8 +631,20 @@ func (Pet) Fields() []ent.Field {
 
 [ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithIncludeOperations) | usage: <Usage types={["schema", "edge"]} /> ]
 
-> Includes the specified operations in the REST API for the schema. If empty, all operations are
-> generated (unless globally disabled).
+> Includes the specified operations in the REST API. If unset, [`Config.DefaultOperations`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DefaultOperations)
+> is used (or, for edges without an explicit setting, the parent schema's operations).
+>
+> - **Schema**: controls which entity CRUD endpoints are generated. Edges without their own
+>   include/exclude operations inherit these settings (including dedicated edge endpoints and
+>   create/update body fields).
+> - **Edge**: overrides any inherited schema operations. Controls whether the edge appears in
+>   create/update request bodies, and whether its dedicated GET endpoint is generated (`read`
+>   for unique edges, `list` for non-unique).
+>
+> To keep edge endpoints when the schema has restricted operations, set include/exclude
+> operations on the specific edges. To allow updating some edges while disallowing field edits,
+> keep `OperationUpdate` on the schema, mark fields with [`WithReadOnly`](#withreadonly), and
+> restrict individual edges as needed.
 
 ##### Example
 
@@ -647,12 +659,31 @@ func (Pet) Annotations() []ent.Annotation {
 }
 ```
 
+```go title="internal/database/schema/schema_pet.go" ins={5-8}
+func (Pet) Edges() []ent.Edge {
+    return []ent.Edge{
+        edge.From("owner", User.Type).
+            Ref("pets").
+            Unique().
+            Annotations(
+                // Override schema ops so this edge still has a GET endpoint and can be
+                // updated, even if the schema excluded read/update.
+                entrest.WithIncludeOperations(
+                    entrest.OperationRead,
+                    entrest.OperationUpdate,
+                ),
+            ),
+    }
+}
+```
+
 ### `WithExcludeOperations`
 
 [ [pkg.go.dev](https://pkg.go.dev/github.com/lrstanley/entrest#WithExcludeOperations) | usage: <Usage types={["schema", "edge"]} /> ]
 
-> Excludes the specified operations in the REST API for the schema. If empty, all operations are
-> generated (unless globally disabled).
+> Excludes the specified operations in the REST API. If unset, [`Config.DefaultOperations`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DefaultOperations)
+> is used (or, for edges without an explicit setting, the parent schema's operations). See
+> [`WithIncludeOperations`](#withincludeoperations) for how schema vs edge operations interact.
 
 ##### Example
 

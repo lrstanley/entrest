@@ -214,3 +214,77 @@ func TestAnnotation_EdgeUpdateBulk(t *testing.T) {
 	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.add_friends`))
 	assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.remove_friends`))
 }
+
+func TestAnnotation_IncludeOperationsEdgeInheritance(t *testing.T) {
+	t.Parallel()
+
+	t.Run("schema-ops-inherit-to-edges", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				// Restrict schema to create+update — edges without their own
+				// operations annotation inherit this and lose GET endpoints.
+				injectAnnotations(t, g, "Pet", WithIncludeOperations(OperationCreate, OperationUpdate))
+				return nil
+			},
+		})
+
+		assert.Nil(t, r.json(`$.paths./pets.get`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}.get`))
+		assert.NotNil(t, r.json(`$.paths./pets.post`))
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}.patch`))
+
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/owner.get`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories.get`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/friends.get`))
+	})
+
+	t.Run("edge-ops-override-schema", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet", WithIncludeOperations(OperationCreate, OperationUpdate))
+				// Opt owner back in for read endpoints; categories stays inherited.
+				injectAnnotations(t, g, "Pet.owner", WithIncludeOperations(OperationRead, OperationUpdate))
+				return nil
+			},
+		})
+
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/owner.get`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories.get`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/friends.get`))
+	})
+
+	t.Run("per-edge-exclude", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithExcludeOperations(OperationList))
+				injectAnnotations(t, g, "Pet.owner", WithExcludeOperations(OperationRead))
+				return nil
+			},
+		})
+
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories.get`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/owner.get`))
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/friends.get`))
+	})
+
+	t.Run("edge-update-without-create", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				// Allow updating the owner edge only (not on create).
+				injectAnnotations(t, g, "Pet.owner", WithIncludeOperations(OperationUpdate, OperationRead, OperationList, OperationDelete))
+				injectAnnotations(t, g, "Pet.friends", WithExcludeOperations(OperationUpdate))
+				return nil
+			},
+		})
+
+		assert.Nil(t, r.json(`$.components.schemas.PetCreate.properties.owner`))
+		assert.NotNil(t, r.json(`$.components.schemas.PetUpdate.properties.owner`))
+		assert.NotNil(t, r.json(`$.components.schemas.PetCreate.properties.friends`))
+		assert.Nil(t, r.json(`$.components.schemas.PetUpdate.properties.add_friends`))
+		assert.Nil(t, r.json(`$.components.schemas.PetUpdate.properties.remove_friends`))
+	})
+}

@@ -39,7 +39,7 @@ import (
                 (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
                 $e.Annotations.Rest.ReadOnly
                 $e.Immutable
-                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig "update"))
+                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig ($t|getAnnotation) "update"))
                 (and $e.Field (or
                     $e.Field.Immutable
                     $e.Field.Annotations.Rest.ReadOnly
@@ -95,7 +95,7 @@ import (
                 (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
                 $e.Annotations.Rest.ReadOnly
                 $e.Immutable
-                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig "update"))
+                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig ($t|getAnnotation) "update"))
                 (and $e.Field (or
                     $e.Field.Immutable
                     $e.Field.Annotations.Rest.ReadOnly

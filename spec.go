@@ -442,6 +442,10 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 	}
 
 	maps.Copy(spec.Components.Schemas, GetSchemaType(t, op, e))
+	// Edge responses reference the target entity's read/list schemas. Include them
+	// even when the target type has those operations disabled (another schema's
+	// edge can still expose the relationship).
+	maps.Copy(spec.Components.Schemas, GetSchemaType(e.Type, op, nil))
 
 	switch op {
 	case OperationRead: // Unique.

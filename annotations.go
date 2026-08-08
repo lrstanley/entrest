@@ -355,17 +355,33 @@ func (a *Annotation) GetEdgeEndpoint(config *Config, schema *Annotation) bool {
 }
 
 // HasOperation returns if the operation is allowed on the given annotation.
-func (a *Annotation) HasOperation(config *Config, op Operation) bool {
-	return slices.Contains(a.GetOperations(config), op)
+// For schemas this gates entity CRUD endpoints; for edges this gates inclusion
+// in create/update bodies and dedicated edge GET endpoints.
+//
+// schema may be nil; when provided (edge context) it is the annotation on the
+// type that owns the edge, used for operation inheritance — see [GetOperations].
+func (a *Annotation) HasOperation(config *Config, schema *Annotation, op Operation) bool {
+	return slices.Contains(a.GetOperations(config, schema), op)
 }
 
-// GetOperations returns the operations annotation (or defaults from
-// [Config.DefaultOperations]).
-func (a *Annotation) GetOperations(config *Config) []Operation {
-	if a.Operations == nil {
-		return config.DefaultOperations
+// GetOperations returns the operations for this annotation. Precedence
+// (highest to lowest):
+//  1. Explicit operations on this annotation ([WithIncludeOperations] /
+//     [WithExcludeOperations])
+//  2. When schema is non-nil (edge context): the parent schema's operations
+//  3. [Config.DefaultOperations]
+//
+// schema may be nil; when provided it is the annotation on the type that owns
+// the edge. This lets schema-level include/exclude affect edge endpoints and
+// create/update body fields by default, while individual edges can override.
+func (a *Annotation) GetOperations(config *Config, schema *Annotation) []Operation {
+	if a.Operations != nil {
+		return a.Operations
 	}
-	return a.Operations
+	if schema != nil && schema.Operations != nil {
+		return schema.Operations
+	}
+	return config.DefaultOperations
 }
 
 // GetOperationSummary returns the summary for the provided operation or an empty
@@ -418,7 +434,7 @@ func (a *Annotation) GetDefaultOrder() SortOrder {
 }
 
 func (a *Annotation) GetSkip(config *Config) bool {
-	return a.Skip || len(a.GetOperations(config)) == 0
+	return a.Skip || len(a.GetOperations(config, nil)) == 0
 }
 
 func (a *Annotation) GetAllowClientIDs(config *Config) bool {
@@ -639,13 +655,32 @@ func WithSchema(v *ogen.Schema) Annotation {
 }
 
 // WithIncludeOperations includes the specified operations in the REST API for the
-// schema. If empty, all operations are generated (unless globally disabled).
+// schema or edge. If empty/unset, [Config.DefaultOperations] is used (or, for
+// edges without an explicit setting, the parent schema's operations).
+//
+// On a schema, this controls which entity CRUD endpoints are generated (create,
+// read, update, delete, list). Those operations are also inherited by edges that
+// do not set their own include/exclude operations.
+//
+// On an edge, this overrides any inherited schema operations and controls:
+//   - whether the edge appears in create/update request bodies
+//   - whether the dedicated edge GET endpoint is generated (read for unique
+//     edges, list for non-unique edges)
+//
+// To allow edge endpoints (or create/update edge fields) when the schema has
+// restricted operations, set [WithIncludeOperations] / [WithExcludeOperations]
+// on the specific edges. To allow updating specific edges while making fields
+// read-only, keep [OperationUpdate] on the schema, mark fields with
+// [WithReadOnly], and restrict individual edges as needed.
 func WithIncludeOperations(v ...Operation) Annotation {
 	return Annotation{Operations: v}
 }
 
 // WithExcludeOperations excludes the specified operations in the REST API for the
-// schema. If empty, all operations are generated (unless globally disabled).
+// schema or edge. If empty/unset, [Config.DefaultOperations] is used (or, for
+// edges without an explicit setting, the parent schema's operations).
+//
+// See [WithIncludeOperations] for how schema vs edge operations interact.
 func WithExcludeOperations(v ...Operation) Annotation {
 	var ops []Operation
 	for _, o := range AllOperations {

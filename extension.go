@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"slices"
 
 	"entgo.io/ent/entc"
 	"entgo.io/ent/entc/gen"
@@ -136,7 +135,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 			continue
 		}
 
-		ops = ta.GetOperations(e.config)
+		ops = ta.GetOperations(e.config, nil)
 
 		for _, op := range ops {
 			if t.ID == nil && (op != OperationList && op != OperationCreate) {
@@ -165,15 +164,17 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 				continue
 			}
 
-			ops = ta.GetOperations(e.config)
-
-			if edge.Unique && slices.Contains(ops, OperationRead) {
+			// Edge endpoints inherit the parent schema's operations by default.
+			// An edge can override with its own WithIncludeOperations /
+			// WithExcludeOperations (see Annotation.GetOperations).
+			switch {
+			case edge.Unique && ea.HasOperation(e.config, ta, OperationRead):
 				tspec, err = GetSpecEdge(t, edge, OperationRead)
-			}
-			if !edge.Unique && slices.Contains(ops, OperationList) {
+			case !edge.Unique && ea.HasOperation(e.config, ta, OperationList):
 				tspec, err = GetSpecEdge(t, edge, OperationList)
+			default:
+				continue
 			}
-
 			if err != nil {
 				panic(err)
 			}
