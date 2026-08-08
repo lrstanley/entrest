@@ -9,7 +9,7 @@ require (
 	github.com/brianvoe/gofakeit/v7 v7.15.0
 	github.com/go-chi/chi/v5 v5.3.1
 	github.com/go-playground/form/v4 v4.3.0
-	github.com/google/go-github/v81 v81.0.0
+	github.com/google/go-github/v89 v89.0.0
 	github.com/google/uuid v1.6.0
 	github.com/lrstanley/entrest v1.0.3
 	github.com/ogen-go/ogen v1.24.0
