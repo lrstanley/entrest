@@ -12,6 +12,7 @@ import (
 	"entgo.io/ent/dialect/sql"
 	uuid "github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/accountsummary"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
@@ -36,6 +37,13 @@ var (
 		MinItemsPerPage: 1,
 		ItemsPerPage:    10,
 		MaxItemsPerPage: 100,
+	}
+	// AccountSummaryPageConfig defines the page configuration for LIST-related endpoints
+	// for AccountSummary.
+	AccountSummaryPageConfig = &PageConfig{
+		MinItemsPerPage: DefaultPageConfig.MinItemsPerPage,
+		ItemsPerPage:    DefaultPageConfig.ItemsPerPage,
+		MaxItemsPerPage: DefaultPageConfig.MaxItemsPerPage,
 	}
 	// CategoryPageConfig defines the page configuration for LIST-related endpoints
 	// for Category.
@@ -237,6 +245,193 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
 		return nil, &ErrBadRequest{Err: fmt.Errorf("invalid filter method: %s", *f.FilterOperation)}
 	}
 	return sql.OrPredicates(_predicates...), nil
+}
+
+// ListAccountSummaryParams defines parameters for listing AccountSummaries via a GET request.
+type ListAccountSummaryParams struct {
+	Sorted
+	Paginated[*ent.AccountSummaryQuery, ent.AccountSummary]
+	Filtered[predicate.AccountSummary]
+
+	// Filters field "id" to be equal to the provided value.
+	AccountSummaryIDEQ *uuid.UUID `form:"id.eq,omitempty" json:"account_summary_ideq,omitempty"`
+	// Filters field "id" to be not equal to the provided value.
+	AccountSummaryIDNEQ *uuid.UUID `form:"id.neq,omitempty" json:"account_summary_idneq,omitempty"`
+	// Filters field "id" to be within the provided values.
+	AccountSummaryIDIn []uuid.UUID `form:"id.in,omitempty" json:"account_summary_id_in,omitempty"`
+	// Filters field "id" to be not within the provided values.
+	AccountSummaryIDNotIn []uuid.UUID `form:"id.notIn,omitempty" json:"account_summary_id_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value.
+	AccountSummaryNameEQ *string `form:"name.eq,omitempty" json:"account_summary_name_eq,omitempty"`
+	// Filters field "name" to be not equal to the provided value.
+	AccountSummaryNameNEQ *string `form:"name.neq,omitempty" json:"account_summary_name_neq,omitempty"`
+	// Filters field "name" to be within the provided values.
+	AccountSummaryNameIn []string `form:"name.in,omitempty" json:"account_summary_name_in,omitempty"`
+	// Filters field "name" to be not within the provided values.
+	AccountSummaryNameNotIn []string `form:"name.notIn,omitempty" json:"account_summary_name_not_in,omitempty"`
+	// Filters field "name" to be equal to the provided value, case-insensitive.
+	AccountSummaryNameEqualFold *string `form:"name.ieq,omitempty" json:"account_summary_name_equal_fold,omitempty"`
+	// Filters field "name" to contain the provided value.
+	AccountSummaryNameContains *string `form:"name.has,omitempty" json:"account_summary_name_contains,omitempty"`
+	// Filters field "name" to contain the provided value, case-insensitive.
+	AccountSummaryNameContainsFold *string `form:"name.ihas,omitempty" json:"account_summary_name_contains_fold,omitempty"`
+	// Filters field "name" to start with the provided value.
+	AccountSummaryNameHasPrefix *string `form:"name.prefix,omitempty" json:"account_summary_name_has_prefix,omitempty"`
+	// Filters field "name" to end with the provided value.
+	AccountSummaryNameHasSuffix *string `form:"name.suffix,omitempty" json:"account_summary_name_has_suffix,omitempty"`
+	// Filters field "type" to be equal to the provided value.
+	AccountSummaryTypeEQ *accountsummary.Type `form:"type.eq,omitempty" json:"account_summary_type_eq,omitempty"`
+	// Filters field "type" to be not equal to the provided value.
+	AccountSummaryTypeNEQ *accountsummary.Type `form:"type.neq,omitempty" json:"account_summary_type_neq,omitempty"`
+	// Filters field "type" to be within the provided values.
+	AccountSummaryTypeIn []accountsummary.Type `form:"type.in,omitempty" json:"account_summary_type_in,omitempty"`
+	// Filters field "type" to be not within the provided values.
+	AccountSummaryTypeNotIn []accountsummary.Type `form:"type.notIn,omitempty" json:"account_summary_type_not_in,omitempty"`
+	// Filters field "email" to be equal to the provided value.
+	AccountSummaryEmailEQ *string `form:"email.eq,omitempty" json:"account_summary_email_eq,omitempty"`
+	// Filters field "email" to be not equal to the provided value.
+	AccountSummaryEmailNEQ *string `form:"email.neq,omitempty" json:"account_summary_email_neq,omitempty"`
+	// Filters field "email" to be null/nil.
+	AccountSummaryEmailIsNil *bool `form:"email.null,omitempty" json:"account_summary_email_is_nil,omitempty"`
+	// Filters field "email" to be within the provided values.
+	AccountSummaryEmailIn []string `form:"email.in,omitempty" json:"account_summary_email_in,omitempty"`
+	// Filters field "email" to be not within the provided values.
+	AccountSummaryEmailNotIn []string `form:"email.notIn,omitempty" json:"account_summary_email_not_in,omitempty"`
+	// Filters field "email" to be equal to the provided value, case-insensitive.
+	AccountSummaryEmailEqualFold *string `form:"email.ieq,omitempty" json:"account_summary_email_equal_fold,omitempty"`
+	// Filters field "email" to contain the provided value.
+	AccountSummaryEmailContains *string `form:"email.has,omitempty" json:"account_summary_email_contains,omitempty"`
+	// Filters field "email" to contain the provided value, case-insensitive.
+	AccountSummaryEmailContainsFold *string `form:"email.ihas,omitempty" json:"account_summary_email_contains_fold,omitempty"`
+	// Filters field "email" to start with the provided value.
+	AccountSummaryEmailHasPrefix *string `form:"email.prefix,omitempty" json:"account_summary_email_has_prefix,omitempty"`
+	// Filters field "email" to end with the provided value.
+	AccountSummaryEmailHasSuffix *string `form:"email.suffix,omitempty" json:"account_summary_email_has_suffix,omitempty"`
+	// Filters field "enabled" to be equal to the provided value.
+	AccountSummaryEnabledEQ *bool `form:"enabled.eq,omitempty" json:"account_summary_enabled_eq,omitempty"`
+}
+
+// FilterPredicates returns the predicates for filter-related parameters in AccountSummary.
+func (l *ListAccountSummaryParams) FilterPredicates() (predicate.AccountSummary, error) {
+	var _predicates []predicate.AccountSummary
+
+	if l.AccountSummaryIDEQ != nil {
+		_predicates = append(_predicates, accountsummary.IDEQ(*l.AccountSummaryIDEQ))
+	}
+	if l.AccountSummaryIDNEQ != nil {
+		_predicates = append(_predicates, accountsummary.IDNEQ(*l.AccountSummaryIDNEQ))
+	}
+	if l.AccountSummaryIDIn != nil {
+		_predicates = append(_predicates, accountsummary.IDIn(l.AccountSummaryIDIn...))
+	}
+	if l.AccountSummaryIDNotIn != nil {
+		_predicates = append(_predicates, accountsummary.IDNotIn(l.AccountSummaryIDNotIn...))
+	}
+	if l.AccountSummaryNameEQ != nil {
+		_predicates = append(_predicates, accountsummary.NameEQ(*l.AccountSummaryNameEQ))
+	}
+	if l.AccountSummaryNameNEQ != nil {
+		_predicates = append(_predicates, accountsummary.NameNEQ(*l.AccountSummaryNameNEQ))
+	}
+	if l.AccountSummaryNameIn != nil {
+		_predicates = append(_predicates, accountsummary.NameIn(l.AccountSummaryNameIn...))
+	}
+	if l.AccountSummaryNameNotIn != nil {
+		_predicates = append(_predicates, accountsummary.NameNotIn(l.AccountSummaryNameNotIn...))
+	}
+	if l.AccountSummaryNameEqualFold != nil {
+		_predicates = append(_predicates, accountsummary.NameEqualFold(*l.AccountSummaryNameEqualFold))
+	}
+	if l.AccountSummaryNameContains != nil {
+		_predicates = append(_predicates, accountsummary.NameContains(*l.AccountSummaryNameContains))
+	}
+	if l.AccountSummaryNameContainsFold != nil {
+		_predicates = append(_predicates, accountsummary.NameContainsFold(*l.AccountSummaryNameContainsFold))
+	}
+	if l.AccountSummaryNameHasPrefix != nil {
+		_predicates = append(_predicates, accountsummary.NameHasPrefix(*l.AccountSummaryNameHasPrefix))
+	}
+	if l.AccountSummaryNameHasSuffix != nil {
+		_predicates = append(_predicates, accountsummary.NameHasSuffix(*l.AccountSummaryNameHasSuffix))
+	}
+	if l.AccountSummaryTypeEQ != nil {
+		_predicates = append(_predicates, accountsummary.TypeEQ(*l.AccountSummaryTypeEQ))
+	}
+	if l.AccountSummaryTypeNEQ != nil {
+		_predicates = append(_predicates, accountsummary.TypeNEQ(*l.AccountSummaryTypeNEQ))
+	}
+	if l.AccountSummaryTypeIn != nil {
+		_predicates = append(_predicates, accountsummary.TypeIn(l.AccountSummaryTypeIn...))
+	}
+	if l.AccountSummaryTypeNotIn != nil {
+		_predicates = append(_predicates, accountsummary.TypeNotIn(l.AccountSummaryTypeNotIn...))
+	}
+	if l.AccountSummaryEmailEQ != nil {
+		_predicates = append(_predicates, accountsummary.EmailEQ(*l.AccountSummaryEmailEQ))
+	}
+	if l.AccountSummaryEmailNEQ != nil {
+		_predicates = append(_predicates, accountsummary.EmailNEQ(*l.AccountSummaryEmailNEQ))
+	}
+	if l.AccountSummaryEmailIsNil != nil {
+		if *l.AccountSummaryEmailIsNil {
+			_predicates = append(_predicates, accountsummary.EmailIsNil())
+		} else {
+			_predicates = append(_predicates, accountsummary.Not(accountsummary.EmailIsNil()))
+		}
+	}
+	if l.AccountSummaryEmailIn != nil {
+		_predicates = append(_predicates, accountsummary.EmailIn(l.AccountSummaryEmailIn...))
+	}
+	if l.AccountSummaryEmailNotIn != nil {
+		_predicates = append(_predicates, accountsummary.EmailNotIn(l.AccountSummaryEmailNotIn...))
+	}
+	if l.AccountSummaryEmailEqualFold != nil {
+		_predicates = append(_predicates, accountsummary.EmailEqualFold(*l.AccountSummaryEmailEqualFold))
+	}
+	if l.AccountSummaryEmailContains != nil {
+		_predicates = append(_predicates, accountsummary.EmailContains(*l.AccountSummaryEmailContains))
+	}
+	if l.AccountSummaryEmailContainsFold != nil {
+		_predicates = append(_predicates, accountsummary.EmailContainsFold(*l.AccountSummaryEmailContainsFold))
+	}
+	if l.AccountSummaryEmailHasPrefix != nil {
+		_predicates = append(_predicates, accountsummary.EmailHasPrefix(*l.AccountSummaryEmailHasPrefix))
+	}
+	if l.AccountSummaryEmailHasSuffix != nil {
+		_predicates = append(_predicates, accountsummary.EmailHasSuffix(*l.AccountSummaryEmailHasSuffix))
+	}
+	if l.AccountSummaryEnabledEQ != nil {
+		_predicates = append(_predicates, accountsummary.EnabledEQ(*l.AccountSummaryEnabledEQ))
+	}
+
+	return l.ApplyFilterOperation(_predicates...)
+}
+
+// ApplySorting applies sorting to the query based on the provided sort and order fields.
+func (l *ListAccountSummaryParams) ApplySorting(_query *ent.AccountSummaryQuery) error {
+	if err := l.Sorted.Validate(AccountSummarySortConfig); err != nil {
+		return err
+	}
+	if l.Field == nil { // No custom sort field provided and no defaults, so don't do anything.
+		return nil
+	}
+	applySortingAccountSummary(_query, *l.Field, *l.Order)
+	return nil
+}
+
+// Exec wraps all logic (filtering, sorting, pagination, eager loading) and
+// executes all necessary queries, returning the results.
+func (l *ListAccountSummaryParams) Exec(ctx context.Context, _query *ent.AccountSummaryQuery) (_results *PagedResponse[ent.AccountSummary], err error) {
+	_predicates, err := l.FilterPredicates()
+	if err != nil {
+		return nil, err
+	}
+	_query.Where(_predicates)
+	err = l.ApplySorting(EagerLoadAccountSummary(_query))
+	if err != nil {
+		return nil, err
+	}
+	return l.ExecutePaginated(ctx, _query, AccountSummaryPageConfig)
 }
 
 // ListCategoryParams defines parameters for listing Categories via a GET request.

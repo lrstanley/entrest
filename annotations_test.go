@@ -10,6 +10,7 @@ import (
 	"entgo.io/ent/entc/gen"
 	"github.com/ogen-go/ogen"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestGetAnnotation(t *testing.T) {
@@ -302,5 +303,95 @@ func TestAnnotation_IncludeOperationsEdgeInheritance(t *testing.T) {
 		assert.Nil(t, r.json(`$.components.schemas.PetCreate`))
 		assert.NotNil(t, r.json(`$.paths./pets/{petID}.patch`))
 		assert.NotNil(t, r.json(`$.components.schemas.PetUpdate`))
+	})
+}
+
+func TestAnnotation_ViewOperations(t *testing.T) {
+	t.Parallel()
+
+	t.Run("auto-readonly", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{})
+
+		var summary *gen.Type
+		for _, n := range r.graph.Nodes {
+			if n.Name == "UserSummary" {
+				summary = n
+				break
+			}
+		}
+		require.NotNil(t, summary)
+		assert.True(t, summary.IsView())
+		assert.Equal(
+			t,
+			[]Operation{OperationRead, OperationList},
+			GetAnnotation(summary).GetOperations(r.config, summary, nil),
+		)
+
+		listPath := GetPathName(OperationList, summary, nil, true)
+		readPath := GetPathName(OperationRead, summary, nil, true)
+		assert.NotNil(t, r.json(`$.paths.`+listPath+`.get`))
+		assert.NotNil(t, r.json(`$.paths.`+readPath+`.get`))
+		assert.Nil(t, r.json(`$.paths.`+listPath+`.post`))
+		assert.Nil(t, r.json(`$.paths.`+readPath+`.patch`))
+		assert.Nil(t, r.json(`$.paths.`+readPath+`.delete`))
+		assert.Nil(t, r.json(`$.components.schemas.UserSummaryCreate`))
+		assert.Nil(t, r.json(`$.components.schemas.UserSummaryUpdate`))
+		assert.NotNil(t, r.json(`$.components.schemas.UserSummaryRead`))
+		assert.NotNil(t, r.json(`$.components.schemas.UserSummaryList`))
+	})
+
+	t.Run("explicit-mutation-error", func(t *testing.T) {
+		t.Parallel()
+		_, err := buildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "UserSummary", WithIncludeOperations(OperationCreate, OperationRead, OperationList))
+				return nil
+			},
+		})
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), `schema "UserSummary" is an ent.View but declares mutation operations`)
+		assert.Contains(t, err.Error(), "create")
+	})
+
+	t.Run("edge-inheritance", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{})
+
+		var summary *gen.Type
+		for _, n := range r.graph.Nodes {
+			if n.Name == "UserSummary" {
+				summary = n
+				break
+			}
+		}
+		require.NotNil(t, summary)
+		require.NotNil(t, summary.ID)
+
+		var userEdge *gen.Edge
+		for _, e := range summary.Edges {
+			if e.Name == "user" {
+				userEdge = e
+				break
+			}
+		}
+		require.NotNil(t, userEdge)
+		edgePath := GetPathName(OperationRead, summary, userEdge, true)
+		assert.NotNil(t, r.json(`$.paths.`+edgePath+`.get`))
+		assert.Nil(t, r.json(`$.components.schemas.UserSummaryCreate`))
+		assert.Nil(t, r.json(`$.components.schemas.UserSummaryUpdate`))
+	})
+
+	t.Run("edge-explicit-mutation-error", func(t *testing.T) {
+		t.Parallel()
+		_, err := buildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "UserSummary.user", WithIncludeOperations(OperationUpdate, OperationRead))
+				return nil
+			},
+		})
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), `edge "user" on ent.View schema "UserSummary" declares mutation operations`)
+		assert.Contains(t, err.Error(), "update")
 	})
 }

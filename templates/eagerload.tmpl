@@ -12,7 +12,7 @@ import (
 )
 
 {{- range $t := $.Nodes }}
-    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig $t) }}{{ continue }}{{ end }}
 
     // EagerLoad{{ $t.Name|zsingular }} eager-loads the edges of a {{ $t.Name|zsingular }} entity, if any edges
     // were requested to be eager-loaded, based off associated annotations.

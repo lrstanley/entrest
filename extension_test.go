@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"maps"
 	"os"
 	"path"
 	"path/filepath"
@@ -249,12 +250,15 @@ func injectAnnotations(t *testing.T, g *gen.Graph, schemaPath string, annotation
 
 func mergeAnnotations(t *testing.T, in gen.Annotations, annotations ...Annotation) gen.Annotations {
 	t.Helper()
-	ant := *decodeAnnotation(in)
+	// Clone so we do not mutate annotation maps shared via the cached schema load.
+	out := gen.Annotations{}
+	maps.Copy(out, in)
+	ant := *decodeAnnotation(out)
 	for _, a := range annotations { // nolint:gocritic
 		ant, _ = ant.Merge(a).(Annotation)
 	}
-	in.Set(ant.Name(), ant)
-	return in
+	out.Set(ant.Name(), ant)
+	return out
 }
 
 func validateSpec(t *testing.T, spec *ogen.Spec) {

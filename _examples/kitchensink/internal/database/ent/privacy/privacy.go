@@ -110,6 +110,18 @@ func DenyMutationOperationRule(op ent.Op) MutationRule {
 	return OnMutationOperation(rule, op)
 }
 
+// The AccountSummaryQueryRuleFunc type is an adapter to allow the use of ordinary
+// functions as a query rule.
+type AccountSummaryQueryRuleFunc func(context.Context, *ent.AccountSummaryQuery) error
+
+// EvalQuery return f(ctx, q).
+func (f AccountSummaryQueryRuleFunc) EvalQuery(ctx context.Context, q ent.Query) error {
+	if q, ok := q.(*ent.AccountSummaryQuery); ok {
+		return f(ctx, q)
+	}
+	return Denyf("ent/privacy: unexpected query type %T, expect *ent.AccountSummaryQuery", q)
+}
+
 // The CategoryQueryRuleFunc type is an adapter to allow the use of ordinary
 // functions as a query rule.
 type CategoryQueryRuleFunc func(context.Context, *ent.CategoryQuery) error

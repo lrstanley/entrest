@@ -21,6 +21,7 @@ import (
 	"github.com/go-playground/form/v4"
 	uuid "github.com/google/uuid"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/accountsummary"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
@@ -594,6 +595,8 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
 // Handler returns a ready-to-use http.Handler that mounts all of the necessary endpoints.
 func (s *Server) Handler() http.Handler {
 	_mux := http.NewServeMux()
+	_mux.HandleFunc("GET /account-summaries", ReqParam(s, OperationList, s.ListAccountSummaries))
+	_mux.HandleFunc("GET /account-summaries/{id}", ReqID(s, OperationRead, s.GetAccountSummary))
 	_mux.HandleFunc("GET /categories", ReqParam(s, OperationList, s.ListCategories))
 	_mux.HandleFunc("GET /categories/{id}", ReqID(s, OperationRead, s.GetCategory))
 	_mux.HandleFunc("GET /categories/{id}/pets", ReqIDParam(s, OperationList, s.ListCategoryPets))
@@ -661,6 +664,16 @@ func (s *Server) Handler() http.Handler {
 		handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
 	})
 	return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(_mux))
+}
+
+// ListAccountSummaries maps to "GET /account-summaries".
+func (s *Server) ListAccountSummaries(r *http.Request, p *ListAccountSummaryParams) (*PagedResponse[ent.AccountSummary], error) {
+	return p.Exec(r.Context(), s.db.AccountSummary.Query())
+}
+
+// GetAccountSummary maps to "GET /account-summaries/{id}".
+func (s *Server) GetAccountSummary(r *http.Request, accountsummaryID uuid.UUID) (*ent.AccountSummary, error) {
+	return EagerLoadAccountSummary(s.db.AccountSummary.Query().Where(accountsummary.ID(accountsummaryID))).Only(r.Context())
 }
 
 // ListCategories maps to "GET /categories".

@@ -13,8 +13,8 @@ import (
 
 {{- range $t := $.Nodes }}
     {{- if or
-        (($t|getAnnotation).GetSkip $.Annotations.RestConfig)
-        (not (($t|getAnnotation).HasOperation $.Annotations.RestConfig nil "create"))
+        (($t|getAnnotation).GetSkip $.Annotations.RestConfig $t)
+        (not (($t|getAnnotation).HasOperation $.Annotations.RestConfig $t nil "create"))
     }}{{ continue }}{{ end }}
 
     // Create{{ $t.Name|zsingular }}Params defines parameters for creating a {{ $t.Name|zsingular }} via a POST request.
@@ -30,7 +30,7 @@ import (
         {{- end }}
 
         {{- range $f := $t.Fields }}
-            {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
+            {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig nil) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
 
             {{- template "helper/rest/fields/comment" $f }}
             {{- if or $f.Optional $f.Default }}
@@ -46,9 +46,9 @@ import (
 
         {{- range $e := $t.Edges }}
             {{- if or
-                (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
+                (($e|getAnnotation).GetSkip $.Annotations.RestConfig $t)
                 $e.Annotations.Rest.ReadOnly
-                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig ($t|getAnnotation) "create"))
+                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig $t ($t|getAnnotation) "create"))
                 (not $e.Type.ID)
             }}
                 {{- continue }}
@@ -56,7 +56,7 @@ import (
 
             {{- $f := $e.Field }}
             {{- if $f }}
-                {{- if or (not (($f|getAnnotation).GetSkip $.Annotations.RestConfig)) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
+                {{- if or (not (($f|getAnnotation).GetSkip $.Annotations.RestConfig nil)) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
 
                 {{- template "helper/rest/fields/comment" $f }}
                 {{- if $f.Nillable }}
@@ -85,7 +85,7 @@ import (
         {{- end }}
 
         {{- range $f := $t.Fields }}
-            {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
+            {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig nil) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
 
             {{- if or $f.Optional $f.Default }}
                 if c.{{ $f.StructField }} != nil {
@@ -102,9 +102,9 @@ import (
 
         {{- range $e := $t.Edges }}
             {{- if or
-                (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
+                (($e|getAnnotation).GetSkip $.Annotations.RestConfig $t)
                 $e.Annotations.Rest.ReadOnly
-                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig ($t|getAnnotation) "create"))
+                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig $t ($t|getAnnotation) "create"))
                 (not $e.Type.ID)
             }}
                 {{- continue }}
@@ -112,7 +112,7 @@ import (
 
             {{- $f := $e.Field }}
             {{- if $f }}
-                {{- if or (not (($f|getAnnotation).GetSkip $.Annotations.RestConfig)) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
+                {{- if or (not (($f|getAnnotation).GetSkip $.Annotations.RestConfig nil)) $f.Annotations.Rest.ReadOnly }}{{ continue }}{{ end -}}
 
                 {{- if $f.Nillable }}
                     if c.{{ $f.StructField }} != nil {
@@ -154,7 +154,7 @@ import (
             // Since {{ $t.Name|zsingular }} entities have a composite ID, we have to query by all known FK fields.
             return EagerLoad{{ $t.Name|zsingular }}(_query.Where(
                 {{ range $f := $t.Fields }}
-                    {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly $f.Optional }}{{ continue }}{{ end -}}
+                    {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig nil) $f.Annotations.Rest.ReadOnly $f.Optional }}{{ continue }}{{ end -}}
 
                     {{ $t.Package }}.{{ $f.StructField }}EQ(_result.{{ $f.StructField }}),
                 {{ end }}

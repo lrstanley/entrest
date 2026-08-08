@@ -373,7 +373,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t)
 
-	if ta.GetSkip(cfg) {
+	if ta.GetSkip(cfg, t) {
 		return nil
 	}
 
@@ -391,7 +391,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 	for _, f := range fields {
 		fa := GetAnnotation(f)
 
-		if fa.Filter == 0 || fa.GetSkip(cfg) || f.Sensitive() {
+		if fa.Filter == 0 || fa.GetSkip(cfg, nil) || f.Sensitive() {
 			continue
 		}
 
@@ -423,7 +423,7 @@ func GetFilterableFields(t *gen.Type, edge *gen.Edge) (filters []*FilterableFiel
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if ea.GetSkip(cfg) || ea.Filter == 0 || ea.Filter != FilterEdge {
+			if ea.GetSkip(cfg, t) || ea.Filter == 0 || ea.Filter != FilterEdge {
 				continue
 			}
 
@@ -533,7 +533,7 @@ func GetFilterGroups(t *gen.Type, edge *gen.Edge) []*FilterGroup {
 	cfg := GetConfig(t.Config)
 	ta := GetAnnotation(t)
 
-	if ta.GetSkip(cfg) {
+	if ta.GetSkip(cfg, t) {
 		return nil
 	}
 
@@ -542,7 +542,7 @@ func GetFilterGroups(t *gen.Type, edge *gen.Edge) []*FilterGroup {
 	for _, f := range t.Fields {
 		fa := GetAnnotation(f)
 
-		if fa.FilterGroup == "" || fa.GetSkip(cfg) || f.Sensitive() {
+		if fa.FilterGroup == "" || fa.GetSkip(cfg, nil) || f.Sensitive() {
 			continue
 		}
 
@@ -618,7 +618,7 @@ func GetFilterGroups(t *gen.Type, edge *gen.Edge) []*FilterGroup {
 
 			// Only include the edge as part of the inner filter group if it has a filter group
 			// that's a part of the main type.
-			if _, ok := groups[ea.FilterGroup]; !ok || ea.GetSkip(cfg) {
+			if _, ok := groups[ea.FilterGroup]; !ok || ea.GetSkip(cfg, t) {
 				continue
 			}
 

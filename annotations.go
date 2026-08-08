@@ -43,12 +43,54 @@ func decodeAnnotation(as gen.Annotations) *Annotation {
 	return ant
 }
 
+// isMutationOperation reports whether op mutates data (create/update/delete).
+func isMutationOperation(op Operation) bool {
+	return op == OperationCreate || op == OperationUpdate || op == OperationDelete
+}
+
+// viewMutationOperations returns the mutation operations present in ops.
+func viewMutationOperations(ops []Operation) []Operation {
+	var out []Operation
+	for _, op := range ops {
+		if isMutationOperation(op) {
+			out = append(out, op)
+		}
+	}
+	return out
+}
+
+// normalizeViewIDs promotes a user-defined "id" field on [ent.View] schemas to
+// [gen.Type.ID]. Ent does not assign a default ID for views, so an explicit id
+// field otherwise stays in Fields and read/delete path generation is skipped.
+func normalizeViewIDs(nodes ...*gen.Type) {
+	for _, t := range nodes {
+		if !t.IsView() || t.ID != nil {
+			continue
+		}
+		for i, f := range t.Fields {
+			if f.Name != "id" {
+				continue
+			}
+			t.ID = f
+			t.Fields = slices.Delete(t.Fields, i, i+1)
+			break
+		}
+	}
+}
+
 // ValidateAnnotations ensures that all annotations on the given graph are correctly
-// attached to the right types (e.g. a field-only annotation on a schema or edge type).
+// attached to the right types (e.g. a field-only annotation on a schema or edge type),
+// and that [ent.View] schemas do not declare mutation operations.
 func ValidateAnnotations(nodes ...*gen.Type) error {
 	for _, t := range nodes {
-		if err := GetAnnotation(t).getSupportedType(t.Name, "schema"); err != nil {
+		ta := GetAnnotation(t)
+		if err := ta.getSupportedType(t.Name, "schema"); err != nil {
 			return err
+		}
+		if t.IsView() && ta.Operations != nil {
+			if mut := viewMutationOperations(ta.Operations); len(mut) > 0 {
+				return fmt.Errorf("schema %q is an ent.View but declares mutation operations %v", t.Name, mut)
+			}
 		}
 		for _, f := range t.Fields {
 			if err := GetAnnotation(f).getSupportedType(f.Name, "field"); err != nil {
@@ -56,8 +98,14 @@ func ValidateAnnotations(nodes ...*gen.Type) error {
 			}
 		}
 		for _, e := range t.Edges {
-			if err := GetAnnotation(e).getSupportedType(e.Name, "edge"); err != nil {
+			ea := GetAnnotation(e)
+			if err := ea.getSupportedType(e.Name, "edge"); err != nil {
 				return err
+			}
+			if t.IsView() && ea.Operations != nil {
+				if mut := viewMutationOperations(ea.Operations); len(mut) > 0 {
+					return fmt.Errorf("edge %q on ent.View schema %q declares mutation operations %v", e.Name, t.Name, mut)
+				}
 			}
 		}
 	}
@@ -358,30 +406,48 @@ func (a *Annotation) GetEdgeEndpoint(config *Config, schema *Annotation) bool {
 // For schemas this gates entity CRUD endpoints; for edges this gates inclusion
 // in create/update bodies and dedicated edge GET endpoints.
 //
-// schema may be nil; when provided (edge context) it is the annotation on the
-// type that owns the edge, used for operation inheritance — see [GetOperations].
-func (a *Annotation) HasOperation(config *Config, schema *Annotation, op Operation) bool {
-	return slices.Contains(a.GetOperations(config, schema), op)
+// owner is the schema type being resolved (or the type that owns the edge).
+// parentAnt may be nil; when provided (edge context) it is the annotation on
+// the type that owns the edge, used for operation inheritance — see [GetOperations].
+func (a *Annotation) HasOperation(config *Config, owner *gen.Type, parentAnt *Annotation, op Operation) bool {
+	return slices.Contains(a.GetOperations(config, owner, parentAnt), op)
 }
 
 // GetOperations returns the operations for this annotation. Precedence
 // (highest to lowest):
 //  1. Explicit operations on this annotation ([WithIncludeOperations] /
 //     [WithExcludeOperations])
-//  2. When schema is non-nil (edge context): the parent schema's operations
-//  3. [Config.DefaultOperations]
+//  2. When parentAnt is non-nil (edge context): the parent schema's operations
+//  3. When owner is an [ent.View]: [Config.DefaultOperations] with mutation
+//     operations (create/update/delete) removed
+//  4. [Config.DefaultOperations]
 //
-// schema may be nil; when provided it is the annotation on the type that owns
-// the edge. This lets schema-level include/exclude affect edge endpoints and
-// create/update body fields by default, while individual edges can override.
-func (a *Annotation) GetOperations(config *Config, schema *Annotation) []Operation {
+// owner is the schema type being resolved (or the type that owns the edge).
+// parentAnt may be nil; when provided it is the annotation on the type that
+// owns the edge. This lets schema-level include/exclude affect edge endpoints
+// and create/update body fields by default, while individual edges can override.
+func (a *Annotation) GetOperations(config *Config, owner *gen.Type, parentAnt *Annotation) []Operation {
 	if a.Operations != nil {
 		return a.Operations
 	}
-	if schema != nil && schema.Operations != nil {
-		return schema.Operations
+	if parentAnt != nil && parentAnt.Operations != nil {
+		return parentAnt.Operations
+	}
+	if owner != nil && owner.IsView() {
+		return filterViewOperations(config.DefaultOperations)
 	}
 	return config.DefaultOperations
+}
+
+// filterViewOperations returns ops with create/update/delete removed.
+func filterViewOperations(ops []Operation) []Operation {
+	out := make([]Operation, 0, len(ops))
+	for _, op := range ops {
+		if !isMutationOperation(op) {
+			out = append(out, op)
+		}
+	}
+	return out
 }
 
 // GetOperationSummary returns the summary for the provided operation or an empty
@@ -433,8 +499,10 @@ func (a *Annotation) GetDefaultOrder() SortOrder {
 	return *a.DefaultOrder
 }
 
-func (a *Annotation) GetSkip(config *Config) bool {
-	return a.Skip || len(a.GetOperations(config, nil)) == 0
+// GetSkip returns whether the schema/edge/field should be skipped. owner may be
+// nil for field annotations (which do not use view-aware operation defaults).
+func (a *Annotation) GetSkip(config *Config, owner *gen.Type) bool {
+	return a.Skip || len(a.GetOperations(config, owner, nil)) == 0
 }
 
 func (a *Annotation) GetAllowClientIDs(config *Config) bool {
@@ -656,7 +724,10 @@ func WithSchema(v *ogen.Schema) Annotation {
 
 // WithIncludeOperations includes the specified operations in the REST API for the
 // schema or edge. If empty/unset, [Config.DefaultOperations] is used (or, for
-// edges without an explicit setting, the parent schema's operations).
+// edges without an explicit setting, the parent schema's operations). Schemas
+// embedding ent.View automatically expose only read and list (mutation ops are
+// stripped from the defaults); requesting create/update/delete on a view fails
+// codegen.
 //
 // On a schema, this controls which entity CRUD endpoints are generated (create,
 // read, update, delete, list). Those operations are also inherited by edges that

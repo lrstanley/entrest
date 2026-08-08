@@ -16,6 +16,7 @@ import (
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
+	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/accountsummary"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/follows"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
@@ -31,6 +32,8 @@ type Client struct {
 	config
 	// Schema is the client for creating, migrating and dropping schema.
 	Schema *migrate.Schema
+	// AccountSummary is the client for interacting with the AccountSummary builders.
+	AccountSummary *AccountSummaryClient
 	// Category is the client for interacting with the Category builders.
 	Category *CategoryClient
 	// Follows is the client for interacting with the Follows builders.
@@ -58,6 +61,7 @@ func NewClient(opts ...Option) *Client {
 
 func (c *Client) init() {
 	c.Schema = migrate.NewSchema(c.driver)
+	c.AccountSummary = NewAccountSummaryClient(c.config)
 	c.Category = NewCategoryClient(c.config)
 	c.Follows = NewFollowsClient(c.config)
 	c.Friendship = NewFriendshipClient(c.config)
@@ -156,16 +160,17 @@ func (c *Client) Tx(ctx context.Context) (*Tx, error) {
 	cfg := c.config
 	cfg.driver = tx
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		Category:   NewCategoryClient(cfg),
-		Follows:    NewFollowsClient(cfg),
-		Friendship: NewFriendshipClient(cfg),
-		Pet:        NewPetClient(cfg),
-		Post:       NewPostClient(cfg),
-		Settings:   NewSettingsClient(cfg),
-		Skipped:    NewSkippedClient(cfg),
-		User:       NewUserClient(cfg),
+		ctx:            ctx,
+		config:         cfg,
+		AccountSummary: NewAccountSummaryClient(cfg),
+		Category:       NewCategoryClient(cfg),
+		Follows:        NewFollowsClient(cfg),
+		Friendship:     NewFriendshipClient(cfg),
+		Pet:            NewPetClient(cfg),
+		Post:           NewPostClient(cfg),
+		Settings:       NewSettingsClient(cfg),
+		Skipped:        NewSkippedClient(cfg),
+		User:           NewUserClient(cfg),
 	}, nil
 }
 
@@ -183,23 +188,24 @@ func (c *Client) BeginTx(ctx context.Context, opts *sql.TxOptions) (*Tx, error) 
 	cfg := c.config
 	cfg.driver = &txDriver{tx: tx, drv: c.driver}
 	return &Tx{
-		ctx:        ctx,
-		config:     cfg,
-		Category:   NewCategoryClient(cfg),
-		Follows:    NewFollowsClient(cfg),
-		Friendship: NewFriendshipClient(cfg),
-		Pet:        NewPetClient(cfg),
-		Post:       NewPostClient(cfg),
-		Settings:   NewSettingsClient(cfg),
-		Skipped:    NewSkippedClient(cfg),
-		User:       NewUserClient(cfg),
+		ctx:            ctx,
+		config:         cfg,
+		AccountSummary: NewAccountSummaryClient(cfg),
+		Category:       NewCategoryClient(cfg),
+		Follows:        NewFollowsClient(cfg),
+		Friendship:     NewFriendshipClient(cfg),
+		Pet:            NewPetClient(cfg),
+		Post:           NewPostClient(cfg),
+		Settings:       NewSettingsClient(cfg),
+		Skipped:        NewSkippedClient(cfg),
+		User:           NewUserClient(cfg),
 	}, nil
 }
 
 // Debug returns a new debug-client. It's used to get verbose logging on specific operations.
 //
 //	client.Debug().
-//		Category.
+//		AccountSummary.
 //		Query().
 //		Count(ctx)
 func (c *Client) Debug() *Client {
@@ -233,8 +239,8 @@ func (c *Client) Use(hooks ...Hook) {
 // In order to add interceptors to a specific client, call: `client.Node.Intercept(...)`.
 func (c *Client) Intercept(interceptors ...Interceptor) {
 	for _, n := range []interface{ Intercept(...Interceptor) }{
-		c.Category, c.Follows, c.Friendship, c.Pet, c.Post, c.Settings, c.Skipped,
-		c.User,
+		c.AccountSummary, c.Category, c.Follows, c.Friendship, c.Pet, c.Post,
+		c.Settings, c.Skipped, c.User,
 	} {
 		n.Intercept(interceptors...)
 	}
@@ -262,6 +268,50 @@ func (c *Client) Mutate(ctx context.Context, m Mutation) (Value, error) {
 	default:
 		return nil, fmt.Errorf("ent: unknown mutation type %T", m)
 	}
+}
+
+// AccountSummaryClient is a client for the AccountSummary schema.
+type AccountSummaryClient struct {
+	config
+}
+
+// NewAccountSummaryClient returns a client for the AccountSummary from the given config.
+func NewAccountSummaryClient(c config) *AccountSummaryClient {
+	return &AccountSummaryClient{config: c}
+}
+
+// Intercept adds a list of query interceptors to the interceptors stack.
+// A call to `Intercept(f, g, h)` equals to `accountsummary.Intercept(f(g(h())))`.
+func (c *AccountSummaryClient) Intercept(interceptors ...Interceptor) {
+	c.inters.AccountSummary = append(c.inters.AccountSummary, interceptors...)
+}
+
+// Query returns a query builder for AccountSummary.
+func (c *AccountSummaryClient) Query() *AccountSummaryQuery {
+	return &AccountSummaryQuery{
+		config: c.config,
+		ctx:    &QueryContext{Type: TypeAccountSummary},
+		inters: c.Interceptors(),
+	}
+}
+
+// Get returns a AccountSummary entity by its id.
+func (c *AccountSummaryClient) Get(ctx context.Context, id uuid.UUID) (*AccountSummary, error) {
+	return c.Query().Where(accountsummary.ID(id)).Only(ctx)
+}
+
+// GetX is like Get, but panics if an error occurs.
+func (c *AccountSummaryClient) GetX(ctx context.Context, id uuid.UUID) *AccountSummary {
+	obj, err := c.Get(ctx, id)
+	if err != nil {
+		panic(err)
+	}
+	return obj
+}
+
+// Interceptors returns the client interceptors.
+func (c *AccountSummaryClient) Interceptors() []Interceptor {
+	return c.inters.AccountSummary
 }
 
 // CategoryClient is a client for the Category schema.
@@ -1573,7 +1623,7 @@ type (
 		Category, Follows, Friendship, Pet, Post, Settings, Skipped, User []ent.Hook
 	}
 	inters struct {
-		Category, Follows, Friendship, Pet, Post, Settings, Skipped,
+		AccountSummary, Category, Follows, Friendship, Pet, Post, Settings, Skipped,
 		User []ent.Interceptor
 	}
 )

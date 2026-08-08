@@ -634,6 +634,10 @@ func (Pet) Fields() []ent.Field {
 > Includes the specified operations in the REST API. If unset, [`Config.DefaultOperations`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DefaultOperations)
 > is used (or, for edges without an explicit setting, the parent schema's operations).
 >
+> Schemas embedding [`ent.View`](https://pkg.go.dev/entgo.io/ent#View) automatically expose only
+> `read` and `list`. Requesting `create`, `update`, or `delete` on a view (or an edge on a view)
+> fails codegen.
+>
 > - **Schema**: controls which entity CRUD endpoints are generated. Edges without their own
 >   include/exclude operations inherit these settings (including dedicated edge endpoints and
 >   create/update body fields).

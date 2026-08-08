@@ -75,7 +75,7 @@ var (
     OrderDirections = []orderDirection{orderAsc, orderDesc}
 
     {{- range $t := $.Nodes }}
-        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig $t) }}{{ continue }}{{ end }}
         // {{ $t.Name|zsingular }}SortConfig defines the default sort configuration for {{ $t.Name|zsingular }}.
         {{ $t.Name|zsingular }}SortConfig = &SortConfig{
             Fields: []string{
@@ -114,7 +114,7 @@ func isSpecializedSort(_parts []string) (isCount, isSum bool) {
 }
 
 {{- range $t := $.Nodes }}
-    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig $t) }}{{ continue }}{{ end }}
 
     // applySorting{{ $t.Name|zsingular }} applies sorting to the query based on the provided sort and
     // order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.

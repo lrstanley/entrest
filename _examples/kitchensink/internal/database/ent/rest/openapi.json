@@ -5,6 +5,256 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/account-summaries": {
+            "summary": "List accountsummaries",
+            "description": "List AccountSummary entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+            "get": {
+                "tags": [
+                    "AccountSummaries"
+                ],
+                "summary": "List accountsummaries",
+                "description": "List AccountSummary entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "operationId": "listAccountSummaries",
+                "parameters": [
+                    {
+                        "$ref": "#/components/parameters/Page"
+                    },
+                    {
+                        "name": "per_page",
+                        "in": "query",
+                        "description": "The number of entities to retrieve per page.",
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 100,
+                            "minimum": 1,
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "Sort entity results by the given field.",
+                        "schema": {
+                            "$ref": "#/components/schemas/AccountSummarySortableFields",
+                            "default": "name"
+                        }
+                    },
+                    {
+                        "name": "order",
+                        "in": "query",
+                        "description": "Order the results in ascending or descending order.",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "asc",
+                                "desc"
+                            ],
+                            "default": "asc"
+                        }
+                    },
+                    {
+                        "$ref": "#/components/parameters/FilterOperation"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryIDEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryIDNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryIDIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryIDNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryNameEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryNameNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryNameIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryNameNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryNameEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryNameContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryNameContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryNameHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryNameHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryTypeEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryTypeNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryTypeIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryTypeNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailNEQ"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailIsNil"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailNotIn"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailEqualFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailContains"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailContainsFold"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailHasPrefix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEmailHasSuffix"
+                    },
+                    {
+                        "$ref": "#/components/parameters/AccountSummaryEnabledEQ"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "The requested AccountSummary.",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountSummaryList"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/PrettyResponse"
+                },
+                {
+                    "$ref": "#/components/parameters/X-Request-Id"
+                }
+            ]
+        },
+        "/account-summaries/{accountsummaryID}": {
+            "summary": "Operate on a single AccountSummary entity",
+            "description": "Operate on a single AccountSummary entity by its ID.",
+            "get": {
+                "tags": [
+                    "AccountSummaries"
+                ],
+                "summary": "Retrieve a accountsummary",
+                "description": "Retrieve a single AccountSummary entity by its ID. If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
+                "operationId": "getAccountSummary",
+                "responses": {
+                    "200": {
+                        "description": "The requested AccountSummary entity.",
+                        "headers": {
+                            "X-Ratelimit-Limit": {
+                                "$ref": "#/components/headers/X-Ratelimit-Limit"
+                            },
+                            "X-Ratelimit-Remaining": {
+                                "$ref": "#/components/headers/X-Ratelimit-Remaining"
+                            },
+                            "X-Ratelimit-Reset": {
+                                "$ref": "#/components/headers/X-Ratelimit-Reset"
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountSummaryRead"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "$ref": "#/components/responses/ErrorBadRequest"
+                    },
+                    "401": {
+                        "$ref": "#/components/responses/ErrorUnauthorized"
+                    },
+                    "403": {
+                        "$ref": "#/components/responses/ErrorForbidden"
+                    },
+                    "404": {
+                        "$ref": "#/components/responses/ErrorNotFound"
+                    },
+                    "429": {
+                        "$ref": "#/components/responses/ErrorTooManyRequests"
+                    },
+                    "500": {
+                        "$ref": "#/components/responses/ErrorInternalServerError"
+                    }
+                }
+            },
+            "parameters": [
+                {
+                    "$ref": "#/components/parameters/PrettyResponse"
+                },
+                {
+                    "$ref": "#/components/parameters/AccountSummaryID"
+                },
+                {
+                    "$ref": "#/components/parameters/X-Request-Id"
+                }
+            ]
+        },
         "/categories": {
             "summary": "List categories",
             "description": "List Category entities (including pagination, filtering, sorting, etc). If the entity has eager-loaded edges, the depth of when those will be loaded is limited to a depth of 1 (entity -\u003e edge, not entity -\u003e edge -\u003e edge -\u003e etc).",
@@ -8186,6 +8436,83 @@
     },
     "components": {
         "schemas": {
+            "AccountSummary": {
+                "description": "Read-only summary of users without sensitive fields.",
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "description": "The ID of the AccountSummary entity.",
+                        "type": "string",
+                        "format": "uuid"
+                    },
+                    "name": {
+                        "description": "Name of the user.",
+                        "type": "string"
+                    },
+                    "type": {
+                        "$ref": "#/components/schemas/AccountSummaryTypeEnum"
+                    },
+                    "email": {
+                        "description": "Email associated with the user.",
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "enabled": {
+                        "description": "If the user is still in the source system.",
+                        "type": "boolean"
+                    }
+                },
+                "required": [
+                    "id",
+                    "name",
+                    "type",
+                    "enabled"
+                ]
+            },
+            "AccountSummaryList": {
+                "description": "A paginated result set of AccountSummary entities. Includes eager-loaded edges (if any) for each entity.",
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/PagedResponse"
+                    },
+                    {
+                        "type": "object",
+                        "properties": {
+                            "content": {
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/components/schemas/AccountSummaryRead"
+                                }
+                            }
+                        },
+                        "required": [
+                            "content"
+                        ]
+                    }
+                ]
+            },
+            "AccountSummaryRead": {
+                "$ref": "#/components/schemas/AccountSummary"
+            },
+            "AccountSummarySortableFields": {
+                "description": "All potential sortable fields for AccountSummary entities.",
+                "type": "string",
+                "enum": [
+                    "email",
+                    "id",
+                    "name",
+                    "random"
+                ],
+                "default": "id"
+            },
+            "AccountSummaryTypeEnum": {
+                "description": "Type of object being defined (user or system which is for internal usecases).",
+                "type": "string",
+                "enum": [
+                    "SYSTEM",
+                    "USER"
+                ]
+            },
             "Category": {
                 "description": "A single Category entity.",
                 "type": "object",
@@ -9927,6 +10254,268 @@
             }
         },
         "parameters": {
+            "AccountSummaryEmailContains": {
+                "name": "email.has",
+                "in": "query",
+                "description": "Filters field \"email\" to contain the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryEmailContainsFold": {
+                "name": "email.ihas",
+                "in": "query",
+                "description": "Filters field \"email\" to contain the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryEmailEQ": {
+                "name": "email.eq",
+                "in": "query",
+                "description": "Filters field \"email\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryEmailEqualFold": {
+                "name": "email.ieq",
+                "in": "query",
+                "description": "Filters field \"email\" to be equal to the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryEmailHasPrefix": {
+                "name": "email.prefix",
+                "in": "query",
+                "description": "Filters field \"email\" to start with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryEmailHasSuffix": {
+                "name": "email.suffix",
+                "in": "query",
+                "description": "Filters field \"email\" to end with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryEmailIn": {
+                "name": "email.in",
+                "in": "query",
+                "description": "Filters field \"email\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "AccountSummaryEmailIsNil": {
+                "name": "email.null",
+                "in": "query",
+                "description": "Filters field \"email\" to be null/nil.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "AccountSummaryEmailNEQ": {
+                "name": "email.neq",
+                "in": "query",
+                "description": "Filters field \"email\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryEmailNotIn": {
+                "name": "email.notIn",
+                "in": "query",
+                "description": "Filters field \"email\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "AccountSummaryEnabledEQ": {
+                "name": "enabled.eq",
+                "in": "query",
+                "description": "Filters field \"enabled\" to be equal to the provided value.",
+                "schema": {
+                    "type": "boolean"
+                }
+            },
+            "AccountSummaryID": {
+                "name": "accountsummaryID",
+                "in": "path",
+                "description": "The ID of the AccountSummary to act upon.",
+                "required": true,
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "AccountSummaryIDEQ": {
+                "name": "id.eq",
+                "in": "query",
+                "description": "Filters field \"id\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "AccountSummaryIDIn": {
+                "name": "id.in",
+                "in": "query",
+                "description": "Filters field \"id\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "AccountSummaryIDNEQ": {
+                "name": "id.neq",
+                "in": "query",
+                "description": "Filters field \"id\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string",
+                    "format": "uuid"
+                }
+            },
+            "AccountSummaryIDNotIn": {
+                "name": "id.notIn",
+                "in": "query",
+                "description": "Filters field \"id\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "format": "uuid"
+                    }
+                }
+            },
+            "AccountSummaryNameContains": {
+                "name": "name.has",
+                "in": "query",
+                "description": "Filters field \"name\" to contain the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryNameContainsFold": {
+                "name": "name.ihas",
+                "in": "query",
+                "description": "Filters field \"name\" to contain the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryNameEQ": {
+                "name": "name.eq",
+                "in": "query",
+                "description": "Filters field \"name\" to be equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryNameEqualFold": {
+                "name": "name.ieq",
+                "in": "query",
+                "description": "Filters field \"name\" to be equal to the provided value, case-insensitive.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryNameHasPrefix": {
+                "name": "name.prefix",
+                "in": "query",
+                "description": "Filters field \"name\" to start with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryNameHasSuffix": {
+                "name": "name.suffix",
+                "in": "query",
+                "description": "Filters field \"name\" to end with the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryNameIn": {
+                "name": "name.in",
+                "in": "query",
+                "description": "Filters field \"name\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "AccountSummaryNameNEQ": {
+                "name": "name.neq",
+                "in": "query",
+                "description": "Filters field \"name\" to be not equal to the provided value.",
+                "schema": {
+                    "type": "string"
+                }
+            },
+            "AccountSummaryNameNotIn": {
+                "name": "name.notIn",
+                "in": "query",
+                "description": "Filters field \"name\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            },
+            "AccountSummaryTypeEQ": {
+                "name": "type.eq",
+                "in": "query",
+                "description": "Filters field \"type\" to be equal to the provided value.",
+                "schema": {
+                    "$ref": "#/components/schemas/AccountSummaryTypeEnum"
+                }
+            },
+            "AccountSummaryTypeIn": {
+                "name": "type.in",
+                "in": "query",
+                "description": "Filters field \"type\" to be within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/AccountSummaryTypeEnum"
+                    }
+                }
+            },
+            "AccountSummaryTypeNEQ": {
+                "name": "type.neq",
+                "in": "query",
+                "description": "Filters field \"type\" to be not equal to the provided value.",
+                "schema": {
+                    "$ref": "#/components/schemas/AccountSummaryTypeEnum"
+                }
+            },
+            "AccountSummaryTypeNotIn": {
+                "name": "type.notIn",
+                "in": "query",
+                "description": "Filters field \"type\" to be not within the provided values.",
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/components/schemas/AccountSummaryTypeEnum"
+                    }
+                }
+            },
             "CategoryCreatedAtGT": {
                 "name": "createdAt.gt",
                 "in": "query",
@@ -13454,6 +14043,10 @@
         {
             "name": "Meta",
             "description": "Includes various endpoints for meta information about the service, like the OpenAPI spec, version, health, etc."
+        },
+        {
+            "name": "AccountSummaries",
+            "description": "Read-only summary of users without sensitive fields."
         },
         {
             "name": "Categories"

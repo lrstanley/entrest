@@ -75,14 +75,11 @@ func (e *Extension) Hooks() []gen.Hook {
 }
 
 func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
-	// Validate all annotations first.
-	err := ValidateAnnotations(g.Nodes...)
-	if err != nil {
-		return nil, fmt.Errorf("failed to validate annotations: %w", err)
-	}
+	normalizeViewIDs(g.Nodes...)
 
 	spec := e.config.Spec
 
+	var err error
 	if spec == nil {
 		if e.config.SpecFromPath != "" {
 			var f *os.File
@@ -112,6 +109,12 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 		}
 	}
 
+	// Validate after PreGenerateHook so injected annotations are checked too.
+	err = ValidateAnnotations(g.Nodes...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to validate annotations: %w", err)
+	}
+
 	// If they weren't provided, set some defaults which are required by OpenAPI,
 	// as well as most code-generators.
 	if spec.OpenAPI == "" {
@@ -131,11 +134,11 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 	for _, t := range g.Nodes {
 		ta := GetAnnotation(t)
 
-		if ta.GetSkip(e.config) {
+		if ta.GetSkip(e.config, t) {
 			continue
 		}
 
-		ops = ta.GetOperations(e.config, nil)
+		ops = ta.GetOperations(e.config, t, nil)
 
 		for _, op := range ops {
 			if t.ID == nil && (op != OperationList && op != OperationCreate) {
@@ -160,7 +163,7 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 			}
 			ea := GetAnnotation(edge)
 
-			if ea.GetSkip(e.config) || !ea.GetEdgeEndpoint(e.config, ta) {
+			if ea.GetSkip(e.config, t) || !ea.GetEdgeEndpoint(e.config, ta) {
 				continue
 			}
 
@@ -168,9 +171,9 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 			// An edge can override with its own WithIncludeOperations /
 			// WithExcludeOperations (see Annotation.GetOperations).
 			switch {
-			case edge.Unique && ea.HasOperation(e.config, ta, OperationRead):
+			case edge.Unique && ea.HasOperation(e.config, t, ta, OperationRead):
 				tspec, err = GetSpecEdge(t, edge, OperationRead)
-			case !edge.Unique && ea.HasOperation(e.config, ta, OperationList):
+			case !edge.Unique && ea.HasOperation(e.config, t, ta, OperationList):
 				tspec, err = GetSpecEdge(t, edge, OperationList)
 			default:
 				continue

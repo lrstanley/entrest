@@ -5,7 +5,7 @@
 */ -}}
 {{- define "helper/rest/schema-imports" }}
     {{- range $t := $.Nodes }}
-        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig $t) }}{{ continue }}{{ end }}
         "{{ $.Config.Package }}/{{ $t.Package }}"
         {{- if and $t.ID $t.ID.Type.PkgPath }}
             {{ $t.ID.Type.PkgName }} "{{ $t.ID.Type.PkgPath }}"

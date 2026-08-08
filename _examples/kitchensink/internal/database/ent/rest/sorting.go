@@ -80,6 +80,17 @@ var (
 
 	// OrderDirections are the allowed order directions that can be provided.
 	OrderDirections = []orderDirection{orderAsc, orderDesc}
+	// AccountSummarySortConfig defines the default sort configuration for AccountSummary.
+	AccountSummarySortConfig = &SortConfig{
+		Fields: []string{
+			"email",
+			"id",
+			"name",
+			"random",
+		},
+		DefaultField: "name",
+		DefaultOrder: "asc",
+	}
 	// CategorySortConfig defines the default sort configuration for Category.
 	CategorySortConfig = &SortConfig{
 		Fields: []string{
@@ -217,6 +228,15 @@ func isSpecializedSort(_parts []string) (isCount, isSum bool) {
 		}
 	}
 	return isCount, isSum
+}
+
+// applySortingAccountSummary applies sorting to the query based on the provided sort and
+// order fields. Note that all inputs provided MUST ALREADY BE VALIDATED.
+func applySortingAccountSummary(_query *ent.AccountSummaryQuery, _field string, _order orderDirection) *ent.AccountSummaryQuery {
+	if _field == "random" {
+		return _query.Order(sql.OrderByRand())
+	}
+	return _query.Order(withFieldSelector(_field, _order))
 }
 
 // applySortingCategory applies sorting to the query based on the provided sort and

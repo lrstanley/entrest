@@ -28,7 +28,7 @@ var (
         MaxItemsPerPage: {{ $.Annotations.RestConfig.MaxItemsPerPage }},
     }
     {{- range $t := $.Nodes }}
-        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end }}
+        {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig $t) }}{{ continue }}{{ end }}
         // {{ $t.Name|zsingular }}PageConfig defines the page configuration for LIST-related endpoints
         // for {{ $t.Name|zsingular }}.
         {{ $t.Name|zsingular }}PageConfig = &PageConfig{
@@ -191,7 +191,7 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
 }
 
 {{- range $t := $.Nodes }}
-    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
+    {{- if (($t|getAnnotation).GetSkip $.Annotations.RestConfig $t) }}{{ continue }}{{ end -}}
 
     {{- $pagination := (($t|getAnnotation).GetPagination $.Annotations.RestConfig nil) }}
     {{- $filters := getFilterableFields $t nil }}

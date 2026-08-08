@@ -34,14 +34,15 @@ const (
 	OpUpdateOne = ent.OpUpdateOne
 
 	// Node types.
-	TypeCategory   = "Category"
-	TypeFollows    = "Follows"
-	TypeFriendship = "Friendship"
-	TypePet        = "Pet"
-	TypePost       = "Post"
-	TypeSettings   = "Settings"
-	TypeSkipped    = "Skipped"
-	TypeUser       = "User"
+	TypeAccountSummary = "AccountSummary"
+	TypeCategory       = "Category"
+	TypeFollows        = "Follows"
+	TypeFriendship     = "Friendship"
+	TypePet            = "Pet"
+	TypePost           = "Post"
+	TypeSettings       = "Settings"
+	TypeSkipped        = "Skipped"
+	TypeUser           = "User"
 )
 
 // CategoryMutation represents an operation that mutates the Category nodes in the graph.

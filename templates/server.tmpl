@@ -180,12 +180,12 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
 
     {{- range $t := $.Nodes }}
         {{- if or
-            (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig)
+            (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig $t)
             $t.Annotations.Rest.DisableHandler
         }}{{ continue }}{{ end }}
 
         {{- /* list nodes */}}
-        {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "list" }}
+        {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "list" }}
             {{- template "helper/rest/server/endpoint" (dict
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "GET"
@@ -195,7 +195,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
         {{- end }}
 
         {{- /* get single node */}}
-        {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "read") }}
+        {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "read") }}
             {{- template "helper/rest/server/endpoint" (dict
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "GET"
@@ -214,7 +214,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
             }}{{ continue }}{{ end }}
 
             {{- /* get nodes edge (unique) — inherits schema ops unless edge overrides */}}
-            {{- if and $e.Unique (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig ($t|getAnnotation) "read") }}
+            {{- if and $e.Unique (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t ($t|getAnnotation) "read") }}
                 {{- template "helper/rest/server/endpoint" (dict
                     "Handler" $.Annotations.RestConfig.Handler
                     "Method" "GET"
@@ -224,7 +224,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
             {{- end }}
 
             {{- /* list nodes edge (non-unique) — inherits schema ops unless edge overrides */}}
-            {{- if and (not $e.Unique) (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig ($t|getAnnotation) "list") }}
+            {{- if and (not $e.Unique) (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t ($t|getAnnotation) "list") }}
                 {{- template "helper/rest/server/endpoint" (dict
                     "Handler" $.Annotations.RestConfig.Handler
                     "Method" "GET"
@@ -235,7 +235,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
         {{- end }}
 
         {{- /* create nodes */}}
-        {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "create" }}
+        {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "create" }}
             {{- template "helper/rest/server/endpoint" (dict
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "POST"
@@ -245,7 +245,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
         {{- end }}
 
         {{- /* update nodes */}}
-        {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "update") }}
+        {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "update") }}
             {{- template "helper/rest/server/endpoint" (dict
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "PATCH"
@@ -255,7 +255,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
         {{- end }}
 
         {{- /* delete nodes */}}
-        {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "delete") }}
+        {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "delete") }}
             {{- template "helper/rest/server/endpoint" (dict
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "DELETE"
@@ -275,11 +275,11 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
 }
 
 {{- range $t := $.Nodes }}
-    {{- if (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig) }}{{ continue }}{{ end }}
+    {{- if (($t|getAnnotation).GetSkip $t.Config.Annotations.RestConfig $t) }}{{ continue }}{{ end }}
     {{- $id := printf "%sID" ($t.Name|zsingular|zcamel) }}
 
     {{- /* list nodes */}}
-    {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "list" }}
+    {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "list" }}
         {{- $opID := getOperationIDName "list" $t nil | zpascal }}
         // {{ $opID }} maps to "GET {{ getPathName "list" $t nil false }}".
         func (s *Server) {{ $opID }}(r *http.Request, p *List{{ $t.Name|zsingular }}Params) (*PagedResponse[ent.{{ $t.Name }}], error) {
@@ -288,7 +288,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- end }}
 
     {{- /* get single node */}}
-    {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "read") }}
+    {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "read") }}
         {{- $opID := getOperationIDName "read" $t nil | zpascal }}
         // {{ $opID }} maps to "GET {{ getPathName "read" $t nil false }}".
         func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}) (*ent.{{ $t.Name }}, error) {
@@ -305,7 +305,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
         }}{{ continue }}{{ end }}
 
         {{- /* get nodes edge (unique) — inherits schema ops unless edge overrides */}}
-        {{- if and $e.Unique (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig ($t|getAnnotation) "read") }}
+        {{- if and $e.Unique (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t ($t|getAnnotation) "read") }}
             {{- $opID := getOperationIDName "read" $t $e | zpascal }}
             // {{ $opID }} maps to "GET {{ getPathName "read" $t $e false }}".
             func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}) (*ent.{{ $e.Type.Name }}, error) {
@@ -314,7 +314,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
         {{- end }}
 
         {{- /* list nodes edge (non-unique) — inherits schema ops unless edge overrides */}}
-        {{- if and (not $e.Unique) (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig ($t|getAnnotation) "list") }}
+        {{- if and (not $e.Unique) (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t ($t|getAnnotation) "list") }}
             {{- $opID := getOperationIDName "list" $t $e | zpascal }}
             // {{ $opID }} maps to "GET {{ getPathName "list" $t $e false }}".
             func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}, p *List{{ $e.Type.Name|zsingular }}Params) (*PagedResponse[ent.{{ $e.Type.Name }}], error) {
@@ -324,7 +324,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- end }}
 
     {{- /* create nodes */}}
-    {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "create" }}
+    {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "create" }}
         {{- $opID := getOperationIDName "create" $t nil | zpascal }}
         // {{ $opID }} maps to "POST {{ getPathName "create" $t nil false }}".
         func (s *Server) {{ $opID }}(r *http.Request, p *Create{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
@@ -333,7 +333,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- end }}
 
     {{- /* update nodes */}}
-    {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "update") }}
+    {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "update") }}
         {{- $opID := getOperationIDName "update" $t nil | zpascal }}
         // {{ $opID }} maps to "PATCH {{ getPathName "update" $t nil false }}".
         func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}, p *Update{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
@@ -342,7 +342,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- end }}
 
     {{- /* delete nodes */}}
-    {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "delete") }}
+    {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig $t nil "delete") }}
         {{- $opID := getOperationIDName "delete" $t nil | zpascal }}
         // {{ $opID }} maps to "DELETE {{ getPathName "delete" $t nil false }}".
         func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}) (*struct{}, error) {

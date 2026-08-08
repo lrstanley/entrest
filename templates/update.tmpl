@@ -13,9 +13,9 @@ import (
 
 {{- range $t := $.Nodes }}
     {{- if or
-        (($t|getAnnotation).GetSkip $.Annotations.RestConfig)
+        (($t|getAnnotation).GetSkip $.Annotations.RestConfig $t)
         (not $t.ID)
-        (not (($t|getAnnotation).HasOperation $.Annotations.RestConfig nil "update"))
+        (not (($t|getAnnotation).HasOperation $.Annotations.RestConfig $t nil "update"))
     }}
         {{- continue }}
     {{ end }}
@@ -24,7 +24,7 @@ import (
     type Update{{ $t.Name|zsingular }}Params struct {
         {{- range $f := $t.Fields }}
             {{- if or
-                (($f|getAnnotation).GetSkip $.Annotations.RestConfig)
+                (($f|getAnnotation).GetSkip $.Annotations.RestConfig nil)
                 $f.Annotations.Rest.ReadOnly
                 $f.Immutable
             }}
@@ -37,14 +37,14 @@ import (
 
         {{- range $e := $t.Edges }}
             {{- if or
-                (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
+                (($e|getAnnotation).GetSkip $.Annotations.RestConfig $t)
                 $e.Annotations.Rest.ReadOnly
                 $e.Immutable
-                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig ($t|getAnnotation) "update"))
+                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig $t ($t|getAnnotation) "update"))
                 (and $e.Field (or
                     $e.Field.Immutable
                     $e.Field.Annotations.Rest.ReadOnly
-                    (not (($e.Field|getAnnotation).GetSkip $.Annotations.RestConfig))
+                    (not (($e.Field|getAnnotation).GetSkip $.Annotations.RestConfig nil))
                 ))
                 (not $e.Type.ID)
             }}
@@ -70,7 +70,7 @@ import (
     func (u *Update{{ $t.Name|zsingular }}Params) ApplyInputs(_builder *ent.{{ $t.Name }}UpdateOne) *ent.{{ $t.Name }}UpdateOne {
         {{- range $f := $t.Fields }}
             {{- if or
-                (($f|getAnnotation).GetSkip $.Annotations.RestConfig)
+                (($f|getAnnotation).GetSkip $.Annotations.RestConfig nil)
                 $f.Annotations.Rest.ReadOnly
                 $f.Immutable
             }}
@@ -93,14 +93,14 @@ import (
 
         {{- range $e := $t.Edges }}
             {{- if or
-                (($e|getAnnotation).GetSkip $.Annotations.RestConfig)
+                (($e|getAnnotation).GetSkip $.Annotations.RestConfig $t)
                 $e.Annotations.Rest.ReadOnly
                 $e.Immutable
-                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig ($t|getAnnotation) "update"))
+                (not (($e|getAnnotation).HasOperation $.Annotations.RestConfig $t ($t|getAnnotation) "update"))
                 (and $e.Field (or
                     $e.Field.Immutable
                     $e.Field.Annotations.Rest.ReadOnly
-                    (not (($e.Field|getAnnotation).GetSkip $.Annotations.RestConfig))
+                    (not (($e.Field|getAnnotation).GetSkip $.Annotations.RestConfig nil))
                 ))
                 (not $e.Type.ID)
             }}

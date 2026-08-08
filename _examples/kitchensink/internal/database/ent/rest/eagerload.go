@@ -6,6 +6,12 @@ import (
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 )
 
+// EagerLoadAccountSummary eager-loads the edges of a AccountSummary entity, if any edges
+// were requested to be eager-loaded, based off associated annotations.
+func EagerLoadAccountSummary(_query *ent.AccountSummaryQuery) *ent.AccountSummaryQuery {
+	return _query
+}
+
 // EagerLoadCategory eager-loads the edges of a Category entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
 func EagerLoadCategory(_query *ent.CategoryQuery) *ent.CategoryQuery {

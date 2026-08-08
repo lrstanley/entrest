@@ -186,7 +186,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 			fa := GetAnnotation(f)
 
 			// Sensitive fields are allowed to be set in create/update by default.
-			if fa.GetSkip(cfg) || fa.ReadOnly {
+			if fa.GetSkip(cfg, nil) || fa.ReadOnly {
 				continue
 			}
 
@@ -216,7 +216,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if ea.GetSkip(cfg) || ea.ReadOnly || !ea.HasOperation(cfg, ta, op) {
+			if ea.GetSkip(cfg, t) || ea.ReadOnly || !ea.HasOperation(cfg, t, ta, op) {
 				continue
 			}
 			if op == OperationUpdate && (e.Immutable || (e.Field() != nil && e.Field().Immutable)) {
@@ -244,7 +244,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 					continue
 				}
 
-				if !fa.GetSkip(cfg) {
+				if !fa.GetSkip(cfg, nil) {
 					// If the edge has a field, and the field isn't skipped, then there is no
 					// point in having two fields that can be used during create (especially
 					// if both are required).
@@ -312,7 +312,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, f := range t.Fields {
 			fa := GetAnnotation(f)
 
-			if fa.GetSkip(cfg) || f.Sensitive() {
+			if fa.GetSkip(cfg, nil) || f.Sensitive() {
 				continue
 			}
 
@@ -346,7 +346,7 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if ea.GetSkip(cfg) || !ea.GetEagerLoad(cfg) {
+			if ea.GetSkip(cfg, t) || !ea.GetEagerLoad(cfg) {
 				continue
 			}
 

@@ -39,7 +39,7 @@ func GetSortableFields(t *gen.Type, edge *gen.Edge) (sortable []string) {
 
 	for _, f := range fields {
 		fa := GetAnnotation(f)
-		if fa.GetSkip(cfg) || f.Sensitive() || (!fa.Sortable && f.Name != "id") {
+		if fa.GetSkip(cfg, nil) || f.Sensitive() || (!fa.Sortable && f.Name != "id") {
 			continue
 		}
 		if !f.IsString() && !f.IsTime() && !f.IsBool() && !f.IsInt() && !f.IsInt64() && !f.IsUUID() {
@@ -52,7 +52,7 @@ func GetSortableFields(t *gen.Type, edge *gen.Edge) (sortable []string) {
 		for _, e := range t.Edges {
 			ea := GetAnnotation(e)
 
-			if ea.GetSkip(cfg) {
+			if ea.GetSkip(cfg, t) {
 				continue
 			}
 
@@ -61,7 +61,7 @@ func GetSortableFields(t *gen.Type, edge *gen.Edge) (sortable []string) {
 
 				for _, f := range e.Type.Fields {
 					fa := GetAnnotation(f)
-					if fa.GetSkip(cfg) || f.Sensitive() || !fa.Sortable || (!f.IsInt() && !f.IsInt64()) {
+					if fa.GetSkip(cfg, nil) || f.Sensitive() || !fa.Sortable || (!f.IsInt() && !f.IsInt64()) {
 						continue
 					}
 					sortable = append(sortable, e.Name+"."+f.Name+".sum")
