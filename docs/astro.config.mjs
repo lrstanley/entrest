@@ -1,7 +1,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
-import { rehypeHeadingIds } from "@astrojs/markdown-remark";
+import { rehypeHeadingIds, unified } from "@astrojs/markdown-remark";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 process.env.ASTRO_TELEMETRY_DISABLED = "1";
@@ -64,27 +64,19 @@ export default defineConfig({
             sidebar: [
                 {
                     label: "Guides",
-                    autogenerate: {
-                        directory: "guides",
-                    },
+                    items: [{ autogenerate: { directory: "guides" } }],
                 },
                 {
                     label: "Generating OpenAPI Specs",
-                    autogenerate: {
-                        directory: "openapi-specs",
-                    },
+                    items: [{ autogenerate: { directory: "openapi-specs" } }],
                 },
                 {
                     label: "HTTP Handler",
-                    autogenerate: {
-                        directory: "http-handler",
-                    },
+                    items: [{ autogenerate: { directory: "http-handler" } }],
                 },
                 {
                     label: "Resources",
-                    autogenerate: {
-                        directory: "resources",
-                    },
+                    items: [{ autogenerate: { directory: "resources" } }],
                 },
                 {
                     label: "Resources",
@@ -133,9 +125,11 @@ export default defineConfig({
         }),
     ],
     markdown: {
-        smartypants: false,
-        // SmartyPants converts '--' into en-dash, breaking alignment.
-        gfm: true,
-        rehypePlugins: [rehypeHeadingIds, [rehypeAutolinkHeadings, { behavior: "wrap" }]],
+        processor: unified({
+            gfm: true,
+            // SmartyPants converts '--' into en-dash, breaking alignment.
+            smartypants: false,
+            rehypePlugins: [rehypeHeadingIds, [rehypeAutolinkHeadings, { behavior: "wrap" }]],
+        }),
     },
 });
