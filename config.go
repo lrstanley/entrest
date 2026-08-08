@@ -74,6 +74,12 @@ type Config struct {
 	// get the owner from that response).
 	DisableEagerLoadedEndpoints bool
 
+	// DisableEdgeEndpoints disables the generation of dedicated endpoints for all
+	// edges by default. This can be overridden on a per-schema or per-edge basis with
+	// the [WithEdgeEndpoint] annotation. See also [Config.DisableEagerLoadedEndpoints]
+	// for disabling endpoints only for edges which are also eager-loaded.
+	DisableEdgeEndpoints bool
+
 	// EagerLoadLimit controls the default maximum number of results that can be
 	// eager-loaded for a given edge. The default, when not specified, is 1000. The limit
 	// can be disabled by setting the value to -1. The intent of this option is to

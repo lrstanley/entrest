@@ -269,6 +269,84 @@ func TestConfig_DisableEagerLoadNonPagedOpt(t *testing.T) {
 	})
 }
 
+func TestConfig_DisableEdgeEndpoints(t *testing.T) {
+	t.Parallel()
+
+	t.Run("default-enabled", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{})
+
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/categories`))
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/owner`))
+	})
+
+	t.Run("global-disabled", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			DisableEdgeEndpoints: true,
+		})
+
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/owner`))
+	})
+
+	t.Run("global-disabled-edge-override", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			DisableEdgeEndpoints: true,
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.owner", WithEdgeEndpoint(true))
+				return nil
+			},
+		})
+
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories`))
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/owner`))
+	})
+
+	t.Run("schema-disabled", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet", WithEdgeEndpoint(false))
+				return nil
+			},
+		})
+
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories`))
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/owner`))
+		// Edges on other schemas should still exist.
+		assert.NotNil(t, r.json(`$.paths./users/{userID}/pets`))
+	})
+
+	t.Run("schema-disabled-edge-override", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet", WithEdgeEndpoint(false))
+				injectAnnotations(t, g, "Pet.owner", WithEdgeEndpoint(true))
+				return nil
+			},
+		})
+
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories`))
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/owner`))
+	})
+
+	t.Run("edge-disabled", func(t *testing.T) {
+		t.Parallel()
+		r := mustBuildSpec(t, &Config{
+			PreGenerateHook: func(g *gen.Graph, _ *ogen.Spec) error {
+				injectAnnotations(t, g, "Pet.categories", WithEdgeEndpoint(false))
+				return nil
+			},
+		})
+
+		assert.Nil(t, r.json(`$.paths./pets/{petID}/categories`))
+		assert.NotNil(t, r.json(`$.paths./pets/{petID}/owner`))
+	})
+}
+
 func TestConfig_DisableEagerLoadedEndpoints(t *testing.T) {
 	t.Parallel()
 

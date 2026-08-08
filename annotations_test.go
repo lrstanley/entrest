@@ -77,6 +77,13 @@ func TestValidateAnnotation(t *testing.T) {
 			wantErr: false,
 		},
 		{
+			name: "valid-schema-edge-endpoint",
+			value: &gen.Type{Annotations: map[string]any{
+				Annotation{}.Name(): WithEdgeEndpoint(false),
+			}},
+			wantErr: false,
+		},
+		{
 			name: "invalid-annotation-type-with-edge",
 			value: &gen.Type{Annotations: map[string]any{
 				Annotation{}.Name(): WithEagerLoad(false), // Only edges support eager loading.

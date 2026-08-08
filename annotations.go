@@ -97,7 +97,7 @@ type Annotation struct {
 	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
 	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
 	EagerLoadLimit  *int        `json:",omitempty" ent:"edge"`
-	EdgeEndpoint    *bool       `json:",omitempty" ent:"edge"`
+	EdgeEndpoint    *bool       `json:",omitempty" ent:"schema,edge"`
 	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
 	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
 	FilterGroup     string      `json:",omitempty" ent:"edge,field"`
@@ -322,11 +322,25 @@ func (a *Annotation) GetEagerLoadLimit(config *Config) int {
 	return *a.EagerLoadLimit
 }
 
-// GetEdgeEndpoint returns if the edge should have an endpoint (or defaults from
-// [Config.DisableEagerLoadedEndpoints]).
-func (a *Annotation) GetEdgeEndpoint(config *Config) bool {
+// GetEdgeEndpoint returns if the edge should have an endpoint. Precedence
+// (highest to lowest):
+//  1. Edge annotation ([WithEdgeEndpoint] on the edge) — receiver a
+//  2. Schema annotation ([WithEdgeEndpoint] on the type that owns the edge)
+//  3. [Config.DisableEdgeEndpoints]
+//  4. [Config.DisableEagerLoadedEndpoints] when the edge is eager-loaded
+//  5. Default: true
+//
+// schema may be nil; when provided it is the annotation on the type that owns
+// the edge.
+func (a *Annotation) GetEdgeEndpoint(config *Config, schema *Annotation) bool {
 	if a.EdgeEndpoint != nil {
 		return *a.EdgeEndpoint
+	}
+	if schema != nil && schema.EdgeEndpoint != nil {
+		return *schema.EdgeEndpoint
+	}
+	if config.DisableEdgeEndpoints {
+		return false
 	}
 	if config.DisableEagerLoadedEndpoints {
 		// Only return false if the edge is in fact eager-loaded.
@@ -494,11 +508,14 @@ func WithEagerLoadLimit(v int) Annotation {
 	return Annotation{EagerLoadLimit: &v}
 }
 
-// WithEdgeEndpoint sets the edge to have an endpoint. If the edge is eager-loaded,
-// and the global config is set to disable endpoints for edges which are also
-// eager-loaded, this will default to false. Not required to be provided unless
-// endpoints are disabled globally and you want to specifically enable one edge to
-// have an endpoint, or want to disable an edge from having an endpoint in general.
+// WithEdgeEndpoint sets whether the edge should have a dedicated endpoint. If
+// the edge is eager-loaded and [Config.DisableEagerLoadedEndpoints] is set, or
+// if [Config.DisableEdgeEndpoints] is set, this defaults to false. Not required
+// unless endpoints are disabled globally/per-schema and you want to specifically
+// enable one edge, or you want to disable an edge from having an endpoint.
+//
+// When applied on a schema, it becomes the default for all edges on that schema
+// (individual edges can still override).
 func WithEdgeEndpoint(v bool) Annotation {
 	return Annotation{EdgeEndpoint: &v}
 }

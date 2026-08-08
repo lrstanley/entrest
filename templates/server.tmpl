@@ -208,7 +208,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
             {{- if or
                 $e.Annotations.Rest.ReadOnly
                 $e.Annotations.Rest.DisableHandler
-                (not (($e|getAnnotation).GetEdgeEndpoint $t.Config.Annotations.RestConfig))
+                (not (($e|getAnnotation).GetEdgeEndpoint $t.Config.Annotations.RestConfig ($t|getAnnotation)))
                 (not $e.Type.ID)
                 (not $t.ID)
             }}{{ continue }}{{ end }}
@@ -299,7 +299,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- range $e := $t.Edges }}
         {{- if or
             $e.Annotations.Rest.ReadOnly
-            (not (($e|getAnnotation).GetEdgeEndpoint $t.Config.Annotations.RestConfig))
+            (not (($e|getAnnotation).GetEdgeEndpoint $t.Config.Annotations.RestConfig ($t|getAnnotation)))
             (not $e.Type.ID)
             (not $t.ID)
         }}{{ continue }}{{ end }}

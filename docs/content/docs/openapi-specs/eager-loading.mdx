@@ -75,7 +75,9 @@ func (Pet) Edges() []ent.Edge {
 - If you only ever want to eager load a specific edge and not have a dedicated endpoint, you can use
   the [`WithEdgeEndpoint`](/entrest/openapi-specs/annotation-reference/#withedgeendpoint) annotation
   to disable the edge endpoint. This can also be configured globally with the config option
-  [`DisableEagerLoadedEndpoints`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableEagerLoadedEndpoints).
+  [`DisableEagerLoadedEndpoints`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableEagerLoadedEndpoints)
+  (eager-loaded edges only), or [`DisableEdgeEndpoints`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableEdgeEndpoints)
+  (all edges). `WithEdgeEndpoint` can also be set on a schema to disable endpoints for all of its edges.
 - All edges can be eager loaded by default (though highly discouraged). See the config option
   [`DefaultEagerLoad`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DefaultEagerLoad).
 
