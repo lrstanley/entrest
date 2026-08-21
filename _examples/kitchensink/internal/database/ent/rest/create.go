@@ -22,9 +22,9 @@ import (
 type CreateCategoryParams struct {
 	Name     string   `json:"name"`
 	Nillable *string  `json:"nillable"`
-	Strings  []string `json:"strings,omitempty"`
-	Ints     []int    `json:"ints,omitempty"`
-	Pets     []int    `json:"pets,omitempty"`
+	Strings  []string `json:"strings,omitzero"`
+	Ints     []int    `json:"ints,omitzero"`
+	Pets     []int    `json:"pets,omitzero"`
 }
 
 func (c *CreateCategoryParams) ApplyInputs(_builder *ent.CategoryCreate) *ent.CategoryCreate {
@@ -110,17 +110,17 @@ func (c *CreateFriendshipParams) Exec(ctx context.Context, _builder *ent.Friends
 // CreatePetParams defines parameters for creating a Pet via a POST request.
 type CreatePetParams struct {
 	Name      string   `json:"name"`
-	Nicknames []string `json:"nicknames,omitempty"`
+	Nicknames []string `json:"nicknames,omitzero"`
 	Age       int      `json:"age"`
 	Type      pet.Type `json:"type"`
 	// Categories that the pet belongs to.
-	Categories []int `json:"categories,omitempty"`
+	Categories []int `json:"categories,omitzero"`
 	// The user that owns the pet.
-	Owner *uuid.UUID `json:"owner,omitempty"`
+	Owner *uuid.UUID `json:"owner,omitzero"`
 	// Pets that this pet is friends with.
-	Friends []int `json:"friends,omitempty"`
+	Friends []int `json:"friends,omitzero"`
 	// Users that this pet is followed by.
-	FollowedBy []uuid.UUID `json:"followed_by,omitempty"`
+	FollowedBy []uuid.UUID `json:"followed_by,omitzero"`
 }
 
 func (c *CreatePetParams) ApplyInputs(_builder *ent.PetCreate) *ent.PetCreate {
@@ -183,29 +183,29 @@ type CreateUserParams struct {
 	// Type of object being defined (user or system which is for internal usecases).
 	Type *user.Type `json:"type"`
 	// Full name if USER, otherwise null.
-	Description *string `json:"description,omitempty"`
+	Description *string `json:"description,omitzero"`
 	// If the user is still in the source system.
 	Enabled *bool `json:"enabled"`
 	// Email associated with the user. Note that not all users have an associated email address.
-	Email *string `json:"email,omitempty"`
+	Email *string `json:"email,omitzero"`
 	// Avatar data for the user. This should generally only apply to the USER user type.
-	Avatar []byte `json:"avatar,omitempty"`
+	Avatar []byte `json:"avatar,omitzero"`
 	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
 	PasswordHashed string `json:"password_hashed"`
 	// The github user raw JSON data.
-	GithubData *github.User `json:"github_data,omitempty"`
+	GithubData *github.User `json:"github_data,omitzero"`
 	// Any data that is not defined in the schema.
-	AnyData             *github.User          `json:"any_data,omitempty"`
-	ProfileURL          *schema.ExampleValuer `json:"profile_url,omitempty"`
-	LastAuthenticatedAt *time.Time            `json:"last_authenticated_at,omitempty"`
+	AnyData             *github.User          `json:"any_data,omitzero"`
+	ProfileURL          *schema.ExampleValuer `json:"profile_url,omitzero"`
+	LastAuthenticatedAt *time.Time            `json:"last_authenticated_at,omitzero"`
 	// Pets owned by the user.
-	Pets []int `json:"pets,omitempty"`
+	Pets []int `json:"pets,omitzero"`
 	// Pets that the user is following.
-	FollowedPets []int `json:"followed_pets,omitempty"`
+	FollowedPets []int `json:"followed_pets,omitzero"`
 	// Friends of the user.
-	Friends     []uuid.UUID `json:"friends,omitempty"`
-	Posts       []int       `json:"posts,omitempty"`
-	Friendships []int       `json:"friendships,omitempty"`
+	Friends     []uuid.UUID `json:"friends,omitzero"`
+	Posts       []int       `json:"posts,omitzero"`
+	Friendships []int       `json:"friendships,omitzero"`
 }
 
 func (c *CreateUserParams) ApplyInputs(_builder *ent.UserCreate) *ent.UserCreate {

@@ -7,7 +7,7 @@ package entrest
 
 import (
 	"cmp"
-	"encoding/json"
+	"encoding/json/jsontext"
 	"errors"
 	"fmt"
 	"maps"
@@ -38,8 +38,8 @@ func addPagination(spec *ogen.Spec, _ *Config) {
 			In:          "query",
 			Description: "The page number to retrieve.",
 			Schema: ogen.Int().
-				SetMinimum(ptr(int64(1))).
-				SetDefault(json.RawMessage(`1`)),
+				SetMinimum(new(int64(1))).
+				SetDefault(jsontext.Value(`1`)),
 		}
 	}
 
@@ -60,7 +60,7 @@ func addPagination(spec *ogen.Spec, _ *Config) {
 					Type:        "integer",
 					Description: "Page which the results are associated with.",
 					Example:     jsonschema.RawValue(`1`),
-					Minimum:     ogen.Int().SetMinimum(ptr(int64(1))).Minimum,
+					Minimum:     ogen.Int().SetMinimum(new(int64(1))).Minimum,
 				},
 			},
 			{
@@ -69,7 +69,7 @@ func addPagination(spec *ogen.Spec, _ *Config) {
 					Type:        "integer",
 					Description: "The number of the last page of results.",
 					Example:     jsonschema.RawValue(`3`),
-					Minimum:     ogen.Int().SetMinimum(ptr(int64(1))).Minimum,
+					Minimum:     ogen.Int().SetMinimum(new(int64(1))).Minimum,
 				},
 			},
 			{
@@ -86,7 +86,7 @@ func addPagination(spec *ogen.Spec, _ *Config) {
 					Type:        "integer",
 					Description: "The total number of results based on the provided query.",
 					Example:     jsonschema.RawValue(`123`),
-					Minimum:     ogen.Int().SetMinimum(ptr(int64(0))).Minimum,
+					Minimum:     ogen.Int().SetMinimum(new(int64(0))).Minimum,
 				},
 			},
 		},
@@ -297,9 +297,9 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 					In:          "query",
 					Description: "The number of entities to retrieve per page.",
 					Schema: ogen.Int().
-						SetMinimum(ptr(int64(ta.GetMinItemsPerPage(cfg)))).
-						SetMaximum(ptr(int64(ta.GetMaxItemsPerPage(cfg)))).
-						SetDefault(json.RawMessage(strconv.Itoa(ta.GetItemsPerPage(cfg)))),
+						SetMinimum(new(int64(ta.GetMinItemsPerPage(cfg)))).
+						SetMaximum(new(int64(ta.GetMaxItemsPerPage(cfg)))).
+						SetDefault(jsontext.Value(strconv.Itoa(ta.GetItemsPerPage(cfg)))),
 				},
 			)
 		}
@@ -312,7 +312,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				Schema:      &ogen.Schema{Ref: "#/components/schemas/" + addSortableFields(spec, t, sortable)},
 			}
 			if v := ta.GetDefaultSort(t.ID != nil); v != "" {
-				sortParam.Schema = sortParam.Schema.SetDefault(json.RawMessage(fmt.Sprintf("%q", v)))
+				sortParam.Schema = sortParam.Schema.SetDefault(jsontext.Value(fmt.Sprintf("%q", v)))
 			}
 			orderParam := &ogen.Parameter{
 				Name:        "order",
@@ -321,7 +321,7 @@ func GetSpecType(t *gen.Type, op Operation) (*ogen.Spec, error) { // nolint:funl
 				Schema: &ogen.Schema{
 					Type:    "string",
 					Enum:    sliceToRawMessage([]string{"asc", "desc"}),
-					Default: ogen.Default(json.RawMessage(fmt.Sprintf("%q", ta.GetDefaultOrder()))),
+					Default: ogen.Default(jsontext.Value(fmt.Sprintf("%q", ta.GetDefaultOrder()))),
 				},
 			}
 			oper.Parameters = append(oper.Parameters, sortParam, orderParam)
@@ -532,9 +532,9 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 					In:          "query",
 					Description: "The number of entities to retrieve per page.",
 					Schema: ogen.Int().
-						SetMinimum(ptr(int64(ta.GetMinItemsPerPage(cfg)))).
-						SetMaximum(ptr(int64(ta.GetMaxItemsPerPage(cfg)))).
-						SetDefault(json.RawMessage(strconv.Itoa(ta.GetItemsPerPage(cfg)))),
+						SetMinimum(new(int64(ta.GetMinItemsPerPage(cfg)))).
+						SetMaximum(new(int64(ta.GetMaxItemsPerPage(cfg)))).
+						SetDefault(jsontext.Value(strconv.Itoa(ta.GetItemsPerPage(cfg)))),
 				},
 			)
 
@@ -561,7 +561,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 				Schema:      &ogen.Schema{Ref: "#/components/schemas/" + addSortableFields(spec, e.Type, sortable)},
 			}
 			if v := ra.GetDefaultSort(t.ID != nil && (e == nil || e.Field() == nil)); v != "" {
-				sortParam.Schema = sortParam.Schema.SetDefault(json.RawMessage(fmt.Sprintf("%q", v)))
+				sortParam.Schema = sortParam.Schema.SetDefault(jsontext.Value(fmt.Sprintf("%q", v)))
 			}
 			orderParam := &ogen.Parameter{
 				Name:        "order",
@@ -570,7 +570,7 @@ func GetSpecEdge(t *gen.Type, e *gen.Edge, op Operation) (*ogen.Spec, error) { /
 				Schema: &ogen.Schema{
 					Type:    "string",
 					Enum:    sliceToRawMessage([]string{"asc", "desc"}),
-					Default: ogen.Default(json.RawMessage(fmt.Sprintf("%q", ra.GetDefaultOrder()))),
+					Default: ogen.Default(jsontext.Value(fmt.Sprintf("%q", ra.GetDefaultOrder()))),
 				},
 			}
 			oper.Parameters = append(oper.Parameters, sortParam, orderParam)

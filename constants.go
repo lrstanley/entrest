@@ -162,7 +162,7 @@ var (
 var SchemaObjectAny = &ogen.Schema{
 	Type: "object",
 	AdditionalProperties: &ogen.AdditionalProperties{
-		Bool: ptr(true), // https://github.com/ogen-go/ogen/issues/1221
+		Bool: new(true), // https://github.com/ogen-go/ogen/issues/1221
 	},
 }
 

@@ -1,7 +1,335 @@
 ---
 title: Configuration
+description: Runtime configuration for the generated HTTP handler via rest.ServerConfig.
 sidebar:
   order: 2
 ---
 
-TODO
+import { Code } from '@astrojs/starlight/components';
+
+The generated HTTP handler is configured via `rest.ServerConfig` when calling `rest.NewServer`.
+These types are generated into your project's `<ent>/rest` package alongside the handler itself.
+
+Passing `nil` is equivalent to `&rest.ServerConfig{}` — every field has a safe default.
+
+:::note
+This page covers **runtime** options. Generation-time options — which router to generate, pagination
+defaults, strict mutation, embedding the OpenAPI spec, and so on — live on
+[`entrest.Config`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) and are applied when you
+run `go generate`.
+:::
+
+## Base URL and path
+
+`BaseURL` and `BasePath` tell the handler where it is mounted. That information is used to:
+
+- Strip the path prefix from incoming requests (stdlib handler only).
+- Inject a `servers` entry into `/openapi.json`.
+- Point the embedded `/docs` UI at the spec.
+- Prefix `Link` response headers when [Link headers](#link-headers) are enabled.
+
+If you set `BaseURL`, `BasePath` is inferred from the URL path when it is empty. A leading slash is
+added if missing, and a trailing slash is stripped. An invalid `BaseURL` causes `NewServer` to
+return an error.
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    BaseURL: "https://api.example.com/v1",
+})
+if err != nil {
+    panic(err)
+}
+
+http.ListenAndServe(":8080", srv.Handler())`} />
+
+With that config, `GET /v1/users` is routed to the generated `/users` endpoint, the spec advertises
+`https://api.example.com/v1` as its server URL, and `/docs` loads `/v1/openapi.json`.
+
+You can set `BasePath` alone when you do not want a server URL injected into the spec:
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    BasePath: "/v1",
+})`} />
+
+If `BaseURL` is empty, `DisableSpecInjectServer` is forced on — there is no server URL to inject.
+
+### Stdlib vs chi
+
+The generated `Handler` signature depends on [`entrest.Config.Handler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config)
+at generation time:
+
+- **stdlib** (`entrest.HandlerStdlib`): `Handler() http.Handler`. Serve the returned handler at the
+  process root. `http.StripPrefix` applies `BasePath` for you.
+- **chi** (`entrest.HandlerChi`): `Handler(r chi.Router)`. Mount the generated routes onto a router
+  (or a sub-router) yourself, and set `BasePath` to match that mount point so spec URLs and `Link`
+  headers stay correct.
+
+<Code lang="go" title="chi" code={`cfg := &rest.ServerConfig{BasePath: "/v1"}
+srv, err := rest.NewServer(db, cfg)
+if err != nil {
+    panic(err)
+}
+
+r := chi.NewRouter()
+r.Route("/v1", func(r chi.Router) {
+    srv.Handler(r)
+})
+http.ListenAndServe(":8080", r)`} />
+
+Do not also wrap the stdlib handler in a second prefix mount — that would strip `/v1` twice.
+
+## Request body size
+
+By default, every request handled by `Server.Handler` is subject to a maximum body size of **8 MiB**
+(`DefaultMaxRequestBodyBytes`). This helps protect your API from oversized payloads and accidental
+denial-of-service from large uploads.
+
+The limit is enforced automatically — you do not need to register any middleware yourself when using the
+generated handler. Under the hood, `UseMaxBodyBytes` is applied for you:
+
+- If the client sends a `Content-Length` header larger than the limit, the request is rejected immediately
+  with **413 Request Entity Too Large** before the body is read.
+- Otherwise, the request body is wrapped with [`http.MaxBytesReader`](https://pkg.go.dev/net/http#MaxBytesReader),
+  which stops reading once the limit is exceeded.
+
+When a request exceeds the limit, the response uses the standard entrest error shape:
+
+<Code lang="json" frame="none" code={`{
+  "error": "http: request body too large",
+  "type": "Request Entity Too Large",
+  "code": 413,
+  "timestamp": "2026-08-20T12:00:00Z"
+}`} />
+
+### Override the limit
+
+Set `ServerConfig.MaxRequestBodyBytes` to a positive byte count. A zero value keeps the default (8 MiB).
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    MaxRequestBodyBytes: 1 << 20, // 1 MiB
+})
+if err != nil {
+    panic(err)
+}
+
+http.ListenAndServe(":8080", srv.Handler())`} />
+
+You can also read the effective limit at runtime with `ServerConfig.GetMaxRequestBodyBytes()`.
+
+### Disable the limit
+
+Set `MaxRequestBodyBytes` to a **negative** value (for example, `-1`) to turn off body size checking entirely.
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    MaxRequestBodyBytes: -1,
+})
+if err != nil {
+    panic(err)
+}
+
+http.ListenAndServe(":8080", srv.Handler())`} />
+
+Disabling the limit removes the middleware wrapper from `Server.Handler`. If you assemble your own middleware
+stack instead of using the generated handler, you can opt in with `UseMaxBodyBytes` directly:
+
+<Code lang="go" title="custom router" code={`limit := rest.UseMaxBodyBytes(4 << 20) // 4 MiB
+
+handler := limit(rest.UseEntContext(db)(mux))`} />
+
+:::note
+Multipart form parsing still uses `DefaultMaxRequestBodyBytes` as its in-memory cap when decoding request
+bodies via `Bind`, independent of whether you disabled the middleware limit on the server.
+:::
+
+## OpenAPI spec endpoint
+
+The handler serves the generated spec at `GET {BasePath}/openapi.json` unless you disable it.
+
+Set `DisableSpecHandler` to skip registering that route. Doing so also disables the embedded
+[API reference docs](#api-reference-docs), because they load the spec from that URL.
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    DisableSpecHandler: true,
+})`} />
+
+When `BaseURL` is set, the handler injects it as a `servers` entry in the served spec so clients and
+the docs UI know where to send requests. Injection is skipped if the spec already defines `servers`
+(for example via [`Config.Spec`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) /
+`SpecFromPath`). Set `DisableSpecInjectServer` to always leave the spec untouched:
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    BaseURL:                 "https://api.example.com/v1",
+    DisableSpecInjectServer: true,
+})`} />
+
+:::note
+`DisableSpecHandler`, `DisableSpecInjectServer`, `DisableDocsHandler`, `EnableLinks`, `BaseURL`, and
+`BasePath` are only generated when [`entrest.Config.DisableSpecHandler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config)
+is **false** at generation time. Setting that generation option removes the spec from the binary
+entirely, not just the HTTP route.
+:::
+
+## API reference docs
+
+By default the handler also serves an embedded [Scalar](https://github.com/scalar/scalar) UI at
+`GET {BasePath}/docs`. With the stdlib handler, a `GET` of `/` (after `BasePath` is stripped)
+redirects to that page.
+
+Set `DisableDocsHandler` to keep `/openapi.json` but skip the HTML UI — useful if you host docs
+elsewhere:
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    DisableDocsHandler: true,
+})`} />
+
+`DisableDocsHandler` has no effect when `DisableSpecHandler` is already true.
+
+## Link headers
+
+Set `EnableLinks` to add a [`Link`](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Link)
+response header on successful (and error) responses. Clients can use it to discover the spec and
+walk paginated list results without parsing the JSON body.
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    BaseURL:     "https://api.example.com/v1",
+    EnableLinks: true,
+})`} />
+
+When enabled, responses may include:
+
+| Relation | When |
+| --- | --- |
+| `describedby`, `service-desc` | Spec handler is enabled — points at `{BasePath}/openapi.json` |
+| `prev` | List operation, current page is greater than 1 |
+| `next` | List operation, current page is not the last page |
+
+Example header on a paginated list:
+
+<Code lang="http" frame="none" code={`Link: </v1/openapi.json>; rel="describedby", </v1/openapi.json>; rel="service-desc", </v1/pets?page=2&per_page=10>; rel="next"`} />
+
+See [Pagination](/entrest/openapi-specs/pagination/) for the JSON pagination envelope these links
+mirror.
+
+## Error handling
+
+Every failed request is written as an `ErrorResponse`:
+
+<Code lang="json" frame="none" code={`{
+  "error": "ent: pet not found",
+  "type": "Not Found",
+  "code": 404,
+  "request_id": "abc123",
+  "timestamp": "2026-08-20T12:00:00Z"
+}`} />
+
+`DefaultErrorHandler` maps errors to status codes:
+
+| Condition | Status |
+| --- | --- |
+| Endpoint not found | 404 |
+| Method not allowed | 405 |
+| Bad request / invalid ID / validation error | 400 |
+| Request body too large | 413 |
+| Ent `privacy.Deny` (when the privacy feature is enabled) | 403 |
+| Ent not found | 404 |
+| Constraint or not-singular error | 409 |
+| Anything else | 500 |
+
+Successful `POST` responses use **201 Created**. Deletes with no body use **204 No Content**.
+
+### Mask error details
+
+Set `MaskErrors` so the `error` field is replaced with the HTTP status text (for example
+`"Internal Server Error"`). `type` and `code` are unchanged. Use this in production so internal
+details do not leak to clients.
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    MaskErrors: true,
+})`} />
+
+### Custom error handler
+
+`ErrorHandler` replaces the default entirely. If you only want to log errors and still
+use the standard JSON shape, call `Server.DefaultErrorHandler` afterwards. Assign it on the same
+`*ServerConfig` pointer after `NewServer` returns, so the handler can close over `srv`:
+
+<Code lang="go" title="main.go" code={`cfg := &rest.ServerConfig{MaskErrors: true}
+srv, err := rest.NewServer(db, cfg)
+if err != nil {
+    panic(err)
+}
+
+cfg.ErrorHandler = func(w http.ResponseWriter, r *http.Request, op rest.Operation, err error) {
+    slog.Error("api error", "op", op, "err", err)
+    srv.DefaultErrorHandler(w, r, op, err)
+}`} />
+
+If you handle the response yourself, do not also call `DefaultErrorHandler` — it writes the body
+and status.
+
+## Request IDs
+
+Error responses include `request_id` when a request ID is available. `GetReqID` lets you plug in
+whatever ID middleware you already use:
+
+<Code lang="go" title="main.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{
+    GetReqID: func(r *http.Request) string {
+        return r.Header.Get("X-Request-Id")
+    },
+})`} />
+
+If `GetReqID` is nil, the default is:
+
+- **chi**: [`middleware.GetReqID`](https://pkg.go.dev/github.com/go-chi/chi/v5/middleware#GetReqID)
+  from the request context (populate it with `middleware.RequestID`).
+- **stdlib**: the `X-Request-Id` request header.
+
+The generated OpenAPI spec can declare that header via
+[`entrest.Config.GlobalRequestHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#Config)
+(`entrest.RequestIDHeader` is a ready-made value). That only documents the header — you still
+need `GetReqID` (or the default above) for it to appear on error responses.
+
+## Ent client context
+
+`Server.Handler` always wraps the mux with `UseEntContext`, which stores the `ent.Client` on the
+request context via `ent.NewContext`. That is what Ent privacy policies and other context-aware
+layers read from.
+
+You do not need to add this middleware yourself when you use the generated handler. Register it
+only if some other handler or middleware needs the client on a request that never reaches
+`Server.Handler`:
+
+<Code lang="go" title="custom router" code={`handler := rest.UseEntContext(db)(mux)`} />
+
+## JSON responses
+
+All JSON responses go through `rest.JSON`. Add `pretty=true` as a query parameter (or form value)
+to pretty-print the body — handy when exploring the API with curl:
+
+<Code lang="bash" code={`curl 'http://localhost:8080/pets?pretty=true'`} />
+
+`rest.M` is a `map[string]any` alias for one-off JSON objects in custom endpoints.
+
+## Request binding
+
+`Bind` decodes query parameters, `application/json`, `application/x-www-form-urlencoded`, and
+`multipart/form-data` into the generated param structs. Form decoding uses the package-level
+`DefaultDecoder` ([go-playground/form](https://github.com/go-playground/form)). Replace or
+reconfigure `DefaultDecoder` before serving traffic if you need custom type converters.
+
+Unknown JSON fields are rejected when [`entrest.Config.StrictMutate`](https://pkg.go.dev/github.com/lrstanley/entrest#Config)
+is enabled at generation time.
+
+## Related generation-time options
+
+These `entrest.Config` flags change how the handler is generated, not how a running server is
+configured:
+
+| Option | Effect |
+| --- | --- |
+| `Handler` | Generate a stdlib `http.Handler`, a chi mounter, or spec-only (`HandlerNone`) |
+| `DisableSpecHandler` | Omit `/openapi.json`, `/docs`, `Link` support, and the embedded spec |
+| `StrictMutate` | Reject unknown JSON fields on create/update |
+| `ListNotFound` | Return **404** (instead of **200**) when a list endpoint matches no rows |
+| `WithTesting` | Generate the `enttest` helpers used in [Testing](/entrest/http-handler/testing/) |
+
+See [`entrest.Config`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) for the full set.

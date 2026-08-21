@@ -124,6 +124,16 @@ export default defineConfig({
             ],
         }),
     ],
+    vite: {
+        server: {
+            watch: {
+                // With srcDir: "./", content-sync writes under .astro/ look like source
+                // changes and retrigger Astro 7 route HMR, which logs
+                // "Failed to update routes via HMR: TypeError: undefined is not a function".
+                ignored: ["**/.astro/**"],
+            },
+        },
+    },
     markdown: {
         processor: unified({
             gfm: true,

@@ -215,7 +215,7 @@ func (f *FilterableFieldOp) StructTag() string {
 	return fmt.Sprintf(
 		`form:%q json:%q`,
 		f.ParameterName()+",omitempty",
-		SnakeCase(f.ComponentName())+",omitempty",
+		SnakeCase(f.ComponentName())+",omitzero",
 	)
 }
 
@@ -487,7 +487,7 @@ func (g *FilterGroup) StructTag(op gen.Op) string {
 	return fmt.Sprintf(
 		`form:%q json:%q`,
 		g.ParameterName(op)+",omitempty",
-		SnakeCase(g.ComponentName(op))+",omitempty",
+		SnakeCase(g.ComponentName(op))+",omitzero",
 	)
 }
 

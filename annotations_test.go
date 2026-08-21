@@ -16,7 +16,7 @@ func TestGetAnnotation(t *testing.T) {
 	// True.
 	assert.Equal(
 		t,
-		ptr(true),
+		new(true),
 		GetAnnotation(&gen.Type{Annotations: map[string]any{
 			Annotation{}.Name(): WithPagination(true),
 		}}).Pagination,
@@ -25,7 +25,7 @@ func TestGetAnnotation(t *testing.T) {
 	// False.
 	assert.Equal(
 		t,
-		ptr(false),
+		new(false),
 		GetAnnotation(&gen.Type{Annotations: map[string]any{
 			Annotation{}.Name(): WithPagination(false),
 		}}).Pagination,
@@ -52,7 +52,7 @@ func TestGetAnnotation(t *testing.T) {
 	// Test edges.
 	assert.Equal(
 		t,
-		ptr(true),
+		new(true),
 		GetAnnotation(&gen.Edge{Annotations: map[string]any{
 			Annotation{}.Name(): WithEagerLoad(true),
 		}}).EagerLoad,
@@ -121,7 +121,7 @@ func TestAnnotation_Merge(t *testing.T) {
 				WithPagination(false),
 			},
 			want: Annotation{
-				Pagination: ptr(false),
+				Pagination: new(false),
 			},
 		},
 		{
@@ -133,7 +133,7 @@ func TestAnnotation_Merge(t *testing.T) {
 				WithDescription("bar"),
 			},
 			want: Annotation{
-				Pagination:  ptr(true),
+				Pagination:  new(true),
 				Description: "bar",
 			},
 		},

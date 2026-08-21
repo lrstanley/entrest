@@ -174,7 +174,7 @@ var (
 
 type Filtered[P ~func(*sql.Selector)] struct {
     // FilterOperation controls how multiple predicates are applied together.
-    FilterOperation *FilterOperation `json:"filter_op,omitempty" form:"filter_op,omitempty"`
+    FilterOperation *FilterOperation `json:"filter_op,omitzero" form:"filter_op,omitempty"`
 }
 
 // ApplyFilterOperation applies the requested filter operation (if provided) to the

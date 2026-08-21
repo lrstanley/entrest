@@ -6,7 +6,9 @@ package entrest
 
 import (
 	"cmp"
-	"encoding/json"
+	jsonv1 "encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"fmt"
 	"slices"
 	"sync"
@@ -14,10 +16,14 @@ import (
 	"entgo.io/ent/entc/gen"
 )
 
-// ptr returns a pointer to the given value. Should only be used for primitives.
-func ptr[T any](v T) *T {
-	return &v
-}
+var (
+	// ogenJSONOpts configures json/v2 when round-tripping ogen types. Zero-value
+	// jsonschema.Const fields must be omitted (v1 omitempty semantics).
+	ogenJSONOpts = jsonv1.OmitEmptyWithLegacySemantics(true)
+
+	// ogenJSONWriteOpts extends ogenJSONOpts with stable map key ordering for spec output.
+	ogenJSONWriteOpts = json.JoinOptions(ogenJSONOpts, json.Deterministic(true))
+)
 
 // memoize memoizes the provided function, so that it is only called once for each
 // input.
@@ -41,10 +47,10 @@ func memoize[K comparable, V any](fn func(K) V) func(K) V {
 	}
 }
 
-// sliceToRawMessage returns a slice of json.RawMessage from a slice of T. Panics
+// sliceToRawMessage returns a slice of [jsontext.Value] from a slice of T. Panics
 // if any of the values cannot be marshaled to JSON.
-func sliceToRawMessage[T any](v []T) []json.RawMessage {
-	r := make([]json.RawMessage, len(v))
+func sliceToRawMessage[T any](v []T) []jsontext.Value {
+	r := make([]jsontext.Value, len(v))
 	var err error
 	for i, v := range v {
 		r[i], err = json.Marshal(v)
@@ -135,10 +141,10 @@ func mapKeys[M ~map[K]V, K cmp.Ordered, V any](m M) []K {
 	return r
 }
 
-// ToEnum returns a slice of json.RawMessage from a slice of T. This is useful when
+// ToEnum returns a slice of [jsontext.Value] from a slice of T. This is useful when
 // using the [WithSchema] annotation.
-func ToEnum[T any](values []T) ([]json.RawMessage, error) {
-	results := make([]json.RawMessage, len(values))
+func ToEnum[T any](values []T) ([]jsontext.Value, error) {
+	results := make([]jsontext.Value, len(values))
 	var err error
 	for i, e := range values {
 		results[i], err = json.Marshal(e)

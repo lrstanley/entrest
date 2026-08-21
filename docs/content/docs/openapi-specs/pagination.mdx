@@ -168,7 +168,7 @@ Below is an example of how you might achieve collecting all results from a pagin
 package main
 
 import (
-    "encoding/json"
+    "encoding/json/v2"
     "fmt"
     "net/http"
 )
@@ -203,8 +203,7 @@ func main() {
             panic(err)
         }
 
-        decoder := json.NewDecoder(resp.Body)
-        err = decoder.Decode(&pageResults)
+        err = json.UnmarshalRead(resp.Body, &pageResults)
         if err != nil {
             panic(err)
         }

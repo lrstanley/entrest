@@ -6,11 +6,11 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding"
-	"encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"html/template"
-	"io"
 	"net/http"
 	"net/url"
 	"slices"
@@ -51,11 +51,11 @@ const (
 
 // ErrorResponse is the response structure for errors.
 type ErrorResponse struct {
-	Error     string `json:"error"`                // The underlying error, which may be masked when debugging is disabled.
-	Type      string `json:"type"`                 // A summary of the error code based off the HTTP status code or application error code.
-	Code      int    `json:"code"`                 // The HTTP status code or other internal application error code.
-	RequestID string `json:"request_id,omitempty"` // The unique request ID for this error.
-	Timestamp string `json:"timestamp,omitempty"`  // The timestamp of the error, in RFC3339 format.
+	Error     string `json:"error"`               // The underlying error, which may be masked when debugging is disabled.
+	Type      string `json:"type"`                // A summary of the error code based off the HTTP status code or application error code.
+	Code      int    `json:"code"`                // The HTTP status code or other internal application error code.
+	RequestID string `json:"request_id,omitzero"` // The unique request ID for this error.
+	Timestamp string `json:"timestamp,omitzero"`  // The timestamp of the error, in RFC3339 format.
 }
 
 type ErrBadRequest struct {
@@ -109,6 +109,13 @@ func IsInvalidID(err error) bool {
 	return errors.As(err, &_target)
 }
 
+// IsRequestEntityTooLarge returns true if the error indicates the request body
+// exceeded the configured size limit.
+func IsRequestEntityTooLarge(err error) bool {
+	_, ok := errors.AsType[*http.MaxBytesError](err)
+	return ok
+}
+
 // JSON marshals 'v' to JSON, and setting the Content-Type as application/json.
 // Note that this does NOT auto-escape HTML. If 'v' cannot be marshalled to JSON,
 // this will panic.
@@ -118,13 +125,13 @@ func IsInvalidID(err error) bool {
 func JSON(w http.ResponseWriter, r *http.Request, _status int, v any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(_status)
-	_enc := json.NewEncoder(w)
 
+	var opts []json.Options
 	if _pretty, _ := strconv.ParseBool(r.FormValue("pretty")); _pretty {
-		_enc.SetIndent("", "    ")
+		opts = append(opts, jsontext.Multiline(true))
 	}
 
-	if err := _enc.Encode(v); err != nil && err != io.EOF {
+	if err := json.MarshalWrite(w, v, opts...); err != nil {
 		panic(fmt.Sprintf("failed to marshal response: %v", err))
 	}
 }
@@ -132,19 +139,59 @@ func JSON(w http.ResponseWriter, r *http.Request, _status int, v any) {
 // M is an alias for map[string]any, which makes it easier to respond with generic JSON data structures.
 type M map[string]any
 
+// DefaultMaxRequestBodyBytes is the default maximum request body size (8 MiB).
+const DefaultMaxRequestBodyBytes int64 = 8 << 20
+
+// GetMaxRequestBodyBytes returns the configured request body size limit. Zero uses
+// [DefaultMaxRequestBodyBytes]. Negative values disable the limit.
+func (c *ServerConfig) GetMaxRequestBodyBytes() int64 {
+	if c == nil || c.MaxRequestBodyBytes == 0 {
+		return DefaultMaxRequestBodyBytes
+	}
+	if c.MaxRequestBodyBytes < 0 {
+		return 0
+	}
+	return c.MaxRequestBodyBytes
+}
+
+// UseMaxBodyBytes is middleware that limits the size of every request body to n bytes.
+// When the limit is exceeded the client receives HTTP 413 Request Entity Too Large.
+func UseMaxBodyBytes(n int64) func(_next http.Handler) http.Handler {
+	return func(_next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if n <= 0 {
+				_next.ServeHTTP(w, r)
+				return
+			}
+			if r.ContentLength > n {
+				writeRequestEntityTooLarge(w, r, &http.MaxBytesError{Limit: n})
+				return
+			}
+			r.Body = http.MaxBytesReader(w, r.Body, n)
+			_next.ServeHTTP(w, r)
+		})
+	}
+}
+
+func writeRequestEntityTooLarge(w http.ResponseWriter, r *http.Request, err error) {
+	JSON(w, r, http.StatusRequestEntityTooLarge, ErrorResponse{
+		Error:     err.Error(),
+		Type:      http.StatusText(http.StatusRequestEntityTooLarge),
+		Code:      http.StatusRequestEntityTooLarge,
+		Timestamp: time.Now().UTC().Format(time.RFC3339),
+	})
+}
+
 var (
 	// DefaultDecoder is the default decoder used by Bind. You can either override
 	// this, or provide your own. Make sure it is set before Bind is called.
 	DefaultDecoder = form.NewDecoder()
-
-	// DefaultDecodeMaxMemory is the maximum amount of memory in bytes that will be
-	// used for decoding multipart/form-data requests.
-	DefaultDecodeMaxMemory int64 = 8 << 20
 )
 
 // Bind decodes the request body to the given struct. At this time the only supported
 // content-types are application/json, application/x-www-form-urlencoded, as well as
-// GET parameters.
+// GET parameters. Request body size is enforced by [UseMaxBodyBytes] middleware,
+// which [Server.Handler] installs by default.
 func Bind(r *http.Request, v any) error {
 	err := r.ParseForm()
 	if err != nil {
@@ -157,12 +204,10 @@ func Bind(r *http.Request, v any) error {
 	case http.MethodPost, http.MethodPut, http.MethodPatch:
 		switch {
 		case strings.HasPrefix(r.Header.Get("Content-Type"), "application/json"):
-			_dec := json.NewDecoder(r.Body)
-			_dec.DisallowUnknownFields()
 			defer r.Body.Close()
-			err = _dec.Decode(v)
+			err = json.UnmarshalRead(r.Body, v, json.RejectUnknownMembers(true))
 		case strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data"):
-			err = r.ParseMultipartForm(DefaultDecodeMaxMemory)
+			err = r.ParseMultipartForm(DefaultMaxRequestBodyBytes)
 			if err == nil {
 				err = DefaultDecoder.Decode(v, r.MultipartForm.Value)
 			}
@@ -174,6 +219,9 @@ func Bind(r *http.Request, v any) error {
 	}
 
 	if err != nil {
+		if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
+			return err
+		}
 		return &ErrBadRequest{Err: fmt.Errorf("error decoding %s request into required format (%T): %w", r.Method, v, err)}
 	}
 	return nil
@@ -182,10 +230,10 @@ func Bind(r *http.Request, v any) error {
 // Req simplifies making an HTTP handler that returns a single result, and an error.
 // The result, if not nil, must be JSON-marshalable. If result is nil, [http.StatusNoContent]
 // will be returned.
-func Req[Resp any](s *Server, _op Operation, _fn func(*http.Request) (*Resp, error)) http.HandlerFunc {
+func (s *Server) Req[Resp any](_op Operation, _fn func(*http.Request) (*Resp, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_results, err := _fn(r)
-		handleResponse(s, w, r, _op, _results, err)
+		s.handleResponse(w, r, _op, _results, err)
 	}
 }
 
@@ -231,49 +279,49 @@ func resolveID[T any](r *http.Request) (_id T, err error) {
 
 // ReqID is similar to Req, but also processes an "id" path parameter and provides it to the
 // handler function.
-func ReqID[Resp, I any](s *Server, _op Operation, _fn func(*http.Request, I) (*Resp, error)) http.HandlerFunc {
+func (s *Server) ReqID[Resp, I any](_op Operation, _fn func(*http.Request, I) (*Resp, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_id, err := resolveID[I](r)
 		if err != nil {
-			handleResponse[Resp](s, w, r, _op, nil, err)
+			s.handleResponse[Resp](w, r, _op, nil, err)
 			return
 		}
 		_results, err := _fn(r, _id)
-		handleResponse(s, w, r, _op, _results, err)
+		s.handleResponse(w, r, _op, _results, err)
 	}
 }
 
 // ReqParam is similar to Req, but also processes a request body/query params and provides it
 // to the handler function.
-func ReqParam[Params, Resp any](s *Server, _op Operation, _fn func(*http.Request, *Params) (*Resp, error)) http.HandlerFunc {
+func (s *Server) ReqParam[Params, Resp any](_op Operation, _fn func(*http.Request, *Params) (*Resp, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_params := new(Params)
 		if err := Bind(r, _params); err != nil {
-			handleResponse[Resp](s, w, r, _op, nil, err)
+			s.handleResponse[Resp](w, r, _op, nil, err)
 			return
 		}
 		_results, err := _fn(r, _params)
-		handleResponse(s, w, r, _op, _results, err)
+		s.handleResponse(w, r, _op, _results, err)
 	}
 }
 
 // ReqIDParam is similar to ReqParam, but also processes an "id" path parameter and request
 // body/query params, and provides it to the handler function.
-func ReqIDParam[Params, Resp, I any](s *Server, _op Operation, _fn func(*http.Request, I, *Params) (*Resp, error)) http.HandlerFunc {
+func (s *Server) ReqIDParam[Params, Resp, I any](_op Operation, _fn func(*http.Request, I, *Params) (*Resp, error)) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		_id, err := resolveID[I](r)
 		if err != nil {
-			handleResponse[Resp](s, w, r, _op, nil, err)
+			s.handleResponse[Resp](w, r, _op, nil, err)
 			return
 		}
 		_params := new(Params)
 		err = Bind(r, _params)
 		if err != nil {
-			handleResponse[Resp](s, w, r, _op, nil, err)
+			s.handleResponse[Resp](w, r, _op, nil, err)
 			return
 		}
 		_results, err := _fn(r, _id, _params)
-		handleResponse(s, w, r, _op, _results, err)
+		s.handleResponse(w, r, _op, _results, err)
 	}
 }
 
@@ -364,8 +412,8 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
       });
     </script>
     <script
-      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.64.1"
-      integrity="sha256-GOfsX2zSHJFEtew/ipnnBDEhIqYxbTshjYN+/2ngd+4="
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.66.1"
+      integrity="sha256-Z71HW2QGJUt3Gv+J7Dak3Yzs7sFBE23RyNblDr5X8Sg="
       crossorigin="anonymous"
     ></script>
   </body>
@@ -378,7 +426,7 @@ func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
 		"DisableSpecInjectServer": s.config.DisableSpecInjectServer,
 	})
 	if err != nil {
-		handleResponse[struct{}](s, w, r, "", nil, err)
+		s.handleResponse[struct{}](w, r, "", nil, err)
 		return
 	}
 	w.Header().Set("Content-Type", "text/html")
@@ -433,6 +481,10 @@ type ServerConfig struct {
 	// default implementation will use the X-Request-Id header, otherwise an empty
 	// string will be returned. If using go-chi, middleware.GetReqID will be used.
 	GetReqID func(r *http.Request) string
+
+	// MaxRequestBodyBytes limits the size of request bodies in bytes. Zero uses
+	// [DefaultMaxRequestBodyBytes] (8 MiB). Negative values disable the limit.
+	MaxRequestBodyBytes int64
 }
 
 type Server struct {
@@ -490,6 +542,8 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, _op
 		_resp.Code = http.StatusBadRequest
 	case IsInvalidID(err):
 		_resp.Code = http.StatusBadRequest
+	case IsRequestEntityTooLarge(err):
+		_resp.Code = http.StatusRequestEntityTooLarge
 	case errors.Is(err, privacy.Deny):
 		_resp.Code = http.StatusForbidden
 	case ent.IsNotFound(err):
@@ -519,7 +573,7 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, _op
 	JSON(w, r, _resp.Code, _resp)
 }
 
-func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, _op Operation, _resp *Resp, err error) {
+func (s *Server) handleResponse[Resp any](w http.ResponseWriter, r *http.Request, _op Operation, _resp *Resp, err error) {
 	if s.config.EnableLinks {
 		_links := Links{}
 		if !s.config.DisableSpecHandler {
@@ -594,50 +648,50 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
 // Handler returns a ready-to-use http.Handler that mounts all of the necessary endpoints.
 func (s *Server) Handler() http.Handler {
 	_mux := http.NewServeMux()
-	_mux.HandleFunc("GET /categories", ReqParam(s, OperationList, s.ListCategories))
-	_mux.HandleFunc("GET /categories/{id}", ReqID(s, OperationRead, s.GetCategory))
-	_mux.HandleFunc("GET /categories/{id}/pets", ReqIDParam(s, OperationList, s.ListCategoryPets))
-	_mux.HandleFunc("POST /categories", ReqParam(s, OperationCreate, s.CreateCategory))
-	_mux.HandleFunc("PATCH /categories/{id}", ReqIDParam(s, OperationUpdate, s.UpdateCategory))
-	_mux.HandleFunc("DELETE /categories/{id}", ReqID(s, OperationDelete, s.DeleteCategory))
-	_mux.HandleFunc("GET /follows", ReqParam(s, OperationList, s.ListFollows))
-	_mux.HandleFunc("POST /follows", ReqParam(s, OperationCreate, s.CreateFollow))
-	_mux.HandleFunc("GET /friendships", ReqParam(s, OperationList, s.ListFriendships))
-	_mux.HandleFunc("GET /friendships/{id}", ReqID(s, OperationRead, s.GetFriendship))
-	_mux.HandleFunc("GET /friendships/{id}/user", ReqID(s, OperationRead, s.GetFriendshipUser))
-	_mux.HandleFunc("GET /friendships/{id}/friend", ReqID(s, OperationRead, s.GetFriendshipFriend))
-	_mux.HandleFunc("POST /friendships", ReqParam(s, OperationCreate, s.CreateFriendship))
-	_mux.HandleFunc("PATCH /friendships/{id}", ReqIDParam(s, OperationUpdate, s.UpdateFriendship))
-	_mux.HandleFunc("DELETE /friendships/{id}", ReqID(s, OperationDelete, s.DeleteFriendship))
-	_mux.HandleFunc("GET /pets", ReqParam(s, OperationList, s.ListPets))
-	_mux.HandleFunc("GET /pets/{id}", ReqID(s, OperationRead, s.GetPet))
-	_mux.HandleFunc("GET /pets/{id}/categories", ReqIDParam(s, OperationList, s.ListPetCategories))
-	_mux.HandleFunc("GET /pets/{id}/owner", ReqID(s, OperationRead, s.GetPetOwner))
-	_mux.HandleFunc("GET /pets/{id}/friends", ReqIDParam(s, OperationList, s.ListPetFriends))
-	_mux.HandleFunc("GET /pets/{id}/followed-by", ReqIDParam(s, OperationList, s.ListPetFollowedBys))
-	_mux.HandleFunc("POST /pets", ReqParam(s, OperationCreate, s.CreatePet))
-	_mux.HandleFunc("PATCH /pets/{id}", ReqIDParam(s, OperationUpdate, s.UpdatePet))
-	_mux.HandleFunc("DELETE /pets/{id}", ReqID(s, OperationDelete, s.DeletePet))
-	_mux.HandleFunc("GET /posts", ReqParam(s, OperationList, s.ListPosts))
-	_mux.HandleFunc("GET /posts/{id}", ReqID(s, OperationRead, s.GetPost))
-	_mux.HandleFunc("GET /posts/{id}/author", ReqID(s, OperationRead, s.GetPostAuthor))
-	_mux.HandleFunc("POST /posts", ReqParam(s, OperationCreate, s.CreatePost))
-	_mux.HandleFunc("PATCH /posts/{id}", ReqIDParam(s, OperationUpdate, s.UpdatePost))
-	_mux.HandleFunc("DELETE /posts/{id}", ReqID(s, OperationDelete, s.DeletePost))
-	_mux.HandleFunc("GET /settings", ReqParam(s, OperationList, s.ListSettings))
-	_mux.HandleFunc("GET /settings/{id}", ReqID(s, OperationRead, s.GetSetting))
-	_mux.HandleFunc("GET /settings/{id}/admins", ReqIDParam(s, OperationList, s.ListSettingAdmins))
-	_mux.HandleFunc("PATCH /settings/{id}", ReqIDParam(s, OperationUpdate, s.UpdateSetting))
-	_mux.HandleFunc("GET /users", ReqParam(s, OperationList, s.ListUsers))
-	_mux.HandleFunc("GET /users/{id}", ReqID(s, OperationRead, s.GetUser))
-	_mux.HandleFunc("GET /users/{id}/pets", ReqIDParam(s, OperationList, s.ListUserPets))
-	_mux.HandleFunc("GET /users/{id}/followed-pets", ReqIDParam(s, OperationList, s.ListUserFollowedPets))
-	_mux.HandleFunc("GET /users/{id}/friends", ReqIDParam(s, OperationList, s.ListUserFriends))
-	_mux.HandleFunc("GET /users/{id}/posts", ReqIDParam(s, OperationList, s.ListUserPosts))
-	_mux.HandleFunc("GET /users/{id}/friendships", ReqIDParam(s, OperationList, s.ListUserFriendships))
-	_mux.HandleFunc("POST /users", ReqParam(s, OperationCreate, s.CreateUser))
-	_mux.HandleFunc("PATCH /users/{id}", ReqIDParam(s, OperationUpdate, s.UpdateUser))
-	_mux.HandleFunc("DELETE /users/{id}", ReqID(s, OperationDelete, s.DeleteUser))
+	_mux.HandleFunc("GET /categories", s.ReqParam(OperationList, s.ListCategories))
+	_mux.HandleFunc("GET /categories/{id}", s.ReqID(OperationRead, s.GetCategory))
+	_mux.HandleFunc("GET /categories/{id}/pets", s.ReqIDParam(OperationList, s.ListCategoryPets))
+	_mux.HandleFunc("POST /categories", s.ReqParam(OperationCreate, s.CreateCategory))
+	_mux.HandleFunc("PATCH /categories/{id}", s.ReqIDParam(OperationUpdate, s.UpdateCategory))
+	_mux.HandleFunc("DELETE /categories/{id}", s.ReqID(OperationDelete, s.DeleteCategory))
+	_mux.HandleFunc("GET /follows", s.ReqParam(OperationList, s.ListFollows))
+	_mux.HandleFunc("POST /follows", s.ReqParam(OperationCreate, s.CreateFollow))
+	_mux.HandleFunc("GET /friendships", s.ReqParam(OperationList, s.ListFriendships))
+	_mux.HandleFunc("GET /friendships/{id}", s.ReqID(OperationRead, s.GetFriendship))
+	_mux.HandleFunc("GET /friendships/{id}/user", s.ReqID(OperationRead, s.GetFriendshipUser))
+	_mux.HandleFunc("GET /friendships/{id}/friend", s.ReqID(OperationRead, s.GetFriendshipFriend))
+	_mux.HandleFunc("POST /friendships", s.ReqParam(OperationCreate, s.CreateFriendship))
+	_mux.HandleFunc("PATCH /friendships/{id}", s.ReqIDParam(OperationUpdate, s.UpdateFriendship))
+	_mux.HandleFunc("DELETE /friendships/{id}", s.ReqID(OperationDelete, s.DeleteFriendship))
+	_mux.HandleFunc("GET /pets", s.ReqParam(OperationList, s.ListPets))
+	_mux.HandleFunc("GET /pets/{id}", s.ReqID(OperationRead, s.GetPet))
+	_mux.HandleFunc("GET /pets/{id}/categories", s.ReqIDParam(OperationList, s.ListPetCategories))
+	_mux.HandleFunc("GET /pets/{id}/owner", s.ReqID(OperationRead, s.GetPetOwner))
+	_mux.HandleFunc("GET /pets/{id}/friends", s.ReqIDParam(OperationList, s.ListPetFriends))
+	_mux.HandleFunc("GET /pets/{id}/followed-by", s.ReqIDParam(OperationList, s.ListPetFollowedBys))
+	_mux.HandleFunc("POST /pets", s.ReqParam(OperationCreate, s.CreatePet))
+	_mux.HandleFunc("PATCH /pets/{id}", s.ReqIDParam(OperationUpdate, s.UpdatePet))
+	_mux.HandleFunc("DELETE /pets/{id}", s.ReqID(OperationDelete, s.DeletePet))
+	_mux.HandleFunc("GET /posts", s.ReqParam(OperationList, s.ListPosts))
+	_mux.HandleFunc("GET /posts/{id}", s.ReqID(OperationRead, s.GetPost))
+	_mux.HandleFunc("GET /posts/{id}/author", s.ReqID(OperationRead, s.GetPostAuthor))
+	_mux.HandleFunc("POST /posts", s.ReqParam(OperationCreate, s.CreatePost))
+	_mux.HandleFunc("PATCH /posts/{id}", s.ReqIDParam(OperationUpdate, s.UpdatePost))
+	_mux.HandleFunc("DELETE /posts/{id}", s.ReqID(OperationDelete, s.DeletePost))
+	_mux.HandleFunc("GET /settings", s.ReqParam(OperationList, s.ListSettings))
+	_mux.HandleFunc("GET /settings/{id}", s.ReqID(OperationRead, s.GetSetting))
+	_mux.HandleFunc("GET /settings/{id}/admins", s.ReqIDParam(OperationList, s.ListSettingAdmins))
+	_mux.HandleFunc("PATCH /settings/{id}", s.ReqIDParam(OperationUpdate, s.UpdateSetting))
+	_mux.HandleFunc("GET /users", s.ReqParam(OperationList, s.ListUsers))
+	_mux.HandleFunc("GET /users/{id}", s.ReqID(OperationRead, s.GetUser))
+	_mux.HandleFunc("GET /users/{id}/pets", s.ReqIDParam(OperationList, s.ListUserPets))
+	_mux.HandleFunc("GET /users/{id}/followed-pets", s.ReqIDParam(OperationList, s.ListUserFollowedPets))
+	_mux.HandleFunc("GET /users/{id}/friends", s.ReqIDParam(OperationList, s.ListUserFriends))
+	_mux.HandleFunc("GET /users/{id}/posts", s.ReqIDParam(OperationList, s.ListUserPosts))
+	_mux.HandleFunc("GET /users/{id}/friendships", s.ReqIDParam(OperationList, s.ListUserFriendships))
+	_mux.HandleFunc("POST /users", s.ReqParam(OperationCreate, s.CreateUser))
+	_mux.HandleFunc("PATCH /users/{id}", s.ReqIDParam(OperationUpdate, s.UpdateUser))
+	_mux.HandleFunc("DELETE /users/{id}", s.ReqID(OperationDelete, s.DeleteUser))
 
 	if !s.config.DisableSpecHandler {
 		_mux.HandleFunc("GET /openapi.json", s.Spec)
@@ -655,12 +709,12 @@ func (s *Server) Handler() http.Handler {
 			return
 		}
 		if r.Method != http.MethodGet {
-			handleResponse[struct{}](s, w, r, "", nil, ErrMethodNotAllowed)
+			s.handleResponse[struct{}](w, r, "", nil, ErrMethodNotAllowed)
 			return
 		}
-		handleResponse[struct{}](s, w, r, "", nil, ErrEndpointNotFound)
+		s.handleResponse[struct{}](w, r, "", nil, ErrEndpointNotFound)
 	})
-	return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(_mux))
+	return http.StripPrefix(s.config.BasePath, UseMaxBodyBytes(s.config.GetMaxRequestBodyBytes())(UseEntContext(s.db)(_mux)))
 }
 
 // ListCategories maps to "GET /categories".

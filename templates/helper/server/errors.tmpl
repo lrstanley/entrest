@@ -9,8 +9,8 @@
         Error string     `json:"error"`                // The underlying error, which may be masked when debugging is disabled.
         Type  string     `json:"type"`                 // A summary of the error code based off the HTTP status code or application error code.
         Code  int        `json:"code"`                 // The HTTP status code or other internal application error code.
-        RequestID string `json:"request_id,omitempty"` // The unique request ID for this error.
-        Timestamp string `json:"timestamp,omitempty"`  // The timestamp of the error, in RFC3339 format.
+        RequestID string `json:"request_id,omitzero"` // The unique request ID for this error.
+        Timestamp string `json:"timestamp,omitzero"`  // The timestamp of the error, in RFC3339 format.
     }
 
     type ErrBadRequest struct {
@@ -62,5 +62,12 @@
     func IsInvalidID(err error) bool {
         var _target *ErrInvalidID
 	    return errors.As(err, &_target)
+    }
+
+    // IsRequestEntityTooLarge returns true if the error indicates the request body
+    // exceeded the configured size limit.
+    func IsRequestEntityTooLarge(err error) bool {
+        _, ok := errors.AsType[*http.MaxBytesError](err)
+        return ok
     }
 {{- end }}{{/* end template */}}

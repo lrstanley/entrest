@@ -5,7 +5,7 @@
 package entrest
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"fmt"
 	"net/http"
 	"slices"
@@ -29,12 +29,12 @@ func TestEnsureIntegration(t *testing.T) {
 		t.Helper()
 		out := map[string]any{}
 
-		b, err := json.Marshal(a)
+		b, err := json.Marshal(a, ogenJSONOpts)
 		if err != nil {
 			return err
 		}
 
-		err = json.Unmarshal(b, &out)
+		err = json.Unmarshal(b, &out, ogenJSONOpts)
 		if err != nil {
 			return err
 		}

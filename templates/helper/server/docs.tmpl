@@ -69,8 +69,8 @@ var scalarTemplate = template.Must(template.New("docs").Parse(`<!DOCTYPE html>
       });
     </script>
     <script
-      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.64.1"
-      integrity="sha256-GOfsX2zSHJFEtew/ipnnBDEhIqYxbTshjYN+/2ngd+4="
+      src="https://cdn.jsdelivr.net/npm/@scalar/api-reference@1.66.1"
+      integrity="sha256-Z71HW2QGJUt3Gv+J7Dak3Yzs7sFBE23RyNblDr5X8Sg="
       crossorigin="anonymous"
     ></script>
   </body>
@@ -85,7 +85,7 @@ func (s *Server) Docs(w http.ResponseWriter, r *http.Request) {
         {{- end }}
     })
     if err != nil {
-        handleResponse[struct{}](s, w, r, "", nil, err)
+        s.handleResponse[struct{}](w, r, "", nil, err)
         return
     }
     w.Header().Set("Content-Type", "text/html")

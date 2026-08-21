@@ -2,7 +2,10 @@
 
 package rest
 
-import "encoding/json"
+import (
+	"encoding/json/jsontext"
+	"encoding/json/v2"
+)
 
 // empty returns an empty value of type T.
 func empty[T any]() (t T) {
@@ -57,6 +60,14 @@ func (o Option[T]) MarshalJSON() ([]byte, error) {
 	return json.Marshal(nil)
 }
 
+// MarshalJSONTo encodes Option to JSON using the v2 encoder.
+func (o Option[T]) MarshalJSONTo(enc *jsontext.Encoder) error {
+	if !o.present {
+		return enc.WriteToken(jsontext.Null)
+	}
+	return json.MarshalEncode(enc, o.value)
+}
+
 // UnmarshalJSON decodes Option from JSON.
 func (o *Option[T]) UnmarshalJSON(b []byte) error {
 	o.present = true
@@ -67,6 +78,12 @@ func (o *Option[T]) UnmarshalJSON(b []byte) error {
 	}
 
 	return nil
+}
+
+// UnmarshalJSONFrom decodes Option from JSON using the v2 decoder.
+func (o *Option[T]) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
+	o.present = true
+	return json.UnmarshalDecode(dec, &o.value)
 }
 
 // MarshalText implements the encoding.TextMarshaler interface.

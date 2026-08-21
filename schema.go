@@ -7,7 +7,7 @@ package entrest
 
 import (
 	"cmp"
-	"encoding/json"
+	"encoding/json/v2"
 	"fmt"
 	"maps"
 	"math"
@@ -18,43 +18,43 @@ import (
 	"github.com/ogen-go/ogen"
 )
 
-// mapTypeToSchema returns an ogen.Schema for the given gen.Field, if it exists.
+// mapTypeToSchema returns an ogen.Schema for the given field type, if it exists.
 // returns nil if the type is not supported.
-func mapTypeToSchema(baseType string) *ogen.Schema {
-	switch baseType {
-	case "bool":
-		return ogen.Bool()
-	case "time.Time":
-		return ogen.DateTime()
-	case "string":
-		return ogen.String()
-	case "[]byte":
-		return ogen.Bytes()
-	case "uuid.UUID":
+func mapTypeToSchema(f *gen.Field, baseType string) *ogen.Schema {
+	switch {
+	case f.IsUUID() || baseType == "uuid.UUID":
 		return ogen.UUID()
-	case "int":
+	case f.IsTime() || baseType == "time.Time":
+		return ogen.DateTime()
+	case f.IsBool() || baseType == "bool":
+		return ogen.Bool()
+	case f.IsString() || baseType == "string":
+		return ogen.String()
+	case f.IsBytes() || baseType == "[]byte":
+		return ogen.Bytes()
+	case baseType == "int":
 		return ogen.Int()
-	case "int8":
-		return ogen.Int32().SetMinimum(ptr(int64(math.MinInt8))).SetMaximum(ptr(int64(math.MaxInt8)))
-	case "int16":
-		return ogen.Int32().SetMinimum(ptr(int64(math.MinInt16))).SetMaximum(ptr(int64(math.MaxInt16)))
-	case "int32":
-		return ogen.Int32().SetMinimum(ptr(int64(math.MinInt32))).SetMaximum(ptr(int64(math.MaxInt32)))
-	case "int64":
-		return ogen.Int64().SetMinimum(ptr(int64(math.MinInt64))).SetMaximum(ptr(int64(math.MaxInt64)))
-	case "uint":
-		return ogen.Int64().SetMinimum(ptr(int64(0))).SetMaximum(ptr(int64(math.MaxUint32)))
-	case "uint8":
-		return ogen.Int32().SetMinimum(ptr(int64(0))).SetMaximum(ptr(int64(math.MaxUint8)))
-	case "uint16":
-		return ogen.Int32().SetMinimum(ptr(int64(0))).SetMaximum(ptr(int64(math.MaxUint16)))
-	case "uint32":
-		return ogen.Int64().SetMinimum(ptr(int64(0))).SetMaximum(ptr(int64(math.MaxUint32)))
-	case "uint64":
-		return ogen.Int64().SetMinimum(ptr(int64(0)))
-	case "float32":
+	case baseType == "int8":
+		return ogen.Int32().SetMinimum(new(int64(math.MinInt8))).SetMaximum(new(int64(math.MaxInt8)))
+	case baseType == "int16":
+		return ogen.Int32().SetMinimum(new(int64(math.MinInt16))).SetMaximum(new(int64(math.MaxInt16)))
+	case baseType == "int32":
+		return ogen.Int32().SetMinimum(new(int64(math.MinInt32))).SetMaximum(new(int64(math.MaxInt32)))
+	case baseType == "int64":
+		return ogen.Int64().SetMinimum(new(int64(math.MinInt64))).SetMaximum(new(int64(math.MaxInt64)))
+	case baseType == "uint":
+		return ogen.Int64().SetMinimum(new(int64(0))).SetMaximum(new(int64(math.MaxUint32)))
+	case baseType == "uint8":
+		return ogen.Int32().SetMinimum(new(int64(0))).SetMaximum(new(int64(math.MaxUint8)))
+	case baseType == "uint16":
+		return ogen.Int32().SetMinimum(new(int64(0))).SetMaximum(new(int64(math.MaxUint16)))
+	case baseType == "uint32":
+		return ogen.Int64().SetMinimum(new(int64(0))).SetMaximum(new(int64(math.MaxUint32)))
+	case baseType == "uint64":
+		return ogen.Int64().SetMinimum(new(int64(0)))
+	case baseType == "float32":
 		return ogen.Float()
-	case "float64":
+	case baseType == "float64":
 		return ogen.Double()
 	default:
 		return nil
@@ -77,7 +77,7 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 		// TODO: sharing enum schemas between parameters and component schemas,
 		// means that the default is used for both, even if the parameter version
 		// shouldn't have a default.
-		// var d json.RawMessage
+		// var d jsontext.Value
 		// if f.Default {
 		// 	d, err = json.Marshal(f.DefaultValue().(string))
 		// 	if err != nil {
@@ -92,15 +92,15 @@ func GetSchemaField(f *gen.Field) (*ogen.Schema, error) {
 	}
 
 	if schema == nil {
-		if strings.HasPrefix(baseType, "[]") {
-			schema = mapTypeToSchema(baseType[2:])
+		if strings.HasPrefix(baseType, "[]") && !f.IsBytes() {
+			schema = mapTypeToSchema(f, baseType[2:])
 			if schema != nil {
 				schema = schema.AsArray()
 			}
 		}
 
 		if schema == nil {
-			schema = mapTypeToSchema(baseType)
+			schema = mapTypeToSchema(f, baseType)
 		}
 	}
 
@@ -359,8 +359,8 @@ func GetSchemaType(t *gen.Type, op Operation, edge *gen.Edge) map[string]*ogen.S
 				prop.Schema = prop.Schema.AsArray()
 
 				if limit := ea.GetEagerLoadLimit(cfg); limit > 0 {
-					prop.Schema.MinItems = ptr(uint64(0))
-					prop.Schema.MaxItems = ptr(uint64(limit))
+					prop.Schema.MinItems = new(uint64(0))
+					prop.Schema.MaxItems = new(uint64(limit))
 					prop.Schema.Description = fmt.Sprintf("A list of %s entities. Limited to %d items. If there are more results than the limit, the results are capped and you must use the associated edge endpoint with pagination -- see also the 'EagerLoadLimit' config option.", Singularize(e.Type.Name), limit)
 				}
 			}

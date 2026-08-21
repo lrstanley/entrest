@@ -5,7 +5,8 @@
 package entrest
 
 import (
-	"encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"fmt"
 	"io"
 	"os"
@@ -33,7 +34,7 @@ func writeSpec(t *testing.T, spec *ogen.Spec, fn string) { //nolint:unused
 		panic(fmt.Sprintf("failed to create directory: %v", err))
 	}
 
-	b, err := json.MarshalIndent(spec, "", "    ")
+	b, err := json.Marshal(spec, ogenJSONWriteOpts, jsontext.Multiline(true))
 	if err != nil {
 		panic(fmt.Sprintf("failed to marshal spec: %v", err))
 	}
@@ -173,8 +174,8 @@ func buildSpec(t *testing.T, config *Config) (*testSpecResult, error) {
 	var g gen.Generator = gen.GenerateFunc(func(_ *gen.Graph) error {
 		return nil
 	})
-	for i := len(result.graph.Hooks) - 1; i >= 0; i-- {
-		g = result.graph.Hooks[i](g)
+	for _, v := range slices.Backward(result.graph.Hooks) {
+		g = v(g)
 	}
 
 	err = g.Generate(result.graph)
@@ -184,7 +185,7 @@ func buildSpec(t *testing.T, config *Config) (*testSpecResult, error) {
 
 	result.ensureObj = sync.OnceFunc(func() {
 		var b []byte
-		b, err = json.Marshal(result.spec)
+		b, err = json.Marshal(result.spec, ogenJSONWriteOpts)
 		if err != nil {
 			panic(fmt.Sprintf("failed to marshal spec: %v", err))
 		}
@@ -260,7 +261,7 @@ func mergeAnnotations(t *testing.T, in gen.Annotations, annotations ...Annotatio
 func validateSpec(t *testing.T, spec *ogen.Spec) {
 	t.Helper()
 
-	b, err := json.Marshal(spec)
+	b, err := json.Marshal(spec, ogenJSONWriteOpts)
 	require.NoError(t, err)
 
 	doc, err := libopenapi.NewDocument(b)

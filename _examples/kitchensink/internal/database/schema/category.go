@@ -5,7 +5,7 @@
 package schema
 
 import (
-	"encoding/json"
+	"encoding/json/jsontext"
 
 	"entgo.io/ent"
 	"entgo.io/ent/schema"
@@ -15,7 +15,7 @@ import (
 	"github.com/ogen-go/ogen"
 )
 
-func mustEnum[T any](values []T) []json.RawMessage {
+func mustEnum[T any](values []T) []jsontext.Value {
 	v, err := entrest.ToEnum(values)
 	if err != nil {
 		panic(err)

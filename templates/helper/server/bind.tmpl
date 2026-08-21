@@ -8,15 +8,12 @@
         // DefaultDecoder is the default decoder used by Bind. You can either override
         // this, or provide your own. Make sure it is set before Bind is called.
         DefaultDecoder = form.NewDecoder()
-
-        // DefaultDecodeMaxMemory is the maximum amount of memory in bytes that will be
-        // used for decoding multipart/form-data requests.
-        DefaultDecodeMaxMemory int64 = 8 << 20
     )
 
     // Bind decodes the request body to the given struct. At this time the only supported
     // content-types are application/json, application/x-www-form-urlencoded, as well as
-    // GET parameters.
+    // GET parameters. Request body size is enforced by [UseMaxBodyBytes] middleware,
+    // which [Server.Handler] installs by default.
     func Bind(r *http.Request, v any) error {
         err := r.ParseForm()
         if err != nil {
@@ -29,14 +26,14 @@
         case http.MethodPost, http.MethodPut, http.MethodPatch:
             switch {
             case strings.HasPrefix(r.Header.Get("Content-Type"), "application/json"):
-                _dec := json.NewDecoder(r.Body)
-                {{- if $.Annotations.RestConfig.StrictMutate }}
-                    _dec.DisallowUnknownFields()
-                {{- end }}
                 defer r.Body.Close()
-                err = _dec.Decode(v)
+                {{- if $.Annotations.RestConfig.StrictMutate }}
+                    err = json.UnmarshalRead(r.Body, v, json.RejectUnknownMembers(true))
+                {{- else }}
+                    err = json.UnmarshalRead(r.Body, v)
+                {{- end }}
             case strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data"):
-                err = r.ParseMultipartForm(DefaultDecodeMaxMemory)
+                err = r.ParseMultipartForm(DefaultMaxRequestBodyBytes)
                 if err == nil {
                     err = DefaultDecoder.Decode(v, r.MultipartForm.Value)
                 }
@@ -48,6 +45,9 @@
         }
 
         if err != nil {
+            if _, ok := errors.AsType[*http.MaxBytesError](err); ok {
+                return err
+            }
             return &ErrBadRequest{Err: fmt.Errorf("error decoding %s request into required format (%T): %w", r.Method, v, err)}
         }
         return nil

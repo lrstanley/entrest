@@ -1,0 +1,49 @@
+{{- /*
+  Copyright (c) Liam Stanley <liam@liam.sh>. All rights reserved. Use of
+  this source code is governed by the MIT license that can be found in
+  the LICENSE file.
+*/ -}}
+{{- define "helper/rest/server/bodylimit" -}}
+    // DefaultMaxRequestBodyBytes is the default maximum request body size (8 MiB).
+    const DefaultMaxRequestBodyBytes int64 = 8 << 20
+
+    // GetMaxRequestBodyBytes returns the configured request body size limit. Zero uses
+    // [DefaultMaxRequestBodyBytes]. Negative values disable the limit.
+    func (c *ServerConfig) GetMaxRequestBodyBytes() int64 {
+        if c == nil || c.MaxRequestBodyBytes == 0 {
+            return DefaultMaxRequestBodyBytes
+        }
+        if c.MaxRequestBodyBytes < 0 {
+            return 0
+        }
+        return c.MaxRequestBodyBytes
+    }
+
+    // UseMaxBodyBytes is middleware that limits the size of every request body to n bytes.
+    // When the limit is exceeded the client receives HTTP 413 Request Entity Too Large.
+    func UseMaxBodyBytes(n int64) func(_next http.Handler) http.Handler {
+        return func(_next http.Handler) http.Handler {
+            return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+                if n <= 0 {
+                    _next.ServeHTTP(w, r)
+                    return
+                }
+                if r.ContentLength > n {
+                    writeRequestEntityTooLarge(w, r, &http.MaxBytesError{Limit: n})
+                    return
+                }
+                r.Body = http.MaxBytesReader(w, r.Body, n)
+                _next.ServeHTTP(w, r)
+            })
+        }
+    }
+
+    func writeRequestEntityTooLarge(w http.ResponseWriter, r *http.Request, err error) {
+        JSON(w, r, http.StatusRequestEntityTooLarge, ErrorResponse{
+            Error:     err.Error(),
+            Type:      http.StatusText(http.StatusRequestEntityTooLarge),
+            Code:      http.StatusRequestEntityTooLarge,
+            Timestamp: time.Now().UTC().Format(time.RFC3339),
+        })
+    }
+{{- end }}{{/* end template */}}

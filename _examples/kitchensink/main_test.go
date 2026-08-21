@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"net/http"
+	"net/http/httptest"
 	"net/url"
 	"strconv"
 	"strings"
@@ -100,8 +101,8 @@ func TestHandler_Get(t *testing.T) {
 	user1 := newUser(db).AddFollowedPets(pet1).SaveX(ctx)
 	followedPets := user1.QueryFollowedPets().AllX(ctx)
 
-	resp := enttest.Request[ent.User](
-		ctx, s,
+	resp := s.Request[ent.User](
+		ctx,
 		http.MethodGet,
 		"/users/"+user1.ID.String(),
 		http.NoBody,
@@ -113,8 +114,8 @@ func TestHandler_Get(t *testing.T) {
 	assert.Equal(t, pet1.ID, followedPets[0].ID)
 
 	// Also validate that 404's work correctly.
-	respPet := enttest.Request[ent.Pet](
-		ctx, s,
+	respPet := s.Request[ent.Pet](
+		ctx,
 		http.MethodGet,
 		"/pets/123",
 		http.NoBody,
@@ -124,8 +125,8 @@ func TestHandler_Get(t *testing.T) {
 
 	// And if using UUIDs or similar, we'd actually get a 400 if we passed in an
 	// invalid UUID (but not specific info if masking is enabled).
-	resp = enttest.Request[ent.User](
-		ctx, s,
+	resp = s.Request[ent.User](
+		ctx,
 		http.MethodGet,
 		"/users/123",
 		http.NoBody,
@@ -143,8 +144,8 @@ func TestHandler_GetEdge(t *testing.T) {
 	user1 := newUser(db).SaveX(ctx)
 	user2 := newUser(db).AddFriends(user1).SaveX(ctx)
 
-	resp := enttest.Request[rest.PagedResponse[ent.User]](
-		ctx, s,
+	resp := s.Request[rest.PagedResponse[ent.User]](
+		ctx,
 		http.MethodGet,
 		"/users/"+user1.ID.String()+"/friends",
 		http.NoBody,
@@ -155,8 +156,8 @@ func TestHandler_GetEdge(t *testing.T) {
 	assert.Equal(t, user2.ID, resp.Value.Content[0].ID)
 
 	// Also validate that 404's work correctly.
-	respPet := enttest.Request[rest.PagedResponse[ent.User]](
-		ctx, s,
+	respPet := s.Request[rest.PagedResponse[ent.User]](
+		ctx,
 		http.MethodGet,
 		"/pets/123/friends",
 		http.NoBody,
@@ -169,8 +170,8 @@ func TestHandler_GetEdge(t *testing.T) {
 
 	// And similar when invalid ID is used, just 400.
 
-	resp = enttest.Request[rest.PagedResponse[ent.User]](
-		ctx, s,
+	resp = s.Request[rest.PagedResponse[ent.User]](
+		ctx,
 		http.MethodGet,
 		"/users/123/friends",
 		http.NoBody,
@@ -400,7 +401,7 @@ func TestHandler_List(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			resp := enttest.Request[rest.PagedResponse[ent.User]](ctx, s, http.MethodGet, tt.uri, nil)
+			resp := s.Request[rest.PagedResponse[ent.User]](ctx, http.MethodGet, tt.uri, nil)
 
 			require.Equal(t, tt.expectedStatus, resp.Data.Code, "expected status %d, got %d", tt.expectedStatus, resp.Data.Code)
 
@@ -454,7 +455,7 @@ func TestHandler_Create(t *testing.T) {
 		"owner":     user1.ID,
 	}
 
-	resp := enttest.Request[ent.Pet](ctx, s, http.MethodPost, "/pets", data).Must(t)
+	resp := s.Request[ent.Pet](ctx, http.MethodPost, "/pets", data).Must(t)
 
 	// Ensure the pet in the DB is the same as the one we created, as well as the response body.
 	pet1 := rest.EagerLoadPet(db.Pet.Query().Where(pet.ID(resp.Value.ID))).OnlyX(ctx)
@@ -482,7 +483,7 @@ func TestHandler_Update(t *testing.T) {
 		"add_categories": []int{categories[1].ID},
 	}
 
-	resp := enttest.Request[ent.Pet](ctx, s, http.MethodPatch, "/pets/"+strconv.Itoa(pet1.ID), data).Must(t)
+	resp := s.Request[ent.Pet](ctx, http.MethodPatch, "/pets/"+strconv.Itoa(pet1.ID), data).Must(t)
 
 	assert.Equal(t, http.StatusOK, resp.Data.Code)
 	assert.Equal(t, data["name"], resp.Value.Name)
@@ -496,7 +497,7 @@ func TestHandler_Update(t *testing.T) {
 		"categories": []int{categories[2].ID, categories[3].ID},
 	}
 
-	resp = enttest.Request[ent.Pet](ctx, s, http.MethodPatch, "/pets/"+strconv.Itoa(pet1.ID), data).Must(t)
+	resp = s.Request[ent.Pet](ctx, http.MethodPatch, "/pets/"+strconv.Itoa(pet1.ID), data).Must(t)
 
 	assert.Equal(t, http.StatusOK, resp.Data.Code)
 	assert.Len(t, resp.Value.Edges.Categories, 2)
@@ -507,7 +508,7 @@ func TestHandler_Update(t *testing.T) {
 		"remove_categories": []int{categories[3].ID},
 	}
 
-	resp = enttest.Request[ent.Pet](ctx, s, http.MethodPatch, "/pets/"+strconv.Itoa(pet1.ID), data).Must(t)
+	resp = s.Request[ent.Pet](ctx, http.MethodPatch, "/pets/"+strconv.Itoa(pet1.ID), data).Must(t)
 
 	assert.Equal(t, http.StatusOK, resp.Data.Code)
 	assert.Len(t, resp.Value.Edges.Categories, 1)
@@ -520,11 +521,11 @@ func TestHandler_Delete(t *testing.T) {
 
 	pet1 := newPet(db).SaveX(ctx)
 
-	resp := enttest.Request[string](ctx, s, http.MethodDelete, "/pets/"+strconv.Itoa(pet1.ID), nil).Must(t)
+	resp := s.Request[string](ctx, http.MethodDelete, "/pets/"+strconv.Itoa(pet1.ID), nil).Must(t)
 
 	assert.Equal(t, http.StatusNoContent, resp.Data.Code)
 
-	resp = enttest.Request[string](ctx, s, http.MethodDelete, "/pets/"+strconv.Itoa(pet1.ID), nil)
+	resp = s.Request[string](ctx, http.MethodDelete, "/pets/"+strconv.Itoa(pet1.ID), nil)
 	require.NotNil(t, resp.Error)
 	assert.Equal(t, http.StatusNotFound, resp.Data.Code)
 }
@@ -538,7 +539,7 @@ func TestHandler_SortRandom(t *testing.T) {
 	var results [][]*ent.Pet
 
 	for range 50 {
-		resp := enttest.Request[rest.PagedResponse[ent.Pet]](ctx, s, http.MethodGet, "/pets?page=1&per_page=100&sort=random", nil)
+		resp := s.Request[rest.PagedResponse[ent.Pet]](ctx, http.MethodGet, "/pets?page=1&per_page=100&sort=random", nil)
 		require.Equal(t, http.StatusOK, resp.Data.Code)
 		require.Len(t, resp.Value.Content, 100)
 		results = append(results, resp.Value.Content)
@@ -563,14 +564,14 @@ func TestHandler_StrictMutate(t *testing.T) {
 	}
 
 	// POST/create.
-	resp := enttest.Request[ent.Pet](ctx, s, http.MethodPost, "/pets", data)
+	resp := s.Request[ent.Pet](ctx, http.MethodPost, "/pets", data)
 	require.Equal(t, http.StatusBadRequest, resp.Data.Code)
 	require.NotNil(t, resp.Error)
 	assert.Equal(t, http.StatusBadRequest, resp.Error.Code)
 
 	// PATCH/update.
 	pet1 := newPet(db).SaveX(ctx)
-	resp = enttest.Request[ent.Pet](ctx, s, http.MethodPatch, "/pets/"+strconv.Itoa(pet1.ID), data)
+	resp = s.Request[ent.Pet](ctx, http.MethodPatch, "/pets/"+strconv.Itoa(pet1.ID), data)
 	require.Equal(t, http.StatusBadRequest, resp.Data.Code)
 	require.NotNil(t, resp.Error)
 	assert.Equal(t, http.StatusBadRequest, resp.Error.Code)
@@ -589,7 +590,7 @@ func TestHandler_Valuer(t *testing.T) {
 		"profile_url":     "https://test.example.com/some-path",
 	}
 
-	resp := enttest.Request[ent.User](ctx, s, http.MethodPost, "/users", data).Must(t)
+	resp := s.Request[ent.User](ctx, http.MethodPost, "/users", data).Must(t)
 	assert.Equal(t, http.StatusCreated, resp.Data.Code)
 	assert.Equal(t, data["profile_url"], resp.Value.ProfileURL.String())
 }
@@ -604,7 +605,7 @@ func TestHandler_DefaultSort(t *testing.T) {
 
 	// First fetch pets with no sorting in the query. Theoretically, default is ID & ASC (1, 2, 3),
 	// but we override this to be name & ASC (3, 2, 1).
-	resp1 := enttest.Request[rest.PagedResponse[ent.Pet]](ctx, s, http.MethodGet, "/pets", nil).Must(t)
+	resp1 := s.Request[rest.PagedResponse[ent.Pet]](ctx, http.MethodGet, "/pets", nil).Must(t)
 
 	assert.Equal(t, http.StatusOK, resp1.Data.Code)
 	require.Len(t, resp1.Value.Content, 3)
@@ -615,7 +616,7 @@ func TestHandler_DefaultSort(t *testing.T) {
 	// Now fetch another entity type, and see if the eager-loaded edges also have the appropriate
 	// default sorting.
 	user1 := newUser(db).AddPets(pet1, pet2, pet3).SaveX(ctx)
-	resp2 := enttest.Request[ent.User](ctx, s, http.MethodGet, "/users/"+user1.ID.String(), nil).Must(t)
+	resp2 := s.Request[ent.User](ctx, http.MethodGet, "/users/"+user1.ID.String(), nil).Must(t)
 
 	assert.Equal(t, http.StatusOK, resp2.Data.Code)
 	require.Len(t, resp2.Value.Edges.Pets, 3)
@@ -635,7 +636,7 @@ func TestHandler_EagerLoadLimit(t *testing.T) {
 		return newCategory(db).AddPets(pet1)
 	}, db, 1020)...).ExecX(ctx)
 
-	resp1 := enttest.Request[ent.Pet](ctx, s, http.MethodGet, "/pets/"+strconv.Itoa(pet1.ID), nil).Must(t)
+	resp1 := s.Request[ent.Pet](ctx, http.MethodGet, "/pets/"+strconv.Itoa(pet1.ID), nil).Must(t)
 	require.Len(t, resp1.Value.Edges.Categories, 1000)
 
 	// And when we hit something which has no limit...
@@ -645,8 +646,51 @@ func TestHandler_EagerLoadLimit(t *testing.T) {
 		return newPet(db).SetOwner(user1)
 	}, db, 1020)...).ExecX(ctx)
 
-	resp2 := enttest.Request[ent.User](ctx, s, http.MethodGet, "/users/"+user1.ID.String(), nil).Must(t)
+	resp2 := s.Request[ent.User](ctx, http.MethodGet, "/users/"+user1.ID.String(), nil).Must(t)
 	require.Len(t, resp2.Value.Edges.Pets, 1020)
+}
+
+func TestHandler_MaxRequestBodyBytes(t *testing.T) {
+	t.Parallel()
+
+	ctx := context.Background()
+	db := newClient(t)
+	t.Cleanup(func() { db.Close() })
+
+	srv, err := rest.NewServer(db, &rest.ServerConfig{MaxRequestBodyBytes: 100})
+	require.NoError(t, err)
+	ts := enttest.WithExisting(t, srv.Handler())
+
+	oversized := strings.Repeat("x", 101)
+	resp := ts.Request[ent.User](ctx, http.MethodPost, "/users", oversized)
+	require.NotNil(t, resp.Error)
+	assert.Equal(t, http.StatusRequestEntityTooLarge, resp.Data.Code)
+
+	req := httptest.NewRequest(http.MethodPost, "/users", strings.NewReader(`{"name":"test"}`)).WithContext(ctx)
+	req.ContentLength = 101
+	req.Header.Set("Content-Type", "application/json")
+	rec := httptest.NewRecorder()
+	srv.Handler().ServeHTTP(rec, req)
+	assert.Equal(t, http.StatusRequestEntityTooLarge, rec.Code)
+
+	_, db2, s := newRestServer(t, nil)
+	t.Cleanup(func() { db2.Close() })
+
+	validBody := map[string]any{
+		"name":            "John Smith",
+		"email":           "john.smith@example.com",
+		"enabled":         true,
+		"type":            user.TypeUser,
+		"password_hashed": gofakeit.Password(true, true, true, true, true, 15),
+	}
+	resp = s.Request[ent.User](ctx, http.MethodPost, "/users", validBody).Must(t)
+	assert.Equal(t, http.StatusCreated, resp.Data.Code)
+
+	disabledSrv, err := rest.NewServer(db, &rest.ServerConfig{MaxRequestBodyBytes: -1})
+	require.NoError(t, err)
+	disabledTS := enttest.WithExisting(t, disabledSrv.Handler())
+	resp = disabledTS.Request[ent.User](ctx, http.MethodPost, "/users", oversized)
+	assert.Equal(t, http.StatusBadRequest, resp.Data.Code)
 }
 
 func TestHandler_FilterGroups(t *testing.T) {
@@ -678,7 +722,9 @@ func TestHandler_FilterGroups(t *testing.T) {
 	tests := []string{"123user", "456desc", "789email"}
 
 	for _, test := range tests {
-		resp := enttest.Request[rest.PagedResponse[ent.User]](ctx, s, http.MethodGet, "/users?enabled.eq=true&search.ihas="+test, nil).Must(t)
+		resp := s.Request[rest.PagedResponse[ent.User]](
+			ctx, http.MethodGet, "/users?enabled.eq=true&search.ihas="+test, nil,
+		).Must(t)
 		require.Equal(t, http.StatusOK, resp.Data.Code)
 		require.Len(t, resp.Value.Content, 1)
 		assert.Equal(t, user1.ID, resp.Value.Content[0].ID)

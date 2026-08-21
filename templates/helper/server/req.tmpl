@@ -7,10 +7,10 @@
     // Req simplifies making an HTTP handler that returns a single result, and an error.
     // The result, if not nil, must be JSON-marshalable. If result is nil, [http.StatusNoContent]
     // will be returned.
-    func Req[Resp any](s *Server, _op Operation, _fn func(*http.Request) (*Resp, error)) http.HandlerFunc {
+    func (s *Server) Req[Resp any](_op Operation, _fn func(*http.Request) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
             _results, err := _fn(r)
-            handleResponse(s, w, r, _op, _results, err)
+            s.handleResponse(w, r, _op, _results, err)
         }
     }
 
@@ -56,49 +56,49 @@
 
     // ReqID is similar to Req, but also processes an "id" path parameter and provides it to the
     // handler function.
-    func ReqID[Resp, I any](s *Server, _op Operation, _fn func(*http.Request, I) (*Resp, error)) http.HandlerFunc {
+    func (s *Server) ReqID[Resp, I any](_op Operation, _fn func(*http.Request, I) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
             _id, err := resolveID[I](r)
             if err != nil {
-                handleResponse[Resp](s, w, r, _op, nil, err)
+                s.handleResponse[Resp](w, r, _op, nil, err)
                 return
             }
             _results, err := _fn(r, _id)
-            handleResponse(s, w, r, _op, _results, err)
+            s.handleResponse(w, r, _op, _results, err)
         }
     }
 
     // ReqParam is similar to Req, but also processes a request body/query params and provides it
     // to the handler function.
-    func ReqParam[Params, Resp any](s *Server, _op Operation, _fn func(*http.Request, *Params) (*Resp, error)) http.HandlerFunc {
+    func (s *Server) ReqParam[Params, Resp any](_op Operation, _fn func(*http.Request, *Params) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
             _params := new(Params)
             if err := Bind(r, _params); err != nil {
-                handleResponse[Resp](s, w, r, _op, nil, err)
+                s.handleResponse[Resp](w, r, _op, nil, err)
                 return
             }
             _results, err := _fn(r, _params)
-            handleResponse(s, w, r, _op, _results, err)
+            s.handleResponse(w, r, _op, _results, err)
         }
     }
 
     // ReqIDParam is similar to ReqParam, but also processes an "id" path parameter and request
     // body/query params, and provides it to the handler function.
-    func ReqIDParam[Params, Resp, I any](s *Server, _op Operation, _fn func(*http.Request, I, *Params) (*Resp, error)) http.HandlerFunc {
+    func (s *Server) ReqIDParam[Params, Resp, I any](_op Operation, _fn func(*http.Request, I, *Params) (*Resp, error)) http.HandlerFunc {
         return func(w http.ResponseWriter, r *http.Request) {
             _id, err := resolveID[I](r)
             if err != nil {
-                handleResponse[Resp](s, w, r, _op, nil, err)
+                s.handleResponse[Resp](w, r, _op, nil, err)
                 return
             }
             _params := new(Params)
             err = Bind(r, _params)
             if err != nil {
-                handleResponse[Resp](s, w, r, _op, nil, err)
+                s.handleResponse[Resp](w, r, _op, nil, err)
                 return
             }
             _results, err := _fn(r, _id, _params)
-            handleResponse(s, w, r, _op, _results, err)
+            s.handleResponse(w, r, _op, _results, err)
         }
     }
 {{- end }}{{/* end template */}}

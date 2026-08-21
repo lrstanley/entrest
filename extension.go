@@ -5,7 +5,8 @@
 package entrest
 
 import (
-	"encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"os"
@@ -91,15 +92,13 @@ func (e *Extension) Generate(g *gen.Graph) (*ogen.Spec, error) {
 				return nil, fmt.Errorf("failed to open spec from path %q: %w", e.config.SpecFromPath, err)
 			}
 
-			spec = ogen.NewSpec()
-			dec := json.NewDecoder(f)
+			defer f.Close()
 
-			err = dec.Decode(spec)
+			spec = ogen.NewSpec()
+			err = json.UnmarshalRead(f, spec, ogenJSONOpts)
 			if err != nil {
-				f.Close()
 				return nil, fmt.Errorf("failed to decode spec from path %q: %w", e.config.SpecFromPath, err)
 			}
-			f.Close()
 		} else {
 			spec = ogen.NewSpec()
 		}
@@ -216,11 +215,8 @@ func (e *Extension) writeSpec(g *gen.Graph, spec *ogen.Spec) error {
 		}
 	}
 
-	var enc *json.Encoder
-
-	if e.config.Writer != nil {
-		enc = json.NewEncoder(e.config.Writer)
-	} else {
+	w := e.config.Writer
+	if w == nil {
 		dir := filepath.Join(g.Target, "rest")
 
 		err := os.MkdirAll(dir, 0o750)
@@ -228,17 +224,15 @@ func (e *Extension) writeSpec(g *gen.Graph, spec *ogen.Spec) error {
 			return fmt.Errorf("failed to create directory: %w", err)
 		}
 
-		f, err := os.OpenFile(filepath.Join(dir, "openapi.json"), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o640)
+		f, err := os.OpenFile(filepath.Join(dir, "openapi.json"), os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0o640) //nolint:gosec // Non-sensitive.
 		if err != nil {
 			return fmt.Errorf("failed to open file: %w", err)
 		}
 		defer f.Close()
-
-		enc = json.NewEncoder(f)
+		w = f
 	}
 
-	enc.SetIndent("", "    ")
-	return enc.Encode(spec)
+	return json.MarshalWrite(w, spec, ogenJSONWriteOpts, jsontext.Multiline(true))
 }
 
 func (e *Extension) Annotations() []entc.Annotation {

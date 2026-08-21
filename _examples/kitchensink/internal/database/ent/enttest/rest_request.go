@@ -5,7 +5,7 @@ package enttest
 import (
 	"bytes"
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -65,15 +65,14 @@ func (r Response[T]) Must(t *testing.T) Response[T] {
 // Request executes a request against the TestServer, and returns the response recorder and
 // response, auto-marshalling JSON to the provided type. If T is "string", the response body
 // is returned as-is.
-func Request[T any](ctx context.Context, s *TestServer, _method, _path string, _data any) (_resp Response[T]) {
+func (s *TestServer) Request[T any](ctx context.Context, _method, _path string, _data any) (_resp Response[T]) {
 	s.t.Helper()
 
 	var _body io.Reader
 
 	if _data != nil && _data != http.NoBody {
 		_buf := &bytes.Buffer{}
-		_enc := json.NewEncoder(_buf)
-		err := _enc.Encode(_data)
+		err := json.MarshalWrite(_buf, _data)
 		if err != nil {
 			s.t.Fatalf("failed to encode request body: %v", err)
 		}

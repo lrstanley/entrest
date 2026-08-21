@@ -5,7 +5,7 @@
 package entrest
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"io"
@@ -262,11 +262,11 @@ func (c Config) Name() string {
 }
 
 func (c *Config) Decode(o any) error {
-	buf, err := json.Marshal(o)
+	buf, err := json.Marshal(o, ogenJSONOpts)
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(buf, c) //nolint:musttag
+	return json.Unmarshal(buf, c, ogenJSONOpts) //nolint:musttag
 }
 
 // GetConfig returns the rest config for the given graph. If the graph does not

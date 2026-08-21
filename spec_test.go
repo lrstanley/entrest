@@ -5,7 +5,7 @@
 package entrest
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"net/http"
 	"slices"
 	"strings"
@@ -124,7 +124,7 @@ func TestSpec_Sensitive(t *testing.T) {
 	assert.NotNil(t, r.json(`$.components.schemas.UserUpdate.properties.password_hashed`))
 
 	// convert all of the parameters to json, and see if the field exists anywhere in those.
-	b, err := json.Marshal(r.spec.Components.Parameters)
+	b, err := json.Marshal(r.spec.Components.Parameters, ogenJSONOpts)
 	require.NoError(t, err)
 	assert.NotContains(t, string(b), `"password_hashed"`)
 }

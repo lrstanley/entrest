@@ -5,29 +5,12 @@
 package entrest
 
 import (
-	"encoding/json"
+	"encoding/json/jsontext"
 	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
-
-func TestPtr(t *testing.T) {
-	t.Run("int", func(t *testing.T) {
-		num := 1
-		assert.Equal(t, num, *ptr(1))
-	})
-
-	t.Run("string", func(t *testing.T) {
-		str := "test"
-		assert.Equal(t, str, *ptr("test"))
-	})
-
-	t.Run("bool", func(t *testing.T) {
-		b := true
-		assert.Equal(t, b, *ptr(true))
-	})
-}
 
 func TestMemoize(t *testing.T) {
 	count := 0
@@ -50,32 +33,32 @@ func TestSliceToRawMessage(t *testing.T) {
 	tests := []struct {
 		name string
 		in   []any
-		out  []json.RawMessage
+		out  []jsontext.Value
 	}{
 		{
 			name: "empty",
 			in:   []any{},
-			out:  []json.RawMessage{},
+			out:  []jsontext.Value{},
 		},
 		{
 			name: "single",
 			in:   []any{"foo"},
-			out:  []json.RawMessage{json.RawMessage(`"foo"`)},
+			out:  []jsontext.Value{jsontext.Value(`"foo"`)},
 		},
 		{
 			name: "multiple",
 			in:   []any{"foo", "bar", "baz"},
-			out:  []json.RawMessage{json.RawMessage(`"foo"`), json.RawMessage(`"bar"`), json.RawMessage(`"baz"`)},
+			out:  []jsontext.Value{jsontext.Value(`"foo"`), jsontext.Value(`"bar"`), jsontext.Value(`"baz"`)},
 		},
 		{
 			name: "numbers",
 			in:   []any{1, 2, 3},
-			out:  []json.RawMessage{json.RawMessage(`1`), json.RawMessage(`2`), json.RawMessage(`3`)},
+			out:  []jsontext.Value{jsontext.Value(`1`), jsontext.Value(`2`), jsontext.Value(`3`)},
 		},
 		{
 			name: "bools",
 			in:   []any{true, false},
-			out:  []json.RawMessage{json.RawMessage(`true`), json.RawMessage(`false`)},
+			out:  []jsontext.Value{jsontext.Value(`true`), jsontext.Value(`false`)},
 		},
 	}
 

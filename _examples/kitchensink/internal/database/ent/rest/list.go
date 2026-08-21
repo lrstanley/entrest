@@ -223,7 +223,7 @@ var (
 
 type Filtered[P ~func(*sql.Selector)] struct {
 	// FilterOperation controls how multiple predicates are applied together.
-	FilterOperation *FilterOperation `json:"filter_op,omitempty" form:"filter_op,omitempty"`
+	FilterOperation *FilterOperation `json:"filter_op,omitzero" form:"filter_op,omitempty"`
 }
 
 // ApplyFilterOperation applies the requested filter operation (if provided) to the
@@ -246,21 +246,21 @@ type ListCategoryParams struct {
 	Filtered[predicate.Category]
 
 	// Filters field "id" to be equal to the provided value.
-	CategoryIDEQ *int `form:"id.eq,omitempty" json:"category_ideq,omitempty"`
+	CategoryIDEQ *int `form:"id.eq,omitempty" json:"category_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	CategoryIDNEQ *int `form:"id.neq,omitempty" json:"category_idneq,omitempty"`
+	CategoryIDNEQ *int `form:"id.neq,omitempty" json:"category_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	CategoryIDIn []int `form:"id.in,omitempty" json:"category_id_in,omitempty"`
+	CategoryIDIn []int `form:"id.in,omitempty" json:"category_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	CategoryIDNotIn []int `form:"id.notIn,omitempty" json:"category_id_not_in,omitempty"`
+	CategoryIDNotIn []int `form:"id.notIn,omitempty" json:"category_id_not_in,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	CategoryCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"category_created_at_gt,omitempty"`
+	CategoryCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"category_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	CategoryCreatedAtLT *time.Time `form:"createdAt.lt,omitempty" json:"category_created_at_lt,omitempty"`
+	CategoryCreatedAtLT *time.Time `form:"createdAt.lt,omitempty" json:"category_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	CategoryUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"category_updated_at_gt,omitempty"`
+	CategoryUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"category_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	CategoryUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"category_updated_at_lt,omitempty"`
+	CategoryUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"category_updated_at_lt,omitzero"`
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Category.
@@ -357,169 +357,169 @@ type ListFriendshipParams struct {
 	Filtered[predicate.Friendship]
 
 	// Filters field "id" to be equal to the provided value.
-	FriendshipIDEQ *int `form:"id.eq,omitempty" json:"friendship_ideq,omitempty"`
+	FriendshipIDEQ *int `form:"id.eq,omitempty" json:"friendship_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	FriendshipIDNEQ *int `form:"id.neq,omitempty" json:"friendship_idneq,omitempty"`
+	FriendshipIDNEQ *int `form:"id.neq,omitempty" json:"friendship_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	FriendshipIDIn []int `form:"id.in,omitempty" json:"friendship_id_in,omitempty"`
+	FriendshipIDIn []int `form:"id.in,omitempty" json:"friendship_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	FriendshipIDNotIn []int `form:"id.notIn,omitempty" json:"friendship_id_not_in,omitempty"`
+	FriendshipIDNotIn []int `form:"id.notIn,omitempty" json:"friendship_id_not_in,omitzero"`
 	// Filters field "user_id" to be equal to the provided value.
-	FriendshipUserIDEQ *uuid.UUID `form:"userID.eq,omitempty" json:"friendship_user_ideq,omitempty"`
+	FriendshipUserIDEQ *uuid.UUID `form:"userID.eq,omitempty" json:"friendship_user_ideq,omitzero"`
 	// Filters field "user_id" to be not equal to the provided value.
-	FriendshipUserIDNEQ *uuid.UUID `form:"userID.neq,omitempty" json:"friendship_user_idneq,omitempty"`
+	FriendshipUserIDNEQ *uuid.UUID `form:"userID.neq,omitempty" json:"friendship_user_idneq,omitzero"`
 	// Filters field "user_id" to be within the provided values.
-	FriendshipUserIDIn []uuid.UUID `form:"userID.in,omitempty" json:"friendship_user_id_in,omitempty"`
+	FriendshipUserIDIn []uuid.UUID `form:"userID.in,omitempty" json:"friendship_user_id_in,omitzero"`
 	// Filters field "user_id" to be not within the provided values.
-	FriendshipUserIDNotIn []uuid.UUID `form:"userID.notIn,omitempty" json:"friendship_user_id_not_in,omitempty"`
+	FriendshipUserIDNotIn []uuid.UUID `form:"userID.notIn,omitempty" json:"friendship_user_id_not_in,omitzero"`
 	// Filters field "friend_id" to be equal to the provided value.
-	FriendshipFriendIDEQ *uuid.UUID `form:"friendID.eq,omitempty" json:"friendship_friend_ideq,omitempty"`
+	FriendshipFriendIDEQ *uuid.UUID `form:"friendID.eq,omitempty" json:"friendship_friend_ideq,omitzero"`
 	// Filters field "friend_id" to be not equal to the provided value.
-	FriendshipFriendIDNEQ *uuid.UUID `form:"friendID.neq,omitempty" json:"friendship_friend_idneq,omitempty"`
+	FriendshipFriendIDNEQ *uuid.UUID `form:"friendID.neq,omitempty" json:"friendship_friend_idneq,omitzero"`
 	// Filters field "friend_id" to be within the provided values.
-	FriendshipFriendIDIn []uuid.UUID `form:"friendID.in,omitempty" json:"friendship_friend_id_in,omitempty"`
+	FriendshipFriendIDIn []uuid.UUID `form:"friendID.in,omitempty" json:"friendship_friend_id_in,omitzero"`
 	// Filters field "friend_id" to be not within the provided values.
-	FriendshipFriendIDNotIn []uuid.UUID `form:"friendID.notIn,omitempty" json:"friendship_friend_id_not_in,omitempty"`
+	FriendshipFriendIDNotIn []uuid.UUID `form:"friendID.notIn,omitempty" json:"friendship_friend_id_not_in,omitzero"`
 	// If true, only return entities that have a user edge.
-	EdgeHasUser *bool `form:"has.user,omitempty" json:"edge_has_user,omitempty"`
+	EdgeHasUser *bool `form:"has.user,omitempty" json:"edge_has_user,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	EdgeUserCreatedAtGT *time.Time `form:"user.createdAt.gt,omitempty" json:"edge_user_created_at_gt,omitempty"`
+	EdgeUserCreatedAtGT *time.Time `form:"user.createdAt.gt,omitempty" json:"edge_user_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	EdgeUserCreatedAtLT *time.Time `form:"user.createdAt.lt,omitempty" json:"edge_user_created_at_lt,omitempty"`
+	EdgeUserCreatedAtLT *time.Time `form:"user.createdAt.lt,omitempty" json:"edge_user_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	EdgeUserUpdatedAtGT *time.Time `form:"user.updatedAt.gt,omitempty" json:"edge_user_updated_at_gt,omitempty"`
+	EdgeUserUpdatedAtGT *time.Time `form:"user.updatedAt.gt,omitempty" json:"edge_user_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	EdgeUserUpdatedAtLT *time.Time `form:"user.updatedAt.lt,omitempty" json:"edge_user_updated_at_lt,omitempty"`
+	EdgeUserUpdatedAtLT *time.Time `form:"user.updatedAt.lt,omitempty" json:"edge_user_updated_at_lt,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	EdgeUserNameEQ *string `form:"user.name.eq,omitempty" json:"edge_user_name_eq,omitempty"`
+	EdgeUserNameEQ *string `form:"user.name.eq,omitempty" json:"edge_user_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	EdgeUserNameNEQ *string `form:"user.name.neq,omitempty" json:"edge_user_name_neq,omitempty"`
+	EdgeUserNameNEQ *string `form:"user.name.neq,omitempty" json:"edge_user_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	EdgeUserNameIn []string `form:"user.name.in,omitempty" json:"edge_user_name_in,omitempty"`
+	EdgeUserNameIn []string `form:"user.name.in,omitempty" json:"edge_user_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	EdgeUserNameNotIn []string `form:"user.name.notIn,omitempty" json:"edge_user_name_not_in,omitempty"`
+	EdgeUserNameNotIn []string `form:"user.name.notIn,omitempty" json:"edge_user_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeUserNameEqualFold *string `form:"user.name.ieq,omitempty" json:"edge_user_name_equal_fold,omitempty"`
+	EdgeUserNameEqualFold *string `form:"user.name.ieq,omitempty" json:"edge_user_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	EdgeUserNameContains *string `form:"user.name.has,omitempty" json:"edge_user_name_contains,omitempty"`
+	EdgeUserNameContains *string `form:"user.name.has,omitempty" json:"edge_user_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeUserNameContainsFold *string `form:"user.name.ihas,omitempty" json:"edge_user_name_contains_fold,omitempty"`
+	EdgeUserNameContainsFold *string `form:"user.name.ihas,omitempty" json:"edge_user_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	EdgeUserNameHasPrefix *string `form:"user.name.prefix,omitempty" json:"edge_user_name_has_prefix,omitempty"`
+	EdgeUserNameHasPrefix *string `form:"user.name.prefix,omitempty" json:"edge_user_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	EdgeUserNameHasSuffix *string `form:"user.name.suffix,omitempty" json:"edge_user_name_has_suffix,omitempty"`
+	EdgeUserNameHasSuffix *string `form:"user.name.suffix,omitempty" json:"edge_user_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeUserTypeEQ *user.Type `form:"user.type.eq,omitempty" json:"edge_user_type_eq,omitempty"`
+	EdgeUserTypeEQ *user.Type `form:"user.type.eq,omitempty" json:"edge_user_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeUserTypeNEQ *user.Type `form:"user.type.neq,omitempty" json:"edge_user_type_neq,omitempty"`
+	EdgeUserTypeNEQ *user.Type `form:"user.type.neq,omitempty" json:"edge_user_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeUserTypeIn []user.Type `form:"user.type.in,omitempty" json:"edge_user_type_in,omitempty"`
+	EdgeUserTypeIn []user.Type `form:"user.type.in,omitempty" json:"edge_user_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeUserTypeNotIn []user.Type `form:"user.type.notIn,omitempty" json:"edge_user_type_not_in,omitempty"`
+	EdgeUserTypeNotIn []user.Type `form:"user.type.notIn,omitempty" json:"edge_user_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
-	EdgeUserDescriptionIsNil *bool `form:"user.description.null,omitempty" json:"edge_user_description_is_nil,omitempty"`
+	EdgeUserDescriptionIsNil *bool `form:"user.description.null,omitempty" json:"edge_user_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
-	EdgeUserDescriptionContains *string `form:"user.description.has,omitempty" json:"edge_user_description_contains,omitempty"`
+	EdgeUserDescriptionContains *string `form:"user.description.has,omitempty" json:"edge_user_description_contains,omitzero"`
 	// Filters field "description" to contain the provided value, case-insensitive.
-	EdgeUserDescriptionContainsFold *string `form:"user.description.ihas,omitempty" json:"edge_user_description_contains_fold,omitempty"`
+	EdgeUserDescriptionContainsFold *string `form:"user.description.ihas,omitempty" json:"edge_user_description_contains_fold,omitzero"`
 	// Filters field "enabled" to be equal to the provided value.
-	EdgeUserEnabledEQ *bool `form:"user.enabled.eq,omitempty" json:"edge_user_enabled_eq,omitempty"`
+	EdgeUserEnabledEQ *bool `form:"user.enabled.eq,omitempty" json:"edge_user_enabled_eq,omitzero"`
 	// Filters field "email" to be equal to the provided value.
-	EdgeUserEmailEQ *string `form:"user.email.eq,omitempty" json:"edge_user_email_eq,omitempty"`
+	EdgeUserEmailEQ *string `form:"user.email.eq,omitempty" json:"edge_user_email_eq,omitzero"`
 	// Filters field "email" to be not equal to the provided value.
-	EdgeUserEmailNEQ *string `form:"user.email.neq,omitempty" json:"edge_user_email_neq,omitempty"`
+	EdgeUserEmailNEQ *string `form:"user.email.neq,omitempty" json:"edge_user_email_neq,omitzero"`
 	// Filters field "email" to be null/nil.
-	EdgeUserEmailIsNil *bool `form:"user.email.null,omitempty" json:"edge_user_email_is_nil,omitempty"`
+	EdgeUserEmailIsNil *bool `form:"user.email.null,omitempty" json:"edge_user_email_is_nil,omitzero"`
 	// Filters field "email" to be within the provided values.
-	EdgeUserEmailIn []string `form:"user.email.in,omitempty" json:"edge_user_email_in,omitempty"`
+	EdgeUserEmailIn []string `form:"user.email.in,omitempty" json:"edge_user_email_in,omitzero"`
 	// Filters field "email" to be not within the provided values.
-	EdgeUserEmailNotIn []string `form:"user.email.notIn,omitempty" json:"edge_user_email_not_in,omitempty"`
+	EdgeUserEmailNotIn []string `form:"user.email.notIn,omitempty" json:"edge_user_email_not_in,omitzero"`
 	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeUserEmailEqualFold *string `form:"user.email.ieq,omitempty" json:"edge_user_email_equal_fold,omitempty"`
+	EdgeUserEmailEqualFold *string `form:"user.email.ieq,omitempty" json:"edge_user_email_equal_fold,omitzero"`
 	// Filters field "email" to contain the provided value.
-	EdgeUserEmailContains *string `form:"user.email.has,omitempty" json:"edge_user_email_contains,omitempty"`
+	EdgeUserEmailContains *string `form:"user.email.has,omitempty" json:"edge_user_email_contains,omitzero"`
 	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeUserEmailContainsFold *string `form:"user.email.ihas,omitempty" json:"edge_user_email_contains_fold,omitempty"`
+	EdgeUserEmailContainsFold *string `form:"user.email.ihas,omitempty" json:"edge_user_email_contains_fold,omitzero"`
 	// Filters field "email" to start with the provided value.
-	EdgeUserEmailHasPrefix *string `form:"user.email.prefix,omitempty" json:"edge_user_email_has_prefix,omitempty"`
+	EdgeUserEmailHasPrefix *string `form:"user.email.prefix,omitempty" json:"edge_user_email_has_prefix,omitzero"`
 	// Filters field "email" to end with the provided value.
-	EdgeUserEmailHasSuffix *string `form:"user.email.suffix,omitempty" json:"edge_user_email_has_suffix,omitempty"`
+	EdgeUserEmailHasSuffix *string `form:"user.email.suffix,omitempty" json:"edge_user_email_has_suffix,omitzero"`
 	// Filters field "last_authenticated_at" to be equal to the provided value.
-	EdgeUserLastAuthenticatedAtEQ *time.Time `form:"user.lastAuthenticatedAt.eq,omitempty" json:"edge_user_last_authenticated_at_eq,omitempty"`
+	EdgeUserLastAuthenticatedAtEQ *time.Time `form:"user.lastAuthenticatedAt.eq,omitempty" json:"edge_user_last_authenticated_at_eq,omitzero"`
 	// Filters field "last_authenticated_at" to be not equal to the provided value.
-	EdgeUserLastAuthenticatedAtNEQ *time.Time `form:"user.lastAuthenticatedAt.neq,omitempty" json:"edge_user_last_authenticated_at_neq,omitempty"`
+	EdgeUserLastAuthenticatedAtNEQ *time.Time `form:"user.lastAuthenticatedAt.neq,omitempty" json:"edge_user_last_authenticated_at_neq,omitzero"`
 	// Filters field "last_authenticated_at" to be null/nil.
-	EdgeUserLastAuthenticatedAtIsNil *bool `form:"user.lastAuthenticatedAt.null,omitempty" json:"edge_user_last_authenticated_at_is_nil,omitempty"`
+	EdgeUserLastAuthenticatedAtIsNil *bool `form:"user.lastAuthenticatedAt.null,omitempty" json:"edge_user_last_authenticated_at_is_nil,omitzero"`
 	// If true, only return entities that have a friend edge.
-	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitempty"`
+	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	EdgeFriendCreatedAtGT *time.Time `form:"friend.createdAt.gt,omitempty" json:"edge_friend_created_at_gt,omitempty"`
+	EdgeFriendCreatedAtGT *time.Time `form:"friend.createdAt.gt,omitempty" json:"edge_friend_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	EdgeFriendCreatedAtLT *time.Time `form:"friend.createdAt.lt,omitempty" json:"edge_friend_created_at_lt,omitempty"`
+	EdgeFriendCreatedAtLT *time.Time `form:"friend.createdAt.lt,omitempty" json:"edge_friend_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	EdgeFriendUpdatedAtGT *time.Time `form:"friend.updatedAt.gt,omitempty" json:"edge_friend_updated_at_gt,omitempty"`
+	EdgeFriendUpdatedAtGT *time.Time `form:"friend.updatedAt.gt,omitempty" json:"edge_friend_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	EdgeFriendUpdatedAtLT *time.Time `form:"friend.updatedAt.lt,omitempty" json:"edge_friend_updated_at_lt,omitempty"`
+	EdgeFriendUpdatedAtLT *time.Time `form:"friend.updatedAt.lt,omitempty" json:"edge_friend_updated_at_lt,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	EdgeFriendNameEQ *string `form:"friend.name.eq,omitempty" json:"edge_friend_name_eq,omitempty"`
+	EdgeFriendNameEQ *string `form:"friend.name.eq,omitempty" json:"edge_friend_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	EdgeFriendNameNEQ *string `form:"friend.name.neq,omitempty" json:"edge_friend_name_neq,omitempty"`
+	EdgeFriendNameNEQ *string `form:"friend.name.neq,omitempty" json:"edge_friend_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	EdgeFriendNameIn []string `form:"friend.name.in,omitempty" json:"edge_friend_name_in,omitempty"`
+	EdgeFriendNameIn []string `form:"friend.name.in,omitempty" json:"edge_friend_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	EdgeFriendNameNotIn []string `form:"friend.name.notIn,omitempty" json:"edge_friend_name_not_in,omitempty"`
+	EdgeFriendNameNotIn []string `form:"friend.name.notIn,omitempty" json:"edge_friend_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitempty"`
+	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	EdgeFriendNameContains *string `form:"friend.name.has,omitempty" json:"edge_friend_name_contains,omitempty"`
+	EdgeFriendNameContains *string `form:"friend.name.has,omitempty" json:"edge_friend_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitempty"`
+	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitempty"`
+	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitempty"`
+	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFriendTypeEQ *user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitempty"`
+	EdgeFriendTypeEQ *user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFriendTypeNEQ *user.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitempty"`
+	EdgeFriendTypeNEQ *user.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFriendTypeIn []user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitempty"`
+	EdgeFriendTypeIn []user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFriendTypeNotIn []user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitempty"`
+	EdgeFriendTypeNotIn []user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
-	EdgeFriendDescriptionIsNil *bool `form:"friend.description.null,omitempty" json:"edge_friend_description_is_nil,omitempty"`
+	EdgeFriendDescriptionIsNil *bool `form:"friend.description.null,omitempty" json:"edge_friend_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
-	EdgeFriendDescriptionContains *string `form:"friend.description.has,omitempty" json:"edge_friend_description_contains,omitempty"`
+	EdgeFriendDescriptionContains *string `form:"friend.description.has,omitempty" json:"edge_friend_description_contains,omitzero"`
 	// Filters field "description" to contain the provided value, case-insensitive.
-	EdgeFriendDescriptionContainsFold *string `form:"friend.description.ihas,omitempty" json:"edge_friend_description_contains_fold,omitempty"`
+	EdgeFriendDescriptionContainsFold *string `form:"friend.description.ihas,omitempty" json:"edge_friend_description_contains_fold,omitzero"`
 	// Filters field "enabled" to be equal to the provided value.
-	EdgeFriendEnabledEQ *bool `form:"friend.enabled.eq,omitempty" json:"edge_friend_enabled_eq,omitempty"`
+	EdgeFriendEnabledEQ *bool `form:"friend.enabled.eq,omitempty" json:"edge_friend_enabled_eq,omitzero"`
 	// Filters field "email" to be equal to the provided value.
-	EdgeFriendEmailEQ *string `form:"friend.email.eq,omitempty" json:"edge_friend_email_eq,omitempty"`
+	EdgeFriendEmailEQ *string `form:"friend.email.eq,omitempty" json:"edge_friend_email_eq,omitzero"`
 	// Filters field "email" to be not equal to the provided value.
-	EdgeFriendEmailNEQ *string `form:"friend.email.neq,omitempty" json:"edge_friend_email_neq,omitempty"`
+	EdgeFriendEmailNEQ *string `form:"friend.email.neq,omitempty" json:"edge_friend_email_neq,omitzero"`
 	// Filters field "email" to be null/nil.
-	EdgeFriendEmailIsNil *bool `form:"friend.email.null,omitempty" json:"edge_friend_email_is_nil,omitempty"`
+	EdgeFriendEmailIsNil *bool `form:"friend.email.null,omitempty" json:"edge_friend_email_is_nil,omitzero"`
 	// Filters field "email" to be within the provided values.
-	EdgeFriendEmailIn []string `form:"friend.email.in,omitempty" json:"edge_friend_email_in,omitempty"`
+	EdgeFriendEmailIn []string `form:"friend.email.in,omitempty" json:"edge_friend_email_in,omitzero"`
 	// Filters field "email" to be not within the provided values.
-	EdgeFriendEmailNotIn []string `form:"friend.email.notIn,omitempty" json:"edge_friend_email_not_in,omitempty"`
+	EdgeFriendEmailNotIn []string `form:"friend.email.notIn,omitempty" json:"edge_friend_email_not_in,omitzero"`
 	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeFriendEmailEqualFold *string `form:"friend.email.ieq,omitempty" json:"edge_friend_email_equal_fold,omitempty"`
+	EdgeFriendEmailEqualFold *string `form:"friend.email.ieq,omitempty" json:"edge_friend_email_equal_fold,omitzero"`
 	// Filters field "email" to contain the provided value.
-	EdgeFriendEmailContains *string `form:"friend.email.has,omitempty" json:"edge_friend_email_contains,omitempty"`
+	EdgeFriendEmailContains *string `form:"friend.email.has,omitempty" json:"edge_friend_email_contains,omitzero"`
 	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeFriendEmailContainsFold *string `form:"friend.email.ihas,omitempty" json:"edge_friend_email_contains_fold,omitempty"`
+	EdgeFriendEmailContainsFold *string `form:"friend.email.ihas,omitempty" json:"edge_friend_email_contains_fold,omitzero"`
 	// Filters field "email" to start with the provided value.
-	EdgeFriendEmailHasPrefix *string `form:"friend.email.prefix,omitempty" json:"edge_friend_email_has_prefix,omitempty"`
+	EdgeFriendEmailHasPrefix *string `form:"friend.email.prefix,omitempty" json:"edge_friend_email_has_prefix,omitzero"`
 	// Filters field "email" to end with the provided value.
-	EdgeFriendEmailHasSuffix *string `form:"friend.email.suffix,omitempty" json:"edge_friend_email_has_suffix,omitempty"`
+	EdgeFriendEmailHasSuffix *string `form:"friend.email.suffix,omitempty" json:"edge_friend_email_has_suffix,omitzero"`
 	// Filters field "last_authenticated_at" to be equal to the provided value.
-	EdgeFriendLastAuthenticatedAtEQ *time.Time `form:"friend.lastAuthenticatedAt.eq,omitempty" json:"edge_friend_last_authenticated_at_eq,omitempty"`
+	EdgeFriendLastAuthenticatedAtEQ *time.Time `form:"friend.lastAuthenticatedAt.eq,omitempty" json:"edge_friend_last_authenticated_at_eq,omitzero"`
 	// Filters field "last_authenticated_at" to be not equal to the provided value.
-	EdgeFriendLastAuthenticatedAtNEQ *time.Time `form:"friend.lastAuthenticatedAt.neq,omitempty" json:"edge_friend_last_authenticated_at_neq,omitempty"`
+	EdgeFriendLastAuthenticatedAtNEQ *time.Time `form:"friend.lastAuthenticatedAt.neq,omitempty" json:"edge_friend_last_authenticated_at_neq,omitzero"`
 	// Filters field "last_authenticated_at" to be null/nil.
-	EdgeFriendLastAuthenticatedAtIsNil *bool `form:"friend.lastAuthenticatedAt.null,omitempty" json:"edge_friend_last_authenticated_at_is_nil,omitempty"`
+	EdgeFriendLastAuthenticatedAtIsNil *bool `form:"friend.lastAuthenticatedAt.null,omitempty" json:"edge_friend_last_authenticated_at_is_nil,omitzero"`
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Friendship.
@@ -842,279 +842,279 @@ type ListPetParams struct {
 	Filtered[predicate.Pet]
 
 	// Filters field "id" to be equal to the provided value.
-	PetIDEQ *int `form:"id.eq,omitempty" json:"pet_ideq,omitempty"`
+	PetIDEQ *int `form:"id.eq,omitempty" json:"pet_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	PetIDNEQ *int `form:"id.neq,omitempty" json:"pet_idneq,omitempty"`
+	PetIDNEQ *int `form:"id.neq,omitempty" json:"pet_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	PetIDIn []int `form:"id.in,omitempty" json:"pet_id_in,omitempty"`
+	PetIDIn []int `form:"id.in,omitempty" json:"pet_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	PetIDNotIn []int `form:"id.notIn,omitempty" json:"pet_id_not_in,omitempty"`
+	PetIDNotIn []int `form:"id.notIn,omitempty" json:"pet_id_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	PetNameEQ *string `form:"name.eq,omitempty" json:"pet_name_eq,omitempty"`
+	PetNameEQ *string `form:"name.eq,omitempty" json:"pet_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	PetNameNEQ *string `form:"name.neq,omitempty" json:"pet_name_neq,omitempty"`
+	PetNameNEQ *string `form:"name.neq,omitempty" json:"pet_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	PetNameIn []string `form:"name.in,omitempty" json:"pet_name_in,omitempty"`
+	PetNameIn []string `form:"name.in,omitempty" json:"pet_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	PetNameNotIn []string `form:"name.notIn,omitempty" json:"pet_name_not_in,omitempty"`
+	PetNameNotIn []string `form:"name.notIn,omitempty" json:"pet_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	PetNameEqualFold *string `form:"name.ieq,omitempty" json:"pet_name_equal_fold,omitempty"`
+	PetNameEqualFold *string `form:"name.ieq,omitempty" json:"pet_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	PetNameContains *string `form:"name.has,omitempty" json:"pet_name_contains,omitempty"`
+	PetNameContains *string `form:"name.has,omitempty" json:"pet_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	PetNameContainsFold *string `form:"name.ihas,omitempty" json:"pet_name_contains_fold,omitempty"`
+	PetNameContainsFold *string `form:"name.ihas,omitempty" json:"pet_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	PetNameHasPrefix *string `form:"name.prefix,omitempty" json:"pet_name_has_prefix,omitempty"`
+	PetNameHasPrefix *string `form:"name.prefix,omitempty" json:"pet_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	PetNameHasSuffix *string `form:"name.suffix,omitempty" json:"pet_name_has_suffix,omitempty"`
+	PetNameHasSuffix *string `form:"name.suffix,omitempty" json:"pet_name_has_suffix,omitzero"`
 	// Filters field "nicknames" to be null/nil.
-	PetNicknamesIsNil *bool `form:"nicknames.null,omitempty" json:"pet_nicknames_is_nil,omitempty"`
+	PetNicknamesIsNil *bool `form:"nicknames.null,omitempty" json:"pet_nicknames_is_nil,omitzero"`
 	// Filters field "age" to be equal to the provided value.
-	PetAgeEQ *int `form:"age.eq,omitempty" json:"pet_age_eq,omitempty"`
+	PetAgeEQ *int `form:"age.eq,omitempty" json:"pet_age_eq,omitzero"`
 	// Filters field "age" to be not equal to the provided value.
-	PetAgeNEQ *int `form:"age.neq,omitempty" json:"pet_age_neq,omitempty"`
+	PetAgeNEQ *int `form:"age.neq,omitempty" json:"pet_age_neq,omitzero"`
 	// Filters field "age" to be greater than the provided value.
-	PetAgeGT *int `form:"age.gt,omitempty" json:"pet_age_gt,omitempty"`
+	PetAgeGT *int `form:"age.gt,omitempty" json:"pet_age_gt,omitzero"`
 	// Filters field "age" to be less than the provided value.
-	PetAgeLT *int `form:"age.lt,omitempty" json:"pet_age_lt,omitempty"`
+	PetAgeLT *int `form:"age.lt,omitempty" json:"pet_age_lt,omitzero"`
 	// Filters field "age" to be within the provided values.
-	PetAgeIn []int `form:"age.in,omitempty" json:"pet_age_in,omitempty"`
+	PetAgeIn []int `form:"age.in,omitempty" json:"pet_age_in,omitzero"`
 	// Filters field "age" to be not within the provided values.
-	PetAgeNotIn []int `form:"age.notIn,omitempty" json:"pet_age_not_in,omitempty"`
+	PetAgeNotIn []int `form:"age.notIn,omitempty" json:"pet_age_not_in,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	PetTypeEQ *pet.Type `form:"type.eq,omitempty" json:"pet_type_eq,omitempty"`
+	PetTypeEQ *pet.Type `form:"type.eq,omitempty" json:"pet_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	PetTypeNEQ *pet.Type `form:"type.neq,omitempty" json:"pet_type_neq,omitempty"`
+	PetTypeNEQ *pet.Type `form:"type.neq,omitempty" json:"pet_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	PetTypeIn []pet.Type `form:"type.in,omitempty" json:"pet_type_in,omitempty"`
+	PetTypeIn []pet.Type `form:"type.in,omitempty" json:"pet_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	PetTypeNotIn []pet.Type `form:"type.notIn,omitempty" json:"pet_type_not_in,omitempty"`
+	PetTypeNotIn []pet.Type `form:"type.notIn,omitempty" json:"pet_type_not_in,omitzero"`
 	// If true, only return entities that have a category edge.
-	EdgeHasCategory *bool `form:"has.category,omitempty" json:"edge_has_category,omitempty"`
+	EdgeHasCategory *bool `form:"has.category,omitempty" json:"edge_has_category,omitzero"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeCategoryIDEQ *int `form:"category.id.eq,omitempty" json:"edge_category_ideq,omitempty"`
+	EdgeCategoryIDEQ *int `form:"category.id.eq,omitempty" json:"edge_category_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeCategoryIDNEQ *int `form:"category.id.neq,omitempty" json:"edge_category_idneq,omitempty"`
+	EdgeCategoryIDNEQ *int `form:"category.id.neq,omitempty" json:"edge_category_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	EdgeCategoryIDIn []int `form:"category.id.in,omitempty" json:"edge_category_id_in,omitempty"`
+	EdgeCategoryIDIn []int `form:"category.id.in,omitempty" json:"edge_category_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	EdgeCategoryIDNotIn []int `form:"category.id.notIn,omitempty" json:"edge_category_id_not_in,omitempty"`
+	EdgeCategoryIDNotIn []int `form:"category.id.notIn,omitempty" json:"edge_category_id_not_in,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	EdgeCategoryCreatedAtGT *time.Time `form:"category.createdAt.gt,omitempty" json:"edge_category_created_at_gt,omitempty"`
+	EdgeCategoryCreatedAtGT *time.Time `form:"category.createdAt.gt,omitempty" json:"edge_category_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	EdgeCategoryCreatedAtLT *time.Time `form:"category.createdAt.lt,omitempty" json:"edge_category_created_at_lt,omitempty"`
+	EdgeCategoryCreatedAtLT *time.Time `form:"category.createdAt.lt,omitempty" json:"edge_category_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	EdgeCategoryUpdatedAtGT *time.Time `form:"category.updatedAt.gt,omitempty" json:"edge_category_updated_at_gt,omitempty"`
+	EdgeCategoryUpdatedAtGT *time.Time `form:"category.updatedAt.gt,omitempty" json:"edge_category_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	EdgeCategoryUpdatedAtLT *time.Time `form:"category.updatedAt.lt,omitempty" json:"edge_category_updated_at_lt,omitempty"`
+	EdgeCategoryUpdatedAtLT *time.Time `form:"category.updatedAt.lt,omitempty" json:"edge_category_updated_at_lt,omitzero"`
 	// If true, only return entities that have a owner edge.
-	EdgeHasOwner *bool `form:"has.owner,omitempty" json:"edge_has_owner,omitempty"`
+	EdgeHasOwner *bool `form:"has.owner,omitempty" json:"edge_has_owner,omitzero"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeOwnerIDEQ *uuid.UUID `form:"owner.id.eq,omitempty" json:"edge_owner_ideq,omitempty"`
+	EdgeOwnerIDEQ *uuid.UUID `form:"owner.id.eq,omitempty" json:"edge_owner_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeOwnerIDNEQ *uuid.UUID `form:"owner.id.neq,omitempty" json:"edge_owner_idneq,omitempty"`
+	EdgeOwnerIDNEQ *uuid.UUID `form:"owner.id.neq,omitempty" json:"edge_owner_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	EdgeOwnerIDIn []uuid.UUID `form:"owner.id.in,omitempty" json:"edge_owner_id_in,omitempty"`
+	EdgeOwnerIDIn []uuid.UUID `form:"owner.id.in,omitempty" json:"edge_owner_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	EdgeOwnerIDNotIn []uuid.UUID `form:"owner.id.notIn,omitempty" json:"edge_owner_id_not_in,omitempty"`
+	EdgeOwnerIDNotIn []uuid.UUID `form:"owner.id.notIn,omitempty" json:"edge_owner_id_not_in,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	EdgeOwnerCreatedAtGT *time.Time `form:"owner.createdAt.gt,omitempty" json:"edge_owner_created_at_gt,omitempty"`
+	EdgeOwnerCreatedAtGT *time.Time `form:"owner.createdAt.gt,omitempty" json:"edge_owner_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	EdgeOwnerCreatedAtLT *time.Time `form:"owner.createdAt.lt,omitempty" json:"edge_owner_created_at_lt,omitempty"`
+	EdgeOwnerCreatedAtLT *time.Time `form:"owner.createdAt.lt,omitempty" json:"edge_owner_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	EdgeOwnerUpdatedAtGT *time.Time `form:"owner.updatedAt.gt,omitempty" json:"edge_owner_updated_at_gt,omitempty"`
+	EdgeOwnerUpdatedAtGT *time.Time `form:"owner.updatedAt.gt,omitempty" json:"edge_owner_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	EdgeOwnerUpdatedAtLT *time.Time `form:"owner.updatedAt.lt,omitempty" json:"edge_owner_updated_at_lt,omitempty"`
+	EdgeOwnerUpdatedAtLT *time.Time `form:"owner.updatedAt.lt,omitempty" json:"edge_owner_updated_at_lt,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	EdgeOwnerNameEQ *string `form:"owner.name.eq,omitempty" json:"edge_owner_name_eq,omitempty"`
+	EdgeOwnerNameEQ *string `form:"owner.name.eq,omitempty" json:"edge_owner_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	EdgeOwnerNameNEQ *string `form:"owner.name.neq,omitempty" json:"edge_owner_name_neq,omitempty"`
+	EdgeOwnerNameNEQ *string `form:"owner.name.neq,omitempty" json:"edge_owner_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	EdgeOwnerNameIn []string `form:"owner.name.in,omitempty" json:"edge_owner_name_in,omitempty"`
+	EdgeOwnerNameIn []string `form:"owner.name.in,omitempty" json:"edge_owner_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	EdgeOwnerNameNotIn []string `form:"owner.name.notIn,omitempty" json:"edge_owner_name_not_in,omitempty"`
+	EdgeOwnerNameNotIn []string `form:"owner.name.notIn,omitempty" json:"edge_owner_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeOwnerNameEqualFold *string `form:"owner.name.ieq,omitempty" json:"edge_owner_name_equal_fold,omitempty"`
+	EdgeOwnerNameEqualFold *string `form:"owner.name.ieq,omitempty" json:"edge_owner_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	EdgeOwnerNameContains *string `form:"owner.name.has,omitempty" json:"edge_owner_name_contains,omitempty"`
+	EdgeOwnerNameContains *string `form:"owner.name.has,omitempty" json:"edge_owner_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeOwnerNameContainsFold *string `form:"owner.name.ihas,omitempty" json:"edge_owner_name_contains_fold,omitempty"`
+	EdgeOwnerNameContainsFold *string `form:"owner.name.ihas,omitempty" json:"edge_owner_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	EdgeOwnerNameHasPrefix *string `form:"owner.name.prefix,omitempty" json:"edge_owner_name_has_prefix,omitempty"`
+	EdgeOwnerNameHasPrefix *string `form:"owner.name.prefix,omitempty" json:"edge_owner_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	EdgeOwnerNameHasSuffix *string `form:"owner.name.suffix,omitempty" json:"edge_owner_name_has_suffix,omitempty"`
+	EdgeOwnerNameHasSuffix *string `form:"owner.name.suffix,omitempty" json:"edge_owner_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeOwnerTypeEQ *user.Type `form:"owner.type.eq,omitempty" json:"edge_owner_type_eq,omitempty"`
+	EdgeOwnerTypeEQ *user.Type `form:"owner.type.eq,omitempty" json:"edge_owner_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeOwnerTypeNEQ *user.Type `form:"owner.type.neq,omitempty" json:"edge_owner_type_neq,omitempty"`
+	EdgeOwnerTypeNEQ *user.Type `form:"owner.type.neq,omitempty" json:"edge_owner_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeOwnerTypeIn []user.Type `form:"owner.type.in,omitempty" json:"edge_owner_type_in,omitempty"`
+	EdgeOwnerTypeIn []user.Type `form:"owner.type.in,omitempty" json:"edge_owner_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeOwnerTypeNotIn []user.Type `form:"owner.type.notIn,omitempty" json:"edge_owner_type_not_in,omitempty"`
+	EdgeOwnerTypeNotIn []user.Type `form:"owner.type.notIn,omitempty" json:"edge_owner_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
-	EdgeOwnerDescriptionIsNil *bool `form:"owner.description.null,omitempty" json:"edge_owner_description_is_nil,omitempty"`
+	EdgeOwnerDescriptionIsNil *bool `form:"owner.description.null,omitempty" json:"edge_owner_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
-	EdgeOwnerDescriptionContains *string `form:"owner.description.has,omitempty" json:"edge_owner_description_contains,omitempty"`
+	EdgeOwnerDescriptionContains *string `form:"owner.description.has,omitempty" json:"edge_owner_description_contains,omitzero"`
 	// Filters field "description" to contain the provided value, case-insensitive.
-	EdgeOwnerDescriptionContainsFold *string `form:"owner.description.ihas,omitempty" json:"edge_owner_description_contains_fold,omitempty"`
+	EdgeOwnerDescriptionContainsFold *string `form:"owner.description.ihas,omitempty" json:"edge_owner_description_contains_fold,omitzero"`
 	// Filters field "enabled" to be equal to the provided value.
-	EdgeOwnerEnabledEQ *bool `form:"owner.enabled.eq,omitempty" json:"edge_owner_enabled_eq,omitempty"`
+	EdgeOwnerEnabledEQ *bool `form:"owner.enabled.eq,omitempty" json:"edge_owner_enabled_eq,omitzero"`
 	// Filters field "email" to be equal to the provided value.
-	EdgeOwnerEmailEQ *string `form:"owner.email.eq,omitempty" json:"edge_owner_email_eq,omitempty"`
+	EdgeOwnerEmailEQ *string `form:"owner.email.eq,omitempty" json:"edge_owner_email_eq,omitzero"`
 	// Filters field "email" to be not equal to the provided value.
-	EdgeOwnerEmailNEQ *string `form:"owner.email.neq,omitempty" json:"edge_owner_email_neq,omitempty"`
+	EdgeOwnerEmailNEQ *string `form:"owner.email.neq,omitempty" json:"edge_owner_email_neq,omitzero"`
 	// Filters field "email" to be null/nil.
-	EdgeOwnerEmailIsNil *bool `form:"owner.email.null,omitempty" json:"edge_owner_email_is_nil,omitempty"`
+	EdgeOwnerEmailIsNil *bool `form:"owner.email.null,omitempty" json:"edge_owner_email_is_nil,omitzero"`
 	// Filters field "email" to be within the provided values.
-	EdgeOwnerEmailIn []string `form:"owner.email.in,omitempty" json:"edge_owner_email_in,omitempty"`
+	EdgeOwnerEmailIn []string `form:"owner.email.in,omitempty" json:"edge_owner_email_in,omitzero"`
 	// Filters field "email" to be not within the provided values.
-	EdgeOwnerEmailNotIn []string `form:"owner.email.notIn,omitempty" json:"edge_owner_email_not_in,omitempty"`
+	EdgeOwnerEmailNotIn []string `form:"owner.email.notIn,omitempty" json:"edge_owner_email_not_in,omitzero"`
 	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeOwnerEmailEqualFold *string `form:"owner.email.ieq,omitempty" json:"edge_owner_email_equal_fold,omitempty"`
+	EdgeOwnerEmailEqualFold *string `form:"owner.email.ieq,omitempty" json:"edge_owner_email_equal_fold,omitzero"`
 	// Filters field "email" to contain the provided value.
-	EdgeOwnerEmailContains *string `form:"owner.email.has,omitempty" json:"edge_owner_email_contains,omitempty"`
+	EdgeOwnerEmailContains *string `form:"owner.email.has,omitempty" json:"edge_owner_email_contains,omitzero"`
 	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeOwnerEmailContainsFold *string `form:"owner.email.ihas,omitempty" json:"edge_owner_email_contains_fold,omitempty"`
+	EdgeOwnerEmailContainsFold *string `form:"owner.email.ihas,omitempty" json:"edge_owner_email_contains_fold,omitzero"`
 	// Filters field "email" to start with the provided value.
-	EdgeOwnerEmailHasPrefix *string `form:"owner.email.prefix,omitempty" json:"edge_owner_email_has_prefix,omitempty"`
+	EdgeOwnerEmailHasPrefix *string `form:"owner.email.prefix,omitempty" json:"edge_owner_email_has_prefix,omitzero"`
 	// Filters field "email" to end with the provided value.
-	EdgeOwnerEmailHasSuffix *string `form:"owner.email.suffix,omitempty" json:"edge_owner_email_has_suffix,omitempty"`
+	EdgeOwnerEmailHasSuffix *string `form:"owner.email.suffix,omitempty" json:"edge_owner_email_has_suffix,omitzero"`
 	// Filters field "last_authenticated_at" to be equal to the provided value.
-	EdgeOwnerLastAuthenticatedAtEQ *time.Time `form:"owner.lastAuthenticatedAt.eq,omitempty" json:"edge_owner_last_authenticated_at_eq,omitempty"`
+	EdgeOwnerLastAuthenticatedAtEQ *time.Time `form:"owner.lastAuthenticatedAt.eq,omitempty" json:"edge_owner_last_authenticated_at_eq,omitzero"`
 	// Filters field "last_authenticated_at" to be not equal to the provided value.
-	EdgeOwnerLastAuthenticatedAtNEQ *time.Time `form:"owner.lastAuthenticatedAt.neq,omitempty" json:"edge_owner_last_authenticated_at_neq,omitempty"`
+	EdgeOwnerLastAuthenticatedAtNEQ *time.Time `form:"owner.lastAuthenticatedAt.neq,omitempty" json:"edge_owner_last_authenticated_at_neq,omitzero"`
 	// Filters field "last_authenticated_at" to be null/nil.
-	EdgeOwnerLastAuthenticatedAtIsNil *bool `form:"owner.lastAuthenticatedAt.null,omitempty" json:"edge_owner_last_authenticated_at_is_nil,omitempty"`
+	EdgeOwnerLastAuthenticatedAtIsNil *bool `form:"owner.lastAuthenticatedAt.null,omitempty" json:"edge_owner_last_authenticated_at_is_nil,omitzero"`
 	// If true, only return entities that have a friend edge.
-	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitempty"`
+	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitzero"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeFriendIDEQ *int `form:"friend.id.eq,omitempty" json:"edge_friend_ideq,omitempty"`
+	EdgeFriendIDEQ *int `form:"friend.id.eq,omitempty" json:"edge_friend_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeFriendIDNEQ *int `form:"friend.id.neq,omitempty" json:"edge_friend_idneq,omitempty"`
+	EdgeFriendIDNEQ *int `form:"friend.id.neq,omitempty" json:"edge_friend_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	EdgeFriendIDIn []int `form:"friend.id.in,omitempty" json:"edge_friend_id_in,omitempty"`
+	EdgeFriendIDIn []int `form:"friend.id.in,omitempty" json:"edge_friend_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	EdgeFriendIDNotIn []int `form:"friend.id.notIn,omitempty" json:"edge_friend_id_not_in,omitempty"`
+	EdgeFriendIDNotIn []int `form:"friend.id.notIn,omitempty" json:"edge_friend_id_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	EdgeFriendNameEQ *string `form:"friend.name.eq,omitempty" json:"edge_friend_name_eq,omitempty"`
+	EdgeFriendNameEQ *string `form:"friend.name.eq,omitempty" json:"edge_friend_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	EdgeFriendNameNEQ *string `form:"friend.name.neq,omitempty" json:"edge_friend_name_neq,omitempty"`
+	EdgeFriendNameNEQ *string `form:"friend.name.neq,omitempty" json:"edge_friend_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	EdgeFriendNameIn []string `form:"friend.name.in,omitempty" json:"edge_friend_name_in,omitempty"`
+	EdgeFriendNameIn []string `form:"friend.name.in,omitempty" json:"edge_friend_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	EdgeFriendNameNotIn []string `form:"friend.name.notIn,omitempty" json:"edge_friend_name_not_in,omitempty"`
+	EdgeFriendNameNotIn []string `form:"friend.name.notIn,omitempty" json:"edge_friend_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitempty"`
+	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	EdgeFriendNameContains *string `form:"friend.name.has,omitempty" json:"edge_friend_name_contains,omitempty"`
+	EdgeFriendNameContains *string `form:"friend.name.has,omitempty" json:"edge_friend_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitempty"`
+	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitempty"`
+	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitempty"`
+	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitzero"`
 	// Filters field "nicknames" to be null/nil.
-	EdgeFriendNicknamesIsNil *bool `form:"friend.nicknames.null,omitempty" json:"edge_friend_nicknames_is_nil,omitempty"`
+	EdgeFriendNicknamesIsNil *bool `form:"friend.nicknames.null,omitempty" json:"edge_friend_nicknames_is_nil,omitzero"`
 	// Filters field "age" to be equal to the provided value.
-	EdgeFriendAgeEQ *int `form:"friend.age.eq,omitempty" json:"edge_friend_age_eq,omitempty"`
+	EdgeFriendAgeEQ *int `form:"friend.age.eq,omitempty" json:"edge_friend_age_eq,omitzero"`
 	// Filters field "age" to be not equal to the provided value.
-	EdgeFriendAgeNEQ *int `form:"friend.age.neq,omitempty" json:"edge_friend_age_neq,omitempty"`
+	EdgeFriendAgeNEQ *int `form:"friend.age.neq,omitempty" json:"edge_friend_age_neq,omitzero"`
 	// Filters field "age" to be greater than the provided value.
-	EdgeFriendAgeGT *int `form:"friend.age.gt,omitempty" json:"edge_friend_age_gt,omitempty"`
+	EdgeFriendAgeGT *int `form:"friend.age.gt,omitempty" json:"edge_friend_age_gt,omitzero"`
 	// Filters field "age" to be less than the provided value.
-	EdgeFriendAgeLT *int `form:"friend.age.lt,omitempty" json:"edge_friend_age_lt,omitempty"`
+	EdgeFriendAgeLT *int `form:"friend.age.lt,omitempty" json:"edge_friend_age_lt,omitzero"`
 	// Filters field "age" to be within the provided values.
-	EdgeFriendAgeIn []int `form:"friend.age.in,omitempty" json:"edge_friend_age_in,omitempty"`
+	EdgeFriendAgeIn []int `form:"friend.age.in,omitempty" json:"edge_friend_age_in,omitzero"`
 	// Filters field "age" to be not within the provided values.
-	EdgeFriendAgeNotIn []int `form:"friend.age.notIn,omitempty" json:"edge_friend_age_not_in,omitempty"`
+	EdgeFriendAgeNotIn []int `form:"friend.age.notIn,omitempty" json:"edge_friend_age_not_in,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFriendTypeEQ *pet.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitempty"`
+	EdgeFriendTypeEQ *pet.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFriendTypeNEQ *pet.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitempty"`
+	EdgeFriendTypeNEQ *pet.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFriendTypeIn []pet.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitempty"`
+	EdgeFriendTypeIn []pet.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFriendTypeNotIn []pet.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitempty"`
+	EdgeFriendTypeNotIn []pet.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitzero"`
 	// If true, only return entities that have a followed_by edge.
-	EdgeHasFollowedBy *bool `form:"has.followedBy,omitempty" json:"edge_has_followed_by,omitempty"`
+	EdgeHasFollowedBy *bool `form:"has.followedBy,omitempty" json:"edge_has_followed_by,omitzero"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeFollowedByIDEQ *uuid.UUID `form:"followedBy.id.eq,omitempty" json:"edge_followed_by_ideq,omitempty"`
+	EdgeFollowedByIDEQ *uuid.UUID `form:"followedBy.id.eq,omitempty" json:"edge_followed_by_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeFollowedByIDNEQ *uuid.UUID `form:"followedBy.id.neq,omitempty" json:"edge_followed_by_idneq,omitempty"`
+	EdgeFollowedByIDNEQ *uuid.UUID `form:"followedBy.id.neq,omitempty" json:"edge_followed_by_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	EdgeFollowedByIDIn []uuid.UUID `form:"followedBy.id.in,omitempty" json:"edge_followed_by_id_in,omitempty"`
+	EdgeFollowedByIDIn []uuid.UUID `form:"followedBy.id.in,omitempty" json:"edge_followed_by_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	EdgeFollowedByIDNotIn []uuid.UUID `form:"followedBy.id.notIn,omitempty" json:"edge_followed_by_id_not_in,omitempty"`
+	EdgeFollowedByIDNotIn []uuid.UUID `form:"followedBy.id.notIn,omitempty" json:"edge_followed_by_id_not_in,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	EdgeFollowedByCreatedAtGT *time.Time `form:"followedBy.createdAt.gt,omitempty" json:"edge_followed_by_created_at_gt,omitempty"`
+	EdgeFollowedByCreatedAtGT *time.Time `form:"followedBy.createdAt.gt,omitempty" json:"edge_followed_by_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	EdgeFollowedByCreatedAtLT *time.Time `form:"followedBy.createdAt.lt,omitempty" json:"edge_followed_by_created_at_lt,omitempty"`
+	EdgeFollowedByCreatedAtLT *time.Time `form:"followedBy.createdAt.lt,omitempty" json:"edge_followed_by_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	EdgeFollowedByUpdatedAtGT *time.Time `form:"followedBy.updatedAt.gt,omitempty" json:"edge_followed_by_updated_at_gt,omitempty"`
+	EdgeFollowedByUpdatedAtGT *time.Time `form:"followedBy.updatedAt.gt,omitempty" json:"edge_followed_by_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	EdgeFollowedByUpdatedAtLT *time.Time `form:"followedBy.updatedAt.lt,omitempty" json:"edge_followed_by_updated_at_lt,omitempty"`
+	EdgeFollowedByUpdatedAtLT *time.Time `form:"followedBy.updatedAt.lt,omitempty" json:"edge_followed_by_updated_at_lt,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	EdgeFollowedByNameEQ *string `form:"followedBy.name.eq,omitempty" json:"edge_followed_by_name_eq,omitempty"`
+	EdgeFollowedByNameEQ *string `form:"followedBy.name.eq,omitempty" json:"edge_followed_by_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	EdgeFollowedByNameNEQ *string `form:"followedBy.name.neq,omitempty" json:"edge_followed_by_name_neq,omitempty"`
+	EdgeFollowedByNameNEQ *string `form:"followedBy.name.neq,omitempty" json:"edge_followed_by_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	EdgeFollowedByNameIn []string `form:"followedBy.name.in,omitempty" json:"edge_followed_by_name_in,omitempty"`
+	EdgeFollowedByNameIn []string `form:"followedBy.name.in,omitempty" json:"edge_followed_by_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	EdgeFollowedByNameNotIn []string `form:"followedBy.name.notIn,omitempty" json:"edge_followed_by_name_not_in,omitempty"`
+	EdgeFollowedByNameNotIn []string `form:"followedBy.name.notIn,omitempty" json:"edge_followed_by_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFollowedByNameEqualFold *string `form:"followedBy.name.ieq,omitempty" json:"edge_followed_by_name_equal_fold,omitempty"`
+	EdgeFollowedByNameEqualFold *string `form:"followedBy.name.ieq,omitempty" json:"edge_followed_by_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	EdgeFollowedByNameContains *string `form:"followedBy.name.has,omitempty" json:"edge_followed_by_name_contains,omitempty"`
+	EdgeFollowedByNameContains *string `form:"followedBy.name.has,omitempty" json:"edge_followed_by_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFollowedByNameContainsFold *string `form:"followedBy.name.ihas,omitempty" json:"edge_followed_by_name_contains_fold,omitempty"`
+	EdgeFollowedByNameContainsFold *string `form:"followedBy.name.ihas,omitempty" json:"edge_followed_by_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	EdgeFollowedByNameHasPrefix *string `form:"followedBy.name.prefix,omitempty" json:"edge_followed_by_name_has_prefix,omitempty"`
+	EdgeFollowedByNameHasPrefix *string `form:"followedBy.name.prefix,omitempty" json:"edge_followed_by_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	EdgeFollowedByNameHasSuffix *string `form:"followedBy.name.suffix,omitempty" json:"edge_followed_by_name_has_suffix,omitempty"`
+	EdgeFollowedByNameHasSuffix *string `form:"followedBy.name.suffix,omitempty" json:"edge_followed_by_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFollowedByTypeEQ *user.Type `form:"followedBy.type.eq,omitempty" json:"edge_followed_by_type_eq,omitempty"`
+	EdgeFollowedByTypeEQ *user.Type `form:"followedBy.type.eq,omitempty" json:"edge_followed_by_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFollowedByTypeNEQ *user.Type `form:"followedBy.type.neq,omitempty" json:"edge_followed_by_type_neq,omitempty"`
+	EdgeFollowedByTypeNEQ *user.Type `form:"followedBy.type.neq,omitempty" json:"edge_followed_by_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFollowedByTypeIn []user.Type `form:"followedBy.type.in,omitempty" json:"edge_followed_by_type_in,omitempty"`
+	EdgeFollowedByTypeIn []user.Type `form:"followedBy.type.in,omitempty" json:"edge_followed_by_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFollowedByTypeNotIn []user.Type `form:"followedBy.type.notIn,omitempty" json:"edge_followed_by_type_not_in,omitempty"`
+	EdgeFollowedByTypeNotIn []user.Type `form:"followedBy.type.notIn,omitempty" json:"edge_followed_by_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
-	EdgeFollowedByDescriptionIsNil *bool `form:"followedBy.description.null,omitempty" json:"edge_followed_by_description_is_nil,omitempty"`
+	EdgeFollowedByDescriptionIsNil *bool `form:"followedBy.description.null,omitempty" json:"edge_followed_by_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
-	EdgeFollowedByDescriptionContains *string `form:"followedBy.description.has,omitempty" json:"edge_followed_by_description_contains,omitempty"`
+	EdgeFollowedByDescriptionContains *string `form:"followedBy.description.has,omitempty" json:"edge_followed_by_description_contains,omitzero"`
 	// Filters field "description" to contain the provided value, case-insensitive.
-	EdgeFollowedByDescriptionContainsFold *string `form:"followedBy.description.ihas,omitempty" json:"edge_followed_by_description_contains_fold,omitempty"`
+	EdgeFollowedByDescriptionContainsFold *string `form:"followedBy.description.ihas,omitempty" json:"edge_followed_by_description_contains_fold,omitzero"`
 	// Filters field "enabled" to be equal to the provided value.
-	EdgeFollowedByEnabledEQ *bool `form:"followedBy.enabled.eq,omitempty" json:"edge_followed_by_enabled_eq,omitempty"`
+	EdgeFollowedByEnabledEQ *bool `form:"followedBy.enabled.eq,omitempty" json:"edge_followed_by_enabled_eq,omitzero"`
 	// Filters field "email" to be equal to the provided value.
-	EdgeFollowedByEmailEQ *string `form:"followedBy.email.eq,omitempty" json:"edge_followed_by_email_eq,omitempty"`
+	EdgeFollowedByEmailEQ *string `form:"followedBy.email.eq,omitempty" json:"edge_followed_by_email_eq,omitzero"`
 	// Filters field "email" to be not equal to the provided value.
-	EdgeFollowedByEmailNEQ *string `form:"followedBy.email.neq,omitempty" json:"edge_followed_by_email_neq,omitempty"`
+	EdgeFollowedByEmailNEQ *string `form:"followedBy.email.neq,omitempty" json:"edge_followed_by_email_neq,omitzero"`
 	// Filters field "email" to be null/nil.
-	EdgeFollowedByEmailIsNil *bool `form:"followedBy.email.null,omitempty" json:"edge_followed_by_email_is_nil,omitempty"`
+	EdgeFollowedByEmailIsNil *bool `form:"followedBy.email.null,omitempty" json:"edge_followed_by_email_is_nil,omitzero"`
 	// Filters field "email" to be within the provided values.
-	EdgeFollowedByEmailIn []string `form:"followedBy.email.in,omitempty" json:"edge_followed_by_email_in,omitempty"`
+	EdgeFollowedByEmailIn []string `form:"followedBy.email.in,omitempty" json:"edge_followed_by_email_in,omitzero"`
 	// Filters field "email" to be not within the provided values.
-	EdgeFollowedByEmailNotIn []string `form:"followedBy.email.notIn,omitempty" json:"edge_followed_by_email_not_in,omitempty"`
+	EdgeFollowedByEmailNotIn []string `form:"followedBy.email.notIn,omitempty" json:"edge_followed_by_email_not_in,omitzero"`
 	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeFollowedByEmailEqualFold *string `form:"followedBy.email.ieq,omitempty" json:"edge_followed_by_email_equal_fold,omitempty"`
+	EdgeFollowedByEmailEqualFold *string `form:"followedBy.email.ieq,omitempty" json:"edge_followed_by_email_equal_fold,omitzero"`
 	// Filters field "email" to contain the provided value.
-	EdgeFollowedByEmailContains *string `form:"followedBy.email.has,omitempty" json:"edge_followed_by_email_contains,omitempty"`
+	EdgeFollowedByEmailContains *string `form:"followedBy.email.has,omitempty" json:"edge_followed_by_email_contains,omitzero"`
 	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeFollowedByEmailContainsFold *string `form:"followedBy.email.ihas,omitempty" json:"edge_followed_by_email_contains_fold,omitempty"`
+	EdgeFollowedByEmailContainsFold *string `form:"followedBy.email.ihas,omitempty" json:"edge_followed_by_email_contains_fold,omitzero"`
 	// Filters field "email" to start with the provided value.
-	EdgeFollowedByEmailHasPrefix *string `form:"followedBy.email.prefix,omitempty" json:"edge_followed_by_email_has_prefix,omitempty"`
+	EdgeFollowedByEmailHasPrefix *string `form:"followedBy.email.prefix,omitempty" json:"edge_followed_by_email_has_prefix,omitzero"`
 	// Filters field "email" to end with the provided value.
-	EdgeFollowedByEmailHasSuffix *string `form:"followedBy.email.suffix,omitempty" json:"edge_followed_by_email_has_suffix,omitempty"`
+	EdgeFollowedByEmailHasSuffix *string `form:"followedBy.email.suffix,omitempty" json:"edge_followed_by_email_has_suffix,omitzero"`
 	// Filters field "last_authenticated_at" to be equal to the provided value.
-	EdgeFollowedByLastAuthenticatedAtEQ *time.Time `form:"followedBy.lastAuthenticatedAt.eq,omitempty" json:"edge_followed_by_last_authenticated_at_eq,omitempty"`
+	EdgeFollowedByLastAuthenticatedAtEQ *time.Time `form:"followedBy.lastAuthenticatedAt.eq,omitempty" json:"edge_followed_by_last_authenticated_at_eq,omitzero"`
 	// Filters field "last_authenticated_at" to be not equal to the provided value.
-	EdgeFollowedByLastAuthenticatedAtNEQ *time.Time `form:"followedBy.lastAuthenticatedAt.neq,omitempty" json:"edge_followed_by_last_authenticated_at_neq,omitempty"`
+	EdgeFollowedByLastAuthenticatedAtNEQ *time.Time `form:"followedBy.lastAuthenticatedAt.neq,omitempty" json:"edge_followed_by_last_authenticated_at_neq,omitzero"`
 	// Filters field "last_authenticated_at" to be null/nil.
-	EdgeFollowedByLastAuthenticatedAtIsNil *bool `form:"followedBy.lastAuthenticatedAt.null,omitempty" json:"edge_followed_by_last_authenticated_at_is_nil,omitempty"`
+	EdgeFollowedByLastAuthenticatedAtIsNil *bool `form:"followedBy.lastAuthenticatedAt.null,omitempty" json:"edge_followed_by_last_authenticated_at_is_nil,omitzero"`
 	// If true, only return entities that have a following edge.
-	EdgeHasFollowing *bool `form:"has.following,omitempty" json:"edge_has_following,omitempty"`
+	EdgeHasFollowing *bool `form:"has.following,omitempty" json:"edge_has_following,omitzero"`
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Pet.
@@ -1622,99 +1622,99 @@ type ListPostParams struct {
 	Filtered[predicate.Post]
 
 	// Filters field "id" to be equal to the provided value.
-	PostIDEQ *int `form:"id.eq,omitempty" json:"post_ideq,omitempty"`
+	PostIDEQ *int `form:"id.eq,omitempty" json:"post_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	PostIDNEQ *int `form:"id.neq,omitempty" json:"post_idneq,omitempty"`
+	PostIDNEQ *int `form:"id.neq,omitempty" json:"post_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	PostIDIn []int `form:"id.in,omitempty" json:"post_id_in,omitempty"`
+	PostIDIn []int `form:"id.in,omitempty" json:"post_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	PostIDNotIn []int `form:"id.notIn,omitempty" json:"post_id_not_in,omitempty"`
+	PostIDNotIn []int `form:"id.notIn,omitempty" json:"post_id_not_in,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	PostCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"post_created_at_gt,omitempty"`
+	PostCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"post_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	PostCreatedAtLT *time.Time `form:"createdAt.lt,omitempty" json:"post_created_at_lt,omitempty"`
+	PostCreatedAtLT *time.Time `form:"createdAt.lt,omitempty" json:"post_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	PostUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"post_updated_at_gt,omitempty"`
+	PostUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"post_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	PostUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"post_updated_at_lt,omitempty"`
+	PostUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"post_updated_at_lt,omitzero"`
 	// If true, only return entities that have a author edge.
-	EdgeHasAuthor *bool `form:"has.author,omitempty" json:"edge_has_author,omitempty"`
+	EdgeHasAuthor *bool `form:"has.author,omitempty" json:"edge_has_author,omitzero"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeAuthorIDEQ *uuid.UUID `form:"author.id.eq,omitempty" json:"edge_author_ideq,omitempty"`
+	EdgeAuthorIDEQ *uuid.UUID `form:"author.id.eq,omitempty" json:"edge_author_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeAuthorIDNEQ *uuid.UUID `form:"author.id.neq,omitempty" json:"edge_author_idneq,omitempty"`
+	EdgeAuthorIDNEQ *uuid.UUID `form:"author.id.neq,omitempty" json:"edge_author_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	EdgeAuthorIDIn []uuid.UUID `form:"author.id.in,omitempty" json:"edge_author_id_in,omitempty"`
+	EdgeAuthorIDIn []uuid.UUID `form:"author.id.in,omitempty" json:"edge_author_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	EdgeAuthorIDNotIn []uuid.UUID `form:"author.id.notIn,omitempty" json:"edge_author_id_not_in,omitempty"`
+	EdgeAuthorIDNotIn []uuid.UUID `form:"author.id.notIn,omitempty" json:"edge_author_id_not_in,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	EdgeAuthorCreatedAtGT *time.Time `form:"author.createdAt.gt,omitempty" json:"edge_author_created_at_gt,omitempty"`
+	EdgeAuthorCreatedAtGT *time.Time `form:"author.createdAt.gt,omitempty" json:"edge_author_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	EdgeAuthorCreatedAtLT *time.Time `form:"author.createdAt.lt,omitempty" json:"edge_author_created_at_lt,omitempty"`
+	EdgeAuthorCreatedAtLT *time.Time `form:"author.createdAt.lt,omitempty" json:"edge_author_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	EdgeAuthorUpdatedAtGT *time.Time `form:"author.updatedAt.gt,omitempty" json:"edge_author_updated_at_gt,omitempty"`
+	EdgeAuthorUpdatedAtGT *time.Time `form:"author.updatedAt.gt,omitempty" json:"edge_author_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	EdgeAuthorUpdatedAtLT *time.Time `form:"author.updatedAt.lt,omitempty" json:"edge_author_updated_at_lt,omitempty"`
+	EdgeAuthorUpdatedAtLT *time.Time `form:"author.updatedAt.lt,omitempty" json:"edge_author_updated_at_lt,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	EdgeAuthorNameEQ *string `form:"author.name.eq,omitempty" json:"edge_author_name_eq,omitempty"`
+	EdgeAuthorNameEQ *string `form:"author.name.eq,omitempty" json:"edge_author_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	EdgeAuthorNameNEQ *string `form:"author.name.neq,omitempty" json:"edge_author_name_neq,omitempty"`
+	EdgeAuthorNameNEQ *string `form:"author.name.neq,omitempty" json:"edge_author_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	EdgeAuthorNameIn []string `form:"author.name.in,omitempty" json:"edge_author_name_in,omitempty"`
+	EdgeAuthorNameIn []string `form:"author.name.in,omitempty" json:"edge_author_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	EdgeAuthorNameNotIn []string `form:"author.name.notIn,omitempty" json:"edge_author_name_not_in,omitempty"`
+	EdgeAuthorNameNotIn []string `form:"author.name.notIn,omitempty" json:"edge_author_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeAuthorNameEqualFold *string `form:"author.name.ieq,omitempty" json:"edge_author_name_equal_fold,omitempty"`
+	EdgeAuthorNameEqualFold *string `form:"author.name.ieq,omitempty" json:"edge_author_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	EdgeAuthorNameContains *string `form:"author.name.has,omitempty" json:"edge_author_name_contains,omitempty"`
+	EdgeAuthorNameContains *string `form:"author.name.has,omitempty" json:"edge_author_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeAuthorNameContainsFold *string `form:"author.name.ihas,omitempty" json:"edge_author_name_contains_fold,omitempty"`
+	EdgeAuthorNameContainsFold *string `form:"author.name.ihas,omitempty" json:"edge_author_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	EdgeAuthorNameHasPrefix *string `form:"author.name.prefix,omitempty" json:"edge_author_name_has_prefix,omitempty"`
+	EdgeAuthorNameHasPrefix *string `form:"author.name.prefix,omitempty" json:"edge_author_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	EdgeAuthorNameHasSuffix *string `form:"author.name.suffix,omitempty" json:"edge_author_name_has_suffix,omitempty"`
+	EdgeAuthorNameHasSuffix *string `form:"author.name.suffix,omitempty" json:"edge_author_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeAuthorTypeEQ *user.Type `form:"author.type.eq,omitempty" json:"edge_author_type_eq,omitempty"`
+	EdgeAuthorTypeEQ *user.Type `form:"author.type.eq,omitempty" json:"edge_author_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeAuthorTypeNEQ *user.Type `form:"author.type.neq,omitempty" json:"edge_author_type_neq,omitempty"`
+	EdgeAuthorTypeNEQ *user.Type `form:"author.type.neq,omitempty" json:"edge_author_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeAuthorTypeIn []user.Type `form:"author.type.in,omitempty" json:"edge_author_type_in,omitempty"`
+	EdgeAuthorTypeIn []user.Type `form:"author.type.in,omitempty" json:"edge_author_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeAuthorTypeNotIn []user.Type `form:"author.type.notIn,omitempty" json:"edge_author_type_not_in,omitempty"`
+	EdgeAuthorTypeNotIn []user.Type `form:"author.type.notIn,omitempty" json:"edge_author_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
-	EdgeAuthorDescriptionIsNil *bool `form:"author.description.null,omitempty" json:"edge_author_description_is_nil,omitempty"`
+	EdgeAuthorDescriptionIsNil *bool `form:"author.description.null,omitempty" json:"edge_author_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
-	EdgeAuthorDescriptionContains *string `form:"author.description.has,omitempty" json:"edge_author_description_contains,omitempty"`
+	EdgeAuthorDescriptionContains *string `form:"author.description.has,omitempty" json:"edge_author_description_contains,omitzero"`
 	// Filters field "description" to contain the provided value, case-insensitive.
-	EdgeAuthorDescriptionContainsFold *string `form:"author.description.ihas,omitempty" json:"edge_author_description_contains_fold,omitempty"`
+	EdgeAuthorDescriptionContainsFold *string `form:"author.description.ihas,omitempty" json:"edge_author_description_contains_fold,omitzero"`
 	// Filters field "enabled" to be equal to the provided value.
-	EdgeAuthorEnabledEQ *bool `form:"author.enabled.eq,omitempty" json:"edge_author_enabled_eq,omitempty"`
+	EdgeAuthorEnabledEQ *bool `form:"author.enabled.eq,omitempty" json:"edge_author_enabled_eq,omitzero"`
 	// Filters field "email" to be equal to the provided value.
-	EdgeAuthorEmailEQ *string `form:"author.email.eq,omitempty" json:"edge_author_email_eq,omitempty"`
+	EdgeAuthorEmailEQ *string `form:"author.email.eq,omitempty" json:"edge_author_email_eq,omitzero"`
 	// Filters field "email" to be not equal to the provided value.
-	EdgeAuthorEmailNEQ *string `form:"author.email.neq,omitempty" json:"edge_author_email_neq,omitempty"`
+	EdgeAuthorEmailNEQ *string `form:"author.email.neq,omitempty" json:"edge_author_email_neq,omitzero"`
 	// Filters field "email" to be null/nil.
-	EdgeAuthorEmailIsNil *bool `form:"author.email.null,omitempty" json:"edge_author_email_is_nil,omitempty"`
+	EdgeAuthorEmailIsNil *bool `form:"author.email.null,omitempty" json:"edge_author_email_is_nil,omitzero"`
 	// Filters field "email" to be within the provided values.
-	EdgeAuthorEmailIn []string `form:"author.email.in,omitempty" json:"edge_author_email_in,omitempty"`
+	EdgeAuthorEmailIn []string `form:"author.email.in,omitempty" json:"edge_author_email_in,omitzero"`
 	// Filters field "email" to be not within the provided values.
-	EdgeAuthorEmailNotIn []string `form:"author.email.notIn,omitempty" json:"edge_author_email_not_in,omitempty"`
+	EdgeAuthorEmailNotIn []string `form:"author.email.notIn,omitempty" json:"edge_author_email_not_in,omitzero"`
 	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeAuthorEmailEqualFold *string `form:"author.email.ieq,omitempty" json:"edge_author_email_equal_fold,omitempty"`
+	EdgeAuthorEmailEqualFold *string `form:"author.email.ieq,omitempty" json:"edge_author_email_equal_fold,omitzero"`
 	// Filters field "email" to contain the provided value.
-	EdgeAuthorEmailContains *string `form:"author.email.has,omitempty" json:"edge_author_email_contains,omitempty"`
+	EdgeAuthorEmailContains *string `form:"author.email.has,omitempty" json:"edge_author_email_contains,omitzero"`
 	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeAuthorEmailContainsFold *string `form:"author.email.ihas,omitempty" json:"edge_author_email_contains_fold,omitempty"`
+	EdgeAuthorEmailContainsFold *string `form:"author.email.ihas,omitempty" json:"edge_author_email_contains_fold,omitzero"`
 	// Filters field "email" to start with the provided value.
-	EdgeAuthorEmailHasPrefix *string `form:"author.email.prefix,omitempty" json:"edge_author_email_has_prefix,omitempty"`
+	EdgeAuthorEmailHasPrefix *string `form:"author.email.prefix,omitempty" json:"edge_author_email_has_prefix,omitzero"`
 	// Filters field "email" to end with the provided value.
-	EdgeAuthorEmailHasSuffix *string `form:"author.email.suffix,omitempty" json:"edge_author_email_has_suffix,omitempty"`
+	EdgeAuthorEmailHasSuffix *string `form:"author.email.suffix,omitempty" json:"edge_author_email_has_suffix,omitzero"`
 	// Filters field "last_authenticated_at" to be equal to the provided value.
-	EdgeAuthorLastAuthenticatedAtEQ *time.Time `form:"author.lastAuthenticatedAt.eq,omitempty" json:"edge_author_last_authenticated_at_eq,omitempty"`
+	EdgeAuthorLastAuthenticatedAtEQ *time.Time `form:"author.lastAuthenticatedAt.eq,omitempty" json:"edge_author_last_authenticated_at_eq,omitzero"`
 	// Filters field "last_authenticated_at" to be not equal to the provided value.
-	EdgeAuthorLastAuthenticatedAtNEQ *time.Time `form:"author.lastAuthenticatedAt.neq,omitempty" json:"edge_author_last_authenticated_at_neq,omitempty"`
+	EdgeAuthorLastAuthenticatedAtNEQ *time.Time `form:"author.lastAuthenticatedAt.neq,omitempty" json:"edge_author_last_authenticated_at_neq,omitzero"`
 	// Filters field "last_authenticated_at" to be null/nil.
-	EdgeAuthorLastAuthenticatedAtIsNil *bool `form:"author.lastAuthenticatedAt.null,omitempty" json:"edge_author_last_authenticated_at_is_nil,omitempty"`
+	EdgeAuthorLastAuthenticatedAtIsNil *bool `form:"author.lastAuthenticatedAt.null,omitempty" json:"edge_author_last_authenticated_at_is_nil,omitzero"`
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Post.
@@ -1916,21 +1916,21 @@ type ListSettingParams struct {
 	Filtered[predicate.Settings]
 
 	// Filters field "id" to be equal to the provided value.
-	SettingsIDEQ *int `form:"id.eq,omitempty" json:"settings_ideq,omitempty"`
+	SettingsIDEQ *int `form:"id.eq,omitempty" json:"settings_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	SettingsIDNEQ *int `form:"id.neq,omitempty" json:"settings_idneq,omitempty"`
+	SettingsIDNEQ *int `form:"id.neq,omitempty" json:"settings_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	SettingsIDIn []int `form:"id.in,omitempty" json:"settings_id_in,omitempty"`
+	SettingsIDIn []int `form:"id.in,omitempty" json:"settings_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	SettingsIDNotIn []int `form:"id.notIn,omitempty" json:"settings_id_not_in,omitempty"`
+	SettingsIDNotIn []int `form:"id.notIn,omitempty" json:"settings_id_not_in,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	SettingsCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"settings_created_at_gt,omitempty"`
+	SettingsCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"settings_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	SettingsCreatedAtLT *time.Time `form:"createdAt.lt,omitempty" json:"settings_created_at_lt,omitempty"`
+	SettingsCreatedAtLT *time.Time `form:"createdAt.lt,omitempty" json:"settings_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	SettingsUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"settings_updated_at_gt,omitempty"`
+	SettingsUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"settings_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	SettingsUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"settings_updated_at_lt,omitempty"`
+	SettingsUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"settings_updated_at_lt,omitzero"`
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Setting.
@@ -1999,306 +1999,306 @@ type ListUserParams struct {
 	Filtered[predicate.User]
 
 	// Filters field "id" to be equal to the provided value.
-	UserIDEQ *uuid.UUID `form:"id.eq,omitempty" json:"user_ideq,omitempty"`
+	UserIDEQ *uuid.UUID `form:"id.eq,omitempty" json:"user_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	UserIDNEQ *uuid.UUID `form:"id.neq,omitempty" json:"user_idneq,omitempty"`
+	UserIDNEQ *uuid.UUID `form:"id.neq,omitempty" json:"user_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	UserIDIn []uuid.UUID `form:"id.in,omitempty" json:"user_id_in,omitempty"`
+	UserIDIn []uuid.UUID `form:"id.in,omitempty" json:"user_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	UserIDNotIn []uuid.UUID `form:"id.notIn,omitempty" json:"user_id_not_in,omitempty"`
+	UserIDNotIn []uuid.UUID `form:"id.notIn,omitempty" json:"user_id_not_in,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	UserCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"user_created_at_gt,omitempty"`
+	UserCreatedAtGT *time.Time `form:"createdAt.gt,omitempty" json:"user_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	UserCreatedAtLT *time.Time `form:"createdAt.lt,omitempty" json:"user_created_at_lt,omitempty"`
+	UserCreatedAtLT *time.Time `form:"createdAt.lt,omitempty" json:"user_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	UserUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"user_updated_at_gt,omitempty"`
+	UserUpdatedAtGT *time.Time `form:"updatedAt.gt,omitempty" json:"user_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	UserUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"user_updated_at_lt,omitempty"`
+	UserUpdatedAtLT *time.Time `form:"updatedAt.lt,omitempty" json:"user_updated_at_lt,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	UserNameEQ *string `form:"name.eq,omitempty" json:"user_name_eq,omitempty"`
+	UserNameEQ *string `form:"name.eq,omitempty" json:"user_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	UserNameNEQ *string `form:"name.neq,omitempty" json:"user_name_neq,omitempty"`
+	UserNameNEQ *string `form:"name.neq,omitempty" json:"user_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	UserNameIn []string `form:"name.in,omitempty" json:"user_name_in,omitempty"`
+	UserNameIn []string `form:"name.in,omitempty" json:"user_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	UserNameNotIn []string `form:"name.notIn,omitempty" json:"user_name_not_in,omitempty"`
+	UserNameNotIn []string `form:"name.notIn,omitempty" json:"user_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	UserNameEqualFold *string `form:"name.ieq,omitempty" json:"user_name_equal_fold,omitempty"`
+	UserNameEqualFold *string `form:"name.ieq,omitempty" json:"user_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	UserNameContains *string `form:"name.has,omitempty" json:"user_name_contains,omitempty"`
+	UserNameContains *string `form:"name.has,omitempty" json:"user_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	UserNameContainsFold *string `form:"name.ihas,omitempty" json:"user_name_contains_fold,omitempty"`
+	UserNameContainsFold *string `form:"name.ihas,omitempty" json:"user_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	UserNameHasPrefix *string `form:"name.prefix,omitempty" json:"user_name_has_prefix,omitempty"`
+	UserNameHasPrefix *string `form:"name.prefix,omitempty" json:"user_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	UserNameHasSuffix *string `form:"name.suffix,omitempty" json:"user_name_has_suffix,omitempty"`
+	UserNameHasSuffix *string `form:"name.suffix,omitempty" json:"user_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	UserTypeEQ *user.Type `form:"type.eq,omitempty" json:"user_type_eq,omitempty"`
+	UserTypeEQ *user.Type `form:"type.eq,omitempty" json:"user_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	UserTypeNEQ *user.Type `form:"type.neq,omitempty" json:"user_type_neq,omitempty"`
+	UserTypeNEQ *user.Type `form:"type.neq,omitempty" json:"user_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	UserTypeIn []user.Type `form:"type.in,omitempty" json:"user_type_in,omitempty"`
+	UserTypeIn []user.Type `form:"type.in,omitempty" json:"user_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	UserTypeNotIn []user.Type `form:"type.notIn,omitempty" json:"user_type_not_in,omitempty"`
+	UserTypeNotIn []user.Type `form:"type.notIn,omitempty" json:"user_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
-	UserDescriptionIsNil *bool `form:"description.null,omitempty" json:"user_description_is_nil,omitempty"`
+	UserDescriptionIsNil *bool `form:"description.null,omitempty" json:"user_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
-	UserDescriptionContains *string `form:"description.has,omitempty" json:"user_description_contains,omitempty"`
+	UserDescriptionContains *string `form:"description.has,omitempty" json:"user_description_contains,omitzero"`
 	// Filters field "description" to contain the provided value, case-insensitive.
-	UserDescriptionContainsFold *string `form:"description.ihas,omitempty" json:"user_description_contains_fold,omitempty"`
+	UserDescriptionContainsFold *string `form:"description.ihas,omitempty" json:"user_description_contains_fold,omitzero"`
 	// Filters field "enabled" to be equal to the provided value.
-	UserEnabledEQ *bool `form:"enabled.eq,omitempty" json:"user_enabled_eq,omitempty"`
+	UserEnabledEQ *bool `form:"enabled.eq,omitempty" json:"user_enabled_eq,omitzero"`
 	// Filters field "email" to be equal to the provided value.
-	UserEmailEQ *string `form:"email.eq,omitempty" json:"user_email_eq,omitempty"`
+	UserEmailEQ *string `form:"email.eq,omitempty" json:"user_email_eq,omitzero"`
 	// Filters field "email" to be not equal to the provided value.
-	UserEmailNEQ *string `form:"email.neq,omitempty" json:"user_email_neq,omitempty"`
+	UserEmailNEQ *string `form:"email.neq,omitempty" json:"user_email_neq,omitzero"`
 	// Filters field "email" to be null/nil.
-	UserEmailIsNil *bool `form:"email.null,omitempty" json:"user_email_is_nil,omitempty"`
+	UserEmailIsNil *bool `form:"email.null,omitempty" json:"user_email_is_nil,omitzero"`
 	// Filters field "email" to be within the provided values.
-	UserEmailIn []string `form:"email.in,omitempty" json:"user_email_in,omitempty"`
+	UserEmailIn []string `form:"email.in,omitempty" json:"user_email_in,omitzero"`
 	// Filters field "email" to be not within the provided values.
-	UserEmailNotIn []string `form:"email.notIn,omitempty" json:"user_email_not_in,omitempty"`
+	UserEmailNotIn []string `form:"email.notIn,omitempty" json:"user_email_not_in,omitzero"`
 	// Filters field "email" to be equal to the provided value, case-insensitive.
-	UserEmailEqualFold *string `form:"email.ieq,omitempty" json:"user_email_equal_fold,omitempty"`
+	UserEmailEqualFold *string `form:"email.ieq,omitempty" json:"user_email_equal_fold,omitzero"`
 	// Filters field "email" to contain the provided value.
-	UserEmailContains *string `form:"email.has,omitempty" json:"user_email_contains,omitempty"`
+	UserEmailContains *string `form:"email.has,omitempty" json:"user_email_contains,omitzero"`
 	// Filters field "email" to contain the provided value, case-insensitive.
-	UserEmailContainsFold *string `form:"email.ihas,omitempty" json:"user_email_contains_fold,omitempty"`
+	UserEmailContainsFold *string `form:"email.ihas,omitempty" json:"user_email_contains_fold,omitzero"`
 	// Filters field "email" to start with the provided value.
-	UserEmailHasPrefix *string `form:"email.prefix,omitempty" json:"user_email_has_prefix,omitempty"`
+	UserEmailHasPrefix *string `form:"email.prefix,omitempty" json:"user_email_has_prefix,omitzero"`
 	// Filters field "email" to end with the provided value.
-	UserEmailHasSuffix *string `form:"email.suffix,omitempty" json:"user_email_has_suffix,omitempty"`
+	UserEmailHasSuffix *string `form:"email.suffix,omitempty" json:"user_email_has_suffix,omitzero"`
 	// Filters field "last_authenticated_at" to be equal to the provided value.
-	UserLastAuthenticatedAtEQ *time.Time `form:"lastAuthenticatedAt.eq,omitempty" json:"user_last_authenticated_at_eq,omitempty"`
+	UserLastAuthenticatedAtEQ *time.Time `form:"lastAuthenticatedAt.eq,omitempty" json:"user_last_authenticated_at_eq,omitzero"`
 	// Filters field "last_authenticated_at" to be not equal to the provided value.
-	UserLastAuthenticatedAtNEQ *time.Time `form:"lastAuthenticatedAt.neq,omitempty" json:"user_last_authenticated_at_neq,omitempty"`
+	UserLastAuthenticatedAtNEQ *time.Time `form:"lastAuthenticatedAt.neq,omitempty" json:"user_last_authenticated_at_neq,omitzero"`
 	// Filters field "last_authenticated_at" to be null/nil.
-	UserLastAuthenticatedAtIsNil *bool `form:"lastAuthenticatedAt.null,omitempty" json:"user_last_authenticated_at_is_nil,omitempty"`
+	UserLastAuthenticatedAtIsNil *bool `form:"lastAuthenticatedAt.null,omitempty" json:"user_last_authenticated_at_is_nil,omitzero"`
 	// If true, only return entities that have a pet edge.
-	EdgeHasPet *bool `form:"has.pet,omitempty" json:"edge_has_pet,omitempty"`
+	EdgeHasPet *bool `form:"has.pet,omitempty" json:"edge_has_pet,omitzero"`
 	// Filters field "id" to be equal to the provided value.
-	EdgePetIDEQ *int `form:"pet.id.eq,omitempty" json:"edge_pet_ideq,omitempty"`
+	EdgePetIDEQ *int `form:"pet.id.eq,omitempty" json:"edge_pet_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgePetIDNEQ *int `form:"pet.id.neq,omitempty" json:"edge_pet_idneq,omitempty"`
+	EdgePetIDNEQ *int `form:"pet.id.neq,omitempty" json:"edge_pet_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	EdgePetIDIn []int `form:"pet.id.in,omitempty" json:"edge_pet_id_in,omitempty"`
+	EdgePetIDIn []int `form:"pet.id.in,omitempty" json:"edge_pet_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	EdgePetIDNotIn []int `form:"pet.id.notIn,omitempty" json:"edge_pet_id_not_in,omitempty"`
+	EdgePetIDNotIn []int `form:"pet.id.notIn,omitempty" json:"edge_pet_id_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	EdgePetNameEQ *string `form:"pet.name.eq,omitempty" json:"edge_pet_name_eq,omitempty"`
+	EdgePetNameEQ *string `form:"pet.name.eq,omitempty" json:"edge_pet_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	EdgePetNameNEQ *string `form:"pet.name.neq,omitempty" json:"edge_pet_name_neq,omitempty"`
+	EdgePetNameNEQ *string `form:"pet.name.neq,omitempty" json:"edge_pet_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	EdgePetNameIn []string `form:"pet.name.in,omitempty" json:"edge_pet_name_in,omitempty"`
+	EdgePetNameIn []string `form:"pet.name.in,omitempty" json:"edge_pet_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	EdgePetNameNotIn []string `form:"pet.name.notIn,omitempty" json:"edge_pet_name_not_in,omitempty"`
+	EdgePetNameNotIn []string `form:"pet.name.notIn,omitempty" json:"edge_pet_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgePetNameEqualFold *string `form:"pet.name.ieq,omitempty" json:"edge_pet_name_equal_fold,omitempty"`
+	EdgePetNameEqualFold *string `form:"pet.name.ieq,omitempty" json:"edge_pet_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	EdgePetNameContains *string `form:"pet.name.has,omitempty" json:"edge_pet_name_contains,omitempty"`
+	EdgePetNameContains *string `form:"pet.name.has,omitempty" json:"edge_pet_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgePetNameContainsFold *string `form:"pet.name.ihas,omitempty" json:"edge_pet_name_contains_fold,omitempty"`
+	EdgePetNameContainsFold *string `form:"pet.name.ihas,omitempty" json:"edge_pet_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	EdgePetNameHasPrefix *string `form:"pet.name.prefix,omitempty" json:"edge_pet_name_has_prefix,omitempty"`
+	EdgePetNameHasPrefix *string `form:"pet.name.prefix,omitempty" json:"edge_pet_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	EdgePetNameHasSuffix *string `form:"pet.name.suffix,omitempty" json:"edge_pet_name_has_suffix,omitempty"`
+	EdgePetNameHasSuffix *string `form:"pet.name.suffix,omitempty" json:"edge_pet_name_has_suffix,omitzero"`
 	// Filters field "nicknames" to be null/nil.
-	EdgePetNicknamesIsNil *bool `form:"pet.nicknames.null,omitempty" json:"edge_pet_nicknames_is_nil,omitempty"`
+	EdgePetNicknamesIsNil *bool `form:"pet.nicknames.null,omitempty" json:"edge_pet_nicknames_is_nil,omitzero"`
 	// Filters field "age" to be equal to the provided value.
-	EdgePetAgeEQ *int `form:"pet.age.eq,omitempty" json:"edge_pet_age_eq,omitempty"`
+	EdgePetAgeEQ *int `form:"pet.age.eq,omitempty" json:"edge_pet_age_eq,omitzero"`
 	// Filters field "age" to be not equal to the provided value.
-	EdgePetAgeNEQ *int `form:"pet.age.neq,omitempty" json:"edge_pet_age_neq,omitempty"`
+	EdgePetAgeNEQ *int `form:"pet.age.neq,omitempty" json:"edge_pet_age_neq,omitzero"`
 	// Filters field "age" to be greater than the provided value.
-	EdgePetAgeGT *int `form:"pet.age.gt,omitempty" json:"edge_pet_age_gt,omitempty"`
+	EdgePetAgeGT *int `form:"pet.age.gt,omitempty" json:"edge_pet_age_gt,omitzero"`
 	// Filters field "age" to be less than the provided value.
-	EdgePetAgeLT *int `form:"pet.age.lt,omitempty" json:"edge_pet_age_lt,omitempty"`
+	EdgePetAgeLT *int `form:"pet.age.lt,omitempty" json:"edge_pet_age_lt,omitzero"`
 	// Filters field "age" to be within the provided values.
-	EdgePetAgeIn []int `form:"pet.age.in,omitempty" json:"edge_pet_age_in,omitempty"`
+	EdgePetAgeIn []int `form:"pet.age.in,omitempty" json:"edge_pet_age_in,omitzero"`
 	// Filters field "age" to be not within the provided values.
-	EdgePetAgeNotIn []int `form:"pet.age.notIn,omitempty" json:"edge_pet_age_not_in,omitempty"`
+	EdgePetAgeNotIn []int `form:"pet.age.notIn,omitempty" json:"edge_pet_age_not_in,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgePetTypeEQ *pet.Type `form:"pet.type.eq,omitempty" json:"edge_pet_type_eq,omitempty"`
+	EdgePetTypeEQ *pet.Type `form:"pet.type.eq,omitempty" json:"edge_pet_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgePetTypeNEQ *pet.Type `form:"pet.type.neq,omitempty" json:"edge_pet_type_neq,omitempty"`
+	EdgePetTypeNEQ *pet.Type `form:"pet.type.neq,omitempty" json:"edge_pet_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgePetTypeIn []pet.Type `form:"pet.type.in,omitempty" json:"edge_pet_type_in,omitempty"`
+	EdgePetTypeIn []pet.Type `form:"pet.type.in,omitempty" json:"edge_pet_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgePetTypeNotIn []pet.Type `form:"pet.type.notIn,omitempty" json:"edge_pet_type_not_in,omitempty"`
+	EdgePetTypeNotIn []pet.Type `form:"pet.type.notIn,omitempty" json:"edge_pet_type_not_in,omitzero"`
 	// If true, only return entities that have a followed_pet edge.
-	EdgeHasFollowedPet *bool `form:"has.followedPet,omitempty" json:"edge_has_followed_pet,omitempty"`
+	EdgeHasFollowedPet *bool `form:"has.followedPet,omitempty" json:"edge_has_followed_pet,omitzero"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeFollowedPetIDEQ *int `form:"followedPet.id.eq,omitempty" json:"edge_followed_pet_ideq,omitempty"`
+	EdgeFollowedPetIDEQ *int `form:"followedPet.id.eq,omitempty" json:"edge_followed_pet_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeFollowedPetIDNEQ *int `form:"followedPet.id.neq,omitempty" json:"edge_followed_pet_idneq,omitempty"`
+	EdgeFollowedPetIDNEQ *int `form:"followedPet.id.neq,omitempty" json:"edge_followed_pet_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	EdgeFollowedPetIDIn []int `form:"followedPet.id.in,omitempty" json:"edge_followed_pet_id_in,omitempty"`
+	EdgeFollowedPetIDIn []int `form:"followedPet.id.in,omitempty" json:"edge_followed_pet_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	EdgeFollowedPetIDNotIn []int `form:"followedPet.id.notIn,omitempty" json:"edge_followed_pet_id_not_in,omitempty"`
+	EdgeFollowedPetIDNotIn []int `form:"followedPet.id.notIn,omitempty" json:"edge_followed_pet_id_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	EdgeFollowedPetNameEQ *string `form:"followedPet.name.eq,omitempty" json:"edge_followed_pet_name_eq,omitempty"`
+	EdgeFollowedPetNameEQ *string `form:"followedPet.name.eq,omitempty" json:"edge_followed_pet_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	EdgeFollowedPetNameNEQ *string `form:"followedPet.name.neq,omitempty" json:"edge_followed_pet_name_neq,omitempty"`
+	EdgeFollowedPetNameNEQ *string `form:"followedPet.name.neq,omitempty" json:"edge_followed_pet_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	EdgeFollowedPetNameIn []string `form:"followedPet.name.in,omitempty" json:"edge_followed_pet_name_in,omitempty"`
+	EdgeFollowedPetNameIn []string `form:"followedPet.name.in,omitempty" json:"edge_followed_pet_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	EdgeFollowedPetNameNotIn []string `form:"followedPet.name.notIn,omitempty" json:"edge_followed_pet_name_not_in,omitempty"`
+	EdgeFollowedPetNameNotIn []string `form:"followedPet.name.notIn,omitempty" json:"edge_followed_pet_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFollowedPetNameEqualFold *string `form:"followedPet.name.ieq,omitempty" json:"edge_followed_pet_name_equal_fold,omitempty"`
+	EdgeFollowedPetNameEqualFold *string `form:"followedPet.name.ieq,omitempty" json:"edge_followed_pet_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	EdgeFollowedPetNameContains *string `form:"followedPet.name.has,omitempty" json:"edge_followed_pet_name_contains,omitempty"`
+	EdgeFollowedPetNameContains *string `form:"followedPet.name.has,omitempty" json:"edge_followed_pet_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFollowedPetNameContainsFold *string `form:"followedPet.name.ihas,omitempty" json:"edge_followed_pet_name_contains_fold,omitempty"`
+	EdgeFollowedPetNameContainsFold *string `form:"followedPet.name.ihas,omitempty" json:"edge_followed_pet_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	EdgeFollowedPetNameHasPrefix *string `form:"followedPet.name.prefix,omitempty" json:"edge_followed_pet_name_has_prefix,omitempty"`
+	EdgeFollowedPetNameHasPrefix *string `form:"followedPet.name.prefix,omitempty" json:"edge_followed_pet_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	EdgeFollowedPetNameHasSuffix *string `form:"followedPet.name.suffix,omitempty" json:"edge_followed_pet_name_has_suffix,omitempty"`
+	EdgeFollowedPetNameHasSuffix *string `form:"followedPet.name.suffix,omitempty" json:"edge_followed_pet_name_has_suffix,omitzero"`
 	// Filters field "nicknames" to be null/nil.
-	EdgeFollowedPetNicknamesIsNil *bool `form:"followedPet.nicknames.null,omitempty" json:"edge_followed_pet_nicknames_is_nil,omitempty"`
+	EdgeFollowedPetNicknamesIsNil *bool `form:"followedPet.nicknames.null,omitempty" json:"edge_followed_pet_nicknames_is_nil,omitzero"`
 	// Filters field "age" to be equal to the provided value.
-	EdgeFollowedPetAgeEQ *int `form:"followedPet.age.eq,omitempty" json:"edge_followed_pet_age_eq,omitempty"`
+	EdgeFollowedPetAgeEQ *int `form:"followedPet.age.eq,omitempty" json:"edge_followed_pet_age_eq,omitzero"`
 	// Filters field "age" to be not equal to the provided value.
-	EdgeFollowedPetAgeNEQ *int `form:"followedPet.age.neq,omitempty" json:"edge_followed_pet_age_neq,omitempty"`
+	EdgeFollowedPetAgeNEQ *int `form:"followedPet.age.neq,omitempty" json:"edge_followed_pet_age_neq,omitzero"`
 	// Filters field "age" to be greater than the provided value.
-	EdgeFollowedPetAgeGT *int `form:"followedPet.age.gt,omitempty" json:"edge_followed_pet_age_gt,omitempty"`
+	EdgeFollowedPetAgeGT *int `form:"followedPet.age.gt,omitempty" json:"edge_followed_pet_age_gt,omitzero"`
 	// Filters field "age" to be less than the provided value.
-	EdgeFollowedPetAgeLT *int `form:"followedPet.age.lt,omitempty" json:"edge_followed_pet_age_lt,omitempty"`
+	EdgeFollowedPetAgeLT *int `form:"followedPet.age.lt,omitempty" json:"edge_followed_pet_age_lt,omitzero"`
 	// Filters field "age" to be within the provided values.
-	EdgeFollowedPetAgeIn []int `form:"followedPet.age.in,omitempty" json:"edge_followed_pet_age_in,omitempty"`
+	EdgeFollowedPetAgeIn []int `form:"followedPet.age.in,omitempty" json:"edge_followed_pet_age_in,omitzero"`
 	// Filters field "age" to be not within the provided values.
-	EdgeFollowedPetAgeNotIn []int `form:"followedPet.age.notIn,omitempty" json:"edge_followed_pet_age_not_in,omitempty"`
+	EdgeFollowedPetAgeNotIn []int `form:"followedPet.age.notIn,omitempty" json:"edge_followed_pet_age_not_in,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFollowedPetTypeEQ *pet.Type `form:"followedPet.type.eq,omitempty" json:"edge_followed_pet_type_eq,omitempty"`
+	EdgeFollowedPetTypeEQ *pet.Type `form:"followedPet.type.eq,omitempty" json:"edge_followed_pet_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFollowedPetTypeNEQ *pet.Type `form:"followedPet.type.neq,omitempty" json:"edge_followed_pet_type_neq,omitempty"`
+	EdgeFollowedPetTypeNEQ *pet.Type `form:"followedPet.type.neq,omitempty" json:"edge_followed_pet_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFollowedPetTypeIn []pet.Type `form:"followedPet.type.in,omitempty" json:"edge_followed_pet_type_in,omitempty"`
+	EdgeFollowedPetTypeIn []pet.Type `form:"followedPet.type.in,omitempty" json:"edge_followed_pet_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFollowedPetTypeNotIn []pet.Type `form:"followedPet.type.notIn,omitempty" json:"edge_followed_pet_type_not_in,omitempty"`
+	EdgeFollowedPetTypeNotIn []pet.Type `form:"followedPet.type.notIn,omitempty" json:"edge_followed_pet_type_not_in,omitzero"`
 	// If true, only return entities that have a friend edge.
-	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitempty"`
+	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitzero"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeFriendIDEQ *uuid.UUID `form:"friend.id.eq,omitempty" json:"edge_friend_ideq,omitempty"`
+	EdgeFriendIDEQ *uuid.UUID `form:"friend.id.eq,omitempty" json:"edge_friend_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeFriendIDNEQ *uuid.UUID `form:"friend.id.neq,omitempty" json:"edge_friend_idneq,omitempty"`
+	EdgeFriendIDNEQ *uuid.UUID `form:"friend.id.neq,omitempty" json:"edge_friend_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	EdgeFriendIDIn []uuid.UUID `form:"friend.id.in,omitempty" json:"edge_friend_id_in,omitempty"`
+	EdgeFriendIDIn []uuid.UUID `form:"friend.id.in,omitempty" json:"edge_friend_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	EdgeFriendIDNotIn []uuid.UUID `form:"friend.id.notIn,omitempty" json:"edge_friend_id_not_in,omitempty"`
+	EdgeFriendIDNotIn []uuid.UUID `form:"friend.id.notIn,omitempty" json:"edge_friend_id_not_in,omitzero"`
 	// Filters field "created_at" to be greater than the provided value.
-	EdgeFriendCreatedAtGT *time.Time `form:"friend.createdAt.gt,omitempty" json:"edge_friend_created_at_gt,omitempty"`
+	EdgeFriendCreatedAtGT *time.Time `form:"friend.createdAt.gt,omitempty" json:"edge_friend_created_at_gt,omitzero"`
 	// Filters field "created_at" to be less than the provided value.
-	EdgeFriendCreatedAtLT *time.Time `form:"friend.createdAt.lt,omitempty" json:"edge_friend_created_at_lt,omitempty"`
+	EdgeFriendCreatedAtLT *time.Time `form:"friend.createdAt.lt,omitempty" json:"edge_friend_created_at_lt,omitzero"`
 	// Filters field "updated_at" to be greater than the provided value.
-	EdgeFriendUpdatedAtGT *time.Time `form:"friend.updatedAt.gt,omitempty" json:"edge_friend_updated_at_gt,omitempty"`
+	EdgeFriendUpdatedAtGT *time.Time `form:"friend.updatedAt.gt,omitempty" json:"edge_friend_updated_at_gt,omitzero"`
 	// Filters field "updated_at" to be less than the provided value.
-	EdgeFriendUpdatedAtLT *time.Time `form:"friend.updatedAt.lt,omitempty" json:"edge_friend_updated_at_lt,omitempty"`
+	EdgeFriendUpdatedAtLT *time.Time `form:"friend.updatedAt.lt,omitempty" json:"edge_friend_updated_at_lt,omitzero"`
 	// Filters field "name" to be equal to the provided value.
-	EdgeFriendNameEQ *string `form:"friend.name.eq,omitempty" json:"edge_friend_name_eq,omitempty"`
+	EdgeFriendNameEQ *string `form:"friend.name.eq,omitempty" json:"edge_friend_name_eq,omitzero"`
 	// Filters field "name" to be not equal to the provided value.
-	EdgeFriendNameNEQ *string `form:"friend.name.neq,omitempty" json:"edge_friend_name_neq,omitempty"`
+	EdgeFriendNameNEQ *string `form:"friend.name.neq,omitempty" json:"edge_friend_name_neq,omitzero"`
 	// Filters field "name" to be within the provided values.
-	EdgeFriendNameIn []string `form:"friend.name.in,omitempty" json:"edge_friend_name_in,omitempty"`
+	EdgeFriendNameIn []string `form:"friend.name.in,omitempty" json:"edge_friend_name_in,omitzero"`
 	// Filters field "name" to be not within the provided values.
-	EdgeFriendNameNotIn []string `form:"friend.name.notIn,omitempty" json:"edge_friend_name_not_in,omitempty"`
+	EdgeFriendNameNotIn []string `form:"friend.name.notIn,omitempty" json:"edge_friend_name_not_in,omitzero"`
 	// Filters field "name" to be equal to the provided value, case-insensitive.
-	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitempty"`
+	EdgeFriendNameEqualFold *string `form:"friend.name.ieq,omitempty" json:"edge_friend_name_equal_fold,omitzero"`
 	// Filters field "name" to contain the provided value.
-	EdgeFriendNameContains *string `form:"friend.name.has,omitempty" json:"edge_friend_name_contains,omitempty"`
+	EdgeFriendNameContains *string `form:"friend.name.has,omitempty" json:"edge_friend_name_contains,omitzero"`
 	// Filters field "name" to contain the provided value, case-insensitive.
-	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitempty"`
+	EdgeFriendNameContainsFold *string `form:"friend.name.ihas,omitempty" json:"edge_friend_name_contains_fold,omitzero"`
 	// Filters field "name" to start with the provided value.
-	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitempty"`
+	EdgeFriendNameHasPrefix *string `form:"friend.name.prefix,omitempty" json:"edge_friend_name_has_prefix,omitzero"`
 	// Filters field "name" to end with the provided value.
-	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitempty"`
+	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFriendTypeEQ *user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitempty"`
+	EdgeFriendTypeEQ *user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFriendTypeNEQ *user.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitempty"`
+	EdgeFriendTypeNEQ *user.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFriendTypeIn []user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitempty"`
+	EdgeFriendTypeIn []user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFriendTypeNotIn []user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitempty"`
+	EdgeFriendTypeNotIn []user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
-	EdgeFriendDescriptionIsNil *bool `form:"friend.description.null,omitempty" json:"edge_friend_description_is_nil,omitempty"`
+	EdgeFriendDescriptionIsNil *bool `form:"friend.description.null,omitempty" json:"edge_friend_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
-	EdgeFriendDescriptionContains *string `form:"friend.description.has,omitempty" json:"edge_friend_description_contains,omitempty"`
+	EdgeFriendDescriptionContains *string `form:"friend.description.has,omitempty" json:"edge_friend_description_contains,omitzero"`
 	// Filters field "description" to contain the provided value, case-insensitive.
-	EdgeFriendDescriptionContainsFold *string `form:"friend.description.ihas,omitempty" json:"edge_friend_description_contains_fold,omitempty"`
+	EdgeFriendDescriptionContainsFold *string `form:"friend.description.ihas,omitempty" json:"edge_friend_description_contains_fold,omitzero"`
 	// Filters field "enabled" to be equal to the provided value.
-	EdgeFriendEnabledEQ *bool `form:"friend.enabled.eq,omitempty" json:"edge_friend_enabled_eq,omitempty"`
+	EdgeFriendEnabledEQ *bool `form:"friend.enabled.eq,omitempty" json:"edge_friend_enabled_eq,omitzero"`
 	// Filters field "email" to be equal to the provided value.
-	EdgeFriendEmailEQ *string `form:"friend.email.eq,omitempty" json:"edge_friend_email_eq,omitempty"`
+	EdgeFriendEmailEQ *string `form:"friend.email.eq,omitempty" json:"edge_friend_email_eq,omitzero"`
 	// Filters field "email" to be not equal to the provided value.
-	EdgeFriendEmailNEQ *string `form:"friend.email.neq,omitempty" json:"edge_friend_email_neq,omitempty"`
+	EdgeFriendEmailNEQ *string `form:"friend.email.neq,omitempty" json:"edge_friend_email_neq,omitzero"`
 	// Filters field "email" to be null/nil.
-	EdgeFriendEmailIsNil *bool `form:"friend.email.null,omitempty" json:"edge_friend_email_is_nil,omitempty"`
+	EdgeFriendEmailIsNil *bool `form:"friend.email.null,omitempty" json:"edge_friend_email_is_nil,omitzero"`
 	// Filters field "email" to be within the provided values.
-	EdgeFriendEmailIn []string `form:"friend.email.in,omitempty" json:"edge_friend_email_in,omitempty"`
+	EdgeFriendEmailIn []string `form:"friend.email.in,omitempty" json:"edge_friend_email_in,omitzero"`
 	// Filters field "email" to be not within the provided values.
-	EdgeFriendEmailNotIn []string `form:"friend.email.notIn,omitempty" json:"edge_friend_email_not_in,omitempty"`
+	EdgeFriendEmailNotIn []string `form:"friend.email.notIn,omitempty" json:"edge_friend_email_not_in,omitzero"`
 	// Filters field "email" to be equal to the provided value, case-insensitive.
-	EdgeFriendEmailEqualFold *string `form:"friend.email.ieq,omitempty" json:"edge_friend_email_equal_fold,omitempty"`
+	EdgeFriendEmailEqualFold *string `form:"friend.email.ieq,omitempty" json:"edge_friend_email_equal_fold,omitzero"`
 	// Filters field "email" to contain the provided value.
-	EdgeFriendEmailContains *string `form:"friend.email.has,omitempty" json:"edge_friend_email_contains,omitempty"`
+	EdgeFriendEmailContains *string `form:"friend.email.has,omitempty" json:"edge_friend_email_contains,omitzero"`
 	// Filters field "email" to contain the provided value, case-insensitive.
-	EdgeFriendEmailContainsFold *string `form:"friend.email.ihas,omitempty" json:"edge_friend_email_contains_fold,omitempty"`
+	EdgeFriendEmailContainsFold *string `form:"friend.email.ihas,omitempty" json:"edge_friend_email_contains_fold,omitzero"`
 	// Filters field "email" to start with the provided value.
-	EdgeFriendEmailHasPrefix *string `form:"friend.email.prefix,omitempty" json:"edge_friend_email_has_prefix,omitempty"`
+	EdgeFriendEmailHasPrefix *string `form:"friend.email.prefix,omitempty" json:"edge_friend_email_has_prefix,omitzero"`
 	// Filters field "email" to end with the provided value.
-	EdgeFriendEmailHasSuffix *string `form:"friend.email.suffix,omitempty" json:"edge_friend_email_has_suffix,omitempty"`
+	EdgeFriendEmailHasSuffix *string `form:"friend.email.suffix,omitempty" json:"edge_friend_email_has_suffix,omitzero"`
 	// Filters field "last_authenticated_at" to be equal to the provided value.
-	EdgeFriendLastAuthenticatedAtEQ *time.Time `form:"friend.lastAuthenticatedAt.eq,omitempty" json:"edge_friend_last_authenticated_at_eq,omitempty"`
+	EdgeFriendLastAuthenticatedAtEQ *time.Time `form:"friend.lastAuthenticatedAt.eq,omitempty" json:"edge_friend_last_authenticated_at_eq,omitzero"`
 	// Filters field "last_authenticated_at" to be not equal to the provided value.
-	EdgeFriendLastAuthenticatedAtNEQ *time.Time `form:"friend.lastAuthenticatedAt.neq,omitempty" json:"edge_friend_last_authenticated_at_neq,omitempty"`
+	EdgeFriendLastAuthenticatedAtNEQ *time.Time `form:"friend.lastAuthenticatedAt.neq,omitempty" json:"edge_friend_last_authenticated_at_neq,omitzero"`
 	// Filters field "last_authenticated_at" to be null/nil.
-	EdgeFriendLastAuthenticatedAtIsNil *bool `form:"friend.lastAuthenticatedAt.null,omitempty" json:"edge_friend_last_authenticated_at_is_nil,omitempty"`
+	EdgeFriendLastAuthenticatedAtIsNil *bool `form:"friend.lastAuthenticatedAt.null,omitempty" json:"edge_friend_last_authenticated_at_is_nil,omitzero"`
 	// If true, only return entities that have a following edge.
-	EdgeHasFollowing *bool `form:"has.following,omitempty" json:"edge_has_following,omitempty"`
+	EdgeHasFollowing *bool `form:"has.following,omitempty" json:"edge_has_following,omitzero"`
 	// If true, only return entities that have a friendship edge.
-	EdgeHasFriendship *bool `form:"has.friendship,omitempty" json:"edge_has_friendship,omitempty"`
+	EdgeHasFriendship *bool `form:"has.friendship,omitempty" json:"edge_has_friendship,omitzero"`
 	// Filters field "id" to be equal to the provided value.
-	EdgeFriendshipIDEQ *int `form:"friendship.id.eq,omitempty" json:"edge_friendship_ideq,omitempty"`
+	EdgeFriendshipIDEQ *int `form:"friendship.id.eq,omitempty" json:"edge_friendship_ideq,omitzero"`
 	// Filters field "id" to be not equal to the provided value.
-	EdgeFriendshipIDNEQ *int `form:"friendship.id.neq,omitempty" json:"edge_friendship_idneq,omitempty"`
+	EdgeFriendshipIDNEQ *int `form:"friendship.id.neq,omitempty" json:"edge_friendship_idneq,omitzero"`
 	// Filters field "id" to be within the provided values.
-	EdgeFriendshipIDIn []int `form:"friendship.id.in,omitempty" json:"edge_friendship_id_in,omitempty"`
+	EdgeFriendshipIDIn []int `form:"friendship.id.in,omitempty" json:"edge_friendship_id_in,omitzero"`
 	// Filters field "id" to be not within the provided values.
-	EdgeFriendshipIDNotIn []int `form:"friendship.id.notIn,omitempty" json:"edge_friendship_id_not_in,omitempty"`
+	EdgeFriendshipIDNotIn []int `form:"friendship.id.notIn,omitempty" json:"edge_friendship_id_not_in,omitzero"`
 	// Filters field "user_id" to be equal to the provided value.
-	EdgeFriendshipUserIDEQ *uuid.UUID `form:"friendship.userID.eq,omitempty" json:"edge_friendship_user_ideq,omitempty"`
+	EdgeFriendshipUserIDEQ *uuid.UUID `form:"friendship.userID.eq,omitempty" json:"edge_friendship_user_ideq,omitzero"`
 	// Filters field "user_id" to be not equal to the provided value.
-	EdgeFriendshipUserIDNEQ *uuid.UUID `form:"friendship.userID.neq,omitempty" json:"edge_friendship_user_idneq,omitempty"`
+	EdgeFriendshipUserIDNEQ *uuid.UUID `form:"friendship.userID.neq,omitempty" json:"edge_friendship_user_idneq,omitzero"`
 	// Filters field "user_id" to be within the provided values.
-	EdgeFriendshipUserIDIn []uuid.UUID `form:"friendship.userID.in,omitempty" json:"edge_friendship_user_id_in,omitempty"`
+	EdgeFriendshipUserIDIn []uuid.UUID `form:"friendship.userID.in,omitempty" json:"edge_friendship_user_id_in,omitzero"`
 	// Filters field "user_id" to be not within the provided values.
-	EdgeFriendshipUserIDNotIn []uuid.UUID `form:"friendship.userID.notIn,omitempty" json:"edge_friendship_user_id_not_in,omitempty"`
+	EdgeFriendshipUserIDNotIn []uuid.UUID `form:"friendship.userID.notIn,omitempty" json:"edge_friendship_user_id_not_in,omitzero"`
 	// Filters field "friend_id" to be equal to the provided value.
-	EdgeFriendshipFriendIDEQ *uuid.UUID `form:"friendship.friendID.eq,omitempty" json:"edge_friendship_friend_ideq,omitempty"`
+	EdgeFriendshipFriendIDEQ *uuid.UUID `form:"friendship.friendID.eq,omitempty" json:"edge_friendship_friend_ideq,omitzero"`
 	// Filters field "friend_id" to be not equal to the provided value.
-	EdgeFriendshipFriendIDNEQ *uuid.UUID `form:"friendship.friendID.neq,omitempty" json:"edge_friendship_friend_idneq,omitempty"`
+	EdgeFriendshipFriendIDNEQ *uuid.UUID `form:"friendship.friendID.neq,omitempty" json:"edge_friendship_friend_idneq,omitzero"`
 	// Filters field "friend_id" to be within the provided values.
-	EdgeFriendshipFriendIDIn []uuid.UUID `form:"friendship.friendID.in,omitempty" json:"edge_friendship_friend_id_in,omitempty"`
+	EdgeFriendshipFriendIDIn []uuid.UUID `form:"friendship.friendID.in,omitempty" json:"edge_friendship_friend_id_in,omitzero"`
 	// Filters field "friend_id" to be not within the provided values.
-	EdgeFriendshipFriendIDNotIn []uuid.UUID `form:"friendship.friendID.notIn,omitempty" json:"edge_friendship_friend_id_not_in,omitempty"`
+	EdgeFriendshipFriendIDNotIn []uuid.UUID `form:"friendship.friendID.notIn,omitempty" json:"edge_friendship_friend_id_not_in,omitzero"`
 
 	// Field "search.eq" filters across multiple fields (case insensitive): name, description, email.
-	UserFilterGroupSearchEQ *string `form:"search.eq,omitempty" json:"user_filter_group_search_eq,omitempty"`
+	UserFilterGroupSearchEQ *string `form:"search.eq,omitempty" json:"user_filter_group_search_eq,omitzero"`
 	// Field "search.neq" filters across multiple fields (case insensitive): name, description, email.
-	UserFilterGroupSearchNEQ *string `form:"search.neq,omitempty" json:"user_filter_group_search_neq,omitempty"`
+	UserFilterGroupSearchNEQ *string `form:"search.neq,omitempty" json:"user_filter_group_search_neq,omitzero"`
 	// Field "search.in" filters across multiple fields (case insensitive): name, description, email.
-	UserFilterGroupSearchIn []string `form:"search.in,omitempty" json:"user_filter_group_search_in,omitempty"`
+	UserFilterGroupSearchIn []string `form:"search.in,omitempty" json:"user_filter_group_search_in,omitzero"`
 	// Field "search.notIn" filters across multiple fields (case insensitive): name, description, email.
-	UserFilterGroupSearchNotIn []string `form:"search.notIn,omitempty" json:"user_filter_group_search_not_in,omitempty"`
+	UserFilterGroupSearchNotIn []string `form:"search.notIn,omitempty" json:"user_filter_group_search_not_in,omitzero"`
 	// Field "search.ieq" filters across multiple fields (case insensitive): name, description, email.
-	UserFilterGroupSearchEqualFold *string `form:"search.ieq,omitempty" json:"user_filter_group_search_equal_fold,omitempty"`
+	UserFilterGroupSearchEqualFold *string `form:"search.ieq,omitempty" json:"user_filter_group_search_equal_fold,omitzero"`
 	// Field "search.has" filters across multiple fields (case insensitive): name, description, email.
-	UserFilterGroupSearchContains *string `form:"search.has,omitempty" json:"user_filter_group_search_contains,omitempty"`
+	UserFilterGroupSearchContains *string `form:"search.has,omitempty" json:"user_filter_group_search_contains,omitzero"`
 	// Field "search.ihas" filters across multiple fields (case insensitive): name, description, email.
-	UserFilterGroupSearchContainsFold *string `form:"search.ihas,omitempty" json:"user_filter_group_search_contains_fold,omitempty"`
+	UserFilterGroupSearchContainsFold *string `form:"search.ihas,omitempty" json:"user_filter_group_search_contains_fold,omitzero"`
 	// Field "search.prefix" filters across multiple fields (case insensitive): name, description, email.
-	UserFilterGroupSearchHasPrefix *string `form:"search.prefix,omitempty" json:"user_filter_group_search_has_prefix,omitempty"`
+	UserFilterGroupSearchHasPrefix *string `form:"search.prefix,omitempty" json:"user_filter_group_search_has_prefix,omitzero"`
 	// Field "search.suffix" filters across multiple fields (case insensitive): name, description, email.
-	UserFilterGroupSearchHasSuffix *string `form:"search.suffix,omitempty" json:"user_filter_group_search_has_suffix,omitempty"`
+	UserFilterGroupSearchHasSuffix *string `form:"search.suffix,omitempty" json:"user_filter_group_search_has_suffix,omitzero"`
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in User.

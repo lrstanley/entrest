@@ -22,10 +22,10 @@ import (
 type UpdateCategoryParams struct {
 	Name       Option[string]   `json:"name"`
 	Nillable   Option[*string]  `json:"nillable"`
-	Strings    Option[[]string] `json:"strings,omitempty"`
-	Ints       Option[[]int]    `json:"ints,omitempty"`
-	AddPets    Option[[]int]    `json:"add_pets,omitempty"`
-	RemovePets Option[[]int]    `json:"remove_pets,omitempty"`
+	Strings    Option[[]string] `json:"strings,omitzero"`
+	Ints       Option[[]int]    `json:"ints,omitzero"`
+	AddPets    Option[[]int]    `json:"add_pets,omitzero"`
+	RemovePets Option[[]int]    `json:"remove_pets,omitzero"`
 }
 
 func (u *UpdateCategoryParams) ApplyInputs(_builder *ent.CategoryUpdateOne) *ent.CategoryUpdateOne {
@@ -99,25 +99,25 @@ func (c *UpdateFriendshipParams) Exec(ctx context.Context, _builder *ent.Friends
 // UpdatePetParams defines parameters for updating a Pet via a PATCH request.
 type UpdatePetParams struct {
 	Name      Option[string]   `json:"name"`
-	Nicknames Option[[]string] `json:"nicknames,omitempty"`
+	Nicknames Option[[]string] `json:"nicknames,omitzero"`
 	Age       Option[int]      `json:"age"`
 	Type      Option[pet.Type] `json:"type"`
 	// Categories that the pet belongs to.
-	AddCategories Option[[]int] `json:"add_categories,omitempty"`
+	AddCategories Option[[]int] `json:"add_categories,omitzero"`
 	// Categories that the pet belongs to.
-	RemoveCategories Option[[]int] `json:"remove_categories,omitempty"`
+	RemoveCategories Option[[]int] `json:"remove_categories,omitzero"`
 	// Categories that the pet belongs to.
-	Categories Option[[]int] `json:"categories,omitempty"`
+	Categories Option[[]int] `json:"categories,omitzero"`
 	// The user that owns the pet.
-	Owner Option[*uuid.UUID] `json:"owner,omitempty"`
+	Owner Option[*uuid.UUID] `json:"owner,omitzero"`
 	// Pets that this pet is friends with.
-	AddFriends Option[[]int] `json:"add_friends,omitempty"`
+	AddFriends Option[[]int] `json:"add_friends,omitzero"`
 	// Pets that this pet is friends with.
-	RemoveFriends Option[[]int] `json:"remove_friends,omitempty"`
+	RemoveFriends Option[[]int] `json:"remove_friends,omitzero"`
 	// Users that this pet is followed by.
-	AddFollowedBy Option[[]uuid.UUID] `json:"add_followed_by,omitempty"`
+	AddFollowedBy Option[[]uuid.UUID] `json:"add_followed_by,omitzero"`
 	// Users that this pet is followed by.
-	RemoveFollowedBy Option[[]uuid.UUID] `json:"remove_followed_by,omitempty"`
+	RemoveFollowedBy Option[[]uuid.UUID] `json:"remove_followed_by,omitzero"`
 }
 
 func (u *UpdatePetParams) ApplyInputs(_builder *ent.PetUpdateOne) *ent.PetUpdateOne {
@@ -215,11 +215,11 @@ func (c *UpdatePostParams) Exec(ctx context.Context, _builder *ent.PostUpdateOne
 // UpdateSettingParams defines parameters for updating a Setting via a PATCH request.
 type UpdateSettingParams struct {
 	// Global banner text to apply to the frontend.
-	GlobalBanner Option[*string] `json:"global_banner,omitempty"`
+	GlobalBanner Option[*string] `json:"global_banner,omitzero"`
 	// Administrators for the platform.
-	AddAdmins Option[[]uuid.UUID] `json:"add_admins,omitempty"`
+	AddAdmins Option[[]uuid.UUID] `json:"add_admins,omitzero"`
 	// Administrators for the platform.
-	RemoveAdmins Option[[]uuid.UUID] `json:"remove_admins,omitempty"`
+	RemoveAdmins Option[[]uuid.UUID] `json:"remove_admins,omitzero"`
 }
 
 func (u *UpdateSettingParams) ApplyInputs(_builder *ent.SettingsUpdateOne) *ent.SettingsUpdateOne {
@@ -258,37 +258,37 @@ type UpdateUserParams struct {
 	// Type of object being defined (user or system which is for internal usecases).
 	Type Option[user.Type] `json:"type"`
 	// Full name if USER, otherwise null.
-	Description Option[*string] `json:"description,omitempty"`
+	Description Option[*string] `json:"description,omitzero"`
 	// If the user is still in the source system.
 	Enabled Option[bool] `json:"enabled"`
 	// Email associated with the user. Note that not all users have an associated email address.
-	Email Option[*string] `json:"email,omitempty"`
+	Email Option[*string] `json:"email,omitzero"`
 	// Avatar data for the user. This should generally only apply to the USER user type.
-	Avatar Option[*[]byte] `json:"avatar,omitempty"`
+	Avatar Option[*[]byte] `json:"avatar,omitzero"`
 	// Hashed password for the user, this shouldn't be readable in the spec anywhere.
 	PasswordHashed Option[string] `json:"password_hashed"`
 	// The github user raw JSON data.
-	GithubData Option[*github.User] `json:"github_data,omitempty"`
+	GithubData Option[*github.User] `json:"github_data,omitzero"`
 	// Any data that is not defined in the schema.
-	AnyData             Option[*github.User]          `json:"any_data,omitempty"`
-	ProfileURL          Option[*schema.ExampleValuer] `json:"profile_url,omitempty"`
-	LastAuthenticatedAt Option[*time.Time]            `json:"last_authenticated_at,omitempty"`
+	AnyData             Option[*github.User]          `json:"any_data,omitzero"`
+	ProfileURL          Option[*schema.ExampleValuer] `json:"profile_url,omitzero"`
+	LastAuthenticatedAt Option[*time.Time]            `json:"last_authenticated_at,omitzero"`
 	// Pets owned by the user.
-	AddPets Option[[]int] `json:"add_pets,omitempty"`
+	AddPets Option[[]int] `json:"add_pets,omitzero"`
 	// Pets owned by the user.
-	RemovePets Option[[]int] `json:"remove_pets,omitempty"`
+	RemovePets Option[[]int] `json:"remove_pets,omitzero"`
 	// Pets that the user is following.
-	AddFollowedPets Option[[]int] `json:"add_followed_pets,omitempty"`
+	AddFollowedPets Option[[]int] `json:"add_followed_pets,omitzero"`
 	// Pets that the user is following.
-	RemoveFollowedPets Option[[]int] `json:"remove_followed_pets,omitempty"`
+	RemoveFollowedPets Option[[]int] `json:"remove_followed_pets,omitzero"`
 	// Friends of the user.
-	AddFriends Option[[]uuid.UUID] `json:"add_friends,omitempty"`
+	AddFriends Option[[]uuid.UUID] `json:"add_friends,omitzero"`
 	// Friends of the user.
-	RemoveFriends     Option[[]uuid.UUID] `json:"remove_friends,omitempty"`
-	AddPosts          Option[[]int]       `json:"add_posts,omitempty"`
-	RemovePosts       Option[[]int]       `json:"remove_posts,omitempty"`
-	AddFriendships    Option[[]int]       `json:"add_friendships,omitempty"`
-	RemoveFriendships Option[[]int]       `json:"remove_friendships,omitempty"`
+	RemoveFriends     Option[[]uuid.UUID] `json:"remove_friends,omitzero"`
+	AddPosts          Option[[]int]       `json:"add_posts,omitzero"`
+	RemovePosts       Option[[]int]       `json:"remove_posts,omitzero"`
+	AddFriendships    Option[[]int]       `json:"add_friendships,omitzero"`
+	RemoveFriendships Option[[]int]       `json:"remove_friendships,omitzero"`
 }
 
 func (u *UpdateUserParams) ApplyInputs(_builder *ent.UserUpdateOne) *ent.UserUpdateOne {

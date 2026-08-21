@@ -5,7 +5,7 @@
 package entrest
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"fmt"
 	"maps"
 	"reflect"
@@ -78,36 +78,36 @@ type Annotation struct {
 
 	// Fields that map directly to the OpenAPI schema.
 
-	AdditionalTags       []string             `json:",omitempty" ent:"schema,edge"`
-	Tags                 []string             `json:",omitempty" ent:"schema,edge"`
-	OperationSummary     map[Operation]string `json:",omitempty" ent:"schema,edge"`
-	OperationDescription map[Operation]string `json:",omitempty" ent:"schema,edge"`
-	OperationID          map[Operation]string `json:",omitempty" ent:"schema,edge"`
-	Description          string               `json:",omitempty" ent:"schema,edge,field"`
-	Example              any                  `json:",omitempty" ent:"field"`
-	Deprecated           bool                 `json:",omitempty" ent:"schema,edge,field"`
-	Schema               *ogen.Schema         `json:",omitempty" ent:"field"`
-	ReadOnly             bool                 `json:",omitempty" ent:"field"`
+	AdditionalTags       []string             `json:",omitzero,omitempty" ent:"schema,edge"`
+	Tags                 []string             `json:",omitzero,omitempty" ent:"schema,edge"`
+	OperationSummary     map[Operation]string `json:",omitzero,omitempty" ent:"schema,edge"`
+	OperationDescription map[Operation]string `json:",omitzero,omitempty" ent:"schema,edge"`
+	OperationID          map[Operation]string `json:",omitzero,omitempty" ent:"schema,edge"`
+	Description          string               `json:",omitzero" ent:"schema,edge,field"`
+	Example              any                  `json:",omitzero" ent:"field"`
+	Deprecated           bool                 `json:",omitzero" ent:"schema,edge,field"`
+	Schema               *ogen.Schema         `json:",omitzero" ent:"field"`
+	ReadOnly             bool                 `json:",omitzero" ent:"field"`
 
 	// All others.
 
-	Pagination      *bool       `json:",omitempty" ent:"schema,edge"`
-	MinItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
-	MaxItemsPerPage int         `json:",omitempty" ent:"schema,edge"`
-	ItemsPerPage    int         `json:",omitempty" ent:"schema,edge"`
-	EagerLoad       *bool       `json:",omitempty" ent:"edge"`
-	EagerLoadLimit  *int        `json:",omitempty" ent:"edge"`
-	EdgeEndpoint    *bool       `json:",omitempty" ent:"schema,edge"`
-	EdgeUpdateBulk  bool        `json:",omitempty" ent:"edge"`
-	Filter          Predicate   `json:",omitempty" ent:"schema,edge,field"`
-	FilterGroup     string      `json:",omitempty" ent:"edge,field"`
-	DisableHandler  bool        `json:",omitempty" ent:"schema,edge"`
-	Sortable        bool        `json:",omitempty" ent:"field"`
-	DefaultSort     *string     `json:",omitempty" ent:"schema"`
-	DefaultOrder    *SortOrder  `json:",omitempty" ent:"schema"`
-	Skip            bool        `json:",omitempty" ent:"schema,edge,field"`
-	AllowClientIDs  *bool       `json:",omitempty" ent:"schema"`
-	Operations      []Operation `json:",omitempty" ent:"schema,edge"`
+	Pagination      *bool       `json:",omitzero" ent:"schema,edge"`
+	MinItemsPerPage int         `json:",omitzero" ent:"schema,edge"`
+	MaxItemsPerPage int         `json:",omitzero" ent:"schema,edge"`
+	ItemsPerPage    int         `json:",omitzero" ent:"schema,edge"`
+	EagerLoad       *bool       `json:",omitzero" ent:"edge"`
+	EagerLoadLimit  *int        `json:",omitzero" ent:"edge"`
+	EdgeEndpoint    *bool       `json:",omitzero" ent:"schema,edge"`
+	EdgeUpdateBulk  bool        `json:",omitzero" ent:"edge"`
+	Filter          Predicate   `json:",omitzero" ent:"schema,edge,field"`
+	FilterGroup     string      `json:",omitzero" ent:"edge,field"`
+	DisableHandler  bool        `json:",omitzero" ent:"schema,edge"`
+	Sortable        bool        `json:",omitzero" ent:"field"`
+	DefaultSort     *string     `json:",omitzero" ent:"schema"`
+	DefaultOrder    *SortOrder  `json:",omitzero" ent:"schema"`
+	Skip            bool        `json:",omitzero" ent:"schema,edge,field"`
+	AllowClientIDs  *bool       `json:",omitzero" ent:"schema"`
+	Operations      []Operation `json:",omitzero,omitempty" ent:"schema,edge"`
 }
 
 // getSupportedType uses reflection to check if the annotation is supported on the
@@ -117,7 +117,7 @@ func (a Annotation) getSupportedType(name, typ string) error {
 	ant := reflect.ValueOf(a)
 
 	for i := range ant.NumField() {
-		if ant.Field(i).IsZero() || (reflect.ValueOf(ant.Field(i)).Kind() == reflect.Ptr && ant.Field(i).IsNil()) {
+		if ant.Field(i).IsZero() || (reflect.ValueOf(ant.Field(i)).Kind() == reflect.Pointer && ant.Field(i).IsNil()) {
 			continue
 		}
 
@@ -249,11 +249,11 @@ func (a Annotation) Merge(o schema.Annotation) schema.Annotation { // nolint:goc
 }
 
 func (a *Annotation) Decode(o any) error {
-	buf, err := json.Marshal(o)
+	buf, err := json.Marshal(o, ogenJSONOpts)
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(buf, a)
+	return json.Unmarshal(buf, a, ogenJSONOpts)
 }
 
 // GetPagination returns the pagination annotation (or defaults from

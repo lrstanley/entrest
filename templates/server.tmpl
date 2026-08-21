@@ -23,6 +23,7 @@ import (
 {{ template "helper/rest/server/constants" . }}
 {{ template "helper/rest/server/errors" . }}
 {{ template "helper/rest/server/json" . }}
+{{ template "helper/rest/server/bodylimit" . }}
 {{ template "helper/rest/server/bind" . }}
 {{ template "helper/rest/server/req" . }}
 {{ template "helper/rest/server/links" . }}
@@ -48,6 +49,10 @@ type ServerConfig struct {
     // default implementation will use the X-Request-Id header, otherwise an empty
     // string will be returned. If using go-chi, middleware.GetReqID will be used.
     GetReqID func(r *http.Request) string
+
+    // MaxRequestBodyBytes limits the size of request bodies in bytes. Zero uses
+    // [DefaultMaxRequestBodyBytes] (8 MiB). Negative values disable the limit.
+    MaxRequestBodyBytes int64
 }
 
 type Server struct {
@@ -90,6 +95,8 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, _op
         _resp.Code = http.StatusBadRequest
     case IsInvalidID(err):
         _resp.Code = http.StatusBadRequest
+    case IsRequestEntityTooLarge(err):
+        _resp.Code = http.StatusRequestEntityTooLarge
     {{- with $.Config.FeatureEnabled "privacy" }}
         case errors.Is(err, privacy.Deny):
             _resp.Code = http.StatusForbidden
@@ -125,7 +132,7 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, _op
     JSON(w, r, _resp.Code, _resp)
 }
 
-func handleResponse[Resp any](s *Server, w http.ResponseWriter, r *http.Request, _op Operation, _resp *Resp, err error) {
+func (s *Server) handleResponse[Resp any](w http.ResponseWriter, r *http.Request, _op Operation, _resp *Resp, err error) {
     {{- template "helper/rest/server/links/handler" . -}}
 
     if err != nil {
@@ -171,6 +178,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
 {{- if eq $.Annotations.RestConfig.Handler "chi" }}
     // Handler mounts all of the necessary endpoints onto the provided chi.Router.
     func (s *Server) Handler(r chi.Router) {
+        r.Use(UseMaxBodyBytes(s.config.GetMaxRequestBodyBytes()))
         r.Use(UseEntContext(s.db))
 {{- else }}
     // Handler returns a ready-to-use http.Handler that mounts all of the necessary endpoints.
@@ -190,7 +198,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "GET"
                 "Path" (getPathName "list" $t nil false)
-                "Func" (printf "ReqParam(s, OperationList, s.%s)" (getOperationIDName "list" $t nil | zpascal))
+                "Func" (printf "s.ReqParam(OperationList, s.%s)" (getOperationIDName "list" $t nil | zpascal))
             ) }}
         {{- end }}
 
@@ -200,7 +208,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "GET"
                 "Path" (getPathName "read" $t nil false)
-                "Func" (printf "ReqID(s, OperationRead, s.%s)" (getOperationIDName "read" $t nil | zpascal))
+                "Func" (printf "s.ReqID(OperationRead, s.%s)" (getOperationIDName "read" $t nil | zpascal))
             ) }}
         {{- end }}
 
@@ -219,7 +227,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
                     "Handler" $.Annotations.RestConfig.Handler
                     "Method" "GET"
                     "Path" (getPathName "read" $t $e false)
-                    "Func" (printf "ReqID(s, OperationRead, s.%s)" (getOperationIDName "read" $t $e | zpascal))
+                    "Func" (printf "s.ReqID(OperationRead, s.%s)" (getOperationIDName "read" $t $e | zpascal))
                 ) }}
             {{- end }}
 
@@ -229,7 +237,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
                     "Handler" $.Annotations.RestConfig.Handler
                     "Method" "GET"
                     "Path" (getPathName "list" $t $e false)
-                    "Func" (printf "ReqIDParam(s, OperationList, s.%s)" (getOperationIDName "list" $t $e | zpascal))
+                    "Func" (printf "s.ReqIDParam(OperationList, s.%s)" (getOperationIDName "list" $t $e | zpascal))
                 ) }}
             {{- end }}
         {{- end }}
@@ -240,7 +248,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "POST"
                 "Path" (getPathName "create" $t nil false)
-                "Func" (printf "ReqParam(s, OperationCreate, s.%s)" (getOperationIDName "create" $t nil | zpascal))
+                "Func" (printf "s.ReqParam(OperationCreate, s.%s)" (getOperationIDName "create" $t nil | zpascal))
             ) }}
         {{- end }}
 
@@ -250,7 +258,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "PATCH"
                 "Path" (getPathName "update" $t nil false)
-                "Func" (printf "ReqIDParam(s, OperationUpdate, s.%s)" (getOperationIDName "update" $t nil | zpascal))
+                "Func" (printf "s.ReqIDParam(OperationUpdate, s.%s)" (getOperationIDName "update" $t nil | zpascal))
             ) }}
         {{- end }}
 
@@ -260,7 +268,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
                 "Handler" $.Annotations.RestConfig.Handler
                 "Method" "DELETE"
                 "Path" (getPathName "delete" $t nil false)
-                "Func" (printf "ReqID(s, OperationDelete, s.%s)" (getOperationIDName "delete" $t nil | zpascal))
+                "Func" (printf "s.ReqID(OperationDelete, s.%s)" (getOperationIDName "delete" $t nil | zpascal))
             ) }}
         {{- end }}
     {{- end }}
@@ -270,7 +278,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{ template "helper/rest/server/not-found" . }}
 
     {{- if eq $.Annotations.RestConfig.Handler "stdlib" }}
-        return http.StripPrefix(s.config.BasePath, UseEntContext(s.db)(_mux))
+        return http.StripPrefix(s.config.BasePath, UseMaxBodyBytes(s.config.GetMaxRequestBodyBytes())(UseEntContext(s.db)(_mux)))
     {{- end }}
 }
 
