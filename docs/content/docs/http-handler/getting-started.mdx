@@ -1,7 +1,158 @@
 ---
 title: Getting Started
+description: Mount the generated HTTP handler and expose CRUD endpoints from your Ent schemas.
 sidebar:
   order: 1
 ---
 
-TODO
+import { CardGrid, Code, LinkCard } from '@astrojs/starlight/components';
+import { clean } from "/util/cleanExamples";
+
+import FileEntC from "/../_examples/simple/internal/database/entc.go?raw";
+import FileMain from "/../_examples/simple/main.go?raw";
+
+entrest generates an HTTP handler alongside your OpenAPI spec. The handler implements the routes
+described in the spec — list, read, create, update, delete, edge sub-resources, filtering, sorting,
+pagination, and eager loading — using your `ent.Client`.
+
+If you have not set up schemas and codegen yet, start with
+[Getting Started](../guides/getting-started/).
+
+## Enable handler generation
+
+Handler code is generated when [`entrest.Config.Handler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config)
+is not `HandlerNone`. Pick the router integration at generation time:
+
+| Value | Generated `Handler` signature |
+| --- | --- |
+| `HandlerStdlib` | `Handler() http.Handler` |
+| `HandlerChi` | `Handler(r chi.Router)` |
+
+Set it in your `entc.go` file:
+
+<Code
+    code={clean(FileEntC)}
+    lang="go"
+    ins={[{range: "14-21"}, 30]}
+    wrap
+    title="internal/database/entc.go"
+/>
+
+Run `go generate` as usual. The handler lands in `<ent>/rest` next to the embedded `openapi.json`.
+
+Other generation-time options — `WithTesting`, `StrictMutate`, pagination defaults, and so on — are
+documented on [`entrest.Config`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) and in
+[Configuration](./configuration/).
+
+## Generated `rest` package
+
+After codegen, import your project's `<ent>/rest` package. The important pieces:
+
+- `rest.NewServer(db, cfg)` — builds a `*rest.Server` from your `ent.Client` and optional
+  [`ServerConfig`](./configuration/).
+- `rest.Server.Handler` — registers routes and returns a handler (stdlib) or mounts onto chi.
+- Per-entity methods such as `ListPets`, `GetPet`, `CreatePet` — the same functions the generated
+  routes call. Use them from custom handlers if you need non-standard endpoints.
+- `rest.OpenAPI` — the embedded spec bytes (also served at `GET /openapi.json` by default).
+
+## Mount the handler
+
+Create the server with your database client, then mount the returned handler on your HTTP server.
+
+### Stdlib (`HandlerStdlib`)
+
+Serve `srv.Handler()` at the process root (or behind a mux that forwards to it). The generated handler
+strips `BasePath` and injects the `ent.Client` into the request context for you.
+
+<Code
+    code={clean(FileMain)}
+    lang="go"
+    ins={[/[^ ]+ent\/rest.*/g, /.*rest\.NewServer.*/g, /.*srv\.Handler.*/g]}
+    wrap
+    title="main.go"
+/>
+
+`http.ListenAndServe(":8080", srv.Handler())` is enough if you do not need extra middleware. Wrapping
+with chi (as above) or another `net/http`-compatible router works because `Handler()` returns
+`http.Handler`.
+
+### Chi (`HandlerChi`)
+
+Register routes on the router (or sub-router) that matches your mount point. Set `BasePath` in
+`ServerConfig` to that prefix so spec URLs and `Link` headers stay correct — see
+[Configuration — Stdlib vs chi](./configuration/#stdlib-vs-chi).
+
+```go title="main.go"
+srv, err := rest.NewServer(db, &rest.ServerConfig{BasePath: "/v1"})
+if err != nil {
+    panic(err)
+}
+
+r := chi.NewRouter()
+r.Route("/v1", func(r chi.Router) {
+    srv.Handler(r)
+})
+http.ListenAndServe(":8080", r)
+```
+
+Chi requires v5.0.12 or newer so path parameters populate `http.Request.PathValue`.
+
+## Default routes
+
+For each schema that is not skipped, entrest registers CRUD routes under kebab-case plural paths
+(for example `users`, `pets`). Edge relationships get their own list or read routes:
+
+```text
+GET    /users
+GET    /users/{id}
+POST   /users
+PATCH  /users/{id}
+DELETE /users/{id}
+GET    /users/{id}/pets          # edge sub-resource
+GET    /pets/{id}/owner           # eager-loaded edge read
+```
+
+Which operations exist for a schema depends on your annotations and Ent field definitions — a schema
+without a create path in the spec will not register `POST`. Skipped schemas (`entrest.WithSkip`) and
+disabled operations (`entrest.WithOperation`) are omitted entirely.
+
+When spec serving is enabled (the default), the handler also registers:
+
+- `GET /openapi.json` — embedded OpenAPI document
+- `GET /docs` — embedded [Scalar](https://github.com/scalar/scalar) API reference UI
+- `GET /` — redirects to `/docs` (stdlib handler only)
+
+Use `?pretty=true` on any JSON response to get indented output.
+
+## Skip route registration
+
+[`entrest.WithHandler(false)`](https://pkg.go.dev/github.com/lrstanley/entrest#WithHandler) on a schema
+or edge keeps the handler methods in `rest` but does not mount routes for that type. The OpenAPI spec
+still describes the endpoints unless you disable them separately. Useful when you want the generated
+query/update logic but need to wire the route yourself.
+
+```go title="internal/database/schema/pet.go"
+func (Pet) Annotations() []ent.Annotation {
+    return []ent.Annotation{
+        entrest.WithHandler(false),
+    }
+}
+```
+
+Call `srv.ListPets`, `srv.CreatePet`, and so on from your own `http.HandlerFunc` and return JSON with
+the generated `rest.JSON` helper, or mount a wrapper that delegates to the generated `Req*` handlers.
+
+## Next steps
+
+<LinkCard
+    title="Calling Your New API"
+    description="Open the docs UI and try sample curl requests against a running server."
+    href="/entrest/guides/calling-your-new-api/"
+/>
+
+<CardGrid>
+    <LinkCard title="Configuration" href="/entrest/http-handler/configuration/" />
+    <LinkCard title="API Docs" href="/entrest/http-handler/api-docs/" />
+    <LinkCard title="Authentication & Permissions" href="/entrest/http-handler/auth-and-permissions/" />
+    <LinkCard title="Testing" href="/entrest/http-handler/testing/" />
+</CardGrid>
