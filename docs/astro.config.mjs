@@ -1,6 +1,7 @@
 import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import starlightLinksValidator from "starlight-links-validator";
+import starlightLlmsTxt from "starlight-llms-txt";
 import { rehypeHeadingIds, unified } from "@astrojs/markdown-remark";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
@@ -16,6 +17,8 @@ export default defineConfig({
     integrations: [
         starlight({
             title: "Ent Rest Extension",
+            description:
+                "entrest is an EntGo extension for generating compliant OpenAPI specs and HTTP handler implementations that match those specs.",
             logo: {
                 light: "/assets/images/logo-light.webp",
                 dark: "/assets/images/logo-dark.webp",
@@ -117,6 +120,48 @@ export default defineConfig({
                 },
             ],
             plugins: [
+                starlightLlmsTxt({
+                    projectName: "entrest",
+                    description:
+                        "entrest is an EntGo extension for generating compliant OpenAPI specs and HTTP handler implementations that match those specs.",
+                    optionalLinks: [
+                        {
+                            label: "pkg.go.dev documentation",
+                            url: "https://pkg.go.dev/github.com/lrstanley/entrest",
+                            description: "Go package API reference on pkg.go.dev",
+                        },
+                        {
+                            label: "EntGo documentation",
+                            url: "https://entgo.io/docs/getting-started",
+                            description: "official EntGo framework documentation",
+                        },
+                    ],
+                    customSets: [
+                        {
+                            label: "Guides",
+                            description: "step-by-step guides for getting started with entrest",
+                            paths: ["guides/**"],
+                        },
+                        {
+                            label: "OpenAPI specs",
+                            description:
+                                "documentation for generating and configuring OpenAPI specs",
+                            paths: ["openapi-specs/**"],
+                        },
+                        {
+                            label: "HTTP handler",
+                            description:
+                                "documentation for the generated HTTP handler and API docs",
+                            paths: ["http-handler/**"],
+                        },
+                        {
+                            label: "Resources",
+                            description: "architecture, best practices, and troubleshooting",
+                            paths: ["resources/**"],
+                        },
+                    ],
+                    promote: ["index*", "guides/getting-started*"],
+                }),
                 starlightLinksValidator({
                     errorOnLocalLinks: false,
                     errorOnRelativeLinks: false,
