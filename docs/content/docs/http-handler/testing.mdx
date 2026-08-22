@@ -1,7 +1,159 @@
 ---
 title: Testing
+description: Generated helpers for integration-testing the HTTP handler against a real Ent client.
 sidebar:
   order: 4
 ---
 
-TODO
+import { Code } from '@astrojs/starlight/components';
+
+Set [`entrest.Config.WithTesting`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) to **true** at
+generation time and entrest adds request helpers to your existing `<ent>/enttest` package. They wrap
+`httptest` around the generated handler so you can exercise real routes, query params, and JSON bodies
+against an in-memory database.
+
+`WithTesting` is ignored when [`Handler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) is
+`HandlerNone` — there is no handler to test.
+
+## Enable generation
+
+<Code lang="go" title="entc.go" code={`ex, err := entrest.NewExtension(&entrest.Config{
+    Handler:     entrest.HandlerStdlib,
+    WithTesting: true,
+})
+if err != nil {
+    log.Fatal(err)
+}
+
+err = entc.Generate("./schema", &gen.Config{
+    Target:  "./ent",
+    Package: "example.com/app/ent",
+}, entc.Extensions(ex))`} />
+
+Run `go generate` as usual. The helpers land in `ent/enttest` alongside Ent's own `enttest.Open` helpers.
+
+## Test setup
+
+Open a client the same way you would for any Ent integration test, then pass it to `enttest.NewServer`:
+
+<Code lang="go" title="handler_test.go" code={`func newTestServer(t *testing.T, cfg *rest.ServerConfig) (context.Context, *ent.Client, *enttest.TestServer) {
+    t.Helper()
+
+    ctx := context.Background()
+    db := enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_pragma=foreign_keys(1)")
+    t.Cleanup(func() { db.Close() })
+
+    srv := enttest.NewServer(t, db, cfg)
+    return ctx, db, srv
+}`} />
+
+`NewServer` calls `rest.NewServer` and serves the returned handler. Pass `nil` for `ServerConfig` when
+defaults are fine — see [Configuration](./configuration/).
+
+Seed data through the Ent client (`db.Pet.Create()...SaveX(ctx)`), then hit the API with `srv.Request`.
+
+## Making requests
+
+`Request` is generic over the expected JSON response type:
+
+<Code lang="go" title="handler_test.go" code={`ctx, db, srv := newTestServer(t, nil)
+
+pet := db.Pet.Create().SetName("Riley").SetAge(3).SaveX(ctx)
+
+// GET a single entity.
+resp := srv.Request[ent.Pet](ctx, http.MethodGet, "/pets/"+strconv.Itoa(pet.ID), nil).Must(t)
+assert.Equal(t, http.StatusOK, resp.Data.Code)
+assert.Equal(t, pet.ID, resp.Value.ID)
+
+// POST with a JSON body (Content-Type is set automatically).
+created := srv.Request[ent.Pet](ctx, http.MethodPost, "/pets", map[string]any{
+    "name": "Orea",
+    "age":  2,
+}).Must(t)
+assert.Equal(t, http.StatusCreated, created.Data.Code)`} />
+
+Arguments:
+
+| Argument | Purpose |
+| --- | --- |
+| `ctx` | Request context — forwarded to `httptest.NewRequest` |
+| method | HTTP method (`http.MethodGet`, `http.MethodPost`, …) |
+| path | Path relative to the handler (no host) |
+| body | JSON-marshalable value, `nil`, or `http.NoBody` |
+
+Use `http.NoBody` on GET/DELETE when you want an explicit empty body instead of `nil`.
+
+### List responses
+
+List endpoints decode into `rest.PagedResponse[T]`:
+
+<Code lang="go" title="handler_test.go" code={`resp := srv.Request[rest.PagedResponse[ent.Pet]](
+    ctx, http.MethodGet, "/pets?page=2&per_page=10", nil,
+).Must(t)
+
+assert.Equal(t, 2, resp.Value.Page)
+assert.Len(t, resp.Value.Content, 10)`} />
+
+See [Pagination](../openapi-specs/pagination/) for the response fields and query parameters.
+
+### Empty bodies
+
+Pass `rest.PagedResponse[ent.Pet]` (or any type) for successful **204 No Content** responses — the body
+is not decoded. For deletes where you only care about the status, `Request[string]` also works.
+
+## Success and failure
+
+`Response[T]` holds three fields:
+
+| Field | Contents |
+| --- | --- |
+| `Data` | `*httptest.ResponseRecorder` — status, headers, raw body |
+| `Value` | Unmarshalled JSON on 2xx (except 204) |
+| `Error` | `*rest.ErrorResponse` on non-2xx |
+
+Call `.Must(t)` when you expect success — it fails the test if `Error` is set:
+
+<Code lang="go" title="handler_test.go" code={`resp := srv.Request[ent.Pet](ctx, http.MethodGet, "/pets/99999", nil)
+
+assert.Equal(t, http.StatusNotFound, resp.Data.Code)
+require.NotNil(t, resp.Error)
+assert.Equal(t, http.StatusNotFound, resp.Error.Code)`} />
+
+Skip `.Must(t)` whenever you are asserting on a specific error status. The error shape matches
+[Configuration — Error handling](./configuration/#error-handling).
+
+## Custom handlers
+
+If your production server wraps the generated handler in middleware, or you mount it behind chi with a
+prefix, use `enttest.WithExisting` instead of `NewServer`:
+
+<Code lang="go" title="handler_test.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{MaxRequestBodyBytes: 100})
+require.NoError(t, err)
+
+ts := enttest.WithExisting(t, srv.Handler())
+resp := ts.Request[ent.User](ctx, http.MethodPost, "/users", strings.Repeat("x", 101))
+require.NotNil(t, resp.Error)
+assert.Equal(t, http.StatusRequestEntityTooLarge, resp.Data.Code)`} />
+
+With chi, build the same router you use in production and pass it to `WithExisting`. Set `BasePath` on
+`ServerConfig` to match your mount point so paths in tests line up with runtime routing — see
+[Configuration — Stdlib vs chi](./configuration/#stdlib-vs-chi).
+
+## Seeding data
+
+`enttest.Multiple` runs a creator function `n` times and returns the results. Useful with `CreateBulk`:
+
+<Code lang="go" title="handler_test.go" code={`pets := db.Pet.CreateBulk(enttest.Multiple(newPet, db, 25)...).SaveX(ctx)
+_ = pets // use in assertions`} />
+
+where `newPet` returns `*ent.PetCreate`:
+
+<Code lang="go" title="handler_test.go" code={`func newPet(db *ent.Client) *ent.PetCreate {
+    return db.Pet.Create().SetName("test").SetAge(1)
+}`} />
+
+## Debugging
+
+Chain `WithLogResponses(true)` to print method, path, status, and body for every request:
+
+<Code lang="go" title="handler_test.go" code={`srv := enttest.NewServer(t, db, nil).WithLogResponses(true)`} />
