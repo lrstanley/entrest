@@ -1,7 +1,195 @@
 ---
 title: Configuration
+description: Generation-time options on entrest.Config that shape the OpenAPI spec.
 sidebar:
   order: 1
 ---
 
-TODO. See [entrest.Config](https://pkg.go.dev/github.com/lrstanley/entrest#Config) for all available options.
+import { Code, LinkCard, CardGrid } from '@astrojs/starlight/components';
+import { clean } from "/util/cleanExamples";
+
+import FileEntC from "/../_examples/kitchensink/internal/database/entc.go?raw";
+
+[`entrest.Config`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) is passed to
+`entrest.NewExtension` in your `entc.go` file. It runs at code generation time and controls what
+paths, parameters, and schemas appear in `openapi.json`.
+
+:::note
+Runtime options for the generated HTTP handler (`rest.ServerConfig`) live on
+[HTTP Handler Configuration](/entrest/http-handler/configuration/). Options such as `Handler`,
+`WithTesting`, and `DisableSpecHandler` affect both the spec and generated handler code.
+:::
+
+## Setup
+
+<Code
+    code={clean(FileEntC)}
+    lang="go"
+    ins={[{range: "18-27"}, 30, /[^ ]+\/entrest.*/g]}
+    wrap
+    title="internal/database/entc.go"
+/>
+
+`NewExtension(nil)` is equivalent to `NewExtension(&entrest.Config{})`. Most fields have defaults
+applied in [`Validate`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Validate) before
+generation runs.
+
+## Default spec metadata
+
+If you do not provide [`Spec`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Spec) or
+[`SpecFromPath`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.SpecFromPath), entrest
+starts from an empty spec and sets:
+
+| Field | Default |
+| --- | --- |
+| `openapi` | `3.0.3` |
+| `info.title` | `EntGo Rest API` |
+| `info.version` | `1.0.0` |
+
+Set API title, description, servers, security schemes, and custom paths through
+[Extending the Spec](/entrest/openapi-specs/extending/).
+
+## Operations
+
+[`DefaultOperations`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DefaultOperations)
+lists which CRUD operations are generated for every schema by default. When unset, all five are
+enabled: `create`, `read`, `update`, `delete`, and `list`.
+
+Per-schema or per-edge overrides use
+[`WithIncludeOperations`](/entrest/openapi-specs/annotation-reference/#withincludeoperations) and
+[`WithExcludeOperations`](/entrest/openapi-specs/annotation-reference/#withexcludeoperations).
+
+Read-only API (list and get only):
+
+```go title="internal/database/entc.go"
+ex, err := entrest.NewExtension(&entrest.Config{
+    DefaultOperations: []entrest.Operation{
+        entrest.OperationList,
+        entrest.OperationRead,
+    },
+})
+```
+
+An empty `DefaultOperations` list fails validation — at least one operation is required.
+
+## Filtering
+
+[`DefaultFilterID`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DefaultFilterID) adds
+`id` filter parameters to list endpoints when your schema does not declare an explicit `id` field
+(ent's implicit ID). The filters use the `EQ` and array predicate groups. Edge list filters are not
+added unless the edge is marked filterable with
+[`WithFilter`](/entrest/openapi-specs/annotation-reference/#withfilter).
+
+## Pagination
+
+List endpoints are paginated by default. Global defaults:
+
+| Option | Default |
+| --- | --- |
+| [`ItemsPerPage`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.ItemsPerPage) | `10` |
+| [`MinItemsPerPage`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.MinItemsPerPage) | `1` |
+| [`MaxItemsPerPage`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.MaxItemsPerPage) | `100` |
+
+[`DisablePagination`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisablePagination)
+turns pagination off globally; per-schema overrides use
+[`WithPagination`](/entrest/openapi-specs/annotation-reference/#withpagination).
+
+See [Pagination](/entrest/openapi-specs/pagination/) for query parameters, response shape, and
+per-schema limits.
+
+## Eager loading
+
+| Option | Default | Purpose |
+| --- | --- | --- |
+| [`DefaultEagerLoad`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DefaultEagerLoad) | `false` | Eager-load every edge |
+| [`EagerLoadLimit`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.EagerLoadLimit) | `1000` | Max items per eager-loaded edge (`-1` disables) |
+| [`DisableEagerLoadNonPagedOpt`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableEagerLoadNonPagedOpt) | `false` | Keep pagination on eager-loaded edge endpoints |
+| [`DisableEagerLoadedEndpoints`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableEagerLoadedEndpoints) | `false` | Skip edge endpoints when the edge is eager-loaded |
+| [`DisableEdgeEndpoints`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableEdgeEndpoints) | `false` | Skip all edge endpoints |
+
+Per-edge behavior is controlled with annotations such as
+[`WithEagerLoad`](/entrest/openapi-specs/annotation-reference/#witheagerload) and
+[`WithEdgeEndpoint`](/entrest/openapi-specs/annotation-reference/#withedgeendpoint).
+
+See [Eager Loading](/entrest/openapi-specs/eager-loading/) for usage and when not to eager-load.
+
+## Tags
+
+[`AddEdgesToTags`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.AddEdgesToTags) adds
+eager-loaded edge entity names to the `tags` array on parent schema operations. Edge endpoints
+already include both parent and child tags. This is mainly useful for large schemas where tags help
+clients find related resources in the spec.
+
+## Mutation and list responses
+
+[`StrictMutate`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.StrictMutate) documents and
+enforces **400** responses when create or update bodies contain fields not defined on the schema.
+
+[`ListNotFound`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.ListNotFound) documents **404**
+on list endpoints when filters match no rows. The default is **200** with an empty `content` array.
+See [Error handling](/entrest/http-handler/configuration/#error-handling) for the response shape.
+
+[`AllowClientIDs`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.AllowClientIDs) allows an
+`id` field in create request bodies (for client-supplied UUIDs or natural keys). This is a security
+sensitive option — see
+[Auth and permissions](/entrest/http-handler/auth-and-permissions/#limit-what-the-api-exposes). Per-schema
+control uses
+[`WithAllowClientIDs`](/entrest/openapi-specs/annotation-reference/#withallowclientids).
+
+## JSON response bodies
+
+[`DisablePatchJSONTag`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisablePatchJSONTag)
+skips entrest's JSON tag hook that removes `omitempty` from generated struct tags. With the hook
+enabled (default), optional and defaulted fields still appear in JSON responses. Fields marked
+`json:"-"` are unchanged.
+
+## Headers and error responses
+
+Global request headers, response headers, and error response schemas are configured on
+[`GlobalRequestHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.GlobalRequestHeaders),
+[`GlobalResponseHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.GlobalResponseHeaders),
+and [`GlobalErrorResponses`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.GlobalErrorResponses).
+When unset, error responses default to
+[`DefaultErrorResponses`](https://pkg.go.dev/github.com/lrstanley/entrest#DefaultErrorResponses)
+(**400**, **401**, **403**, **404**, **409**, **429**, **500**).
+
+See [Extending the Spec](/entrest/openapi-specs/extending/) for presets (`RequestIDHeader`,
+`RateLimitHeaders`), custom headers, and hooks.
+
+## Handler generation and spec output
+
+| Option | Effect on the spec |
+| --- | --- |
+| [`Handler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Handler) | `HandlerNone` generates only `openapi.json` — no `rest` handler package. `HandlerStdlib` or `HandlerChi` also generate handler code. See [HTTP Handler Getting Started](/entrest/http-handler/getting-started/). |
+| [`DisableSpecHandler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableSpecHandler) | Omits `GET /openapi.json` from the spec, disables embedding the spec in the binary, and turns off `/docs` and `Link` header support in the handler. |
+| [`Writer`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Writer) | Write the spec to a custom `io.Writer` instead of `<ent>/rest/openapi.json`. |
+| [`Templates`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Templates) | Additional or replacement `gen.Template` values for handler codegen. |
+
+[`WithTesting`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.WithTesting) generates
+`resttest` helpers; it requires a non-`HandlerNone` handler. See
+[Testing](/entrest/http-handler/testing/).
+
+When handler generation is enabled and the spec handler is not disabled, the embedded spec is served
+at `GET {BasePath}/openapi.json`. See [API Docs](/entrest/http-handler/api-docs/).
+
+## Hooks
+
+[`PreGenerateHook`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.PreGenerateHook) runs
+before paths are merged into the base spec. [`PostGenerateHook`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.PostGenerateHook)
+runs after merge but before global headers and error responses are applied — use it when custom paths
+should receive those globals. [`PreWriteHook`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.PreWriteHook)
+runs after the full spec is resolved, immediately before it is written.
+
+Examples are in [Extending the Spec](/entrest/openapi-specs/extending/#pregeneratehook-and-postgeneratehook).
+
+## Per-schema overrides
+
+Most global options have matching annotations on schemas, edges, or fields. The full list is on
+[Annotation Reference](/entrest/openapi-specs/annotation-reference/).
+
+<CardGrid>
+    <LinkCard title="Annotation Reference" href="/entrest/openapi-specs/annotation-reference/" />
+    <LinkCard title="Extending the Spec" href="/entrest/openapi-specs/extending/" />
+    <LinkCard title="Pagination" href="/entrest/openapi-specs/pagination/" />
+    <LinkCard title="Eager Loading" href="/entrest/openapi-specs/eager-loading/" />
+</CardGrid>
