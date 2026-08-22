@@ -4,6 +4,7 @@ import starlightLinksValidator from "starlight-links-validator";
 import starlightLlmsTxt from "starlight-llms-txt";
 import { rehypeHeadingIds, unified } from "@astrojs/markdown-remark";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import mermaid from "astro-mermaid";
 
 process.env.ASTRO_TELEMETRY_DISABLED = "1";
 
@@ -15,6 +16,9 @@ export default defineConfig({
     trailingSlash: "always",
     contentDir: "./content",
     integrations: [
+        mermaid({
+            autoTheme: true,
+        }),
         starlight({
             title: "Ent Rest Extension",
             description:
