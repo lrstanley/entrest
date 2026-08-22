@@ -7,6 +7,11 @@ sidebar:
 
 import { Code } from '@astrojs/starlight/components';
 
+:::note[Reference]
+Runtime options for `rest.ServerConfig` when calling `rest.NewServer`. The authoritative field list
+lives in your generated `<ent>/rest` package (`server.go`).
+:::
+
 The generated HTTP handler is configured via `rest.ServerConfig` when calling `rest.NewServer`.
 These types are generated into your project's `<ent>/rest` package alongside the handler itself.
 
@@ -183,7 +188,7 @@ elsewhere:
 
 `DisableDocsHandler` has no effect when `DisableSpecHandler` is already true.
 
-See [API Docs](./api-docs/) for the embedded Scalar defaults, `Link` header discovery, and overriding the default UI.
+See [API Docs](./api-docs/) for replacing the embedded Scalar UI with a custom OpenAPI viewer.
 
 ## Link headers
 

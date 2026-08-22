@@ -7,6 +7,13 @@ sidebar:
 
 import { Code } from '@astrojs/starlight/components';
 
+:::note[How-to guide]
+Steps for enabling and using the generated `enttest` request helpers. This page does not cover
+authentication, privacy policies, or testing the `/openapi.json` and `/docs` routes — see
+[Authentication & Permissions](./auth-and-permissions/) and [API Docs](./api-docs/) when those
+topics are documented.
+:::
+
 Set [`entrest.Config.WithTesting`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) to **true** at
 generation time and entrest adds request helpers to your existing `<ent>/enttest` package. They wrap
 `httptest` around the generated handler so you can exercise real routes, query params, and JSON bodies
@@ -32,9 +39,29 @@ err = entc.Generate("./schema", &gen.Config{
 
 Run `go generate` as usual. The helpers land in `ent/enttest` alongside Ent's own `enttest.Open` helpers.
 
+## Minimal example
+
+After enabling `WithTesting`, a complete test looks like this:
+
+<Code lang="go" title="handler_test.go" code={`func TestGetPet(t *testing.T) {
+    ctx := context.Background()
+    db := enttest.Open(t, "sqlite3", "file:ent?mode=memory&cache=shared&_pragma=foreign_keys(1)")
+    t.Cleanup(func() { db.Close() })
+
+    srv := enttest.NewServer(t, db, nil)
+
+    pet := db.Pet.Create().SetName("Riley").SetAge(3).SaveX(ctx)
+
+    resp := srv.Request[ent.Pet](ctx, http.MethodGet, "/pets/"+strconv.Itoa(pet.ID), nil).Must(t)
+    assert.Equal(t, pet.ID, resp.Value.ID)
+}`} />
+
+Paths are relative to the handler root — with the stdlib handler, `BasePath` stripping is applied for
+you, so use `/pets` rather than `/v1/pets` when `BasePath` is `/v1`.
+
 ## Test setup
 
-Open a client the same way you would for any Ent integration test, then pass it to `enttest.NewServer`:
+For shared setup across tests, extract a helper:
 
 <Code lang="go" title="handler_test.go" code={`func newTestServer(t *testing.T, cfg *rest.ServerConfig) (context.Context, *ent.Client, *enttest.TestServer) {
     t.Helper()
@@ -124,8 +151,8 @@ Skip `.Must(t)` whenever you are asserting on a specific error status. The error
 
 ## Custom handlers
 
-If your production server wraps the generated handler in middleware, or you mount it behind chi with a
-prefix, use `enttest.WithExisting` instead of `NewServer`:
+If your production server wraps the generated handler in middleware, use `enttest.WithExisting` instead
+of `NewServer`:
 
 <Code lang="go" title="handler_test.go" code={`srv, err := rest.NewServer(db, &rest.ServerConfig{MaxRequestBodyBytes: 100})
 require.NoError(t, err)
@@ -135,9 +162,25 @@ resp := ts.Request[ent.User](ctx, http.MethodPost, "/users", strings.Repeat("x",
 require.NotNil(t, resp.Error)
 assert.Equal(t, http.StatusRequestEntityTooLarge, resp.Data.Code)`} />
 
-With chi, build the same router you use in production and pass it to `WithExisting`. Set `BasePath` on
-`ServerConfig` to match your mount point so paths in tests line up with runtime routing — see
-[Configuration — Stdlib vs chi](./configuration/#stdlib-vs-chi).
+### Chi mounts
+
+Build the same router you use in production and pass it to `WithExisting`. Set `BasePath` on
+`ServerConfig` to match your mount point, and include the mount prefix in test paths:
+
+<Code lang="go" title="handler_test.go" code={`cfg := &rest.ServerConfig{BasePath: "/v1"}
+srv, err := rest.NewServer(db, cfg)
+require.NoError(t, err)
+
+r := chi.NewRouter()
+r.Route("/v1", func(r chi.Router) {
+    srv.Handler(r)
+})
+
+ts := enttest.WithExisting(t, r)
+resp := ts.Request[rest.PagedResponse[ent.Pet]](ctx, http.MethodGet, "/v1/pets", nil).Must(t)
+assert.Equal(t, http.StatusOK, resp.Data.Code)`} />
+
+See [Configuration — Stdlib vs chi](./configuration/#stdlib-vs-chi) for mount setup.
 
 ## Seeding data
 
