@@ -10,7 +10,7 @@ import { Code } from '@astrojs/starlight/components';
 :::note[How-to guide]
 Steps for enabling and using the generated `enttest` request helpers. This page does not cover
 authentication, privacy policies, or testing the `/openapi.json` and `/docs` routes — see
-[Authentication & Permissions](./auth-and-permissions/) and [API Docs](./api-docs/).
+[Authentication & Permissions](/entrest/http-handler/auth-and-permissions/) and [API Docs](/entrest/http-handler/api-docs/).
 :::
 
 Set [`entrest.Config.WithTesting`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) to **true** at
@@ -74,7 +74,7 @@ For shared setup across tests, extract a helper:
 }`} />
 
 `NewServer` calls `rest.NewServer` and serves the returned handler. Pass `nil` for `ServerConfig` when
-defaults are fine — see [Configuration](./configuration/).
+defaults are fine — see [Configuration](/entrest/http-handler/configuration/).
 
 Seed data through the Ent client (`db.Pet.Create()...SaveX(ctx)`), then hit the API with `srv.Request`.
 
@@ -120,7 +120,7 @@ List endpoints decode into `rest.PagedResponse[T]`:
 assert.Equal(t, 2, resp.Value.Page)
 assert.Len(t, resp.Value.Content, 10)`} />
 
-See [Pagination](../openapi-specs/pagination/) for the response fields and query parameters.
+See [Pagination](/entrest/openapi-specs/pagination/) for the response fields and query parameters.
 
 ### Empty bodies
 
@@ -146,7 +146,7 @@ require.NotNil(t, resp.Error)
 assert.Equal(t, http.StatusNotFound, resp.Error.Code)`} />
 
 Skip `.Must(t)` whenever you are asserting on a specific error status. The error shape matches
-[Configuration — Error handling](./configuration/#error-handling).
+[Configuration — Error handling](/entrest/http-handler/configuration/#error-handling).
 
 ## Custom handlers
 
@@ -179,7 +179,7 @@ ts := enttest.WithExisting(t, r)
 resp := ts.Request[rest.PagedResponse[ent.Pet]](ctx, http.MethodGet, "/v1/pets", nil).Must(t)
 assert.Equal(t, http.StatusOK, resp.Data.Code)`} />
 
-See [Configuration — Stdlib vs chi](./configuration/#stdlib-vs-chi) for mount setup.
+See [Configuration — Stdlib vs chi](/entrest/http-handler/configuration/#stdlib-vs-chi) for mount setup.
 
 ## Seeding data
 

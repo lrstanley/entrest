@@ -91,11 +91,11 @@ handler := AuthMiddleware(srv.Handler())
 http.ListenAndServe(":8080", handler)`} />
 
 With chi, apply middleware on the router before calling `srv.Handler(r)` — see
-[Configuration — Stdlib vs chi](./configuration/#stdlib-vs-chi).
+[Configuration — Stdlib vs chi](/entrest/http-handler/configuration/#stdlib-vs-chi).
 
 You do not need to call `UseEntContext` yourself when using the generated handler — it wraps the mux
 for you. Only register it separately if another handler needs the client on requests that never reach
-`Server.Handler` — see [Configuration — Ent client context](./configuration/#ent-client-context).
+`Server.Handler` — see [Configuration — Ent client context](/entrest/http-handler/configuration/#ent-client-context).
 
 ## Authorization with privacy policies
 
@@ -146,7 +146,7 @@ As such, there are typically 2 approaches to resolve this:
 
 When a privacy rule returns `privacy.Deny`, the generated `DefaultErrorHandler` responds with
 **403 Forbidden** and the standard error envelope. See
-[Configuration — Error handling](./configuration/#error-handling).
+[Configuration — Error handling](/entrest/http-handler/configuration/#error-handling).
 
 | Source | Typical status |
 | --- | --- |
@@ -162,12 +162,12 @@ Privacy policies run at the database layer. Annotations and Ent field options sh
 surface at generation time.
 
 Mark secrets with Ent's `Sensitive()` so they are omitted from JSON responses and the OpenAPI spec.
-Use [`entrest.WithSkip`](../openapi-specs/annotation-reference/#withskip) when a field should never
+Use [`entrest.WithSkip`](/entrest/openapi-specs/annotation-reference/#withskip) when a field should never
 appear in the REST API but is not marked sensitive.
 
-[`entrest.WithReadOnly`](../openapi-specs/annotation-reference/#withreadonly) keeps a field out of
-create/update bodies. [`entrest.WithIncludeOperations`](../openapi-specs/annotation-reference/#withincludeoperations)
-and [`entrest.WithExcludeOperations`](../openapi-specs/annotation-reference/#withexcludeoperations)
+[`entrest.WithReadOnly`](/entrest/openapi-specs/annotation-reference/#withreadonly) keeps a field out of
+create/update bodies. [`entrest.WithIncludeOperations`](/entrest/openapi-specs/annotation-reference/#withincludeoperations)
+and [`entrest.WithExcludeOperations`](/entrest/openapi-specs/annotation-reference/#withexcludeoperations)
 control which CRUD endpoints exist — useful for admin-only schemas or edges clients should not
 reassign:
 
@@ -184,7 +184,7 @@ reassign:
 
 Set the author in an Ent hook or default instead of letting clients pick any user ID.
 
-[`entrest.WithAllowClientIDs`](../openapi-specs/annotation-reference/#withallowclientids) and
+[`entrest.WithAllowClientIDs`](/entrest/openapi-specs/annotation-reference/#withallowclientids) and
 [`entrest.Config.AllowClientIDs`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) let
 clients send an `id` on create. Only enable this with validation — a deleted resource recreated
 with the same ID can otherwise be hijacked.
@@ -193,8 +193,8 @@ with the same ID can otherwise be hijacked.
 
 Authentication headers belong in OpenAPI **security schemes**, not
 [`GlobalRequestHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#Config). Add schemes through
-a base spec via [`SpecFromPath`](../openapi-specs/extending/#specfrompath) or
-[`Spec`](../openapi-specs/extending/#spec-configuration-option):
+a base spec via [`SpecFromPath`](/entrest/openapi-specs/extending/#specfrompath) or
+[`Spec`](/entrest/openapi-specs/extending/#spec-configuration-option):
 
 <Code lang="go" title="base-openapi.json" code={`{
   "components": {
@@ -211,7 +211,7 @@ a base spec via [`SpecFromPath`](../openapi-specs/extending/#specfrompath) or
 
 entrest merges this into the generated spec. [`DefaultErrorResponses`](https://pkg.go.dev/github.com/lrstanley/entrest#DefaultErrorResponses)
 already documents **401** and **403** on operations. The embedded `/docs` UI supports
-`persistAuth` when you use the default Scalar handler — see [API Docs](./api-docs/).
+`persistAuth` when you use the default Scalar handler — see [API Docs](/entrest/http-handler/api-docs/).
 
 Declaring a scheme in the spec does not enforce it. Middleware and privacy policies do.
 
@@ -250,7 +250,7 @@ func TestCreatePostRequiresAuth(t *testing.T) {
 }`} />
 
 To assert a denial, skip `.Must(t)` and check `resp.Error.Code` — see
-[Testing — Success and failure](./testing/#success-and-failure).
+[Testing — Success and failure](/entrest/http-handler/testing/#success-and-failure).
 
 ## Related
 

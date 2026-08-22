@@ -33,20 +33,126 @@ Base OpenAPI spec from our kitchensink example, where we register a `/version` e
 
 <Code code={baseOpenAPI} lang="json" title="_examples/kitchensink/base-openapi.json" />
 
-Take a look at the resulting OpenAPI spec, which includes the `/version` endpoint and associated schema
-[here](https://github.com/lrstanley/entrest/blob/master/_examples/kitchensink/internal/database/ent/rest/openapi.json).
+After generation, the merged spec is written to `internal/database/ent/rest/openapi.json` and includes
+the `/version` endpoint from the base file alongside the generated CRUD paths.
 
 ### Request Headers
 
-TODO
+[`GlobalRequestHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.GlobalRequestHeaders) adds
+header parameters to every path in the spec. Use this for optional or required headers such as request IDs
+or API version strings. Do not use it for authentication — use security schemes instead (see
+[Auth and permissions](/entrest/http-handler/auth-and-permissions/#document-security-in-openapi)).
+
+The kitchensink example wires up the built-in preset:
+
+```go title="internal/database/entc.go" ins={6}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        SpecFromPath:         "../base-openapi.json",
+        GlobalRequestHeaders: entrest.RequestIDHeader,
+    })
+    // [...]
+}
+```
+
+[`RequestIDHeader`](https://pkg.go.dev/github.com/lrstanley/entrest#RequestIDHeader) documents
+`X-Request-Id`. If you use the generated HTTP handlers, configure the runtime side with
+[`GetReqID`](/entrest/http-handler/configuration/#request-ids) so the value appears on error responses.
+
+Define your own headers with [`RequestHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#RequestHeaders):
+
+```go title="internal/database/entc.go"
+GlobalRequestHeaders: entrest.RequestHeaders{
+    "X-Api-Version": {
+        Description: "API version to use.",
+        Required:    true,
+        Schema:      &ogen.Schema{Type: "string"},
+    },
+},
+```
+
+Merge presets with [`RequestHeaders.Append`](https://pkg.go.dev/github.com/lrstanley/entrest#RequestHeaders.Append):
+
+```go title="internal/database/entc.go"
+GlobalRequestHeaders: entrest.RequestIDHeader.Append(entrest.RequestHeaders{
+    "X-Correlation-Id": {
+        Description: "Correlation ID for distributed tracing.",
+        Schema:      &ogen.Schema{Type: "string"},
+    },
+}),
+```
 
 ### Response Headers
 
-TODO
+[`GlobalResponseHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.GlobalResponseHeaders) adds
+headers to every response on every operation, including shared error responses in `components.responses`.
+
+```go title="internal/database/entc.go" ins={6}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        SpecFromPath:          "../base-openapi.json",
+        GlobalResponseHeaders: entrest.RateLimitHeaders,
+    })
+    // [...]
+}
+```
+
+[`RateLimitHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#RateLimitHeaders) documents
+`X-Ratelimit-Limit`, `X-Ratelimit-Remaining`, and `X-Ratelimit-Reset`. The spec only declares them —
+your server must set the values.
+
+Define custom response headers the same way, or merge presets with
+[`ResponseHeaders.Append`](https://pkg.go.dev/github.com/lrstanley/entrest#ResponseHeaders.Append):
+
+```go title="internal/database/entc.go"
+GlobalResponseHeaders: entrest.RateLimitHeaders.Append(entrest.ResponseHeaders{
+    "X-Request-Id": {
+        Description: "Echo of the request ID.",
+        Schema:      &ogen.Schema{Type: "string"},
+    },
+}),
+```
 
 ### Error Responses
 
-TODO
+[`GlobalErrorResponses`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.GlobalErrorResponses) maps
+HTTP status codes to JSON error schemas. When unset, entrest uses
+[`DefaultErrorResponses`](https://pkg.go.dev/github.com/lrstanley/entrest#DefaultErrorResponses): **400**,
+**401**, **403**, **404**, **409**, **429**, and **500**. The shape matches what the generated handlers
+return (`error`, `type`, `code`, `request_id`, `timestamp`). See
+[Error handling](/entrest/http-handler/configuration/#error-handling).
+
+Some operations omit certain codes:
+
+- **404** is not listed on list endpoints unless
+  [`ListNotFound`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.ListNotFound) is enabled.
+- **409** is only listed on create and update operations.
+
+Replace the defaults entirely:
+
+```go title="internal/database/entc.go"
+GlobalErrorResponses: entrest.ErrorResponses{
+    http.StatusInternalServerError: {
+        Type: "object",
+        Properties: ogen.Properties{
+            ogen.Property{Name: "message", Schema: &ogen.Schema{Type: "string"}},
+        },
+        Required: []string{"message"},
+    },
+},
+```
+
+Or extend them with [`ErrorResponses.Append`](https://pkg.go.dev/github.com/lrstanley/entrest#ErrorResponses.Append)
+and [`ErrorResponseObject`](https://pkg.go.dev/github.com/lrstanley/entrest#ErrorResponseObject):
+
+```go title="internal/database/entc.go"
+GlobalErrorResponses: entrest.DefaultErrorResponses.Append(entrest.ErrorResponses{
+    http.StatusTeapot: entrest.ErrorResponseObject(http.StatusTeapot),
+}),
+```
+
+Paths added in [`PostGenerateHook`](#pregeneratehook-and-postgeneratehook) receive the global error
+responses and headers as well.
 
 ### `Spec` Configuration Option
 

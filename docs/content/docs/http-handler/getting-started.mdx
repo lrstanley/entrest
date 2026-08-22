@@ -16,7 +16,7 @@ described in the spec — list, read, create, update, delete, edge sub-resources
 pagination, and eager loading — using your `ent.Client`.
 
 If you have not set up schemas and codegen yet, start with
-[Getting Started](../guides/getting-started/).
+[Getting Started](/entrest/guides/getting-started/).
 
 ## Enable handler generation
 
@@ -42,14 +42,14 @@ Run `go generate` as usual. The handler lands in `<ent>/rest` next to the embedd
 
 Other generation-time options — `WithTesting`, `StrictMutate`, pagination defaults, and so on — are
 documented on [`entrest.Config`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) and in
-[Configuration](./configuration/).
+[Configuration](/entrest/http-handler/configuration/).
 
 ## Generated `rest` package
 
 After codegen, import your project's `<ent>/rest` package. The important pieces:
 
 - `rest.NewServer(db, cfg)` — builds a `*rest.Server` from your `ent.Client` and optional
-  [`ServerConfig`](./configuration/).
+  [`ServerConfig`](/entrest/http-handler/configuration/).
 - `rest.Server.Handler` — registers routes and returns a handler (stdlib) or mounts onto chi.
 - Per-entity methods such as `ListPets`, `GetPet`, `CreatePet` — the same functions the generated
   routes call. Use them from custom handlers if you need non-standard endpoints.
@@ -80,7 +80,7 @@ with chi (as above) or another `net/http`-compatible router works because `Handl
 
 Register routes on the router (or sub-router) that matches your mount point. Set `BasePath` in
 `ServerConfig` to that prefix so spec URLs and `Link` headers stay correct — see
-[Configuration — Stdlib vs chi](./configuration/#stdlib-vs-chi).
+[Configuration — Stdlib vs chi](/entrest/http-handler/configuration/#stdlib-vs-chi).
 
 ```go title="main.go"
 srv, err := rest.NewServer(db, &rest.ServerConfig{BasePath: "/v1"})

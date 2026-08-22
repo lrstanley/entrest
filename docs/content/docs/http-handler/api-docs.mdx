@@ -10,14 +10,14 @@ import { Code } from '@astrojs/starlight/components';
 :::note[How-to guide]
 This page shows how to customize or replace the embedded API reference UI. Runtime toggles
 (`DisableSpecHandler`, `DisableDocsHandler`, `BaseURL`, server URL injection, and so on) are
-documented in [Configuration](./configuration/).
+documented in [Configuration](/entrest/http-handler/configuration/).
 :::
 
 When [`entrest.Config.DisableSpecHandler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) is **false**
 at generation time, entrest embeds the OpenAPI spec in your generated `rest` package and registers
 `GET {BasePath}/openapi.json` and `GET {BasePath}/docs` (an embedded [Scalar](https://github.com/scalar/scalar)
 UI). With the stdlib handler, `GET /` (after `BasePath` is stripped) redirects to `/docs`.
-See [Configuration — Base URL and path](./configuration/#base-url-and-path) for how mount paths
+See [Configuration — Base URL and path](/entrest/http-handler/configuration/#base-url-and-path) for how mount paths
 affect these URLs.
 
 ![Scalar OpenAPI UI](../../../assets/images/docs/main.png)
@@ -33,14 +33,14 @@ the UI, disable the embedded docs route and serve your own page (see below).
 :::
 
 Route registration, spec serving, and `DisableDocsHandler` are covered in
-[Configuration — OpenAPI spec endpoint](./configuration/#openapi-spec-endpoint) and
-[API reference docs](./configuration/#api-reference-docs).
+[Configuration — OpenAPI spec endpoint](/entrest/http-handler/configuration/#openapi-spec-endpoint) and
+[API reference docs](/entrest/http-handler/configuration/#api-reference-docs).
 
 ## Replace the embedded UI
 
 Any OpenAPI viewer that accepts a spec URL can replace the embedded Scalar page:
 
-1. Set [`DisableDocsHandler`](./configuration/#api-reference-docs) to `true` so `/docs` is not
+1. Set [`DisableDocsHandler`](/entrest/http-handler/configuration/#api-reference-docs) to `true` so `/docs` is not
    registered by the generated handler.
 2. Keep `/openapi.json` enabled (unless you serve the spec from another origin).
 3. Register your own `GET` handler that returns a single HTML document.
@@ -114,7 +114,7 @@ func main() {
 
 Register the docs route on the same sub-router where you mount the generated API. Set `BasePath` to
 match the mount point so spec URLs stay correct — see
-[Configuration — Stdlib vs chi](./configuration/#stdlib-vs-chi).
+[Configuration — Stdlib vs chi](/entrest/http-handler/configuration/#stdlib-vs-chi).
 
 ```go title="main.go"
 cfg := &rest.ServerConfig{
