@@ -1,0 +1,33 @@
+---
+import Default from "@astrojs/starlight/components/Footer.astro";
+
+const llmsTxtUrl = new URL("llms.txt", import.meta.env.SITE + import.meta.env.BASE_URL).href;
+---
+
+<Default {...Astro.props}><slot /></Default>
+<a class="llms-link sl-flex" href={llmsTxtUrl}>
+    llms.txt
+    <span class="llms-link-detail">documentation for LLMs</span>
+</a>
+
+<style>
+    @layer starlight.core {
+        .llms-link {
+            align-items: center;
+            gap: 0.5em;
+            margin: 0 auto 1.5rem;
+            font-size: var(--sl-text-xs);
+            text-decoration: none;
+            color: var(--sl-color-gray-3);
+        }
+
+        .llms-link:hover {
+            color: var(--sl-color-white);
+        }
+
+        .llms-link-detail::before {
+            content: "·";
+            margin-right: 0.5em;
+        }
+    }
+</style>

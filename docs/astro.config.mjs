@@ -42,6 +42,9 @@ export default defineConfig({
                 baseUrl: "https://github.com/lrstanley/entrest/edit/master/docs/",
             },
             customCss: ["./assets/main.css"],
+            components: {
+                Footer: "./components/Footer.astro",
+            },
             head: [
                 {
                     tag: "meta",
