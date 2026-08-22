@@ -1,9 +1,339 @@
 ---
 title: Troubleshooting
+description: Common codegen failures, runtime errors, and misconfiguration scenarios when using entrest.
 sidebar:
   order: 3
 ---
 
-### Frequently Asked Questions
+:::note[How-to guide]
+Problem-oriented fixes for errors you may hit during `go generate` or while running the generated
+HTTP handler. For architecture context, see [Architecture](/entrest/resources/architecture/).
+:::
 
-TODO
+## Code generation failures
+
+### Annotation on the wrong graph level
+
+**Symptom**
+
+```
+failed to validate annotations: annotation field "EagerLoad" is set on "Pet" schema type,
+but only field and edge are allowed
+```
+
+**Cause**
+
+An `entrest` annotation is attached to a schema, field, or edge that does not support it. Each
+annotation has a fixed usage location — see the summary table in
+[Annotation Reference](/entrest/openapi-specs/annotation-reference/).
+
+**Fix**
+
+Move the annotation to the correct `Annotations()` block. For example, [`WithEagerLoad`](/entrest/openapi-specs/annotation-reference/#witheagerload)
+belongs on an edge definition inside `Edges()`, not on the schema root.
+
+---
+
+### No operations generated
+
+**Symptom**
+
+```
+spec generated no operations, thus no spec paths can be generated
+```
+
+**Cause**
+
+Every schema is skipped (`WithSkip`) or [`DefaultOperations`](/entrest/openapi-specs/configuration/#operations)
+is empty.
+
+**Fix**
+
+Ensure at least one schema has CRUD operations enabled. An empty `DefaultOperations` slice fails
+validation — you need at least one operation. Check for accidental `WithSkip(true)` on all schemas.
+
+---
+
+### Unsupported field type in the spec
+
+**Symptom**
+
+```
+no openapi type exists for type "..." of field metadata
+```
+
+**Cause**
+
+Ent field type has no built-in OpenAPI mapping — common for `field.JSON` with custom Go types.
+
+**Fix**
+
+Add [`WithSchema`](/entrest/openapi-specs/annotation-reference/#withschema) on the field:
+
+```go title="internal/database/schema/post.go"
+field.JSON("metadata", &Metadata{}).Annotations(
+    entrest.WithSchema(ogen.String()), // or a full &ogen.Schema{}
+)
+```
+
+Use `entrest.SchemaObjectAny` for arbitrary JSON objects.
+
+---
+
+### Invalid default sort field
+
+**Symptom**
+
+Panic during generation:
+
+```
+default sort field "name" on schema "Pet" does not exist
+```
+
+**Cause**
+
+[`WithDefaultSort`](/entrest/openapi-specs/annotation-reference/#withdefaultsort) references a field
+that is not on the schema or is not sortable.
+
+**Fix**
+
+Point `WithDefaultSort` at a real field name and ensure the field has
+[`WithSortable(true)`](/entrest/openapi-specs/annotation-reference/#withsortable) if needed.
+
+---
+
+### Base spec path or format errors
+
+**Symptom**
+
+```
+failed to open spec from path "../base-openapi.json": no such file or directory
+```
+
+or JSON decode errors.
+
+**Cause**
+
+[`SpecFromPath`](/entrest/openapi-specs/extending/#specfrompath) points to a file that does not
+exist relative to the `go:generate` working directory, or the file is not valid OpenAPI JSON.
+
+**Fix**
+
+Use a path relative to the file that contains the `go:generate` directive. The
+[kitchensink example](https://github.com/lrstanley/entrest/tree/master/_examples/kitchensink) shows
+the expected layout. Validate the JSON with
+[Recommended Tools](/entrest/resources/recommended-tools/#validation) before generation.
+
+---
+
+### Spec and SpecFromPath both set
+
+**Symptom**
+
+```
+Config.Spec and Config.SpecFromPath cannot be provided at the same time
+```
+
+**Fix**
+
+Choose one base spec source. Use `SpecFromPath` for a static JSON file; use `Spec` when you need Go
+logic to build the base in code.
+
+---
+
+### Duplicate operationId after extending the spec
+
+**Symptom**
+
+OpenAPI validation fails, or client generators report duplicate operation IDs.
+
+**Cause**
+
+A custom path in your base spec or a [`PostGenerateHook`](/entrest/openapi-specs/extending/#pregeneratehook-and-postgeneratehook)
+defines an `operationId` that collides with a generated one (for example `listUsers`).
+
+**Fix**
+
+Rename the conflicting `operationId` in your base spec or override the generated ID with
+[`WithOperationID`](/entrest/openapi-specs/annotation-reference/#withoperationid). Run
+`npx ibm-openapi-validator path/to/openapi.json` to catch duplicates early — see
+[Best Practices — Validation](/entrest/resources/best-practices/#validation).
+
+---
+
+### Path merge conflict (strict merge)
+
+**Symptom**
+
+```
+path "/users" already exists in the spec
+```
+
+**Cause**
+
+Your base spec defines a path that entrest also generates. The public `MergeSpec` API uses strict
+merging; internally entrest uses overlap merge, but component key conflicts can still surface.
+
+**Fix**
+
+Rename the custom path in your base spec (for example `/users` → `/internal/users`) or remove the
+generated operation with [`WithExcludeOperations`](/entrest/openapi-specs/annotation-reference/#withexcludeoperations).
+
+---
+
+## Runtime errors
+
+### 404 on all routes behind a reverse proxy
+
+**Symptom**
+
+Routes work locally but return 404 when mounted behind a prefix such as `/api/v1`.
+
+**Cause**
+
+`BasePath` does not match the mount point, or the path is stripped twice (common with stdlib handler
+wrapped in an extra `StripPrefix`).
+
+**Fix**
+
+Set [`BasePath`](/entrest/http-handler/configuration/#base-url-and-path) to the mount prefix
+(for example `/api/v1`). With the stdlib handler, do **not** also wrap the returned handler in a
+second prefix strip — entrest applies `StripPrefix` internally. See
+[Stdlib vs chi](/entrest/http-handler/configuration/#stdlib-vs-chi).
+
+---
+
+### Chi path parameters empty
+
+**Symptom**
+
+`GET /pets/{id}` returns 400 or fails to parse the ID.
+
+**Cause**
+
+chi v5.0.12 or newer is required so path parameters populate `http.Request.PathValue`.
+
+**Fix**
+
+Upgrade chi: `go get github.com/go-chi/chi/v5@v5.0.12` or later.
+
+---
+
+### 403 on background jobs or migrations
+
+**Symptom**
+
+Ent queries that worked before privacy policies now return `privacy.Deny` or fail silently.
+
+**Cause**
+
+[Privacy policies](/entrest/http-handler/auth-and-permissions/#authorization-with-privacy-policies)
+run on every Ent call. Internal code paths (workers, seed scripts, migrations) do not pass through
+auth middleware, so the context lacks the identity your policies expect.
+
+**Fix**
+
+Use Ent's [decision context override](https://entgo.io/docs/privacy/#decision-context) for trusted
+internal work:
+
+```go
+ctx = privacy.DecisionContext(ctx, privacy.Allow)
+```
+
+See [Background and internal calls](/entrest/http-handler/auth-and-permissions/#background-and-internal-calls).
+
+---
+
+### 400 on create/update with unknown JSON fields
+
+**Symptom**
+
+```
+unknown field "extra_field"
+```
+
+**Cause**
+
+[`StrictMutate`](/entrest/openapi-specs/configuration/#mutation-and-list-responses) is enabled at
+codegen time. The handler rejects request bodies with properties not defined on the schema.
+
+**Fix**
+
+Remove the extra field from the client payload, or disable `StrictMutate` in `entc.go` and
+regenerate if you need to accept forward-compatible clients.
+
+---
+
+### 413 Request Entity Too Large
+
+**Symptom**
+
+Large POST or PATCH bodies are rejected with HTTP 413.
+
+**Cause**
+
+Default body limit is 8 MiB ([`MaxRequestBodyBytes`](/entrest/http-handler/configuration/#request-body-size)).
+
+**Fix**
+
+Raise the limit in `ServerConfig`, or set it to `-1` to disable checking (not recommended for
+public APIs).
+
+---
+
+### List returns 404 instead of empty array
+
+**Symptom**
+
+`GET /pets?filter=...` returns 404 when no rows match.
+
+**Cause**
+
+[`ListNotFound`](/entrest/openapi-specs/configuration/#mutation-and-list-responses) is enabled. The
+default is 200 with an empty `content` array.
+
+**Fix**
+
+Disable `ListNotFound` in `entc.go` if empty results should return 200, or handle 404 in your client
+if you enabled it intentionally.
+
+---
+
+## OpenAPI / client generation issues
+
+### Enum or schema duplicated in generated client
+
+**Cause**
+
+Large specs with many filter parameters can produce verbose client code. entrest hoists enums into
+`components` to reduce duplication, but filter-heavy schemas still generate many types.
+
+**Fix**
+
+See [Keeping the spec smaller](/entrest/resources/best-practices/#keeping-the-spec-smaller) —
+narrow [`WithFilter`](/entrest/openapi-specs/annotation-reference/#withfilter) usage, disable
+unused edge endpoints, and eager-load only edges callers need.
+
+---
+
+### Generated client method names are unstable
+
+**Cause**
+
+Default `operationId` values follow a predictable pattern (`createUser`, `listUserPets`), but
+hand-editing `openapi.json` or conflicting base-spec IDs can break stability.
+
+**Fix**
+
+Set explicit IDs with [`WithOperationID`](/entrest/openapi-specs/annotation-reference/#withoperationid)
+on schemas or edges that feed your client generator.
+
+---
+
+## Still stuck?
+
+- Compare your setup to the [simple example](https://github.com/lrstanley/entrest/tree/master/_examples/simple)
+  or [kitchensink example](https://github.com/lrstanley/entrest/tree/master/_examples/kitchensink).
+- Validate your spec with tools listed in [Recommended Tools](/entrest/resources/recommended-tools/).
+- Open an issue on [GitHub](https://github.com/lrstanley/entrest/issues) with the codegen error,
+  relevant schema snippets, and your `entc.go` config.

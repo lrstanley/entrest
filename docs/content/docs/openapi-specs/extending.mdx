@@ -7,6 +7,11 @@ sidebar:
 import { Code } from '@astrojs/starlight/components';
 import baseOpenAPI from "../../../../_examples/kitchensink/base-openapi.json?raw"
 
+:::note[How-to guide]
+Add custom paths, security schemes, headers, and error responses to the generated OpenAPI spec via
+a base spec file, `entrest.Config` fields, or generation hooks.
+:::
+
 You may want to extend the resulting OpenAPI spec, to add additional endpoints, tweak the schema,
 add security schemes, changelog/information, etc. entrest allows a few different ways of extending the OpenAPI
 spec.

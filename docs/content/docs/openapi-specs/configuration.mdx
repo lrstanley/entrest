@@ -1,5 +1,5 @@
 ---
-title: Configuration
+title: Codegen Configuration
 description: Generation-time options on entrest.Config that shape the OpenAPI spec.
 sidebar:
   order: 1
@@ -10,15 +10,15 @@ import { clean } from "/util/cleanExamples";
 
 import FileEntC from "/../_examples/kitchensink/internal/database/entc.go?raw";
 
+:::note[Reference]
+Generation-time options on [`entrest.Config`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) that
+shape the OpenAPI spec. Runtime handler options live on
+[Runtime Configuration](/entrest/http-handler/configuration/).
+:::
+
 [`entrest.Config`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) is passed to
 `entrest.NewExtension` in your `entc.go` file. It runs at code generation time and controls what
 paths, parameters, and schemas appear in `openapi.json`.
-
-:::note
-Runtime options for the generated HTTP handler (`rest.ServerConfig`) live on
-[HTTP Handler Configuration](/entrest/http-handler/configuration/). Options such as `Handler`,
-`WithTesting`, and `DisableSpecHandler` affect both the spec and generated handler code.
-:::
 
 ## Setup
 
@@ -160,7 +160,7 @@ See [Extending the Spec](/entrest/openapi-specs/extending/) for presets (`Reques
 
 | Option | Effect on the spec |
 | --- | --- |
-| [`Handler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Handler) | `HandlerNone` generates only `openapi.json` — no `rest` handler package. `HandlerStdlib` or `HandlerChi` also generate handler code. See [HTTP Handler Getting Started](/entrest/http-handler/getting-started/). |
+| [`Handler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Handler) | `HandlerNone` generates only `openapi.json` — no `rest` handler package. `HandlerStdlib` or `HandlerChi` also generate handler code. See [Mount the Handler](/entrest/http-handler/getting-started/). |
 | [`DisableSpecHandler`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableSpecHandler) | Omits `GET /openapi.json` from the spec, disables embedding the spec in the binary, and turns off `/docs` and `Link` header support in the handler. |
 | [`Writer`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Writer) | Write the spec to a custom `io.Writer` instead of `<ent>/rest/openapi.json`. |
 | [`Templates`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Templates) | Additional or replacement `gen.Template` values for handler codegen. |

@@ -4,6 +4,11 @@ sidebar:
   order: 3
 ---
 
+:::note[Explanation]
+When to eager-load edges, how entrest exposes them in responses and edge endpoints, and the
+performance and security tradeoffs.
+:::
+
 :::tip
 Before getting started with eager-loading specific functionality in entrest, it is recommended to read
 through the [EntGo Edges](https://entgo.io/docs/schema-edges) documentation, as well as the
@@ -18,7 +23,7 @@ We will use the following example schema in our walk-through, which contains a f
 ### What is eager loading?
 
 Eager loading is a feature in EntGo that allows you to eager-load edges on a query, which means that
-the edges are fetched along with the parent entity. This is primarily useful when you have a a parent
+the edges are fetched along with the parent entity. This is primarily useful when you have a parent
 entity, like a `Pet`, and you are confident that you always want to fetch the associated owner of that
 pet (the `owner` type, which is a `User`).
 
@@ -71,7 +76,7 @@ func (Pet) Edges() []ent.Edge {
   and associated [`WithEagerLoadLimit`](/entrest/openapi-specs/annotation-reference/#witheagerloadlimit)
   annotation.
 - If you eager load an edge, by default the associated edge endpoint will have its pagination turned off.
-  This can be turned off with the config option [`DisableEagerLoadNonPagedOpt`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableEagerLoadedEndpoints).
+  This can be turned off with the config option [`DisableEagerLoadNonPagedOpt`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.DisableEagerLoadNonPagedOpt).
 - If you only ever want to eager load a specific edge and not have a dedicated endpoint, you can use
   the [`WithEdgeEndpoint`](/entrest/openapi-specs/annotation-reference/#withedgeendpoint) annotation
   to disable the edge endpoint. This can also be configured globally with the config option

@@ -6,6 +6,11 @@ sidebar:
 
 import Usage from '../../../components/badges/Usage.astro';
 
+:::note[Reference]
+Per-schema, field, and edge annotations that control what appears in the OpenAPI spec and generated
+HTTP handler. Misplaced annotations fail at codegen — see [Troubleshooting](/entrest/resources/troubleshooting/#annotation-on-the-wrong-graph-level).
+:::
+
 :::caution[Usage Location Explanation]
 
 Depending on the annotation used, it can only be applied in specific locations, otherwise code-generation
@@ -276,7 +281,7 @@ And the following API query:
 GET /users?type.eq=USER&search.ihas=foo
 ```
 
-This would effectively result in the following psuedo-code being used behind the scenes:
+This would effectively result in the following pseudo-code being used behind the scenes:
 
 ```
 and(type.eq==USER, or(username.ihas==foo, display_name.ihas==foo, email.ihas==foo))
@@ -511,7 +516,7 @@ func (Pet) Annotations() []ent.Annotation {
 
 > Sets the limit for the max number of entities to eager-load for the edge. There is a global default
 > limit for eager-loading, which can be set via the [`EagerLoadLimit`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.EagerLoadLimit)
-> configuration option. Defaults to**1000**, and the limit can be disabled by setting the value to `-1`.
+> configuration option. Defaults to **1000**, and the limit can be disabled by setting the value to `-1`.
 >
 > See [Eager Loading](/entrest/openapi-specs/eager-loading/) for more information.
 
@@ -572,8 +577,6 @@ func (Pet) Annotations() []ent.Annotation {
 > number of entities, if a user doesn't happen to fully understand the implications of providing values to
 > the `bulk` field, which would just be `<field>` (sets the non-unique edge to be set to those provided
 > values).**
->
-> See [Eager Loading](/entrest/openapi-specs/eager-loading/) for more information.
 
 ##### Example
 
@@ -597,7 +600,7 @@ func (Pet) Edges() []ent.Edge {
 > handler from being mounted. The handler functions will still be generated in case you want to
 > build upon them.
 >
-> See [HTTP Handler](/entrest/http-handler/getting-started/) for more information.
+> See [Mount the Handler](/entrest/http-handler/getting-started/) for more information.
 
 ##### Example
 

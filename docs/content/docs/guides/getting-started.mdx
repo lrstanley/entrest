@@ -19,6 +19,11 @@ import FileEntC from "/../_examples/simple/internal/database/entc.go?raw";
 import FileGenerate from "/../_examples/simple/internal/generate.go?raw";
 import FileMain from "/../_examples/simple/main.go?raw";
 
+:::note[Tutorial]
+Step-by-step setup for a new entrest project — schemas, codegen, and a running HTTP server. Assumes
+basic familiarity with [EntGo](https://entgo.io/).
+:::
+
 **entrest** is an [EntGo](https://entgo.io/) extension for generating compliant OpenAPI
 specs and an HTTP handler implementation that matches that spec. It expands upon the
 approach used by [entoas](https://github.com/ent/contrib/tree/master/entoas#entoas),
@@ -66,7 +71,7 @@ We recommend a project structure that looks similar to this:
 
 There are a few reasons why we recommend this structure:
 
-- Generated code is isolated in its own folder. In most cases, you can simply ignore the folder in you
+- Generated code is isolated in its own folder. In most cases, you can simply ignore the folder in your
   editor, so it's less distracting.
 - Schemas aren't buried compared to the standard entgo setup.
 - All database-related code is explicitly in an `internal/` folder, which is best practice for logic
@@ -102,7 +107,7 @@ You can find a full example project that matches this guide [here](https://githu
 3. Add a few schema files:
 
     Example `Pet` schema, which also has a few edge relationships, one of which we eager load. Take
-    note of some of of the attached annotations:
+    note of some of the attached annotations:
 
     <Code
         code={clean(FileSchemaPet)}
@@ -203,5 +208,5 @@ it.
 
 <CardGrid>
     <LinkCard title="Annotation Reference" href="/entrest/openapi-specs/annotation-reference/" />
-    <LinkCard title="HTTP Handler: Getting Started" href="/entrest/http-handler/getting-started/" />
+    <LinkCard title="Mount the Handler" href="/entrest/http-handler/getting-started/" />
 </CardGrid>

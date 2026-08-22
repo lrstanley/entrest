@@ -1,5 +1,5 @@
 ---
-title: Getting Started
+title: Mount the Handler
 description: Mount the generated HTTP handler and expose CRUD endpoints from your Ent schemas.
 sidebar:
   order: 1
@@ -11,12 +11,14 @@ import { clean } from "/util/cleanExamples";
 import FileEntC from "/../_examples/simple/internal/database/entc.go?raw";
 import FileMain from "/../_examples/simple/main.go?raw";
 
+:::note[Tutorial]
+Mount the generated `rest` package on your HTTP server. Start with
+[Getting Started](/entrest/guides/getting-started/) if you have not set up schemas and codegen yet.
+:::
+
 entrest generates an HTTP handler alongside your OpenAPI spec. The handler implements the routes
 described in the spec — list, read, create, update, delete, edge sub-resources, filtering, sorting,
 pagination, and eager loading — using your `ent.Client`.
-
-If you have not set up schemas and codegen yet, start with
-[Getting Started](/entrest/guides/getting-started/).
 
 ## Enable handler generation
 
@@ -42,7 +44,7 @@ Run `go generate` as usual. The handler lands in `<ent>/rest` next to the embedd
 
 Other generation-time options — `WithTesting`, `StrictMutate`, pagination defaults, and so on — are
 documented on [`entrest.Config`](https://pkg.go.dev/github.com/lrstanley/entrest#Config) and in
-[Configuration](/entrest/http-handler/configuration/).
+[Runtime Configuration](/entrest/http-handler/configuration/).
 
 ## Generated `rest` package
 
@@ -151,7 +153,7 @@ the generated `rest.JSON` helper, or mount a wrapper that delegates to the gener
 />
 
 <CardGrid>
-    <LinkCard title="Configuration" href="/entrest/http-handler/configuration/" />
+    <LinkCard title="Runtime Configuration" href="/entrest/http-handler/configuration/" />
     <LinkCard title="API Docs" href="/entrest/http-handler/api-docs/" />
     <LinkCard title="Authentication & Permissions" href="/entrest/http-handler/auth-and-permissions/" />
     <LinkCard title="Testing" href="/entrest/http-handler/testing/" />

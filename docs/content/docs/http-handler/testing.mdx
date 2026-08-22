@@ -74,7 +74,7 @@ For shared setup across tests, extract a helper:
 }`} />
 
 `NewServer` calls `rest.NewServer` and serves the returned handler. Pass `nil` for `ServerConfig` when
-defaults are fine — see [Configuration](/entrest/http-handler/configuration/).
+defaults are fine — see [Runtime Configuration](/entrest/http-handler/configuration/).
 
 Seed data through the Ent client (`db.Pet.Create()...SaveX(ctx)`), then hit the API with `srv.Request`.
 

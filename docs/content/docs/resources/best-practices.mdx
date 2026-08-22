@@ -5,6 +5,11 @@ sidebar:
   order: 1
 ---
 
+:::note[Explanation]
+OpenAPI conventions entrest follows and how to keep generated specs useful for validators and client
+generators.
+:::
+
 entrest generates OpenAPI 3.0.3 specs and validates them during its own test suite. The patterns below are what the generator targets — they align with common linter rules (including [IBM OpenAPI Validator](https://github.com/IBM/openapi-validator)) and with tools that generate HTTP clients from a spec.
 
 ## Validation
@@ -142,7 +147,7 @@ This yields a `UserTypeEnum` component, `$ref` usage on create/update/read schem
 
 ## Related pages
 
-- [OpenAPI Configuration](/entrest/openapi-specs/configuration/) — generation-time options that shape the spec
+- [Codegen Configuration](/entrest/openapi-specs/configuration/) — generation-time options that shape the spec
 - [Annotation Reference](/entrest/openapi-specs/annotation-reference/) — per-field and per-schema overrides
 - [Extending the Spec](/entrest/openapi-specs/extending/) — base spec, hooks, security schemes
-- [HTTP Handler Configuration](/entrest/http-handler/configuration/#error-handling) — runtime behavior that matches documented errors
+- [Runtime Configuration](/entrest/http-handler/configuration/#error-handling) — runtime behavior that matches documented errors
