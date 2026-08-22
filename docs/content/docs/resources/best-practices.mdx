@@ -1,15 +1,148 @@
 ---
 title: Best Practices
+description: OpenAPI conventions entrest follows and how to keep generated specs useful for clients and validators.
 sidebar:
   order: 1
 ---
 
-### TODO
+entrest generates OpenAPI 3.0.3 specs and validates them during its own test suite. The patterns below are what the generator targets — they align with common linter rules (including [IBM OpenAPI Validator](https://github.com/IBM/openapi-validator)) and with tools that generate HTTP clients from a spec.
 
-- best practices
-  - deduplication
-  - ensuring min, max, default, examples, descriptions, etc where possible
-  - optimizing for libraries which generate clients based on the spec
-  - common error patterns
-  - 404 for list endpoints (and why)
-- tips to make openapi spec smaller
+## Validation
+
+Generated specs are checked with [libopenapi-validator](https://github.com/pb33f/libopenapi-validator) before entrest merges changes. You can run the same class of checks on your project's `openapi.json` with IBM OpenAPI Validator or Spectral. See [Recommended Tools](/entrest/resources/recommended-tools/).
+
+If validation fails after customizing the spec, the failure is usually a duplicate `operationId`, a conflicting path merge, or an invalid `$ref`.
+
+## Reuse components instead of duplicating schemas
+
+entrest puts shared pieces under `components` and references them with `$ref`:
+
+| Component | Purpose |
+| --- | --- |
+| `PagedResponse` | Shared pagination metadata (`page`, `last_page`, `is_last_page`, `total_count`) |
+| `Page`, `PrettyResponse`, `FilterOperation` | Shared query parameters |
+| `ErrorBadRequest`, `ErrorNotFound`, … | Shared error responses |
+| `{Entity}TypeEnum`, etc. | Hoisted enum schemas |
+| `{Entity}Create`, `{Entity}Update`, `{Entity}Read` | Per-operation body schemas |
+
+Enum fields are hoisted into component schemas (for example `UserTypeEnum`) so the same enum is not inlined on every property and filter parameter.
+
+Global request headers are attached once per path via `components/parameters`, not repeated on every operation. Global response headers and error responses use `components/headers` and `components/responses` the same way.
+
+When you extend the spec with [Extending the Spec](/entrest/openapi-specs/extending/), prefer adding reusable components and `$ref`ing them rather than copying JSON into each path.
+
+## Operation layout
+
+Each generated operation includes:
+
+- **operationId** — Unique across the whole spec. Default pattern: `createUser`, `getUser`, `updateUser`, `deleteUser`, `listUsers`, `listUserPets`, etc. Override with [`WithOperationID`](/entrest/openapi-specs/annotation-reference/#withoperationid) when you need a stable name for client codegen.
+- **tags** — One tag per entity (`Users`, `Pets`, …). Edge endpoints include both parent and child tags. [`AddEdgesToTags`](/entrest/openapi-specs/configuration/#tags) optionally adds eager-loaded entity names to parent operations.
+- **summary** and **description** — Defaults are generated from the entity name; override with [`WithOperationSummary`](/entrest/openapi-specs/annotation-reference/#withoperationsummary) and [`WithOperationDescription`](/entrest/openapi-specs/annotation-reference/#withoperationdescription).
+- **Path parameters** — `{userID}` style names (camelCase entity name + `ID`), defined in `components/parameters` and referenced on the path item.
+
+Paths use plural kebab-case segments (`/users`, `/users/{userID}/pets`).
+
+## Request and response schemas
+
+### Separate schemas per operation
+
+Create, update, and read use different component schemas (`UserCreate`, `UserUpdate`, `UserRead`). That keeps required fields and writable properties accurate for client generators — a create body is not the same as a response object.
+
+Read responses use `User` plus optional `UserEdges` composed with `allOf` when edges are eager-loaded. List responses reference `UserRead` (or a paged wrapper around it).
+
+### Field metadata
+
+Where ent (or your annotations) provide the data, the spec includes:
+
+| Source | OpenAPI field |
+| --- | --- |
+| `field.Comment()` or [`WithDescription`](/entrest/openapi-specs/annotation-reference/#withdescription) | `description` |
+| [`WithExample`](/entrest/openapi-specs/annotation-reference/#withexample) | `example` |
+| Ent field `Default()` | `default` |
+| Go integer width (`int8`, `uint32`, …) | `minimum` / `maximum` on integers |
+| `Optional()` + `Nillable()` | `nullable: true` |
+| Ent enum values | `enum` (often via a hoisted component schema) |
+
+Add examples and descriptions on fields that clients or docs viewers will display often. Passwords, tokens, and fields marked `Sensitive()` are omitted from read schemas; use [`WithSkip`](/entrest/openapi-specs/annotation-reference/#withskip) or [`WithReadOnly`](/entrest/openapi-specs/annotation-reference/#withreadonly) to keep fields out of write schemas too.
+
+JSON fields without a native OpenAPI type need [`WithSchema`](/entrest/openapi-specs/annotation-reference/#withschema) (for example `SchemaObjectAny` for arbitrary objects).
+
+### Pagination and list parameters
+
+List endpoints document `page`, `per_page`, `sort`, and `order` with defaults and bounds from [Configuration](/entrest/openapi-specs/configuration/#pagination). Paginated list responses use `allOf` with `PagedResponse` and a `content` array — see [Pagination](/entrest/openapi-specs/pagination/).
+
+Filter query parameters are defined in `components/parameters` and referenced on the operation, with descriptions derived from the filter predicate (for example “Filters field `email` to equal the provided value”).
+
+## Error responses
+
+By default, every operation documents shared error responses for **400**, **401**, **403**, **404**, **409**, **429**, and **500**. Each points at a component response whose body matches the shape returned by the generated HTTP handler:
+
+```json
+{
+  "error": "…",
+  "type": "Not Found",
+  "code": 404,
+  "request_id": "…",
+  "timestamp": "2024-04-26T12:19:01Z"
+}
+```
+
+`type`, `code`, and `timestamp` are always present; `request_id` appears when request ID middleware is configured.
+
+entrest skips some status codes where they do not apply:
+
+| Status | Omitted when |
+| --- | --- |
+| **404** on list | [`ListNotFound`](/entrest/openapi-specs/configuration/#mutation-and-list-responses) is `false` (default). Empty filter results return **200** with an empty `content` array. |
+| **409** | Operation is not create or update. |
+
+Customize the set with [`GlobalErrorResponses`](/entrest/openapi-specs/configuration/#headers-and-error-responses) or extend bodies in [Extending the Spec](/entrest/openapi-specs/extending/).
+
+## Optimizing for client generators
+
+Tools like OpenAPI Generator, oapi-codegen, and Speakeasy rely on:
+
+1. **Stable, unique `operationId` values** — do not hand-edit generated IDs; use annotations if a generator chokes on a default name.
+2. **Tags** — group operations in generated clients; keep tag names aligned with your API surface.
+3. **Explicit component schemas** — entrest avoids anonymous inline objects on success responses where possible.
+4. **Consistent error models** — one error schema per status code, referenced everywhere.
+
+If you only need the spec and not the handler, set [`Handler`](/entrest/openapi-specs/configuration/#handler-generation-and-spec-output) to `HandlerNone` and feed `openapi.json` directly into your generator.
+
+## Keeping the spec smaller
+
+Large Ent graphs produce large specs. Most of the bulk is filter parameters and eager-loaded edge schemas.
+
+| Approach | Effect |
+| --- | --- |
+| Eager-load only edges callers need | Fewer nested schemas in read/list responses. See [Eager Loading](/entrest/openapi-specs/eager-loading/). |
+| [`DisableEagerLoadedEndpoints`](/entrest/openapi-specs/configuration/#eager-loading) | Drops redundant edge paths when the edge is already on the parent response. |
+| [`DisableEdgeEndpoints`](/entrest/openapi-specs/configuration/#eager-loading) or per-edge [`WithEdgeEndpoint`](/entrest/openapi-specs/annotation-reference/#withedgeendpoint) | Fewer paths and operations. |
+| Narrow [`WithFilter`](/entrest/openapi-specs/annotation-reference/#withfilter) usage | Fewer query parameters per list endpoint. |
+| [`WithExcludeOperations`](/entrest/openapi-specs/annotation-reference/#withexcludeoperations) | Drop unused CRUD operations for internal entities. |
+| Leave [`AddEdgesToTags`](/entrest/openapi-specs/configuration/#tags) disabled | Less tag noise on operations (edge endpoints still get both tags). |
+| [`DisablePagination`](/entrest/openapi-specs/configuration/#pagination) on small, bounded lists | Simpler list response schemas (plain arrays instead of paged wrappers). |
+
+Enum hoisting and shared pagination/error components already reduce duplication; the items above reduce how much API surface is generated in the first place.
+
+## Example: documenting a field for the spec
+
+```go title="internal/database/schema/user.go"
+field.Enum("type").
+    NamedValues("System", "SYSTEM", "User", "USER").
+    Default("USER").
+    Annotations(
+        entrest.WithExample("USER"),
+        entrest.WithFilter(entrest.FilterGroupEqualExact | entrest.FilterGroupArray),
+    ).
+    Comment("Account kind: SYSTEM for internal actors, USER for normal accounts.")
+```
+
+This yields a `UserTypeEnum` component, `$ref` usage on create/update/read schemas and filter parameters, `default` and `example` on the enum, and the comment as `description`.
+
+## Related pages
+
+- [OpenAPI Configuration](/entrest/openapi-specs/configuration/) — generation-time options that shape the spec
+- [Annotation Reference](/entrest/openapi-specs/annotation-reference/) — per-field and per-schema overrides
+- [Extending the Spec](/entrest/openapi-specs/extending/) — base spec, hooks, security schemes
+- [HTTP Handler Configuration](/entrest/http-handler/configuration/#error-handling) — runtime behavior that matches documented errors

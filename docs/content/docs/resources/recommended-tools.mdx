@@ -1,9 +1,47 @@
 ---
 title: Recommended Tools
+description: Tools for validating, diffing, and working with generated OpenAPI specs.
 sidebar:
   order: 2
 ---
 
-### TODO
+## Validation
 
-- diff, validation, etc
+| Tool | Notes |
+| --- | --- |
+| [IBM OpenAPI Validator](https://github.com/IBM/openapi-validator) | CLI linter with many Spectral-based rules aimed at production APIs. Good second check after entrest generation. |
+| [Spectral](https://github.com/stoplightio/spectral) | Flexible rule engine; use the `openapi` ruleset or custom rules for your org. |
+| [libopenapi-validator](https://github.com/pb33f/libopenapi-validator) | What entrest uses in its own tests — validates document structure and references. |
+| [OpenAPI Doctor](https://pb33f.io/doctor/) | All-in-one OpenAPI toolkit from the libopenapi authors — validation, bundling, overlays, and more. |
+
+Example with IBM OpenAPI Validator (requires Node):
+
+```bash
+npx ibm-openapi-validator path/to/openapi.json
+```
+
+## Diffing
+
+| Tool | Notes |
+| --- | --- |
+| [openapi-changes](https://pb33f.io/openapi-changes/) | Breaking-change detection with console, markdown, JSON, and HTML reports. Works across local files, git revisions, and GitHub-hosted specs. |
+| [oasdiff](https://github.com/Tufin/oasdiff) | Breaking-change detection between two spec versions. Useful in CI when the spec is generated on every build. |
+| [openapi-diff](https://github.com/OpenAPITools/openapi-diff) | Human-readable diff of paths, parameters, and schemas. |
+
+## Viewing and manual testing
+
+The generated handler serves the spec at `GET {basePath}/openapi.json` and embeds Scalar at `/docs` by default. See [API Docs](/entrest/http-handler/api-docs/) for replacing or disabling the bundled UI.
+
+[printing press](https://pb33f.io/printing-press/) generates static API docs from `openapi.json` — offline-friendly HTML you can zip, host, or ship in a release bundle. Includes `llms.txt` and markdown output if you want docs aimed at agents as well as humans.
+
+For ad-hoc requests against a running server, any OpenAPI-aware client (Postman, Bruno, Insomnia) can import `openapi.json`.
+
+## Client generation
+
+Common generators that work well with entrest's component-heavy 3.0.3 specs:
+
+- [oapi-codegen](https://github.com/oapi-codegen/oapi-codegen) (Go)
+- [OpenAPI Generator](https://github.com/OpenAPITools/openapi-generator) (many languages)
+- [Speakeasy](https://www.speakeasy.com/) (commercial, multiple languages)
+
+Use stable [`operationId`](/entrest/resources/best-practices/#operation-layout) values and tags when picking generator options. See [Best Practices](/entrest/resources/best-practices/#optimizing-for-client-generators).
