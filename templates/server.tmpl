@@ -56,14 +56,14 @@ type ServerConfig struct {
 }
 
 type Server struct {
-    db     *ent.Client
+    db     *__ent.Client
     config *ServerConfig
 }
 
 // NewServer returns a new auto-generated server implementation for your ent schema.
 // [Server.Handler] returns a ready-to-use http.Handler that mounts all of the
 // necessary endpoints.
-func NewServer(_db *ent.Client, _config *ServerConfig) (*Server, error) {
+func NewServer(_db *__ent.Client, _config *ServerConfig) (*Server, error) {
     s := &Server{
         db: _db,
         config: _config,
@@ -98,14 +98,14 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, _op
     case IsRequestEntityTooLarge(err):
         _resp.Code = http.StatusRequestEntityTooLarge
     {{- with $.Config.FeatureEnabled "privacy" }}
-        case errors.Is(err, privacy.Deny):
+        case errors.Is(err, __privacy.Deny):
             _resp.Code = http.StatusForbidden
     {{- end }}
-    case ent.IsNotFound(err):
+    case __ent.IsNotFound(err):
         _resp.Code = http.StatusNotFound
-    case ent.IsConstraintError(err), ent.IsNotSingular(err):
+    case __ent.IsConstraintError(err), __ent.IsNotSingular(err):
         _resp.Code = http.StatusConflict
-    case ent.IsValidationError(err):
+    case __ent.IsValidationError(err):
         _resp.Code = http.StatusBadRequest
     case errors.As(err, &numErr):
         _resp.Code = http.StatusBadRequest
@@ -167,10 +167,10 @@ func (s *Server) handleResponse[Resp any](w http.ResponseWriter, r *http.Request
 // by other middleware, or ent privacy layers. Note that the server will do this
 // by default, so you don't need to do this manually, unless it's a context that's
 // not being passed to the server and is being consumed elsewhere.
-func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
+func UseEntContext(_db *__ent.Client) func(_next http.Handler) http.Handler {
     return func(_next http.Handler) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            _next.ServeHTTP(w, r.WithContext(ent.NewContext(r.Context(), _db)))
+            _next.ServeHTTP(w, r.WithContext(__ent.NewContext(r.Context(), _db)))
         })
     }
 }
@@ -290,7 +290,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "list" }}
         {{- $opID := getOperationIDName "list" $t nil | zpascal }}
         // {{ $opID }} maps to "GET {{ getPathName "list" $t nil false }}".
-        func (s *Server) {{ $opID }}(r *http.Request, p *List{{ $t.Name|zsingular }}Params) (*PagedResponse[ent.{{ $t.Name }}], error) {
+        func (s *Server) {{ $opID }}(r *http.Request, p *List{{ $t.Name|zsingular }}Params) (*PagedResponse[__ent.{{ $t.Name }}], error) {
             return p.Exec(r.Context(), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
@@ -299,8 +299,8 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "read") }}
         {{- $opID := getOperationIDName "read" $t nil | zpascal }}
         // {{ $opID }} maps to "GET {{ getPathName "read" $t nil false }}".
-        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}) (*ent.{{ $t.Name }}, error) {
-            return EagerLoad{{ $t.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID({{ $id }}))).Only(r.Context())
+        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ zenttype $t.ID.Type $t }}) (*__ent.{{ $t.Name }}, error) {
+            return EagerLoad{{ $t.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where(__{{ $t.Package }}.ID({{ $id }}))).Only(r.Context())
         }
     {{- end }}
 
@@ -316,8 +316,8 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
         {{- if and $e.Unique (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig ($t|getAnnotation) "read") }}
             {{- $opID := getOperationIDName "read" $t $e | zpascal }}
             // {{ $opID }} maps to "GET {{ getPathName "read" $t $e false }}".
-            func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}) (*ent.{{ $e.Type.Name }}, error) {
-                return EagerLoad{{ $e.Type.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID({{ $id }})).Query{{ $e.StructField }}()).Only(r.Context())
+        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ zenttype $t.ID.Type $t }}) (*__ent.{{ $e.Type.Name }}, error) {
+                return EagerLoad{{ $e.Type.Name|zsingular }}(s.db.{{ $t.Name }}.Query().Where(__{{ $t.Package }}.ID({{ $id }})).Query{{ $e.StructField }}()).Only(r.Context())
             }
         {{- end }}
 
@@ -325,8 +325,8 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
         {{- if and (not $e.Unique) (($e|getAnnotation).HasOperation $t.Config.Annotations.RestConfig ($t|getAnnotation) "list") }}
             {{- $opID := getOperationIDName "list" $t $e | zpascal }}
             // {{ $opID }} maps to "GET {{ getPathName "list" $t $e false }}".
-            func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}, p *List{{ $e.Type.Name|zsingular }}Params) (*PagedResponse[ent.{{ $e.Type.Name }}], error) {
-                return p.Exec(r.Context(), s.db.{{ $t.Name }}.Query().Where({{ $t.Package }}.ID({{ $id }})).Query{{ $e.StructField }}())
+        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ zenttype $t.ID.Type $t }}, p *List{{ $e.Type.Name|zsingular }}Params) (*PagedResponse[__ent.{{ $e.Type.Name }}], error) {
+                return p.Exec(r.Context(), s.db.{{ $t.Name }}.Query().Where(__{{ $t.Package }}.ID({{ $id }})).Query{{ $e.StructField }}())
             }
         {{- end }}
     {{- end }}
@@ -335,7 +335,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- if ($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "create" }}
         {{- $opID := getOperationIDName "create" $t nil | zpascal }}
         // {{ $opID }} maps to "POST {{ getPathName "create" $t nil false }}".
-        func (s *Server) {{ $opID }}(r *http.Request, p *Create{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
+        func (s *Server) {{ $opID }}(r *http.Request, p *Create{{ $t.Name|zsingular }}Params) (*__ent.{{ $t.Name }}, error) {
             return p.Exec(r.Context(), s.db.{{ $t.Name }}.Create(), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
@@ -344,7 +344,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "update") }}
         {{- $opID := getOperationIDName "update" $t nil | zpascal }}
         // {{ $opID }} maps to "PATCH {{ getPathName "update" $t nil false }}".
-        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}, p *Update{{ $t.Name|zsingular }}Params) (*ent.{{ $t.Name }}, error) {
+        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ zenttype $t.ID.Type $t }}, p *Update{{ $t.Name|zsingular }}Params) (*__ent.{{ $t.Name }}, error) {
             return p.Exec(r.Context(), s.db.{{ $t.Name }}.UpdateOneID({{ $id }}), s.db.{{ $t.Name }}.Query())
         }
     {{- end }}
@@ -353,7 +353,7 @@ func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
     {{- if and $t.ID (($t|getAnnotation).HasOperation $t.Config.Annotations.RestConfig nil "delete") }}
         {{- $opID := getOperationIDName "delete" $t nil | zpascal }}
         // {{ $opID }} maps to "DELETE {{ getPathName "delete" $t nil false }}".
-        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ $t.ID.Type }}) (*struct{}, error) {
+        func (s *Server) {{ $opID }}(r *http.Request, {{ $id }} {{ zenttype $t.ID.Type $t }}) (*struct{}, error) {
             return nil, s.db.{{ $t.Name }}.DeleteOneID({{ $id }}).Exec(r.Context())
         }
     {{- end }}

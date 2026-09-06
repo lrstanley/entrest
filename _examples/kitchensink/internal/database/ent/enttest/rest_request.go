@@ -11,7 +11,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+	__ent "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/rest"
 )
 
@@ -24,7 +24,7 @@ type TestServer struct {
 // NewServer instantiates a new TestServer and HTTP handler with the provided ent client
 // and configuration. If you want to load custom middleware or similar, you can use  [WithExisting]
 // instead, to pass in your own router/handler.
-func NewServer(t *testing.T, _db *ent.Client, _cfg *rest.ServerConfig) *TestServer {
+func NewServer(t *testing.T, _db *__ent.Client, _cfg *rest.ServerConfig) *TestServer {
 	_srv, err := rest.NewServer(_db, _cfg)
 	if err != nil {
 		t.Fatalf("failed to create server: %v", err)
@@ -123,11 +123,11 @@ func (s *TestServer) Request[T any](ctx context.Context, _method, _path string, 
 	return _resp
 }
 
-// Creator represents a function that creates a new entity (returns an *ent.<type>Create).
-type Creator[T any] func(*ent.Client) *T
+// Creator represents a function that creates a new entity (returns an *__ent.<type>Create).
+type Creator[T any] func(*__ent.Client) *T
 
 // Multiple creates n entities using the provided creator function.
-func Multiple[T any](_fn Creator[T], _db *ent.Client, n int) []*T {
+func Multiple[T any](_fn Creator[T], _db *__ent.Client, n int) []*T {
 	var _items []*T
 	for range n {
 		_items = append(_items, _fn(_db))

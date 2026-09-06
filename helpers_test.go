@@ -9,6 +9,8 @@ import (
 	"strconv"
 	"testing"
 
+	"entgo.io/ent/entc/gen"
+	"entgo.io/ent/schema/field"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -27,6 +29,42 @@ func TestMemoize(t *testing.T) {
 	assert.Equal(t, "foo_3", mfn("foo"))
 	assert.Equal(t, "bar_4", mfn("bar"))
 	assert.Equal(t, "bar_4", mfn("bar"))
+}
+
+func TestPrefixEntType(t *testing.T) {
+	node := &gen.Type{Name: "Template"}
+	tests := []struct {
+		name string
+		typ  *field.TypeInfo
+		want string
+	}{
+		{
+			name: "ent type",
+			typ:  &field.TypeInfo{Ident: "template.Type"},
+			want: "__template.Type",
+		},
+		{
+			name: "ent type in slice",
+			typ:  &field.TypeInfo{Ident: "[]*template.Type"},
+			want: "[]*__template.Type",
+		},
+		{
+			name: "external type",
+			typ:  &field.TypeInfo{Ident: "time.Time", PkgPath: "time"},
+			want: "time.Time",
+		},
+		{
+			name: "builtin type",
+			typ:  &field.TypeInfo{Ident: "string"},
+			want: "string",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.want, prefixEntType(tt.typ, node))
+		})
+	}
 }
 
 func TestSliceToRawMessage(t *testing.T) {

@@ -16,7 +16,7 @@ import (
 
     // EagerLoad{{ $t.Name|zsingular }} eager-loads the edges of a {{ $t.Name|zsingular }} entity, if any edges
     // were requested to be eager-loaded, based off associated annotations.
-    func EagerLoad{{ $t.Name|zsingular }}(_query *ent.{{ $t.Name }}Query) *ent.{{ $t.Name }}Query {
+    func EagerLoad{{ $t.Name|zsingular }}(_query *__ent.{{ $t.Name }}Query) *__ent.{{ $t.Name }}Query {
         return _query
         {{- range $e := $t.Edges -}}
             {{- if not (($e|getAnnotation).GetEagerLoad $.Annotations.RestConfig) }}{{ continue }}{{ end -}}
@@ -24,7 +24,7 @@ import (
                 {{- $sortField := ($e.Type|getAnnotation).GetDefaultSort (and $e.Type.ID (or (not $e) (not $e.Field))) }}
                 {{- $limit := ($e|getAnnotation).GetEagerLoadLimit $.Annotations.RestConfig }}
                 {{- if or $sortField (and (gt $limit 0) (not $e.Unique)) }}
-                    func(e *ent.{{ $e.Type.Name }}Query) {
+                    func(e *__ent.{{ $e.Type.Name }}Query) {
                         {{- if $sortField }}
                             applySorting{{ $e.Type.Name|zsingular }}(e, {{ $sortField | quote }}, {{ printf "%s" ($t|getAnnotation).GetDefaultOrder| quote }})
                         {{- end }}

@@ -32,7 +32,7 @@ import (
             {{ end -}}
 
             {{- template "helper/rest/fields/comment" $f }}
-            {{ $f.StructField }} Option[{{ if and $f.Nillable (not (hasPrefix $f.Type.Ident "[]")) }}*{{ end }}{{ $f.Type }}] {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
+            {{ $f.StructField }} Option[{{ if and $f.Nillable (not (hasPrefix $f.Type.Ident "[]")) }}*{{ end }}{{ zenttype $f.Type $t }}] {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
         {{- end }}
 
         {{- range $e := $t.Edges }}
@@ -53,21 +53,21 @@ import (
 
             {{- if $e.Field }}
                 {{- template "helper/rest/fields/comment" $e.Field }}
-                {{ $e.Field.StructField }} Option[{{ if $e.Field.Nillable }}*{{ end }}{{ $e.Field.Type }}] {{ template "helper/rest/edge/tag" (dict "Field" $e.Field) }}
+                {{ $e.Field.StructField }} Option[{{ if $e.Field.Nillable }}*{{ end }}{{ zenttype $e.Field.Type $t }}] {{ template "helper/rest/edge/tag" (dict "Field" $e.Field) }}
             {{- else if $e.Unique }}
                 {{- template "helper/rest/fields/comment" $e }}
-                {{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ $e.Type.ID.Type }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
+                {{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ zenttype $e.Type.ID.Type $e.Type }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
             {{- else }}
                 {{- range $prefix := list "Add" "Remove" "" }}
                     {{- if and (not $e.Annotations.Rest.EdgeUpdateBulk) (not $prefix) }}{{ continue }}{{ end }}
                     {{- template "helper/rest/fields/comment" $e }}
-                    {{ $prefix }}{{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ $e.Type.ID.Type }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e "Prefix" $prefix) }}
+                    {{ $prefix }}{{ $e.StructField }} Option[{{ if not $e.Unique }}[]{{ else if $e.Optional }}*{{ end }}{{ zenttype $e.Type.ID.Type $e.Type }}] {{ template "helper/rest/edge/tag" (dict "Edge" $e "Prefix" $prefix) }}
                 {{- end }}
             {{- end }}
         {{- end }}
     }
 
-    func (u *Update{{ $t.Name|zsingular }}Params) ApplyInputs(_builder *ent.{{ $t.Name }}UpdateOne) *ent.{{ $t.Name }}UpdateOne {
+    func (u *Update{{ $t.Name|zsingular }}Params) ApplyInputs(_builder *__ent.{{ $t.Name }}UpdateOne) *__ent.{{ $t.Name }}UpdateOne {
         {{- range $f := $t.Fields }}
             {{- if or
                 (($f|getAnnotation).GetSkip $.Annotations.RestConfig)
@@ -157,12 +157,12 @@ import (
     // Exec wraps all logic (mapping all provided values to the build), updates the entity,
     // and does another query (using provided query as base) to get the entity, with all eager
     // loaded edges.
-    func (c *Update{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _builder *ent.{{ $t.Name }}UpdateOne, _query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}, error) {
+    func (c *Update{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _builder *__ent.{{ $t.Name }}UpdateOne, _query *__ent.{{ $t.Name }}Query) (*__ent.{{ $t.Name }}, error) {
         _result, err := c.ApplyInputs(_builder).Save(ctx)
         if err != nil {
             return nil, err
         }
-        return EagerLoad{{ $t.Name|zsingular }}(_query.Where({{ $t.Package }}.ID(_result.ID))).Only(ctx)
+        return EagerLoad{{ $t.Name|zsingular }}(_query.Where(__{{ $t.Package }}.ID(_result.ID))).Only(ctx)
     }
 {{- end }}{{/* end range */}}
 {{- end }}{{/* end template */}}

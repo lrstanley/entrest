@@ -229,27 +229,27 @@ func generatePredicateBuilder(
 	if op.Niladic() {
 		if e != nil {
 			if f == nil {
-				return fmt.Sprintf("%s.Has%s()", t.Package(), e.StructField())
+				return fmt.Sprintf("__%s.Has%s()", t.Package(), e.StructField())
 			}
 
-			pkg := t.Package()
+			pkg := "__" + t.Package()
 
 			if e.Ref != nil {
-				pkg = e.Ref.Type.Package()
+				pkg = "__" + e.Ref.Type.Package()
 			} else if e.Owner != nil {
-				pkg = e.Owner.Package()
+				pkg = "__" + e.Owner.Package()
 			}
 
 			return fmt.Sprintf(
 				"%s.Has%sWith(%s.%s%s())",
 				pkg,
 				e.StructField(),
-				t.Package(),
+				"__"+t.Package(),
 				f.StructField(),
 				op.Name(),
 			)
 		}
-		return fmt.Sprintf("%s.%s%s()", t.Package(), f.StructField(), op.Name())
+		return fmt.Sprintf("__%s.%s%s()", t.Package(), f.StructField(), op.Name())
 	}
 
 	ftype := structName + "." + componentName
@@ -262,19 +262,19 @@ func generatePredicateBuilder(
 
 	builder := fmt.Sprintf(
 		"%s.%s%s(%s)",
-		t.Package(),
+		"__"+t.Package(),
 		f.StructField(),
 		op.Name(),
 		ftype,
 	)
 
 	if e != nil {
-		pkg := t.Package()
+		pkg := "__" + t.Package()
 
 		if e.Ref != nil {
-			pkg = e.Ref.Type.Package()
+			pkg = "__" + e.Ref.Type.Package()
 		} else if e.Owner != nil {
-			pkg = e.Owner.Package()
+			pkg = "__" + e.Owner.Package()
 		}
 
 		return fmt.Sprintf("%s.Has%sWith(%s)", pkg, e.StructField(), builder)
@@ -299,9 +299,9 @@ func (f *FilterableFieldOp) TypeString() string {
 		return "*bool"
 	}
 	if f.Operation.Variadic() {
-		return "[]" + f.Field.Type.String()
+		return "[]" + prefixEntType(f.Field.Type, f.Type)
 	}
-	return "*" + f.Field.Type.String()
+	return "*" + prefixEntType(f.Field.Type, f.Type)
 }
 
 // Description returns a description for the filterable field.
@@ -513,9 +513,9 @@ func (g *FilterGroup) TypeString(op gen.Op) string {
 		return "*bool"
 	}
 	if op.Variadic() {
-		return "[]" + g.FieldType.String()
+		return "[]" + prefixEntType(g.FieldType, g.Type)
 	}
-	return "*" + g.FieldType.String()
+	return "*" + prefixEntType(g.FieldType, g.Type)
 }
 
 // ComponentName returns the name/component alias for the parameter.

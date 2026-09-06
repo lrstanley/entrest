@@ -19,6 +19,7 @@ var (
 		"zpascal":   PascalCase,
 		"zcamel":    CamelCase,
 		"zsnake":    SnakeCase,
+		"zenttype":  prefixEntType,
 
 		// Use this function when you want to invoke annotation functions (which are
 		// often created if they depend on [Config]).

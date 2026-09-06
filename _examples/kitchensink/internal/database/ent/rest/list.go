@@ -11,14 +11,14 @@ import (
 
 	"entgo.io/ent/dialect/sql"
 	uuid "github.com/google/uuid"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
+	__ent "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+	__category "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
+	__friendship "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
+	__pet "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	__post "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
+	__predicate "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/predicate"
+	__settings "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
+	__user "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 )
 
 type PageConfig struct {
@@ -242,8 +242,8 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
 // ListCategoryParams defines parameters for listing Categories via a GET request.
 type ListCategoryParams struct {
 	Sorted
-	Paginated[*ent.CategoryQuery, ent.Category]
-	Filtered[predicate.Category]
+	Paginated[*__ent.CategoryQuery, __ent.Category]
+	Filtered[__predicate.Category]
 
 	// Filters field "id" to be equal to the provided value.
 	CategoryIDEQ *int `form:"id.eq,omitempty" json:"category_ideq,omitzero"`
@@ -264,39 +264,39 @@ type ListCategoryParams struct {
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Category.
-func (l *ListCategoryParams) FilterPredicates() (predicate.Category, error) {
-	var _predicates []predicate.Category
+func (l *ListCategoryParams) FilterPredicates() (__predicate.Category, error) {
+	var _predicates []__predicate.Category
 
 	if l.CategoryIDEQ != nil {
-		_predicates = append(_predicates, category.IDEQ(*l.CategoryIDEQ))
+		_predicates = append(_predicates, __category.IDEQ(*l.CategoryIDEQ))
 	}
 	if l.CategoryIDNEQ != nil {
-		_predicates = append(_predicates, category.IDNEQ(*l.CategoryIDNEQ))
+		_predicates = append(_predicates, __category.IDNEQ(*l.CategoryIDNEQ))
 	}
 	if l.CategoryIDIn != nil {
-		_predicates = append(_predicates, category.IDIn(l.CategoryIDIn...))
+		_predicates = append(_predicates, __category.IDIn(l.CategoryIDIn...))
 	}
 	if l.CategoryIDNotIn != nil {
-		_predicates = append(_predicates, category.IDNotIn(l.CategoryIDNotIn...))
+		_predicates = append(_predicates, __category.IDNotIn(l.CategoryIDNotIn...))
 	}
 	if l.CategoryCreatedAtGT != nil {
-		_predicates = append(_predicates, category.CreatedAtGT(*l.CategoryCreatedAtGT))
+		_predicates = append(_predicates, __category.CreatedAtGT(*l.CategoryCreatedAtGT))
 	}
 	if l.CategoryCreatedAtLT != nil {
-		_predicates = append(_predicates, category.CreatedAtLT(*l.CategoryCreatedAtLT))
+		_predicates = append(_predicates, __category.CreatedAtLT(*l.CategoryCreatedAtLT))
 	}
 	if l.CategoryUpdatedAtGT != nil {
-		_predicates = append(_predicates, category.UpdatedAtGT(*l.CategoryUpdatedAtGT))
+		_predicates = append(_predicates, __category.UpdatedAtGT(*l.CategoryUpdatedAtGT))
 	}
 	if l.CategoryUpdatedAtLT != nil {
-		_predicates = append(_predicates, category.UpdatedAtLT(*l.CategoryUpdatedAtLT))
+		_predicates = append(_predicates, __category.UpdatedAtLT(*l.CategoryUpdatedAtLT))
 	}
 
 	return l.ApplyFilterOperation(_predicates...)
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListCategoryParams) ApplySorting(_query *ent.CategoryQuery) error {
+func (l *ListCategoryParams) ApplySorting(_query *__ent.CategoryQuery) error {
 	if err := l.Sorted.Validate(CategorySortConfig); err != nil {
 		return err
 	}
@@ -309,7 +309,7 @@ func (l *ListCategoryParams) ApplySorting(_query *ent.CategoryQuery) error {
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
 // executes all necessary queries, returning the results.
-func (l *ListCategoryParams) Exec(ctx context.Context, _query *ent.CategoryQuery) (_results *PagedResponse[ent.Category], err error) {
+func (l *ListCategoryParams) Exec(ctx context.Context, _query *__ent.CategoryQuery) (_results *PagedResponse[__ent.Category], err error) {
 	_predicates, err := l.FilterPredicates()
 	if err != nil {
 		return nil, err
@@ -325,11 +325,11 @@ func (l *ListCategoryParams) Exec(ctx context.Context, _query *ent.CategoryQuery
 // ListFollowParams defines parameters for listing Follows via a GET request.
 type ListFollowParams struct {
 	Sorted
-	Paginated[*ent.FollowsQuery, ent.Follows]
+	Paginated[*__ent.FollowsQuery, __ent.Follows]
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListFollowParams) ApplySorting(_query *ent.FollowsQuery) error {
+func (l *ListFollowParams) ApplySorting(_query *__ent.FollowsQuery) error {
 	if err := l.Sorted.Validate(FollowSortConfig); err != nil {
 		return err
 	}
@@ -342,7 +342,7 @@ func (l *ListFollowParams) ApplySorting(_query *ent.FollowsQuery) error {
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
 // executes all necessary queries, returning the results.
-func (l *ListFollowParams) Exec(ctx context.Context, _query *ent.FollowsQuery) (_results *PagedResponse[ent.Follows], err error) {
+func (l *ListFollowParams) Exec(ctx context.Context, _query *__ent.FollowsQuery) (_results *PagedResponse[__ent.Follows], err error) {
 	err = l.ApplySorting(EagerLoadFollow(_query))
 	if err != nil {
 		return nil, err
@@ -353,8 +353,8 @@ func (l *ListFollowParams) Exec(ctx context.Context, _query *ent.FollowsQuery) (
 // ListFriendshipParams defines parameters for listing Friendships via a GET request.
 type ListFriendshipParams struct {
 	Sorted
-	Paginated[*ent.FriendshipQuery, ent.Friendship]
-	Filtered[predicate.Friendship]
+	Paginated[*__ent.FriendshipQuery, __ent.Friendship]
+	Filtered[__predicate.Friendship]
 
 	// Filters field "id" to be equal to the provided value.
 	FriendshipIDEQ *int `form:"id.eq,omitempty" json:"friendship_ideq,omitzero"`
@@ -409,13 +409,13 @@ type ListFriendshipParams struct {
 	// Filters field "name" to end with the provided value.
 	EdgeUserNameHasSuffix *string `form:"user.name.suffix,omitempty" json:"edge_user_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeUserTypeEQ *user.Type `form:"user.type.eq,omitempty" json:"edge_user_type_eq,omitzero"`
+	EdgeUserTypeEQ *__user.Type `form:"user.type.eq,omitempty" json:"edge_user_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeUserTypeNEQ *user.Type `form:"user.type.neq,omitempty" json:"edge_user_type_neq,omitzero"`
+	EdgeUserTypeNEQ *__user.Type `form:"user.type.neq,omitempty" json:"edge_user_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeUserTypeIn []user.Type `form:"user.type.in,omitempty" json:"edge_user_type_in,omitzero"`
+	EdgeUserTypeIn []__user.Type `form:"user.type.in,omitempty" json:"edge_user_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeUserTypeNotIn []user.Type `form:"user.type.notIn,omitempty" json:"edge_user_type_not_in,omitzero"`
+	EdgeUserTypeNotIn []__user.Type `form:"user.type.notIn,omitempty" json:"edge_user_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
 	EdgeUserDescriptionIsNil *bool `form:"user.description.null,omitempty" json:"edge_user_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
@@ -479,13 +479,13 @@ type ListFriendshipParams struct {
 	// Filters field "name" to end with the provided value.
 	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFriendTypeEQ *user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitzero"`
+	EdgeFriendTypeEQ *__user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFriendTypeNEQ *user.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitzero"`
+	EdgeFriendTypeNEQ *__user.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFriendTypeIn []user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitzero"`
+	EdgeFriendTypeIn []__user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFriendTypeNotIn []user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitzero"`
+	EdgeFriendTypeNotIn []__user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
 	EdgeFriendDescriptionIsNil *bool `form:"friend.description.null,omitempty" json:"edge_friend_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
@@ -523,285 +523,285 @@ type ListFriendshipParams struct {
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Friendship.
-func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) {
-	var _predicates []predicate.Friendship
+func (l *ListFriendshipParams) FilterPredicates() (__predicate.Friendship, error) {
+	var _predicates []__predicate.Friendship
 
 	if l.FriendshipIDEQ != nil {
-		_predicates = append(_predicates, friendship.IDEQ(*l.FriendshipIDEQ))
+		_predicates = append(_predicates, __friendship.IDEQ(*l.FriendshipIDEQ))
 	}
 	if l.FriendshipIDNEQ != nil {
-		_predicates = append(_predicates, friendship.IDNEQ(*l.FriendshipIDNEQ))
+		_predicates = append(_predicates, __friendship.IDNEQ(*l.FriendshipIDNEQ))
 	}
 	if l.FriendshipIDIn != nil {
-		_predicates = append(_predicates, friendship.IDIn(l.FriendshipIDIn...))
+		_predicates = append(_predicates, __friendship.IDIn(l.FriendshipIDIn...))
 	}
 	if l.FriendshipIDNotIn != nil {
-		_predicates = append(_predicates, friendship.IDNotIn(l.FriendshipIDNotIn...))
+		_predicates = append(_predicates, __friendship.IDNotIn(l.FriendshipIDNotIn...))
 	}
 	if l.FriendshipUserIDEQ != nil {
-		_predicates = append(_predicates, friendship.UserIDEQ(*l.FriendshipUserIDEQ))
+		_predicates = append(_predicates, __friendship.UserIDEQ(*l.FriendshipUserIDEQ))
 	}
 	if l.FriendshipUserIDNEQ != nil {
-		_predicates = append(_predicates, friendship.UserIDNEQ(*l.FriendshipUserIDNEQ))
+		_predicates = append(_predicates, __friendship.UserIDNEQ(*l.FriendshipUserIDNEQ))
 	}
 	if l.FriendshipUserIDIn != nil {
-		_predicates = append(_predicates, friendship.UserIDIn(l.FriendshipUserIDIn...))
+		_predicates = append(_predicates, __friendship.UserIDIn(l.FriendshipUserIDIn...))
 	}
 	if l.FriendshipUserIDNotIn != nil {
-		_predicates = append(_predicates, friendship.UserIDNotIn(l.FriendshipUserIDNotIn...))
+		_predicates = append(_predicates, __friendship.UserIDNotIn(l.FriendshipUserIDNotIn...))
 	}
 	if l.FriendshipFriendIDEQ != nil {
-		_predicates = append(_predicates, friendship.FriendIDEQ(*l.FriendshipFriendIDEQ))
+		_predicates = append(_predicates, __friendship.FriendIDEQ(*l.FriendshipFriendIDEQ))
 	}
 	if l.FriendshipFriendIDNEQ != nil {
-		_predicates = append(_predicates, friendship.FriendIDNEQ(*l.FriendshipFriendIDNEQ))
+		_predicates = append(_predicates, __friendship.FriendIDNEQ(*l.FriendshipFriendIDNEQ))
 	}
 	if l.FriendshipFriendIDIn != nil {
-		_predicates = append(_predicates, friendship.FriendIDIn(l.FriendshipFriendIDIn...))
+		_predicates = append(_predicates, __friendship.FriendIDIn(l.FriendshipFriendIDIn...))
 	}
 	if l.FriendshipFriendIDNotIn != nil {
-		_predicates = append(_predicates, friendship.FriendIDNotIn(l.FriendshipFriendIDNotIn...))
+		_predicates = append(_predicates, __friendship.FriendIDNotIn(l.FriendshipFriendIDNotIn...))
 	}
 	if l.EdgeHasUser != nil {
 		if *l.EdgeHasUser {
-			_predicates = append(_predicates, friendship.HasUser())
+			_predicates = append(_predicates, __friendship.HasUser())
 		} else {
-			_predicates = append(_predicates, friendship.Not(friendship.HasUser()))
+			_predicates = append(_predicates, __friendship.Not(__friendship.HasUser()))
 		}
 	}
 	if l.EdgeUserCreatedAtGT != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.CreatedAtGT(*l.EdgeUserCreatedAtGT)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.CreatedAtGT(*l.EdgeUserCreatedAtGT)))
 	}
 	if l.EdgeUserCreatedAtLT != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.CreatedAtLT(*l.EdgeUserCreatedAtLT)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.CreatedAtLT(*l.EdgeUserCreatedAtLT)))
 	}
 	if l.EdgeUserUpdatedAtGT != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.UpdatedAtGT(*l.EdgeUserUpdatedAtGT)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.UpdatedAtGT(*l.EdgeUserUpdatedAtGT)))
 	}
 	if l.EdgeUserUpdatedAtLT != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.UpdatedAtLT(*l.EdgeUserUpdatedAtLT)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.UpdatedAtLT(*l.EdgeUserUpdatedAtLT)))
 	}
 	if l.EdgeUserNameEQ != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.NameEQ(*l.EdgeUserNameEQ)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.NameEQ(*l.EdgeUserNameEQ)))
 	}
 	if l.EdgeUserNameNEQ != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.NameNEQ(*l.EdgeUserNameNEQ)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.NameNEQ(*l.EdgeUserNameNEQ)))
 	}
 	if l.EdgeUserNameIn != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.NameIn(l.EdgeUserNameIn...)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.NameIn(l.EdgeUserNameIn...)))
 	}
 	if l.EdgeUserNameNotIn != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.NameNotIn(l.EdgeUserNameNotIn...)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.NameNotIn(l.EdgeUserNameNotIn...)))
 	}
 	if l.EdgeUserNameEqualFold != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.NameEqualFold(*l.EdgeUserNameEqualFold)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.NameEqualFold(*l.EdgeUserNameEqualFold)))
 	}
 	if l.EdgeUserNameContains != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.NameContains(*l.EdgeUserNameContains)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.NameContains(*l.EdgeUserNameContains)))
 	}
 	if l.EdgeUserNameContainsFold != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.NameContainsFold(*l.EdgeUserNameContainsFold)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.NameContainsFold(*l.EdgeUserNameContainsFold)))
 	}
 	if l.EdgeUserNameHasPrefix != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.NameHasPrefix(*l.EdgeUserNameHasPrefix)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.NameHasPrefix(*l.EdgeUserNameHasPrefix)))
 	}
 	if l.EdgeUserNameHasSuffix != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.NameHasSuffix(*l.EdgeUserNameHasSuffix)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.NameHasSuffix(*l.EdgeUserNameHasSuffix)))
 	}
 	if l.EdgeUserTypeEQ != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.TypeEQ(*l.EdgeUserTypeEQ)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.TypeEQ(*l.EdgeUserTypeEQ)))
 	}
 	if l.EdgeUserTypeNEQ != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.TypeNEQ(*l.EdgeUserTypeNEQ)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.TypeNEQ(*l.EdgeUserTypeNEQ)))
 	}
 	if l.EdgeUserTypeIn != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.TypeIn(l.EdgeUserTypeIn...)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.TypeIn(l.EdgeUserTypeIn...)))
 	}
 	if l.EdgeUserTypeNotIn != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.TypeNotIn(l.EdgeUserTypeNotIn...)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.TypeNotIn(l.EdgeUserTypeNotIn...)))
 	}
 	if l.EdgeUserDescriptionIsNil != nil {
 		if *l.EdgeUserDescriptionIsNil {
-			_predicates = append(_predicates, friendship.HasUserWith(user.DescriptionIsNil()))
+			_predicates = append(_predicates, __friendship.HasUserWith(__user.DescriptionIsNil()))
 		} else {
-			_predicates = append(_predicates, friendship.Not(friendship.HasUserWith(user.DescriptionIsNil())))
+			_predicates = append(_predicates, __friendship.Not(__friendship.HasUserWith(__user.DescriptionIsNil())))
 		}
 	}
 	if l.EdgeUserDescriptionContains != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.DescriptionContains(*l.EdgeUserDescriptionContains)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.DescriptionContains(*l.EdgeUserDescriptionContains)))
 	}
 	if l.EdgeUserDescriptionContainsFold != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.DescriptionContainsFold(*l.EdgeUserDescriptionContainsFold)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.DescriptionContainsFold(*l.EdgeUserDescriptionContainsFold)))
 	}
 	if l.EdgeUserEnabledEQ != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EnabledEQ(*l.EdgeUserEnabledEQ)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EnabledEQ(*l.EdgeUserEnabledEQ)))
 	}
 	if l.EdgeUserEmailEQ != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EmailEQ(*l.EdgeUserEmailEQ)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailEQ(*l.EdgeUserEmailEQ)))
 	}
 	if l.EdgeUserEmailNEQ != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EmailNEQ(*l.EdgeUserEmailNEQ)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailNEQ(*l.EdgeUserEmailNEQ)))
 	}
 	if l.EdgeUserEmailIsNil != nil {
 		if *l.EdgeUserEmailIsNil {
-			_predicates = append(_predicates, friendship.HasUserWith(user.EmailIsNil()))
+			_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailIsNil()))
 		} else {
-			_predicates = append(_predicates, friendship.Not(friendship.HasUserWith(user.EmailIsNil())))
+			_predicates = append(_predicates, __friendship.Not(__friendship.HasUserWith(__user.EmailIsNil())))
 		}
 	}
 	if l.EdgeUserEmailIn != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EmailIn(l.EdgeUserEmailIn...)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailIn(l.EdgeUserEmailIn...)))
 	}
 	if l.EdgeUserEmailNotIn != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EmailNotIn(l.EdgeUserEmailNotIn...)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailNotIn(l.EdgeUserEmailNotIn...)))
 	}
 	if l.EdgeUserEmailEqualFold != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EmailEqualFold(*l.EdgeUserEmailEqualFold)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailEqualFold(*l.EdgeUserEmailEqualFold)))
 	}
 	if l.EdgeUserEmailContains != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EmailContains(*l.EdgeUserEmailContains)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailContains(*l.EdgeUserEmailContains)))
 	}
 	if l.EdgeUserEmailContainsFold != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EmailContainsFold(*l.EdgeUserEmailContainsFold)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailContainsFold(*l.EdgeUserEmailContainsFold)))
 	}
 	if l.EdgeUserEmailHasPrefix != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EmailHasPrefix(*l.EdgeUserEmailHasPrefix)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailHasPrefix(*l.EdgeUserEmailHasPrefix)))
 	}
 	if l.EdgeUserEmailHasSuffix != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.EmailHasSuffix(*l.EdgeUserEmailHasSuffix)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.EmailHasSuffix(*l.EdgeUserEmailHasSuffix)))
 	}
 	if l.EdgeUserLastAuthenticatedAtEQ != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.LastAuthenticatedAtEQ(*l.EdgeUserLastAuthenticatedAtEQ)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.LastAuthenticatedAtEQ(*l.EdgeUserLastAuthenticatedAtEQ)))
 	}
 	if l.EdgeUserLastAuthenticatedAtNEQ != nil {
-		_predicates = append(_predicates, friendship.HasUserWith(user.LastAuthenticatedAtNEQ(*l.EdgeUserLastAuthenticatedAtNEQ)))
+		_predicates = append(_predicates, __friendship.HasUserWith(__user.LastAuthenticatedAtNEQ(*l.EdgeUserLastAuthenticatedAtNEQ)))
 	}
 	if l.EdgeUserLastAuthenticatedAtIsNil != nil {
 		if *l.EdgeUserLastAuthenticatedAtIsNil {
-			_predicates = append(_predicates, friendship.HasUserWith(user.LastAuthenticatedAtIsNil()))
+			_predicates = append(_predicates, __friendship.HasUserWith(__user.LastAuthenticatedAtIsNil()))
 		} else {
-			_predicates = append(_predicates, friendship.Not(friendship.HasUserWith(user.LastAuthenticatedAtIsNil())))
+			_predicates = append(_predicates, __friendship.Not(__friendship.HasUserWith(__user.LastAuthenticatedAtIsNil())))
 		}
 	}
 	if l.EdgeHasFriend != nil {
 		if *l.EdgeHasFriend {
-			_predicates = append(_predicates, friendship.HasFriend())
+			_predicates = append(_predicates, __friendship.HasFriend())
 		} else {
-			_predicates = append(_predicates, friendship.Not(friendship.HasFriend()))
+			_predicates = append(_predicates, __friendship.Not(__friendship.HasFriend()))
 		}
 	}
 	if l.EdgeFriendCreatedAtGT != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.CreatedAtGT(*l.EdgeFriendCreatedAtGT)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.CreatedAtGT(*l.EdgeFriendCreatedAtGT)))
 	}
 	if l.EdgeFriendCreatedAtLT != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.CreatedAtLT(*l.EdgeFriendCreatedAtLT)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.CreatedAtLT(*l.EdgeFriendCreatedAtLT)))
 	}
 	if l.EdgeFriendUpdatedAtGT != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.UpdatedAtGT(*l.EdgeFriendUpdatedAtGT)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.UpdatedAtGT(*l.EdgeFriendUpdatedAtGT)))
 	}
 	if l.EdgeFriendUpdatedAtLT != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.UpdatedAtLT(*l.EdgeFriendUpdatedAtLT)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.UpdatedAtLT(*l.EdgeFriendUpdatedAtLT)))
 	}
 	if l.EdgeFriendNameEQ != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.NameEQ(*l.EdgeFriendNameEQ)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.NameEQ(*l.EdgeFriendNameEQ)))
 	}
 	if l.EdgeFriendNameNEQ != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.NameNEQ(*l.EdgeFriendNameNEQ)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.NameNEQ(*l.EdgeFriendNameNEQ)))
 	}
 	if l.EdgeFriendNameIn != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.NameIn(l.EdgeFriendNameIn...)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.NameIn(l.EdgeFriendNameIn...)))
 	}
 	if l.EdgeFriendNameNotIn != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.NameNotIn(l.EdgeFriendNameNotIn...)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.NameNotIn(l.EdgeFriendNameNotIn...)))
 	}
 	if l.EdgeFriendNameEqualFold != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.NameEqualFold(*l.EdgeFriendNameEqualFold)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.NameEqualFold(*l.EdgeFriendNameEqualFold)))
 	}
 	if l.EdgeFriendNameContains != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.NameContains(*l.EdgeFriendNameContains)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.NameContains(*l.EdgeFriendNameContains)))
 	}
 	if l.EdgeFriendNameContainsFold != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.NameContainsFold(*l.EdgeFriendNameContainsFold)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.NameContainsFold(*l.EdgeFriendNameContainsFold)))
 	}
 	if l.EdgeFriendNameHasPrefix != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.NameHasPrefix(*l.EdgeFriendNameHasPrefix)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.NameHasPrefix(*l.EdgeFriendNameHasPrefix)))
 	}
 	if l.EdgeFriendNameHasSuffix != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
 	}
 	if l.EdgeFriendTypeEQ != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.TypeEQ(*l.EdgeFriendTypeEQ)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.TypeEQ(*l.EdgeFriendTypeEQ)))
 	}
 	if l.EdgeFriendTypeNEQ != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.TypeNEQ(*l.EdgeFriendTypeNEQ)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.TypeNEQ(*l.EdgeFriendTypeNEQ)))
 	}
 	if l.EdgeFriendTypeIn != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.TypeIn(l.EdgeFriendTypeIn...)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.TypeIn(l.EdgeFriendTypeIn...)))
 	}
 	if l.EdgeFriendTypeNotIn != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.TypeNotIn(l.EdgeFriendTypeNotIn...)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.TypeNotIn(l.EdgeFriendTypeNotIn...)))
 	}
 	if l.EdgeFriendDescriptionIsNil != nil {
 		if *l.EdgeFriendDescriptionIsNil {
-			_predicates = append(_predicates, friendship.HasFriendWith(user.DescriptionIsNil()))
+			_predicates = append(_predicates, __friendship.HasFriendWith(__user.DescriptionIsNil()))
 		} else {
-			_predicates = append(_predicates, friendship.Not(friendship.HasFriendWith(user.DescriptionIsNil())))
+			_predicates = append(_predicates, __friendship.Not(__friendship.HasFriendWith(__user.DescriptionIsNil())))
 		}
 	}
 	if l.EdgeFriendDescriptionContains != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.DescriptionContains(*l.EdgeFriendDescriptionContains)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.DescriptionContains(*l.EdgeFriendDescriptionContains)))
 	}
 	if l.EdgeFriendDescriptionContainsFold != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.DescriptionContainsFold(*l.EdgeFriendDescriptionContainsFold)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.DescriptionContainsFold(*l.EdgeFriendDescriptionContainsFold)))
 	}
 	if l.EdgeFriendEnabledEQ != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EnabledEQ(*l.EdgeFriendEnabledEQ)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EnabledEQ(*l.EdgeFriendEnabledEQ)))
 	}
 	if l.EdgeFriendEmailEQ != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EmailEQ(*l.EdgeFriendEmailEQ)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailEQ(*l.EdgeFriendEmailEQ)))
 	}
 	if l.EdgeFriendEmailNEQ != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EmailNEQ(*l.EdgeFriendEmailNEQ)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailNEQ(*l.EdgeFriendEmailNEQ)))
 	}
 	if l.EdgeFriendEmailIsNil != nil {
 		if *l.EdgeFriendEmailIsNil {
-			_predicates = append(_predicates, friendship.HasFriendWith(user.EmailIsNil()))
+			_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailIsNil()))
 		} else {
-			_predicates = append(_predicates, friendship.Not(friendship.HasFriendWith(user.EmailIsNil())))
+			_predicates = append(_predicates, __friendship.Not(__friendship.HasFriendWith(__user.EmailIsNil())))
 		}
 	}
 	if l.EdgeFriendEmailIn != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EmailIn(l.EdgeFriendEmailIn...)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailIn(l.EdgeFriendEmailIn...)))
 	}
 	if l.EdgeFriendEmailNotIn != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EmailNotIn(l.EdgeFriendEmailNotIn...)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailNotIn(l.EdgeFriendEmailNotIn...)))
 	}
 	if l.EdgeFriendEmailEqualFold != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EmailEqualFold(*l.EdgeFriendEmailEqualFold)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailEqualFold(*l.EdgeFriendEmailEqualFold)))
 	}
 	if l.EdgeFriendEmailContains != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EmailContains(*l.EdgeFriendEmailContains)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailContains(*l.EdgeFriendEmailContains)))
 	}
 	if l.EdgeFriendEmailContainsFold != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EmailContainsFold(*l.EdgeFriendEmailContainsFold)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailContainsFold(*l.EdgeFriendEmailContainsFold)))
 	}
 	if l.EdgeFriendEmailHasPrefix != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EmailHasPrefix(*l.EdgeFriendEmailHasPrefix)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailHasPrefix(*l.EdgeFriendEmailHasPrefix)))
 	}
 	if l.EdgeFriendEmailHasSuffix != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.EmailHasSuffix(*l.EdgeFriendEmailHasSuffix)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.EmailHasSuffix(*l.EdgeFriendEmailHasSuffix)))
 	}
 	if l.EdgeFriendLastAuthenticatedAtEQ != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.LastAuthenticatedAtEQ(*l.EdgeFriendLastAuthenticatedAtEQ)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.LastAuthenticatedAtEQ(*l.EdgeFriendLastAuthenticatedAtEQ)))
 	}
 	if l.EdgeFriendLastAuthenticatedAtNEQ != nil {
-		_predicates = append(_predicates, friendship.HasFriendWith(user.LastAuthenticatedAtNEQ(*l.EdgeFriendLastAuthenticatedAtNEQ)))
+		_predicates = append(_predicates, __friendship.HasFriendWith(__user.LastAuthenticatedAtNEQ(*l.EdgeFriendLastAuthenticatedAtNEQ)))
 	}
 	if l.EdgeFriendLastAuthenticatedAtIsNil != nil {
 		if *l.EdgeFriendLastAuthenticatedAtIsNil {
-			_predicates = append(_predicates, friendship.HasFriendWith(user.LastAuthenticatedAtIsNil()))
+			_predicates = append(_predicates, __friendship.HasFriendWith(__user.LastAuthenticatedAtIsNil()))
 		} else {
-			_predicates = append(_predicates, friendship.Not(friendship.HasFriendWith(user.LastAuthenticatedAtIsNil())))
+			_predicates = append(_predicates, __friendship.Not(__friendship.HasFriendWith(__user.LastAuthenticatedAtIsNil())))
 		}
 	}
 
@@ -809,7 +809,7 @@ func (l *ListFriendshipParams) FilterPredicates() (predicate.Friendship, error) 
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListFriendshipParams) ApplySorting(_query *ent.FriendshipQuery) error {
+func (l *ListFriendshipParams) ApplySorting(_query *__ent.FriendshipQuery) error {
 	if err := l.Sorted.Validate(FriendshipSortConfig); err != nil {
 		return err
 	}
@@ -822,7 +822,7 @@ func (l *ListFriendshipParams) ApplySorting(_query *ent.FriendshipQuery) error {
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
 // executes all necessary queries, returning the results.
-func (l *ListFriendshipParams) Exec(ctx context.Context, _query *ent.FriendshipQuery) (_results *PagedResponse[ent.Friendship], err error) {
+func (l *ListFriendshipParams) Exec(ctx context.Context, _query *__ent.FriendshipQuery) (_results *PagedResponse[__ent.Friendship], err error) {
 	_predicates, err := l.FilterPredicates()
 	if err != nil {
 		return nil, err
@@ -838,8 +838,8 @@ func (l *ListFriendshipParams) Exec(ctx context.Context, _query *ent.FriendshipQ
 // ListPetParams defines parameters for listing Pets via a GET request.
 type ListPetParams struct {
 	Sorted
-	Paginated[*ent.PetQuery, ent.Pet]
-	Filtered[predicate.Pet]
+	Paginated[*__ent.PetQuery, __ent.Pet]
+	Filtered[__predicate.Pet]
 
 	// Filters field "id" to be equal to the provided value.
 	PetIDEQ *int `form:"id.eq,omitempty" json:"pet_ideq,omitzero"`
@@ -882,13 +882,13 @@ type ListPetParams struct {
 	// Filters field "age" to be not within the provided values.
 	PetAgeNotIn []int `form:"age.notIn,omitempty" json:"pet_age_not_in,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	PetTypeEQ *pet.Type `form:"type.eq,omitempty" json:"pet_type_eq,omitzero"`
+	PetTypeEQ *__pet.Type `form:"type.eq,omitempty" json:"pet_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	PetTypeNEQ *pet.Type `form:"type.neq,omitempty" json:"pet_type_neq,omitzero"`
+	PetTypeNEQ *__pet.Type `form:"type.neq,omitempty" json:"pet_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	PetTypeIn []pet.Type `form:"type.in,omitempty" json:"pet_type_in,omitzero"`
+	PetTypeIn []__pet.Type `form:"type.in,omitempty" json:"pet_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	PetTypeNotIn []pet.Type `form:"type.notIn,omitempty" json:"pet_type_not_in,omitzero"`
+	PetTypeNotIn []__pet.Type `form:"type.notIn,omitempty" json:"pet_type_not_in,omitzero"`
 	// If true, only return entities that have a category edge.
 	EdgeHasCategory *bool `form:"has.category,omitempty" json:"edge_has_category,omitzero"`
 	// Filters field "id" to be equal to the provided value.
@@ -944,13 +944,13 @@ type ListPetParams struct {
 	// Filters field "name" to end with the provided value.
 	EdgeOwnerNameHasSuffix *string `form:"owner.name.suffix,omitempty" json:"edge_owner_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeOwnerTypeEQ *user.Type `form:"owner.type.eq,omitempty" json:"edge_owner_type_eq,omitzero"`
+	EdgeOwnerTypeEQ *__user.Type `form:"owner.type.eq,omitempty" json:"edge_owner_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeOwnerTypeNEQ *user.Type `form:"owner.type.neq,omitempty" json:"edge_owner_type_neq,omitzero"`
+	EdgeOwnerTypeNEQ *__user.Type `form:"owner.type.neq,omitempty" json:"edge_owner_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeOwnerTypeIn []user.Type `form:"owner.type.in,omitempty" json:"edge_owner_type_in,omitzero"`
+	EdgeOwnerTypeIn []__user.Type `form:"owner.type.in,omitempty" json:"edge_owner_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeOwnerTypeNotIn []user.Type `form:"owner.type.notIn,omitempty" json:"edge_owner_type_not_in,omitzero"`
+	EdgeOwnerTypeNotIn []__user.Type `form:"owner.type.notIn,omitempty" json:"edge_owner_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
 	EdgeOwnerDescriptionIsNil *bool `form:"owner.description.null,omitempty" json:"edge_owner_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
@@ -1028,13 +1028,13 @@ type ListPetParams struct {
 	// Filters field "age" to be not within the provided values.
 	EdgeFriendAgeNotIn []int `form:"friend.age.notIn,omitempty" json:"edge_friend_age_not_in,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFriendTypeEQ *pet.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitzero"`
+	EdgeFriendTypeEQ *__pet.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFriendTypeNEQ *pet.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitzero"`
+	EdgeFriendTypeNEQ *__pet.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFriendTypeIn []pet.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitzero"`
+	EdgeFriendTypeIn []__pet.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFriendTypeNotIn []pet.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitzero"`
+	EdgeFriendTypeNotIn []__pet.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitzero"`
 	// If true, only return entities that have a followed_by edge.
 	EdgeHasFollowedBy *bool `form:"has.followedBy,omitempty" json:"edge_has_followed_by,omitzero"`
 	// Filters field "id" to be equal to the provided value.
@@ -1072,13 +1072,13 @@ type ListPetParams struct {
 	// Filters field "name" to end with the provided value.
 	EdgeFollowedByNameHasSuffix *string `form:"followedBy.name.suffix,omitempty" json:"edge_followed_by_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFollowedByTypeEQ *user.Type `form:"followedBy.type.eq,omitempty" json:"edge_followed_by_type_eq,omitzero"`
+	EdgeFollowedByTypeEQ *__user.Type `form:"followedBy.type.eq,omitempty" json:"edge_followed_by_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFollowedByTypeNEQ *user.Type `form:"followedBy.type.neq,omitempty" json:"edge_followed_by_type_neq,omitzero"`
+	EdgeFollowedByTypeNEQ *__user.Type `form:"followedBy.type.neq,omitempty" json:"edge_followed_by_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFollowedByTypeIn []user.Type `form:"followedBy.type.in,omitempty" json:"edge_followed_by_type_in,omitzero"`
+	EdgeFollowedByTypeIn []__user.Type `form:"followedBy.type.in,omitempty" json:"edge_followed_by_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFollowedByTypeNotIn []user.Type `form:"followedBy.type.notIn,omitempty" json:"edge_followed_by_type_not_in,omitzero"`
+	EdgeFollowedByTypeNotIn []__user.Type `form:"followedBy.type.notIn,omitempty" json:"edge_followed_by_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
 	EdgeFollowedByDescriptionIsNil *bool `form:"followedBy.description.null,omitempty" json:"edge_followed_by_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
@@ -1118,470 +1118,470 @@ type ListPetParams struct {
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Pet.
-func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
-	var _predicates []predicate.Pet
+func (l *ListPetParams) FilterPredicates() (__predicate.Pet, error) {
+	var _predicates []__predicate.Pet
 
 	if l.PetIDEQ != nil {
-		_predicates = append(_predicates, pet.IDEQ(*l.PetIDEQ))
+		_predicates = append(_predicates, __pet.IDEQ(*l.PetIDEQ))
 	}
 	if l.PetIDNEQ != nil {
-		_predicates = append(_predicates, pet.IDNEQ(*l.PetIDNEQ))
+		_predicates = append(_predicates, __pet.IDNEQ(*l.PetIDNEQ))
 	}
 	if l.PetIDIn != nil {
-		_predicates = append(_predicates, pet.IDIn(l.PetIDIn...))
+		_predicates = append(_predicates, __pet.IDIn(l.PetIDIn...))
 	}
 	if l.PetIDNotIn != nil {
-		_predicates = append(_predicates, pet.IDNotIn(l.PetIDNotIn...))
+		_predicates = append(_predicates, __pet.IDNotIn(l.PetIDNotIn...))
 	}
 	if l.PetNameEQ != nil {
-		_predicates = append(_predicates, pet.NameEQ(*l.PetNameEQ))
+		_predicates = append(_predicates, __pet.NameEQ(*l.PetNameEQ))
 	}
 	if l.PetNameNEQ != nil {
-		_predicates = append(_predicates, pet.NameNEQ(*l.PetNameNEQ))
+		_predicates = append(_predicates, __pet.NameNEQ(*l.PetNameNEQ))
 	}
 	if l.PetNameIn != nil {
-		_predicates = append(_predicates, pet.NameIn(l.PetNameIn...))
+		_predicates = append(_predicates, __pet.NameIn(l.PetNameIn...))
 	}
 	if l.PetNameNotIn != nil {
-		_predicates = append(_predicates, pet.NameNotIn(l.PetNameNotIn...))
+		_predicates = append(_predicates, __pet.NameNotIn(l.PetNameNotIn...))
 	}
 	if l.PetNameEqualFold != nil {
-		_predicates = append(_predicates, pet.NameEqualFold(*l.PetNameEqualFold))
+		_predicates = append(_predicates, __pet.NameEqualFold(*l.PetNameEqualFold))
 	}
 	if l.PetNameContains != nil {
-		_predicates = append(_predicates, pet.NameContains(*l.PetNameContains))
+		_predicates = append(_predicates, __pet.NameContains(*l.PetNameContains))
 	}
 	if l.PetNameContainsFold != nil {
-		_predicates = append(_predicates, pet.NameContainsFold(*l.PetNameContainsFold))
+		_predicates = append(_predicates, __pet.NameContainsFold(*l.PetNameContainsFold))
 	}
 	if l.PetNameHasPrefix != nil {
-		_predicates = append(_predicates, pet.NameHasPrefix(*l.PetNameHasPrefix))
+		_predicates = append(_predicates, __pet.NameHasPrefix(*l.PetNameHasPrefix))
 	}
 	if l.PetNameHasSuffix != nil {
-		_predicates = append(_predicates, pet.NameHasSuffix(*l.PetNameHasSuffix))
+		_predicates = append(_predicates, __pet.NameHasSuffix(*l.PetNameHasSuffix))
 	}
 	if l.PetNicknamesIsNil != nil {
 		if *l.PetNicknamesIsNil {
-			_predicates = append(_predicates, pet.NicknamesIsNil())
+			_predicates = append(_predicates, __pet.NicknamesIsNil())
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.NicknamesIsNil()))
+			_predicates = append(_predicates, __pet.Not(__pet.NicknamesIsNil()))
 		}
 	}
 	if l.PetAgeEQ != nil {
-		_predicates = append(_predicates, pet.AgeEQ(*l.PetAgeEQ))
+		_predicates = append(_predicates, __pet.AgeEQ(*l.PetAgeEQ))
 	}
 	if l.PetAgeNEQ != nil {
-		_predicates = append(_predicates, pet.AgeNEQ(*l.PetAgeNEQ))
+		_predicates = append(_predicates, __pet.AgeNEQ(*l.PetAgeNEQ))
 	}
 	if l.PetAgeGT != nil {
-		_predicates = append(_predicates, pet.AgeGT(*l.PetAgeGT))
+		_predicates = append(_predicates, __pet.AgeGT(*l.PetAgeGT))
 	}
 	if l.PetAgeLT != nil {
-		_predicates = append(_predicates, pet.AgeLT(*l.PetAgeLT))
+		_predicates = append(_predicates, __pet.AgeLT(*l.PetAgeLT))
 	}
 	if l.PetAgeIn != nil {
-		_predicates = append(_predicates, pet.AgeIn(l.PetAgeIn...))
+		_predicates = append(_predicates, __pet.AgeIn(l.PetAgeIn...))
 	}
 	if l.PetAgeNotIn != nil {
-		_predicates = append(_predicates, pet.AgeNotIn(l.PetAgeNotIn...))
+		_predicates = append(_predicates, __pet.AgeNotIn(l.PetAgeNotIn...))
 	}
 	if l.PetTypeEQ != nil {
-		_predicates = append(_predicates, pet.TypeEQ(*l.PetTypeEQ))
+		_predicates = append(_predicates, __pet.TypeEQ(*l.PetTypeEQ))
 	}
 	if l.PetTypeNEQ != nil {
-		_predicates = append(_predicates, pet.TypeNEQ(*l.PetTypeNEQ))
+		_predicates = append(_predicates, __pet.TypeNEQ(*l.PetTypeNEQ))
 	}
 	if l.PetTypeIn != nil {
-		_predicates = append(_predicates, pet.TypeIn(l.PetTypeIn...))
+		_predicates = append(_predicates, __pet.TypeIn(l.PetTypeIn...))
 	}
 	if l.PetTypeNotIn != nil {
-		_predicates = append(_predicates, pet.TypeNotIn(l.PetTypeNotIn...))
+		_predicates = append(_predicates, __pet.TypeNotIn(l.PetTypeNotIn...))
 	}
 	if l.EdgeHasCategory != nil {
 		if *l.EdgeHasCategory {
-			_predicates = append(_predicates, pet.HasCategories())
+			_predicates = append(_predicates, __pet.HasCategories())
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasCategories()))
+			_predicates = append(_predicates, __pet.Not(__pet.HasCategories()))
 		}
 	}
 	if l.EdgeCategoryIDEQ != nil {
-		_predicates = append(_predicates, pet.HasCategoriesWith(category.IDEQ(*l.EdgeCategoryIDEQ)))
+		_predicates = append(_predicates, __pet.HasCategoriesWith(__category.IDEQ(*l.EdgeCategoryIDEQ)))
 	}
 	if l.EdgeCategoryIDNEQ != nil {
-		_predicates = append(_predicates, pet.HasCategoriesWith(category.IDNEQ(*l.EdgeCategoryIDNEQ)))
+		_predicates = append(_predicates, __pet.HasCategoriesWith(__category.IDNEQ(*l.EdgeCategoryIDNEQ)))
 	}
 	if l.EdgeCategoryIDIn != nil {
-		_predicates = append(_predicates, pet.HasCategoriesWith(category.IDIn(l.EdgeCategoryIDIn...)))
+		_predicates = append(_predicates, __pet.HasCategoriesWith(__category.IDIn(l.EdgeCategoryIDIn...)))
 	}
 	if l.EdgeCategoryIDNotIn != nil {
-		_predicates = append(_predicates, pet.HasCategoriesWith(category.IDNotIn(l.EdgeCategoryIDNotIn...)))
+		_predicates = append(_predicates, __pet.HasCategoriesWith(__category.IDNotIn(l.EdgeCategoryIDNotIn...)))
 	}
 	if l.EdgeCategoryCreatedAtGT != nil {
-		_predicates = append(_predicates, pet.HasCategoriesWith(category.CreatedAtGT(*l.EdgeCategoryCreatedAtGT)))
+		_predicates = append(_predicates, __pet.HasCategoriesWith(__category.CreatedAtGT(*l.EdgeCategoryCreatedAtGT)))
 	}
 	if l.EdgeCategoryCreatedAtLT != nil {
-		_predicates = append(_predicates, pet.HasCategoriesWith(category.CreatedAtLT(*l.EdgeCategoryCreatedAtLT)))
+		_predicates = append(_predicates, __pet.HasCategoriesWith(__category.CreatedAtLT(*l.EdgeCategoryCreatedAtLT)))
 	}
 	if l.EdgeCategoryUpdatedAtGT != nil {
-		_predicates = append(_predicates, pet.HasCategoriesWith(category.UpdatedAtGT(*l.EdgeCategoryUpdatedAtGT)))
+		_predicates = append(_predicates, __pet.HasCategoriesWith(__category.UpdatedAtGT(*l.EdgeCategoryUpdatedAtGT)))
 	}
 	if l.EdgeCategoryUpdatedAtLT != nil {
-		_predicates = append(_predicates, pet.HasCategoriesWith(category.UpdatedAtLT(*l.EdgeCategoryUpdatedAtLT)))
+		_predicates = append(_predicates, __pet.HasCategoriesWith(__category.UpdatedAtLT(*l.EdgeCategoryUpdatedAtLT)))
 	}
 	if l.EdgeHasOwner != nil {
 		if *l.EdgeHasOwner {
-			_predicates = append(_predicates, pet.HasOwner())
+			_predicates = append(_predicates, __pet.HasOwner())
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasOwner()))
+			_predicates = append(_predicates, __pet.Not(__pet.HasOwner()))
 		}
 	}
 	if l.EdgeOwnerIDEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.IDEQ(*l.EdgeOwnerIDEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.IDEQ(*l.EdgeOwnerIDEQ)))
 	}
 	if l.EdgeOwnerIDNEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.IDNEQ(*l.EdgeOwnerIDNEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.IDNEQ(*l.EdgeOwnerIDNEQ)))
 	}
 	if l.EdgeOwnerIDIn != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.IDIn(l.EdgeOwnerIDIn...)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.IDIn(l.EdgeOwnerIDIn...)))
 	}
 	if l.EdgeOwnerIDNotIn != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.IDNotIn(l.EdgeOwnerIDNotIn...)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.IDNotIn(l.EdgeOwnerIDNotIn...)))
 	}
 	if l.EdgeOwnerCreatedAtGT != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.CreatedAtGT(*l.EdgeOwnerCreatedAtGT)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.CreatedAtGT(*l.EdgeOwnerCreatedAtGT)))
 	}
 	if l.EdgeOwnerCreatedAtLT != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.CreatedAtLT(*l.EdgeOwnerCreatedAtLT)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.CreatedAtLT(*l.EdgeOwnerCreatedAtLT)))
 	}
 	if l.EdgeOwnerUpdatedAtGT != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.UpdatedAtGT(*l.EdgeOwnerUpdatedAtGT)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.UpdatedAtGT(*l.EdgeOwnerUpdatedAtGT)))
 	}
 	if l.EdgeOwnerUpdatedAtLT != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.UpdatedAtLT(*l.EdgeOwnerUpdatedAtLT)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.UpdatedAtLT(*l.EdgeOwnerUpdatedAtLT)))
 	}
 	if l.EdgeOwnerNameEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.NameEQ(*l.EdgeOwnerNameEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.NameEQ(*l.EdgeOwnerNameEQ)))
 	}
 	if l.EdgeOwnerNameNEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.NameNEQ(*l.EdgeOwnerNameNEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.NameNEQ(*l.EdgeOwnerNameNEQ)))
 	}
 	if l.EdgeOwnerNameIn != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.NameIn(l.EdgeOwnerNameIn...)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.NameIn(l.EdgeOwnerNameIn...)))
 	}
 	if l.EdgeOwnerNameNotIn != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.NameNotIn(l.EdgeOwnerNameNotIn...)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.NameNotIn(l.EdgeOwnerNameNotIn...)))
 	}
 	if l.EdgeOwnerNameEqualFold != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.NameEqualFold(*l.EdgeOwnerNameEqualFold)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.NameEqualFold(*l.EdgeOwnerNameEqualFold)))
 	}
 	if l.EdgeOwnerNameContains != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.NameContains(*l.EdgeOwnerNameContains)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.NameContains(*l.EdgeOwnerNameContains)))
 	}
 	if l.EdgeOwnerNameContainsFold != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.NameContainsFold(*l.EdgeOwnerNameContainsFold)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.NameContainsFold(*l.EdgeOwnerNameContainsFold)))
 	}
 	if l.EdgeOwnerNameHasPrefix != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.NameHasPrefix(*l.EdgeOwnerNameHasPrefix)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.NameHasPrefix(*l.EdgeOwnerNameHasPrefix)))
 	}
 	if l.EdgeOwnerNameHasSuffix != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.NameHasSuffix(*l.EdgeOwnerNameHasSuffix)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.NameHasSuffix(*l.EdgeOwnerNameHasSuffix)))
 	}
 	if l.EdgeOwnerTypeEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.TypeEQ(*l.EdgeOwnerTypeEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.TypeEQ(*l.EdgeOwnerTypeEQ)))
 	}
 	if l.EdgeOwnerTypeNEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.TypeNEQ(*l.EdgeOwnerTypeNEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.TypeNEQ(*l.EdgeOwnerTypeNEQ)))
 	}
 	if l.EdgeOwnerTypeIn != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.TypeIn(l.EdgeOwnerTypeIn...)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.TypeIn(l.EdgeOwnerTypeIn...)))
 	}
 	if l.EdgeOwnerTypeNotIn != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.TypeNotIn(l.EdgeOwnerTypeNotIn...)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.TypeNotIn(l.EdgeOwnerTypeNotIn...)))
 	}
 	if l.EdgeOwnerDescriptionIsNil != nil {
 		if *l.EdgeOwnerDescriptionIsNil {
-			_predicates = append(_predicates, pet.HasOwnerWith(user.DescriptionIsNil()))
+			_predicates = append(_predicates, __pet.HasOwnerWith(__user.DescriptionIsNil()))
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasOwnerWith(user.DescriptionIsNil())))
+			_predicates = append(_predicates, __pet.Not(__pet.HasOwnerWith(__user.DescriptionIsNil())))
 		}
 	}
 	if l.EdgeOwnerDescriptionContains != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.DescriptionContains(*l.EdgeOwnerDescriptionContains)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.DescriptionContains(*l.EdgeOwnerDescriptionContains)))
 	}
 	if l.EdgeOwnerDescriptionContainsFold != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.DescriptionContainsFold(*l.EdgeOwnerDescriptionContainsFold)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.DescriptionContainsFold(*l.EdgeOwnerDescriptionContainsFold)))
 	}
 	if l.EdgeOwnerEnabledEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EnabledEQ(*l.EdgeOwnerEnabledEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EnabledEQ(*l.EdgeOwnerEnabledEQ)))
 	}
 	if l.EdgeOwnerEmailEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EmailEQ(*l.EdgeOwnerEmailEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailEQ(*l.EdgeOwnerEmailEQ)))
 	}
 	if l.EdgeOwnerEmailNEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EmailNEQ(*l.EdgeOwnerEmailNEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailNEQ(*l.EdgeOwnerEmailNEQ)))
 	}
 	if l.EdgeOwnerEmailIsNil != nil {
 		if *l.EdgeOwnerEmailIsNil {
-			_predicates = append(_predicates, pet.HasOwnerWith(user.EmailIsNil()))
+			_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailIsNil()))
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasOwnerWith(user.EmailIsNil())))
+			_predicates = append(_predicates, __pet.Not(__pet.HasOwnerWith(__user.EmailIsNil())))
 		}
 	}
 	if l.EdgeOwnerEmailIn != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EmailIn(l.EdgeOwnerEmailIn...)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailIn(l.EdgeOwnerEmailIn...)))
 	}
 	if l.EdgeOwnerEmailNotIn != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EmailNotIn(l.EdgeOwnerEmailNotIn...)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailNotIn(l.EdgeOwnerEmailNotIn...)))
 	}
 	if l.EdgeOwnerEmailEqualFold != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EmailEqualFold(*l.EdgeOwnerEmailEqualFold)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailEqualFold(*l.EdgeOwnerEmailEqualFold)))
 	}
 	if l.EdgeOwnerEmailContains != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EmailContains(*l.EdgeOwnerEmailContains)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailContains(*l.EdgeOwnerEmailContains)))
 	}
 	if l.EdgeOwnerEmailContainsFold != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EmailContainsFold(*l.EdgeOwnerEmailContainsFold)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailContainsFold(*l.EdgeOwnerEmailContainsFold)))
 	}
 	if l.EdgeOwnerEmailHasPrefix != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EmailHasPrefix(*l.EdgeOwnerEmailHasPrefix)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailHasPrefix(*l.EdgeOwnerEmailHasPrefix)))
 	}
 	if l.EdgeOwnerEmailHasSuffix != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.EmailHasSuffix(*l.EdgeOwnerEmailHasSuffix)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.EmailHasSuffix(*l.EdgeOwnerEmailHasSuffix)))
 	}
 	if l.EdgeOwnerLastAuthenticatedAtEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.LastAuthenticatedAtEQ(*l.EdgeOwnerLastAuthenticatedAtEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.LastAuthenticatedAtEQ(*l.EdgeOwnerLastAuthenticatedAtEQ)))
 	}
 	if l.EdgeOwnerLastAuthenticatedAtNEQ != nil {
-		_predicates = append(_predicates, pet.HasOwnerWith(user.LastAuthenticatedAtNEQ(*l.EdgeOwnerLastAuthenticatedAtNEQ)))
+		_predicates = append(_predicates, __pet.HasOwnerWith(__user.LastAuthenticatedAtNEQ(*l.EdgeOwnerLastAuthenticatedAtNEQ)))
 	}
 	if l.EdgeOwnerLastAuthenticatedAtIsNil != nil {
 		if *l.EdgeOwnerLastAuthenticatedAtIsNil {
-			_predicates = append(_predicates, pet.HasOwnerWith(user.LastAuthenticatedAtIsNil()))
+			_predicates = append(_predicates, __pet.HasOwnerWith(__user.LastAuthenticatedAtIsNil()))
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasOwnerWith(user.LastAuthenticatedAtIsNil())))
+			_predicates = append(_predicates, __pet.Not(__pet.HasOwnerWith(__user.LastAuthenticatedAtIsNil())))
 		}
 	}
 	if l.EdgeHasFriend != nil {
 		if *l.EdgeHasFriend {
-			_predicates = append(_predicates, pet.HasFriends())
+			_predicates = append(_predicates, __pet.HasFriends())
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasFriends()))
+			_predicates = append(_predicates, __pet.Not(__pet.HasFriends()))
 		}
 	}
 	if l.EdgeFriendIDEQ != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.IDEQ(*l.EdgeFriendIDEQ)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.IDEQ(*l.EdgeFriendIDEQ)))
 	}
 	if l.EdgeFriendIDNEQ != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.IDNEQ(*l.EdgeFriendIDNEQ)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.IDNEQ(*l.EdgeFriendIDNEQ)))
 	}
 	if l.EdgeFriendIDIn != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.IDIn(l.EdgeFriendIDIn...)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.IDIn(l.EdgeFriendIDIn...)))
 	}
 	if l.EdgeFriendIDNotIn != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.IDNotIn(l.EdgeFriendIDNotIn...)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.IDNotIn(l.EdgeFriendIDNotIn...)))
 	}
 	if l.EdgeFriendNameEQ != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.NameEQ(*l.EdgeFriendNameEQ)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NameEQ(*l.EdgeFriendNameEQ)))
 	}
 	if l.EdgeFriendNameNEQ != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.NameNEQ(*l.EdgeFriendNameNEQ)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NameNEQ(*l.EdgeFriendNameNEQ)))
 	}
 	if l.EdgeFriendNameIn != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.NameIn(l.EdgeFriendNameIn...)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NameIn(l.EdgeFriendNameIn...)))
 	}
 	if l.EdgeFriendNameNotIn != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.NameNotIn(l.EdgeFriendNameNotIn...)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NameNotIn(l.EdgeFriendNameNotIn...)))
 	}
 	if l.EdgeFriendNameEqualFold != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.NameEqualFold(*l.EdgeFriendNameEqualFold)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NameEqualFold(*l.EdgeFriendNameEqualFold)))
 	}
 	if l.EdgeFriendNameContains != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.NameContains(*l.EdgeFriendNameContains)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NameContains(*l.EdgeFriendNameContains)))
 	}
 	if l.EdgeFriendNameContainsFold != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.NameContainsFold(*l.EdgeFriendNameContainsFold)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NameContainsFold(*l.EdgeFriendNameContainsFold)))
 	}
 	if l.EdgeFriendNameHasPrefix != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.NameHasPrefix(*l.EdgeFriendNameHasPrefix)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NameHasPrefix(*l.EdgeFriendNameHasPrefix)))
 	}
 	if l.EdgeFriendNameHasSuffix != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
 	}
 	if l.EdgeFriendNicknamesIsNil != nil {
 		if *l.EdgeFriendNicknamesIsNil {
-			_predicates = append(_predicates, pet.HasFriendsWith(pet.NicknamesIsNil()))
+			_predicates = append(_predicates, __pet.HasFriendsWith(__pet.NicknamesIsNil()))
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasFriendsWith(pet.NicknamesIsNil())))
+			_predicates = append(_predicates, __pet.Not(__pet.HasFriendsWith(__pet.NicknamesIsNil())))
 		}
 	}
 	if l.EdgeFriendAgeEQ != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.AgeEQ(*l.EdgeFriendAgeEQ)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.AgeEQ(*l.EdgeFriendAgeEQ)))
 	}
 	if l.EdgeFriendAgeNEQ != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.AgeNEQ(*l.EdgeFriendAgeNEQ)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.AgeNEQ(*l.EdgeFriendAgeNEQ)))
 	}
 	if l.EdgeFriendAgeGT != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.AgeGT(*l.EdgeFriendAgeGT)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.AgeGT(*l.EdgeFriendAgeGT)))
 	}
 	if l.EdgeFriendAgeLT != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.AgeLT(*l.EdgeFriendAgeLT)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.AgeLT(*l.EdgeFriendAgeLT)))
 	}
 	if l.EdgeFriendAgeIn != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.AgeIn(l.EdgeFriendAgeIn...)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.AgeIn(l.EdgeFriendAgeIn...)))
 	}
 	if l.EdgeFriendAgeNotIn != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.AgeNotIn(l.EdgeFriendAgeNotIn...)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.AgeNotIn(l.EdgeFriendAgeNotIn...)))
 	}
 	if l.EdgeFriendTypeEQ != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.TypeEQ(*l.EdgeFriendTypeEQ)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.TypeEQ(*l.EdgeFriendTypeEQ)))
 	}
 	if l.EdgeFriendTypeNEQ != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.TypeNEQ(*l.EdgeFriendTypeNEQ)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.TypeNEQ(*l.EdgeFriendTypeNEQ)))
 	}
 	if l.EdgeFriendTypeIn != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.TypeIn(l.EdgeFriendTypeIn...)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.TypeIn(l.EdgeFriendTypeIn...)))
 	}
 	if l.EdgeFriendTypeNotIn != nil {
-		_predicates = append(_predicates, pet.HasFriendsWith(pet.TypeNotIn(l.EdgeFriendTypeNotIn...)))
+		_predicates = append(_predicates, __pet.HasFriendsWith(__pet.TypeNotIn(l.EdgeFriendTypeNotIn...)))
 	}
 	if l.EdgeHasFollowedBy != nil {
 		if *l.EdgeHasFollowedBy {
-			_predicates = append(_predicates, pet.HasFollowedBy())
+			_predicates = append(_predicates, __pet.HasFollowedBy())
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasFollowedBy()))
+			_predicates = append(_predicates, __pet.Not(__pet.HasFollowedBy()))
 		}
 	}
 	if l.EdgeFollowedByIDEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.IDEQ(*l.EdgeFollowedByIDEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.IDEQ(*l.EdgeFollowedByIDEQ)))
 	}
 	if l.EdgeFollowedByIDNEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.IDNEQ(*l.EdgeFollowedByIDNEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.IDNEQ(*l.EdgeFollowedByIDNEQ)))
 	}
 	if l.EdgeFollowedByIDIn != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.IDIn(l.EdgeFollowedByIDIn...)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.IDIn(l.EdgeFollowedByIDIn...)))
 	}
 	if l.EdgeFollowedByIDNotIn != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.IDNotIn(l.EdgeFollowedByIDNotIn...)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.IDNotIn(l.EdgeFollowedByIDNotIn...)))
 	}
 	if l.EdgeFollowedByCreatedAtGT != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.CreatedAtGT(*l.EdgeFollowedByCreatedAtGT)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.CreatedAtGT(*l.EdgeFollowedByCreatedAtGT)))
 	}
 	if l.EdgeFollowedByCreatedAtLT != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.CreatedAtLT(*l.EdgeFollowedByCreatedAtLT)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.CreatedAtLT(*l.EdgeFollowedByCreatedAtLT)))
 	}
 	if l.EdgeFollowedByUpdatedAtGT != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.UpdatedAtGT(*l.EdgeFollowedByUpdatedAtGT)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.UpdatedAtGT(*l.EdgeFollowedByUpdatedAtGT)))
 	}
 	if l.EdgeFollowedByUpdatedAtLT != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.UpdatedAtLT(*l.EdgeFollowedByUpdatedAtLT)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.UpdatedAtLT(*l.EdgeFollowedByUpdatedAtLT)))
 	}
 	if l.EdgeFollowedByNameEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.NameEQ(*l.EdgeFollowedByNameEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.NameEQ(*l.EdgeFollowedByNameEQ)))
 	}
 	if l.EdgeFollowedByNameNEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.NameNEQ(*l.EdgeFollowedByNameNEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.NameNEQ(*l.EdgeFollowedByNameNEQ)))
 	}
 	if l.EdgeFollowedByNameIn != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.NameIn(l.EdgeFollowedByNameIn...)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.NameIn(l.EdgeFollowedByNameIn...)))
 	}
 	if l.EdgeFollowedByNameNotIn != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.NameNotIn(l.EdgeFollowedByNameNotIn...)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.NameNotIn(l.EdgeFollowedByNameNotIn...)))
 	}
 	if l.EdgeFollowedByNameEqualFold != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.NameEqualFold(*l.EdgeFollowedByNameEqualFold)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.NameEqualFold(*l.EdgeFollowedByNameEqualFold)))
 	}
 	if l.EdgeFollowedByNameContains != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.NameContains(*l.EdgeFollowedByNameContains)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.NameContains(*l.EdgeFollowedByNameContains)))
 	}
 	if l.EdgeFollowedByNameContainsFold != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.NameContainsFold(*l.EdgeFollowedByNameContainsFold)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.NameContainsFold(*l.EdgeFollowedByNameContainsFold)))
 	}
 	if l.EdgeFollowedByNameHasPrefix != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.NameHasPrefix(*l.EdgeFollowedByNameHasPrefix)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.NameHasPrefix(*l.EdgeFollowedByNameHasPrefix)))
 	}
 	if l.EdgeFollowedByNameHasSuffix != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.NameHasSuffix(*l.EdgeFollowedByNameHasSuffix)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.NameHasSuffix(*l.EdgeFollowedByNameHasSuffix)))
 	}
 	if l.EdgeFollowedByTypeEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.TypeEQ(*l.EdgeFollowedByTypeEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.TypeEQ(*l.EdgeFollowedByTypeEQ)))
 	}
 	if l.EdgeFollowedByTypeNEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.TypeNEQ(*l.EdgeFollowedByTypeNEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.TypeNEQ(*l.EdgeFollowedByTypeNEQ)))
 	}
 	if l.EdgeFollowedByTypeIn != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.TypeIn(l.EdgeFollowedByTypeIn...)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.TypeIn(l.EdgeFollowedByTypeIn...)))
 	}
 	if l.EdgeFollowedByTypeNotIn != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.TypeNotIn(l.EdgeFollowedByTypeNotIn...)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.TypeNotIn(l.EdgeFollowedByTypeNotIn...)))
 	}
 	if l.EdgeFollowedByDescriptionIsNil != nil {
 		if *l.EdgeFollowedByDescriptionIsNil {
-			_predicates = append(_predicates, pet.HasFollowedByWith(user.DescriptionIsNil()))
+			_predicates = append(_predicates, __pet.HasFollowedByWith(__user.DescriptionIsNil()))
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasFollowedByWith(user.DescriptionIsNil())))
+			_predicates = append(_predicates, __pet.Not(__pet.HasFollowedByWith(__user.DescriptionIsNil())))
 		}
 	}
 	if l.EdgeFollowedByDescriptionContains != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.DescriptionContains(*l.EdgeFollowedByDescriptionContains)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.DescriptionContains(*l.EdgeFollowedByDescriptionContains)))
 	}
 	if l.EdgeFollowedByDescriptionContainsFold != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.DescriptionContainsFold(*l.EdgeFollowedByDescriptionContainsFold)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.DescriptionContainsFold(*l.EdgeFollowedByDescriptionContainsFold)))
 	}
 	if l.EdgeFollowedByEnabledEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EnabledEQ(*l.EdgeFollowedByEnabledEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EnabledEQ(*l.EdgeFollowedByEnabledEQ)))
 	}
 	if l.EdgeFollowedByEmailEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailEQ(*l.EdgeFollowedByEmailEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailEQ(*l.EdgeFollowedByEmailEQ)))
 	}
 	if l.EdgeFollowedByEmailNEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailNEQ(*l.EdgeFollowedByEmailNEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailNEQ(*l.EdgeFollowedByEmailNEQ)))
 	}
 	if l.EdgeFollowedByEmailIsNil != nil {
 		if *l.EdgeFollowedByEmailIsNil {
-			_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailIsNil()))
+			_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailIsNil()))
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasFollowedByWith(user.EmailIsNil())))
+			_predicates = append(_predicates, __pet.Not(__pet.HasFollowedByWith(__user.EmailIsNil())))
 		}
 	}
 	if l.EdgeFollowedByEmailIn != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailIn(l.EdgeFollowedByEmailIn...)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailIn(l.EdgeFollowedByEmailIn...)))
 	}
 	if l.EdgeFollowedByEmailNotIn != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailNotIn(l.EdgeFollowedByEmailNotIn...)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailNotIn(l.EdgeFollowedByEmailNotIn...)))
 	}
 	if l.EdgeFollowedByEmailEqualFold != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailEqualFold(*l.EdgeFollowedByEmailEqualFold)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailEqualFold(*l.EdgeFollowedByEmailEqualFold)))
 	}
 	if l.EdgeFollowedByEmailContains != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailContains(*l.EdgeFollowedByEmailContains)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailContains(*l.EdgeFollowedByEmailContains)))
 	}
 	if l.EdgeFollowedByEmailContainsFold != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailContainsFold(*l.EdgeFollowedByEmailContainsFold)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailContainsFold(*l.EdgeFollowedByEmailContainsFold)))
 	}
 	if l.EdgeFollowedByEmailHasPrefix != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailHasPrefix(*l.EdgeFollowedByEmailHasPrefix)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailHasPrefix(*l.EdgeFollowedByEmailHasPrefix)))
 	}
 	if l.EdgeFollowedByEmailHasSuffix != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.EmailHasSuffix(*l.EdgeFollowedByEmailHasSuffix)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.EmailHasSuffix(*l.EdgeFollowedByEmailHasSuffix)))
 	}
 	if l.EdgeFollowedByLastAuthenticatedAtEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.LastAuthenticatedAtEQ(*l.EdgeFollowedByLastAuthenticatedAtEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.LastAuthenticatedAtEQ(*l.EdgeFollowedByLastAuthenticatedAtEQ)))
 	}
 	if l.EdgeFollowedByLastAuthenticatedAtNEQ != nil {
-		_predicates = append(_predicates, pet.HasFollowedByWith(user.LastAuthenticatedAtNEQ(*l.EdgeFollowedByLastAuthenticatedAtNEQ)))
+		_predicates = append(_predicates, __pet.HasFollowedByWith(__user.LastAuthenticatedAtNEQ(*l.EdgeFollowedByLastAuthenticatedAtNEQ)))
 	}
 	if l.EdgeFollowedByLastAuthenticatedAtIsNil != nil {
 		if *l.EdgeFollowedByLastAuthenticatedAtIsNil {
-			_predicates = append(_predicates, pet.HasFollowedByWith(user.LastAuthenticatedAtIsNil()))
+			_predicates = append(_predicates, __pet.HasFollowedByWith(__user.LastAuthenticatedAtIsNil()))
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasFollowedByWith(user.LastAuthenticatedAtIsNil())))
+			_predicates = append(_predicates, __pet.Not(__pet.HasFollowedByWith(__user.LastAuthenticatedAtIsNil())))
 		}
 	}
 	if l.EdgeHasFollowing != nil {
 		if *l.EdgeHasFollowing {
-			_predicates = append(_predicates, pet.HasFollowing())
+			_predicates = append(_predicates, __pet.HasFollowing())
 		} else {
-			_predicates = append(_predicates, pet.Not(pet.HasFollowing()))
+			_predicates = append(_predicates, __pet.Not(__pet.HasFollowing()))
 		}
 	}
 
@@ -1589,7 +1589,7 @@ func (l *ListPetParams) FilterPredicates() (predicate.Pet, error) {
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListPetParams) ApplySorting(_query *ent.PetQuery) error {
+func (l *ListPetParams) ApplySorting(_query *__ent.PetQuery) error {
 	if err := l.Sorted.Validate(PetSortConfig); err != nil {
 		return err
 	}
@@ -1602,7 +1602,7 @@ func (l *ListPetParams) ApplySorting(_query *ent.PetQuery) error {
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
 // executes all necessary queries, returning the results.
-func (l *ListPetParams) Exec(ctx context.Context, _query *ent.PetQuery) (_results *PagedResponse[ent.Pet], err error) {
+func (l *ListPetParams) Exec(ctx context.Context, _query *__ent.PetQuery) (_results *PagedResponse[__ent.Pet], err error) {
 	_predicates, err := l.FilterPredicates()
 	if err != nil {
 		return nil, err
@@ -1618,8 +1618,8 @@ func (l *ListPetParams) Exec(ctx context.Context, _query *ent.PetQuery) (_result
 // ListPostParams defines parameters for listing Posts via a GET request.
 type ListPostParams struct {
 	Sorted
-	Paginated[*ent.PostQuery, ent.Post]
-	Filtered[predicate.Post]
+	Paginated[*__ent.PostQuery, __ent.Post]
+	Filtered[__predicate.Post]
 
 	// Filters field "id" to be equal to the provided value.
 	PostIDEQ *int `form:"id.eq,omitempty" json:"post_ideq,omitzero"`
@@ -1674,13 +1674,13 @@ type ListPostParams struct {
 	// Filters field "name" to end with the provided value.
 	EdgeAuthorNameHasSuffix *string `form:"author.name.suffix,omitempty" json:"edge_author_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeAuthorTypeEQ *user.Type `form:"author.type.eq,omitempty" json:"edge_author_type_eq,omitzero"`
+	EdgeAuthorTypeEQ *__user.Type `form:"author.type.eq,omitempty" json:"edge_author_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeAuthorTypeNEQ *user.Type `form:"author.type.neq,omitempty" json:"edge_author_type_neq,omitzero"`
+	EdgeAuthorTypeNEQ *__user.Type `form:"author.type.neq,omitempty" json:"edge_author_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeAuthorTypeIn []user.Type `form:"author.type.in,omitempty" json:"edge_author_type_in,omitzero"`
+	EdgeAuthorTypeIn []__user.Type `form:"author.type.in,omitempty" json:"edge_author_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeAuthorTypeNotIn []user.Type `form:"author.type.notIn,omitempty" json:"edge_author_type_not_in,omitzero"`
+	EdgeAuthorTypeNotIn []__user.Type `form:"author.type.notIn,omitempty" json:"edge_author_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
 	EdgeAuthorDescriptionIsNil *bool `form:"author.description.null,omitempty" json:"edge_author_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
@@ -1718,164 +1718,164 @@ type ListPostParams struct {
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Post.
-func (l *ListPostParams) FilterPredicates() (predicate.Post, error) {
-	var _predicates []predicate.Post
+func (l *ListPostParams) FilterPredicates() (__predicate.Post, error) {
+	var _predicates []__predicate.Post
 
 	if l.PostIDEQ != nil {
-		_predicates = append(_predicates, post.IDEQ(*l.PostIDEQ))
+		_predicates = append(_predicates, __post.IDEQ(*l.PostIDEQ))
 	}
 	if l.PostIDNEQ != nil {
-		_predicates = append(_predicates, post.IDNEQ(*l.PostIDNEQ))
+		_predicates = append(_predicates, __post.IDNEQ(*l.PostIDNEQ))
 	}
 	if l.PostIDIn != nil {
-		_predicates = append(_predicates, post.IDIn(l.PostIDIn...))
+		_predicates = append(_predicates, __post.IDIn(l.PostIDIn...))
 	}
 	if l.PostIDNotIn != nil {
-		_predicates = append(_predicates, post.IDNotIn(l.PostIDNotIn...))
+		_predicates = append(_predicates, __post.IDNotIn(l.PostIDNotIn...))
 	}
 	if l.PostCreatedAtGT != nil {
-		_predicates = append(_predicates, post.CreatedAtGT(*l.PostCreatedAtGT))
+		_predicates = append(_predicates, __post.CreatedAtGT(*l.PostCreatedAtGT))
 	}
 	if l.PostCreatedAtLT != nil {
-		_predicates = append(_predicates, post.CreatedAtLT(*l.PostCreatedAtLT))
+		_predicates = append(_predicates, __post.CreatedAtLT(*l.PostCreatedAtLT))
 	}
 	if l.PostUpdatedAtGT != nil {
-		_predicates = append(_predicates, post.UpdatedAtGT(*l.PostUpdatedAtGT))
+		_predicates = append(_predicates, __post.UpdatedAtGT(*l.PostUpdatedAtGT))
 	}
 	if l.PostUpdatedAtLT != nil {
-		_predicates = append(_predicates, post.UpdatedAtLT(*l.PostUpdatedAtLT))
+		_predicates = append(_predicates, __post.UpdatedAtLT(*l.PostUpdatedAtLT))
 	}
 	if l.EdgeHasAuthor != nil {
 		if *l.EdgeHasAuthor {
-			_predicates = append(_predicates, post.HasAuthor())
+			_predicates = append(_predicates, __post.HasAuthor())
 		} else {
-			_predicates = append(_predicates, post.Not(post.HasAuthor()))
+			_predicates = append(_predicates, __post.Not(__post.HasAuthor()))
 		}
 	}
 	if l.EdgeAuthorIDEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.IDEQ(*l.EdgeAuthorIDEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.IDEQ(*l.EdgeAuthorIDEQ)))
 	}
 	if l.EdgeAuthorIDNEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.IDNEQ(*l.EdgeAuthorIDNEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.IDNEQ(*l.EdgeAuthorIDNEQ)))
 	}
 	if l.EdgeAuthorIDIn != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.IDIn(l.EdgeAuthorIDIn...)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.IDIn(l.EdgeAuthorIDIn...)))
 	}
 	if l.EdgeAuthorIDNotIn != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.IDNotIn(l.EdgeAuthorIDNotIn...)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.IDNotIn(l.EdgeAuthorIDNotIn...)))
 	}
 	if l.EdgeAuthorCreatedAtGT != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.CreatedAtGT(*l.EdgeAuthorCreatedAtGT)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.CreatedAtGT(*l.EdgeAuthorCreatedAtGT)))
 	}
 	if l.EdgeAuthorCreatedAtLT != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.CreatedAtLT(*l.EdgeAuthorCreatedAtLT)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.CreatedAtLT(*l.EdgeAuthorCreatedAtLT)))
 	}
 	if l.EdgeAuthorUpdatedAtGT != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.UpdatedAtGT(*l.EdgeAuthorUpdatedAtGT)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.UpdatedAtGT(*l.EdgeAuthorUpdatedAtGT)))
 	}
 	if l.EdgeAuthorUpdatedAtLT != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.UpdatedAtLT(*l.EdgeAuthorUpdatedAtLT)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.UpdatedAtLT(*l.EdgeAuthorUpdatedAtLT)))
 	}
 	if l.EdgeAuthorNameEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.NameEQ(*l.EdgeAuthorNameEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.NameEQ(*l.EdgeAuthorNameEQ)))
 	}
 	if l.EdgeAuthorNameNEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.NameNEQ(*l.EdgeAuthorNameNEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.NameNEQ(*l.EdgeAuthorNameNEQ)))
 	}
 	if l.EdgeAuthorNameIn != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.NameIn(l.EdgeAuthorNameIn...)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.NameIn(l.EdgeAuthorNameIn...)))
 	}
 	if l.EdgeAuthorNameNotIn != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.NameNotIn(l.EdgeAuthorNameNotIn...)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.NameNotIn(l.EdgeAuthorNameNotIn...)))
 	}
 	if l.EdgeAuthorNameEqualFold != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.NameEqualFold(*l.EdgeAuthorNameEqualFold)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.NameEqualFold(*l.EdgeAuthorNameEqualFold)))
 	}
 	if l.EdgeAuthorNameContains != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.NameContains(*l.EdgeAuthorNameContains)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.NameContains(*l.EdgeAuthorNameContains)))
 	}
 	if l.EdgeAuthorNameContainsFold != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.NameContainsFold(*l.EdgeAuthorNameContainsFold)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.NameContainsFold(*l.EdgeAuthorNameContainsFold)))
 	}
 	if l.EdgeAuthorNameHasPrefix != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.NameHasPrefix(*l.EdgeAuthorNameHasPrefix)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.NameHasPrefix(*l.EdgeAuthorNameHasPrefix)))
 	}
 	if l.EdgeAuthorNameHasSuffix != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.NameHasSuffix(*l.EdgeAuthorNameHasSuffix)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.NameHasSuffix(*l.EdgeAuthorNameHasSuffix)))
 	}
 	if l.EdgeAuthorTypeEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.TypeEQ(*l.EdgeAuthorTypeEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.TypeEQ(*l.EdgeAuthorTypeEQ)))
 	}
 	if l.EdgeAuthorTypeNEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.TypeNEQ(*l.EdgeAuthorTypeNEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.TypeNEQ(*l.EdgeAuthorTypeNEQ)))
 	}
 	if l.EdgeAuthorTypeIn != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.TypeIn(l.EdgeAuthorTypeIn...)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.TypeIn(l.EdgeAuthorTypeIn...)))
 	}
 	if l.EdgeAuthorTypeNotIn != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.TypeNotIn(l.EdgeAuthorTypeNotIn...)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.TypeNotIn(l.EdgeAuthorTypeNotIn...)))
 	}
 	if l.EdgeAuthorDescriptionIsNil != nil {
 		if *l.EdgeAuthorDescriptionIsNil {
-			_predicates = append(_predicates, post.HasAuthorWith(user.DescriptionIsNil()))
+			_predicates = append(_predicates, __post.HasAuthorWith(__user.DescriptionIsNil()))
 		} else {
-			_predicates = append(_predicates, post.Not(post.HasAuthorWith(user.DescriptionIsNil())))
+			_predicates = append(_predicates, __post.Not(__post.HasAuthorWith(__user.DescriptionIsNil())))
 		}
 	}
 	if l.EdgeAuthorDescriptionContains != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.DescriptionContains(*l.EdgeAuthorDescriptionContains)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.DescriptionContains(*l.EdgeAuthorDescriptionContains)))
 	}
 	if l.EdgeAuthorDescriptionContainsFold != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.DescriptionContainsFold(*l.EdgeAuthorDescriptionContainsFold)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.DescriptionContainsFold(*l.EdgeAuthorDescriptionContainsFold)))
 	}
 	if l.EdgeAuthorEnabledEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EnabledEQ(*l.EdgeAuthorEnabledEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EnabledEQ(*l.EdgeAuthorEnabledEQ)))
 	}
 	if l.EdgeAuthorEmailEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EmailEQ(*l.EdgeAuthorEmailEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailEQ(*l.EdgeAuthorEmailEQ)))
 	}
 	if l.EdgeAuthorEmailNEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EmailNEQ(*l.EdgeAuthorEmailNEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailNEQ(*l.EdgeAuthorEmailNEQ)))
 	}
 	if l.EdgeAuthorEmailIsNil != nil {
 		if *l.EdgeAuthorEmailIsNil {
-			_predicates = append(_predicates, post.HasAuthorWith(user.EmailIsNil()))
+			_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailIsNil()))
 		} else {
-			_predicates = append(_predicates, post.Not(post.HasAuthorWith(user.EmailIsNil())))
+			_predicates = append(_predicates, __post.Not(__post.HasAuthorWith(__user.EmailIsNil())))
 		}
 	}
 	if l.EdgeAuthorEmailIn != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EmailIn(l.EdgeAuthorEmailIn...)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailIn(l.EdgeAuthorEmailIn...)))
 	}
 	if l.EdgeAuthorEmailNotIn != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EmailNotIn(l.EdgeAuthorEmailNotIn...)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailNotIn(l.EdgeAuthorEmailNotIn...)))
 	}
 	if l.EdgeAuthorEmailEqualFold != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EmailEqualFold(*l.EdgeAuthorEmailEqualFold)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailEqualFold(*l.EdgeAuthorEmailEqualFold)))
 	}
 	if l.EdgeAuthorEmailContains != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EmailContains(*l.EdgeAuthorEmailContains)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailContains(*l.EdgeAuthorEmailContains)))
 	}
 	if l.EdgeAuthorEmailContainsFold != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EmailContainsFold(*l.EdgeAuthorEmailContainsFold)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailContainsFold(*l.EdgeAuthorEmailContainsFold)))
 	}
 	if l.EdgeAuthorEmailHasPrefix != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EmailHasPrefix(*l.EdgeAuthorEmailHasPrefix)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailHasPrefix(*l.EdgeAuthorEmailHasPrefix)))
 	}
 	if l.EdgeAuthorEmailHasSuffix != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.EmailHasSuffix(*l.EdgeAuthorEmailHasSuffix)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.EmailHasSuffix(*l.EdgeAuthorEmailHasSuffix)))
 	}
 	if l.EdgeAuthorLastAuthenticatedAtEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.LastAuthenticatedAtEQ(*l.EdgeAuthorLastAuthenticatedAtEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.LastAuthenticatedAtEQ(*l.EdgeAuthorLastAuthenticatedAtEQ)))
 	}
 	if l.EdgeAuthorLastAuthenticatedAtNEQ != nil {
-		_predicates = append(_predicates, post.HasAuthorWith(user.LastAuthenticatedAtNEQ(*l.EdgeAuthorLastAuthenticatedAtNEQ)))
+		_predicates = append(_predicates, __post.HasAuthorWith(__user.LastAuthenticatedAtNEQ(*l.EdgeAuthorLastAuthenticatedAtNEQ)))
 	}
 	if l.EdgeAuthorLastAuthenticatedAtIsNil != nil {
 		if *l.EdgeAuthorLastAuthenticatedAtIsNil {
-			_predicates = append(_predicates, post.HasAuthorWith(user.LastAuthenticatedAtIsNil()))
+			_predicates = append(_predicates, __post.HasAuthorWith(__user.LastAuthenticatedAtIsNil()))
 		} else {
-			_predicates = append(_predicates, post.Not(post.HasAuthorWith(user.LastAuthenticatedAtIsNil())))
+			_predicates = append(_predicates, __post.Not(__post.HasAuthorWith(__user.LastAuthenticatedAtIsNil())))
 		}
 	}
 
@@ -1883,7 +1883,7 @@ func (l *ListPostParams) FilterPredicates() (predicate.Post, error) {
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListPostParams) ApplySorting(_query *ent.PostQuery) error {
+func (l *ListPostParams) ApplySorting(_query *__ent.PostQuery) error {
 	if err := l.Sorted.Validate(PostSortConfig); err != nil {
 		return err
 	}
@@ -1896,7 +1896,7 @@ func (l *ListPostParams) ApplySorting(_query *ent.PostQuery) error {
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
 // executes all necessary queries, returning the results.
-func (l *ListPostParams) Exec(ctx context.Context, _query *ent.PostQuery) (_results *PagedResponse[ent.Post], err error) {
+func (l *ListPostParams) Exec(ctx context.Context, _query *__ent.PostQuery) (_results *PagedResponse[__ent.Post], err error) {
 	_predicates, err := l.FilterPredicates()
 	if err != nil {
 		return nil, err
@@ -1912,8 +1912,8 @@ func (l *ListPostParams) Exec(ctx context.Context, _query *ent.PostQuery) (_resu
 // ListSettingParams defines parameters for listing Settings via a GET request.
 type ListSettingParams struct {
 	Sorted
-	Paginated[*ent.SettingsQuery, ent.Settings]
-	Filtered[predicate.Settings]
+	Paginated[*__ent.SettingsQuery, __ent.Settings]
+	Filtered[__predicate.Settings]
 
 	// Filters field "id" to be equal to the provided value.
 	SettingsIDEQ *int `form:"id.eq,omitempty" json:"settings_ideq,omitzero"`
@@ -1934,39 +1934,39 @@ type ListSettingParams struct {
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in Setting.
-func (l *ListSettingParams) FilterPredicates() (predicate.Settings, error) {
-	var _predicates []predicate.Settings
+func (l *ListSettingParams) FilterPredicates() (__predicate.Settings, error) {
+	var _predicates []__predicate.Settings
 
 	if l.SettingsIDEQ != nil {
-		_predicates = append(_predicates, settings.IDEQ(*l.SettingsIDEQ))
+		_predicates = append(_predicates, __settings.IDEQ(*l.SettingsIDEQ))
 	}
 	if l.SettingsIDNEQ != nil {
-		_predicates = append(_predicates, settings.IDNEQ(*l.SettingsIDNEQ))
+		_predicates = append(_predicates, __settings.IDNEQ(*l.SettingsIDNEQ))
 	}
 	if l.SettingsIDIn != nil {
-		_predicates = append(_predicates, settings.IDIn(l.SettingsIDIn...))
+		_predicates = append(_predicates, __settings.IDIn(l.SettingsIDIn...))
 	}
 	if l.SettingsIDNotIn != nil {
-		_predicates = append(_predicates, settings.IDNotIn(l.SettingsIDNotIn...))
+		_predicates = append(_predicates, __settings.IDNotIn(l.SettingsIDNotIn...))
 	}
 	if l.SettingsCreatedAtGT != nil {
-		_predicates = append(_predicates, settings.CreatedAtGT(*l.SettingsCreatedAtGT))
+		_predicates = append(_predicates, __settings.CreatedAtGT(*l.SettingsCreatedAtGT))
 	}
 	if l.SettingsCreatedAtLT != nil {
-		_predicates = append(_predicates, settings.CreatedAtLT(*l.SettingsCreatedAtLT))
+		_predicates = append(_predicates, __settings.CreatedAtLT(*l.SettingsCreatedAtLT))
 	}
 	if l.SettingsUpdatedAtGT != nil {
-		_predicates = append(_predicates, settings.UpdatedAtGT(*l.SettingsUpdatedAtGT))
+		_predicates = append(_predicates, __settings.UpdatedAtGT(*l.SettingsUpdatedAtGT))
 	}
 	if l.SettingsUpdatedAtLT != nil {
-		_predicates = append(_predicates, settings.UpdatedAtLT(*l.SettingsUpdatedAtLT))
+		_predicates = append(_predicates, __settings.UpdatedAtLT(*l.SettingsUpdatedAtLT))
 	}
 
 	return l.ApplyFilterOperation(_predicates...)
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListSettingParams) ApplySorting(_query *ent.SettingsQuery) error {
+func (l *ListSettingParams) ApplySorting(_query *__ent.SettingsQuery) error {
 	if err := l.Sorted.Validate(SettingSortConfig); err != nil {
 		return err
 	}
@@ -1979,7 +1979,7 @@ func (l *ListSettingParams) ApplySorting(_query *ent.SettingsQuery) error {
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
 // executes all necessary queries, returning the results.
-func (l *ListSettingParams) Exec(ctx context.Context, _query *ent.SettingsQuery) (_results *PagedResponse[ent.Settings], err error) {
+func (l *ListSettingParams) Exec(ctx context.Context, _query *__ent.SettingsQuery) (_results *PagedResponse[__ent.Settings], err error) {
 	_predicates, err := l.FilterPredicates()
 	if err != nil {
 		return nil, err
@@ -1995,8 +1995,8 @@ func (l *ListSettingParams) Exec(ctx context.Context, _query *ent.SettingsQuery)
 // ListUserParams defines parameters for listing Users via a GET request.
 type ListUserParams struct {
 	Sorted
-	Paginated[*ent.UserQuery, ent.User]
-	Filtered[predicate.User]
+	Paginated[*__ent.UserQuery, __ent.User]
+	Filtered[__predicate.User]
 
 	// Filters field "id" to be equal to the provided value.
 	UserIDEQ *uuid.UUID `form:"id.eq,omitempty" json:"user_ideq,omitzero"`
@@ -2033,13 +2033,13 @@ type ListUserParams struct {
 	// Filters field "name" to end with the provided value.
 	UserNameHasSuffix *string `form:"name.suffix,omitempty" json:"user_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	UserTypeEQ *user.Type `form:"type.eq,omitempty" json:"user_type_eq,omitzero"`
+	UserTypeEQ *__user.Type `form:"type.eq,omitempty" json:"user_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	UserTypeNEQ *user.Type `form:"type.neq,omitempty" json:"user_type_neq,omitzero"`
+	UserTypeNEQ *__user.Type `form:"type.neq,omitempty" json:"user_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	UserTypeIn []user.Type `form:"type.in,omitempty" json:"user_type_in,omitzero"`
+	UserTypeIn []__user.Type `form:"type.in,omitempty" json:"user_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	UserTypeNotIn []user.Type `form:"type.notIn,omitempty" json:"user_type_not_in,omitzero"`
+	UserTypeNotIn []__user.Type `form:"type.notIn,omitempty" json:"user_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
 	UserDescriptionIsNil *bool `form:"description.null,omitempty" json:"user_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
@@ -2117,13 +2117,13 @@ type ListUserParams struct {
 	// Filters field "age" to be not within the provided values.
 	EdgePetAgeNotIn []int `form:"pet.age.notIn,omitempty" json:"edge_pet_age_not_in,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgePetTypeEQ *pet.Type `form:"pet.type.eq,omitempty" json:"edge_pet_type_eq,omitzero"`
+	EdgePetTypeEQ *__pet.Type `form:"pet.type.eq,omitempty" json:"edge_pet_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgePetTypeNEQ *pet.Type `form:"pet.type.neq,omitempty" json:"edge_pet_type_neq,omitzero"`
+	EdgePetTypeNEQ *__pet.Type `form:"pet.type.neq,omitempty" json:"edge_pet_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgePetTypeIn []pet.Type `form:"pet.type.in,omitempty" json:"edge_pet_type_in,omitzero"`
+	EdgePetTypeIn []__pet.Type `form:"pet.type.in,omitempty" json:"edge_pet_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgePetTypeNotIn []pet.Type `form:"pet.type.notIn,omitempty" json:"edge_pet_type_not_in,omitzero"`
+	EdgePetTypeNotIn []__pet.Type `form:"pet.type.notIn,omitempty" json:"edge_pet_type_not_in,omitzero"`
 	// If true, only return entities that have a followed_pet edge.
 	EdgeHasFollowedPet *bool `form:"has.followedPet,omitempty" json:"edge_has_followed_pet,omitzero"`
 	// Filters field "id" to be equal to the provided value.
@@ -2167,13 +2167,13 @@ type ListUserParams struct {
 	// Filters field "age" to be not within the provided values.
 	EdgeFollowedPetAgeNotIn []int `form:"followedPet.age.notIn,omitempty" json:"edge_followed_pet_age_not_in,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFollowedPetTypeEQ *pet.Type `form:"followedPet.type.eq,omitempty" json:"edge_followed_pet_type_eq,omitzero"`
+	EdgeFollowedPetTypeEQ *__pet.Type `form:"followedPet.type.eq,omitempty" json:"edge_followed_pet_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFollowedPetTypeNEQ *pet.Type `form:"followedPet.type.neq,omitempty" json:"edge_followed_pet_type_neq,omitzero"`
+	EdgeFollowedPetTypeNEQ *__pet.Type `form:"followedPet.type.neq,omitempty" json:"edge_followed_pet_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFollowedPetTypeIn []pet.Type `form:"followedPet.type.in,omitempty" json:"edge_followed_pet_type_in,omitzero"`
+	EdgeFollowedPetTypeIn []__pet.Type `form:"followedPet.type.in,omitempty" json:"edge_followed_pet_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFollowedPetTypeNotIn []pet.Type `form:"followedPet.type.notIn,omitempty" json:"edge_followed_pet_type_not_in,omitzero"`
+	EdgeFollowedPetTypeNotIn []__pet.Type `form:"followedPet.type.notIn,omitempty" json:"edge_followed_pet_type_not_in,omitzero"`
 	// If true, only return entities that have a friend edge.
 	EdgeHasFriend *bool `form:"has.friend,omitempty" json:"edge_has_friend,omitzero"`
 	// Filters field "id" to be equal to the provided value.
@@ -2211,13 +2211,13 @@ type ListUserParams struct {
 	// Filters field "name" to end with the provided value.
 	EdgeFriendNameHasSuffix *string `form:"friend.name.suffix,omitempty" json:"edge_friend_name_has_suffix,omitzero"`
 	// Filters field "type" to be equal to the provided value.
-	EdgeFriendTypeEQ *user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitzero"`
+	EdgeFriendTypeEQ *__user.Type `form:"friend.type.eq,omitempty" json:"edge_friend_type_eq,omitzero"`
 	// Filters field "type" to be not equal to the provided value.
-	EdgeFriendTypeNEQ *user.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitzero"`
+	EdgeFriendTypeNEQ *__user.Type `form:"friend.type.neq,omitempty" json:"edge_friend_type_neq,omitzero"`
 	// Filters field "type" to be within the provided values.
-	EdgeFriendTypeIn []user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitzero"`
+	EdgeFriendTypeIn []__user.Type `form:"friend.type.in,omitempty" json:"edge_friend_type_in,omitzero"`
 	// Filters field "type" to be not within the provided values.
-	EdgeFriendTypeNotIn []user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitzero"`
+	EdgeFriendTypeNotIn []__user.Type `form:"friend.type.notIn,omitempty" json:"edge_friend_type_not_in,omitzero"`
 	// Filters field "description" to be null/nil.
 	EdgeFriendDescriptionIsNil *bool `form:"friend.description.null,omitempty" json:"edge_friend_description_is_nil,omitzero"`
 	// Filters field "description" to contain the provided value.
@@ -2302,553 +2302,553 @@ type ListUserParams struct {
 }
 
 // FilterPredicates returns the predicates for filter-related parameters in User.
-func (l *ListUserParams) FilterPredicates() (predicate.User, error) {
-	var _predicates []predicate.User
+func (l *ListUserParams) FilterPredicates() (__predicate.User, error) {
+	var _predicates []__predicate.User
 
 	if l.UserIDEQ != nil {
-		_predicates = append(_predicates, user.IDEQ(*l.UserIDEQ))
+		_predicates = append(_predicates, __user.IDEQ(*l.UserIDEQ))
 	}
 	if l.UserIDNEQ != nil {
-		_predicates = append(_predicates, user.IDNEQ(*l.UserIDNEQ))
+		_predicates = append(_predicates, __user.IDNEQ(*l.UserIDNEQ))
 	}
 	if l.UserIDIn != nil {
-		_predicates = append(_predicates, user.IDIn(l.UserIDIn...))
+		_predicates = append(_predicates, __user.IDIn(l.UserIDIn...))
 	}
 	if l.UserIDNotIn != nil {
-		_predicates = append(_predicates, user.IDNotIn(l.UserIDNotIn...))
+		_predicates = append(_predicates, __user.IDNotIn(l.UserIDNotIn...))
 	}
 	if l.UserCreatedAtGT != nil {
-		_predicates = append(_predicates, user.CreatedAtGT(*l.UserCreatedAtGT))
+		_predicates = append(_predicates, __user.CreatedAtGT(*l.UserCreatedAtGT))
 	}
 	if l.UserCreatedAtLT != nil {
-		_predicates = append(_predicates, user.CreatedAtLT(*l.UserCreatedAtLT))
+		_predicates = append(_predicates, __user.CreatedAtLT(*l.UserCreatedAtLT))
 	}
 	if l.UserUpdatedAtGT != nil {
-		_predicates = append(_predicates, user.UpdatedAtGT(*l.UserUpdatedAtGT))
+		_predicates = append(_predicates, __user.UpdatedAtGT(*l.UserUpdatedAtGT))
 	}
 	if l.UserUpdatedAtLT != nil {
-		_predicates = append(_predicates, user.UpdatedAtLT(*l.UserUpdatedAtLT))
+		_predicates = append(_predicates, __user.UpdatedAtLT(*l.UserUpdatedAtLT))
 	}
 	if l.UserNameEQ != nil {
-		_predicates = append(_predicates, user.NameEQ(*l.UserNameEQ))
+		_predicates = append(_predicates, __user.NameEQ(*l.UserNameEQ))
 	}
 	if l.UserNameNEQ != nil {
-		_predicates = append(_predicates, user.NameNEQ(*l.UserNameNEQ))
+		_predicates = append(_predicates, __user.NameNEQ(*l.UserNameNEQ))
 	}
 	if l.UserNameIn != nil {
-		_predicates = append(_predicates, user.NameIn(l.UserNameIn...))
+		_predicates = append(_predicates, __user.NameIn(l.UserNameIn...))
 	}
 	if l.UserNameNotIn != nil {
-		_predicates = append(_predicates, user.NameNotIn(l.UserNameNotIn...))
+		_predicates = append(_predicates, __user.NameNotIn(l.UserNameNotIn...))
 	}
 	if l.UserNameEqualFold != nil {
-		_predicates = append(_predicates, user.NameEqualFold(*l.UserNameEqualFold))
+		_predicates = append(_predicates, __user.NameEqualFold(*l.UserNameEqualFold))
 	}
 	if l.UserNameContains != nil {
-		_predicates = append(_predicates, user.NameContains(*l.UserNameContains))
+		_predicates = append(_predicates, __user.NameContains(*l.UserNameContains))
 	}
 	if l.UserNameContainsFold != nil {
-		_predicates = append(_predicates, user.NameContainsFold(*l.UserNameContainsFold))
+		_predicates = append(_predicates, __user.NameContainsFold(*l.UserNameContainsFold))
 	}
 	if l.UserNameHasPrefix != nil {
-		_predicates = append(_predicates, user.NameHasPrefix(*l.UserNameHasPrefix))
+		_predicates = append(_predicates, __user.NameHasPrefix(*l.UserNameHasPrefix))
 	}
 	if l.UserNameHasSuffix != nil {
-		_predicates = append(_predicates, user.NameHasSuffix(*l.UserNameHasSuffix))
+		_predicates = append(_predicates, __user.NameHasSuffix(*l.UserNameHasSuffix))
 	}
 	if l.UserTypeEQ != nil {
-		_predicates = append(_predicates, user.TypeEQ(*l.UserTypeEQ))
+		_predicates = append(_predicates, __user.TypeEQ(*l.UserTypeEQ))
 	}
 	if l.UserTypeNEQ != nil {
-		_predicates = append(_predicates, user.TypeNEQ(*l.UserTypeNEQ))
+		_predicates = append(_predicates, __user.TypeNEQ(*l.UserTypeNEQ))
 	}
 	if l.UserTypeIn != nil {
-		_predicates = append(_predicates, user.TypeIn(l.UserTypeIn...))
+		_predicates = append(_predicates, __user.TypeIn(l.UserTypeIn...))
 	}
 	if l.UserTypeNotIn != nil {
-		_predicates = append(_predicates, user.TypeNotIn(l.UserTypeNotIn...))
+		_predicates = append(_predicates, __user.TypeNotIn(l.UserTypeNotIn...))
 	}
 	if l.UserDescriptionIsNil != nil {
 		if *l.UserDescriptionIsNil {
-			_predicates = append(_predicates, user.DescriptionIsNil())
+			_predicates = append(_predicates, __user.DescriptionIsNil())
 		} else {
-			_predicates = append(_predicates, user.Not(user.DescriptionIsNil()))
+			_predicates = append(_predicates, __user.Not(__user.DescriptionIsNil()))
 		}
 	}
 	if l.UserDescriptionContains != nil {
-		_predicates = append(_predicates, user.DescriptionContains(*l.UserDescriptionContains))
+		_predicates = append(_predicates, __user.DescriptionContains(*l.UserDescriptionContains))
 	}
 	if l.UserDescriptionContainsFold != nil {
-		_predicates = append(_predicates, user.DescriptionContainsFold(*l.UserDescriptionContainsFold))
+		_predicates = append(_predicates, __user.DescriptionContainsFold(*l.UserDescriptionContainsFold))
 	}
 	if l.UserEnabledEQ != nil {
-		_predicates = append(_predicates, user.EnabledEQ(*l.UserEnabledEQ))
+		_predicates = append(_predicates, __user.EnabledEQ(*l.UserEnabledEQ))
 	}
 	if l.UserEmailEQ != nil {
-		_predicates = append(_predicates, user.EmailEQ(*l.UserEmailEQ))
+		_predicates = append(_predicates, __user.EmailEQ(*l.UserEmailEQ))
 	}
 	if l.UserEmailNEQ != nil {
-		_predicates = append(_predicates, user.EmailNEQ(*l.UserEmailNEQ))
+		_predicates = append(_predicates, __user.EmailNEQ(*l.UserEmailNEQ))
 	}
 	if l.UserEmailIsNil != nil {
 		if *l.UserEmailIsNil {
-			_predicates = append(_predicates, user.EmailIsNil())
+			_predicates = append(_predicates, __user.EmailIsNil())
 		} else {
-			_predicates = append(_predicates, user.Not(user.EmailIsNil()))
+			_predicates = append(_predicates, __user.Not(__user.EmailIsNil()))
 		}
 	}
 	if l.UserEmailIn != nil {
-		_predicates = append(_predicates, user.EmailIn(l.UserEmailIn...))
+		_predicates = append(_predicates, __user.EmailIn(l.UserEmailIn...))
 	}
 	if l.UserEmailNotIn != nil {
-		_predicates = append(_predicates, user.EmailNotIn(l.UserEmailNotIn...))
+		_predicates = append(_predicates, __user.EmailNotIn(l.UserEmailNotIn...))
 	}
 	if l.UserEmailEqualFold != nil {
-		_predicates = append(_predicates, user.EmailEqualFold(*l.UserEmailEqualFold))
+		_predicates = append(_predicates, __user.EmailEqualFold(*l.UserEmailEqualFold))
 	}
 	if l.UserEmailContains != nil {
-		_predicates = append(_predicates, user.EmailContains(*l.UserEmailContains))
+		_predicates = append(_predicates, __user.EmailContains(*l.UserEmailContains))
 	}
 	if l.UserEmailContainsFold != nil {
-		_predicates = append(_predicates, user.EmailContainsFold(*l.UserEmailContainsFold))
+		_predicates = append(_predicates, __user.EmailContainsFold(*l.UserEmailContainsFold))
 	}
 	if l.UserEmailHasPrefix != nil {
-		_predicates = append(_predicates, user.EmailHasPrefix(*l.UserEmailHasPrefix))
+		_predicates = append(_predicates, __user.EmailHasPrefix(*l.UserEmailHasPrefix))
 	}
 	if l.UserEmailHasSuffix != nil {
-		_predicates = append(_predicates, user.EmailHasSuffix(*l.UserEmailHasSuffix))
+		_predicates = append(_predicates, __user.EmailHasSuffix(*l.UserEmailHasSuffix))
 	}
 	if l.UserLastAuthenticatedAtEQ != nil {
-		_predicates = append(_predicates, user.LastAuthenticatedAtEQ(*l.UserLastAuthenticatedAtEQ))
+		_predicates = append(_predicates, __user.LastAuthenticatedAtEQ(*l.UserLastAuthenticatedAtEQ))
 	}
 	if l.UserLastAuthenticatedAtNEQ != nil {
-		_predicates = append(_predicates, user.LastAuthenticatedAtNEQ(*l.UserLastAuthenticatedAtNEQ))
+		_predicates = append(_predicates, __user.LastAuthenticatedAtNEQ(*l.UserLastAuthenticatedAtNEQ))
 	}
 	if l.UserLastAuthenticatedAtIsNil != nil {
 		if *l.UserLastAuthenticatedAtIsNil {
-			_predicates = append(_predicates, user.LastAuthenticatedAtIsNil())
+			_predicates = append(_predicates, __user.LastAuthenticatedAtIsNil())
 		} else {
-			_predicates = append(_predicates, user.Not(user.LastAuthenticatedAtIsNil()))
+			_predicates = append(_predicates, __user.Not(__user.LastAuthenticatedAtIsNil()))
 		}
 	}
 	if l.EdgeHasPet != nil {
 		if *l.EdgeHasPet {
-			_predicates = append(_predicates, user.HasPets())
+			_predicates = append(_predicates, __user.HasPets())
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasPets()))
+			_predicates = append(_predicates, __user.Not(__user.HasPets()))
 		}
 	}
 	if l.EdgePetIDEQ != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.IDEQ(*l.EdgePetIDEQ)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.IDEQ(*l.EdgePetIDEQ)))
 	}
 	if l.EdgePetIDNEQ != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.IDNEQ(*l.EdgePetIDNEQ)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.IDNEQ(*l.EdgePetIDNEQ)))
 	}
 	if l.EdgePetIDIn != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.IDIn(l.EdgePetIDIn...)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.IDIn(l.EdgePetIDIn...)))
 	}
 	if l.EdgePetIDNotIn != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.IDNotIn(l.EdgePetIDNotIn...)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.IDNotIn(l.EdgePetIDNotIn...)))
 	}
 	if l.EdgePetNameEQ != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.NameEQ(*l.EdgePetNameEQ)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.NameEQ(*l.EdgePetNameEQ)))
 	}
 	if l.EdgePetNameNEQ != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.NameNEQ(*l.EdgePetNameNEQ)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.NameNEQ(*l.EdgePetNameNEQ)))
 	}
 	if l.EdgePetNameIn != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.NameIn(l.EdgePetNameIn...)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.NameIn(l.EdgePetNameIn...)))
 	}
 	if l.EdgePetNameNotIn != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.NameNotIn(l.EdgePetNameNotIn...)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.NameNotIn(l.EdgePetNameNotIn...)))
 	}
 	if l.EdgePetNameEqualFold != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.NameEqualFold(*l.EdgePetNameEqualFold)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.NameEqualFold(*l.EdgePetNameEqualFold)))
 	}
 	if l.EdgePetNameContains != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.NameContains(*l.EdgePetNameContains)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.NameContains(*l.EdgePetNameContains)))
 	}
 	if l.EdgePetNameContainsFold != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.NameContainsFold(*l.EdgePetNameContainsFold)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.NameContainsFold(*l.EdgePetNameContainsFold)))
 	}
 	if l.EdgePetNameHasPrefix != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.NameHasPrefix(*l.EdgePetNameHasPrefix)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.NameHasPrefix(*l.EdgePetNameHasPrefix)))
 	}
 	if l.EdgePetNameHasSuffix != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.NameHasSuffix(*l.EdgePetNameHasSuffix)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.NameHasSuffix(*l.EdgePetNameHasSuffix)))
 	}
 	if l.EdgePetNicknamesIsNil != nil {
 		if *l.EdgePetNicknamesIsNil {
-			_predicates = append(_predicates, user.HasPetsWith(pet.NicknamesIsNil()))
+			_predicates = append(_predicates, __user.HasPetsWith(__pet.NicknamesIsNil()))
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasPetsWith(pet.NicknamesIsNil())))
+			_predicates = append(_predicates, __user.Not(__user.HasPetsWith(__pet.NicknamesIsNil())))
 		}
 	}
 	if l.EdgePetAgeEQ != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.AgeEQ(*l.EdgePetAgeEQ)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.AgeEQ(*l.EdgePetAgeEQ)))
 	}
 	if l.EdgePetAgeNEQ != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.AgeNEQ(*l.EdgePetAgeNEQ)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.AgeNEQ(*l.EdgePetAgeNEQ)))
 	}
 	if l.EdgePetAgeGT != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.AgeGT(*l.EdgePetAgeGT)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.AgeGT(*l.EdgePetAgeGT)))
 	}
 	if l.EdgePetAgeLT != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.AgeLT(*l.EdgePetAgeLT)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.AgeLT(*l.EdgePetAgeLT)))
 	}
 	if l.EdgePetAgeIn != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.AgeIn(l.EdgePetAgeIn...)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.AgeIn(l.EdgePetAgeIn...)))
 	}
 	if l.EdgePetAgeNotIn != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.AgeNotIn(l.EdgePetAgeNotIn...)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.AgeNotIn(l.EdgePetAgeNotIn...)))
 	}
 	if l.EdgePetTypeEQ != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.TypeEQ(*l.EdgePetTypeEQ)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.TypeEQ(*l.EdgePetTypeEQ)))
 	}
 	if l.EdgePetTypeNEQ != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.TypeNEQ(*l.EdgePetTypeNEQ)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.TypeNEQ(*l.EdgePetTypeNEQ)))
 	}
 	if l.EdgePetTypeIn != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.TypeIn(l.EdgePetTypeIn...)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.TypeIn(l.EdgePetTypeIn...)))
 	}
 	if l.EdgePetTypeNotIn != nil {
-		_predicates = append(_predicates, user.HasPetsWith(pet.TypeNotIn(l.EdgePetTypeNotIn...)))
+		_predicates = append(_predicates, __user.HasPetsWith(__pet.TypeNotIn(l.EdgePetTypeNotIn...)))
 	}
 	if l.EdgeHasFollowedPet != nil {
 		if *l.EdgeHasFollowedPet {
-			_predicates = append(_predicates, user.HasFollowedPets())
+			_predicates = append(_predicates, __user.HasFollowedPets())
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasFollowedPets()))
+			_predicates = append(_predicates, __user.Not(__user.HasFollowedPets()))
 		}
 	}
 	if l.EdgeFollowedPetIDEQ != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.IDEQ(*l.EdgeFollowedPetIDEQ)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.IDEQ(*l.EdgeFollowedPetIDEQ)))
 	}
 	if l.EdgeFollowedPetIDNEQ != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.IDNEQ(*l.EdgeFollowedPetIDNEQ)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.IDNEQ(*l.EdgeFollowedPetIDNEQ)))
 	}
 	if l.EdgeFollowedPetIDIn != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.IDIn(l.EdgeFollowedPetIDIn...)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.IDIn(l.EdgeFollowedPetIDIn...)))
 	}
 	if l.EdgeFollowedPetIDNotIn != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.IDNotIn(l.EdgeFollowedPetIDNotIn...)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.IDNotIn(l.EdgeFollowedPetIDNotIn...)))
 	}
 	if l.EdgeFollowedPetNameEQ != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NameEQ(*l.EdgeFollowedPetNameEQ)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NameEQ(*l.EdgeFollowedPetNameEQ)))
 	}
 	if l.EdgeFollowedPetNameNEQ != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NameNEQ(*l.EdgeFollowedPetNameNEQ)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NameNEQ(*l.EdgeFollowedPetNameNEQ)))
 	}
 	if l.EdgeFollowedPetNameIn != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NameIn(l.EdgeFollowedPetNameIn...)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NameIn(l.EdgeFollowedPetNameIn...)))
 	}
 	if l.EdgeFollowedPetNameNotIn != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NameNotIn(l.EdgeFollowedPetNameNotIn...)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NameNotIn(l.EdgeFollowedPetNameNotIn...)))
 	}
 	if l.EdgeFollowedPetNameEqualFold != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NameEqualFold(*l.EdgeFollowedPetNameEqualFold)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NameEqualFold(*l.EdgeFollowedPetNameEqualFold)))
 	}
 	if l.EdgeFollowedPetNameContains != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NameContains(*l.EdgeFollowedPetNameContains)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NameContains(*l.EdgeFollowedPetNameContains)))
 	}
 	if l.EdgeFollowedPetNameContainsFold != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NameContainsFold(*l.EdgeFollowedPetNameContainsFold)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NameContainsFold(*l.EdgeFollowedPetNameContainsFold)))
 	}
 	if l.EdgeFollowedPetNameHasPrefix != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NameHasPrefix(*l.EdgeFollowedPetNameHasPrefix)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NameHasPrefix(*l.EdgeFollowedPetNameHasPrefix)))
 	}
 	if l.EdgeFollowedPetNameHasSuffix != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NameHasSuffix(*l.EdgeFollowedPetNameHasSuffix)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NameHasSuffix(*l.EdgeFollowedPetNameHasSuffix)))
 	}
 	if l.EdgeFollowedPetNicknamesIsNil != nil {
 		if *l.EdgeFollowedPetNicknamesIsNil {
-			_predicates = append(_predicates, user.HasFollowedPetsWith(pet.NicknamesIsNil()))
+			_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.NicknamesIsNil()))
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasFollowedPetsWith(pet.NicknamesIsNil())))
+			_predicates = append(_predicates, __user.Not(__user.HasFollowedPetsWith(__pet.NicknamesIsNil())))
 		}
 	}
 	if l.EdgeFollowedPetAgeEQ != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.AgeEQ(*l.EdgeFollowedPetAgeEQ)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.AgeEQ(*l.EdgeFollowedPetAgeEQ)))
 	}
 	if l.EdgeFollowedPetAgeNEQ != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.AgeNEQ(*l.EdgeFollowedPetAgeNEQ)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.AgeNEQ(*l.EdgeFollowedPetAgeNEQ)))
 	}
 	if l.EdgeFollowedPetAgeGT != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.AgeGT(*l.EdgeFollowedPetAgeGT)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.AgeGT(*l.EdgeFollowedPetAgeGT)))
 	}
 	if l.EdgeFollowedPetAgeLT != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.AgeLT(*l.EdgeFollowedPetAgeLT)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.AgeLT(*l.EdgeFollowedPetAgeLT)))
 	}
 	if l.EdgeFollowedPetAgeIn != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.AgeIn(l.EdgeFollowedPetAgeIn...)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.AgeIn(l.EdgeFollowedPetAgeIn...)))
 	}
 	if l.EdgeFollowedPetAgeNotIn != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.AgeNotIn(l.EdgeFollowedPetAgeNotIn...)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.AgeNotIn(l.EdgeFollowedPetAgeNotIn...)))
 	}
 	if l.EdgeFollowedPetTypeEQ != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.TypeEQ(*l.EdgeFollowedPetTypeEQ)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.TypeEQ(*l.EdgeFollowedPetTypeEQ)))
 	}
 	if l.EdgeFollowedPetTypeNEQ != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.TypeNEQ(*l.EdgeFollowedPetTypeNEQ)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.TypeNEQ(*l.EdgeFollowedPetTypeNEQ)))
 	}
 	if l.EdgeFollowedPetTypeIn != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.TypeIn(l.EdgeFollowedPetTypeIn...)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.TypeIn(l.EdgeFollowedPetTypeIn...)))
 	}
 	if l.EdgeFollowedPetTypeNotIn != nil {
-		_predicates = append(_predicates, user.HasFollowedPetsWith(pet.TypeNotIn(l.EdgeFollowedPetTypeNotIn...)))
+		_predicates = append(_predicates, __user.HasFollowedPetsWith(__pet.TypeNotIn(l.EdgeFollowedPetTypeNotIn...)))
 	}
 	if l.EdgeHasFriend != nil {
 		if *l.EdgeHasFriend {
-			_predicates = append(_predicates, user.HasFriends())
+			_predicates = append(_predicates, __user.HasFriends())
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasFriends()))
+			_predicates = append(_predicates, __user.Not(__user.HasFriends()))
 		}
 	}
 	if l.EdgeFriendIDEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.IDEQ(*l.EdgeFriendIDEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.IDEQ(*l.EdgeFriendIDEQ)))
 	}
 	if l.EdgeFriendIDNEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.IDNEQ(*l.EdgeFriendIDNEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.IDNEQ(*l.EdgeFriendIDNEQ)))
 	}
 	if l.EdgeFriendIDIn != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.IDIn(l.EdgeFriendIDIn...)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.IDIn(l.EdgeFriendIDIn...)))
 	}
 	if l.EdgeFriendIDNotIn != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.IDNotIn(l.EdgeFriendIDNotIn...)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.IDNotIn(l.EdgeFriendIDNotIn...)))
 	}
 	if l.EdgeFriendCreatedAtGT != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.CreatedAtGT(*l.EdgeFriendCreatedAtGT)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.CreatedAtGT(*l.EdgeFriendCreatedAtGT)))
 	}
 	if l.EdgeFriendCreatedAtLT != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.CreatedAtLT(*l.EdgeFriendCreatedAtLT)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.CreatedAtLT(*l.EdgeFriendCreatedAtLT)))
 	}
 	if l.EdgeFriendUpdatedAtGT != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.UpdatedAtGT(*l.EdgeFriendUpdatedAtGT)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.UpdatedAtGT(*l.EdgeFriendUpdatedAtGT)))
 	}
 	if l.EdgeFriendUpdatedAtLT != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.UpdatedAtLT(*l.EdgeFriendUpdatedAtLT)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.UpdatedAtLT(*l.EdgeFriendUpdatedAtLT)))
 	}
 	if l.EdgeFriendNameEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.NameEQ(*l.EdgeFriendNameEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.NameEQ(*l.EdgeFriendNameEQ)))
 	}
 	if l.EdgeFriendNameNEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.NameNEQ(*l.EdgeFriendNameNEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.NameNEQ(*l.EdgeFriendNameNEQ)))
 	}
 	if l.EdgeFriendNameIn != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.NameIn(l.EdgeFriendNameIn...)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.NameIn(l.EdgeFriendNameIn...)))
 	}
 	if l.EdgeFriendNameNotIn != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.NameNotIn(l.EdgeFriendNameNotIn...)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.NameNotIn(l.EdgeFriendNameNotIn...)))
 	}
 	if l.EdgeFriendNameEqualFold != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.NameEqualFold(*l.EdgeFriendNameEqualFold)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.NameEqualFold(*l.EdgeFriendNameEqualFold)))
 	}
 	if l.EdgeFriendNameContains != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.NameContains(*l.EdgeFriendNameContains)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.NameContains(*l.EdgeFriendNameContains)))
 	}
 	if l.EdgeFriendNameContainsFold != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.NameContainsFold(*l.EdgeFriendNameContainsFold)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.NameContainsFold(*l.EdgeFriendNameContainsFold)))
 	}
 	if l.EdgeFriendNameHasPrefix != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.NameHasPrefix(*l.EdgeFriendNameHasPrefix)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.NameHasPrefix(*l.EdgeFriendNameHasPrefix)))
 	}
 	if l.EdgeFriendNameHasSuffix != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.NameHasSuffix(*l.EdgeFriendNameHasSuffix)))
 	}
 	if l.EdgeFriendTypeEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.TypeEQ(*l.EdgeFriendTypeEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.TypeEQ(*l.EdgeFriendTypeEQ)))
 	}
 	if l.EdgeFriendTypeNEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.TypeNEQ(*l.EdgeFriendTypeNEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.TypeNEQ(*l.EdgeFriendTypeNEQ)))
 	}
 	if l.EdgeFriendTypeIn != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.TypeIn(l.EdgeFriendTypeIn...)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.TypeIn(l.EdgeFriendTypeIn...)))
 	}
 	if l.EdgeFriendTypeNotIn != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.TypeNotIn(l.EdgeFriendTypeNotIn...)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.TypeNotIn(l.EdgeFriendTypeNotIn...)))
 	}
 	if l.EdgeFriendDescriptionIsNil != nil {
 		if *l.EdgeFriendDescriptionIsNil {
-			_predicates = append(_predicates, user.HasFriendsWith(user.DescriptionIsNil()))
+			_predicates = append(_predicates, __user.HasFriendsWith(__user.DescriptionIsNil()))
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasFriendsWith(user.DescriptionIsNil())))
+			_predicates = append(_predicates, __user.Not(__user.HasFriendsWith(__user.DescriptionIsNil())))
 		}
 	}
 	if l.EdgeFriendDescriptionContains != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.DescriptionContains(*l.EdgeFriendDescriptionContains)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.DescriptionContains(*l.EdgeFriendDescriptionContains)))
 	}
 	if l.EdgeFriendDescriptionContainsFold != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.DescriptionContainsFold(*l.EdgeFriendDescriptionContainsFold)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.DescriptionContainsFold(*l.EdgeFriendDescriptionContainsFold)))
 	}
 	if l.EdgeFriendEnabledEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EnabledEQ(*l.EdgeFriendEnabledEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EnabledEQ(*l.EdgeFriendEnabledEQ)))
 	}
 	if l.EdgeFriendEmailEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EmailEQ(*l.EdgeFriendEmailEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailEQ(*l.EdgeFriendEmailEQ)))
 	}
 	if l.EdgeFriendEmailNEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EmailNEQ(*l.EdgeFriendEmailNEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailNEQ(*l.EdgeFriendEmailNEQ)))
 	}
 	if l.EdgeFriendEmailIsNil != nil {
 		if *l.EdgeFriendEmailIsNil {
-			_predicates = append(_predicates, user.HasFriendsWith(user.EmailIsNil()))
+			_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailIsNil()))
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasFriendsWith(user.EmailIsNil())))
+			_predicates = append(_predicates, __user.Not(__user.HasFriendsWith(__user.EmailIsNil())))
 		}
 	}
 	if l.EdgeFriendEmailIn != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EmailIn(l.EdgeFriendEmailIn...)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailIn(l.EdgeFriendEmailIn...)))
 	}
 	if l.EdgeFriendEmailNotIn != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EmailNotIn(l.EdgeFriendEmailNotIn...)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailNotIn(l.EdgeFriendEmailNotIn...)))
 	}
 	if l.EdgeFriendEmailEqualFold != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EmailEqualFold(*l.EdgeFriendEmailEqualFold)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailEqualFold(*l.EdgeFriendEmailEqualFold)))
 	}
 	if l.EdgeFriendEmailContains != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EmailContains(*l.EdgeFriendEmailContains)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailContains(*l.EdgeFriendEmailContains)))
 	}
 	if l.EdgeFriendEmailContainsFold != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EmailContainsFold(*l.EdgeFriendEmailContainsFold)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailContainsFold(*l.EdgeFriendEmailContainsFold)))
 	}
 	if l.EdgeFriendEmailHasPrefix != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EmailHasPrefix(*l.EdgeFriendEmailHasPrefix)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailHasPrefix(*l.EdgeFriendEmailHasPrefix)))
 	}
 	if l.EdgeFriendEmailHasSuffix != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.EmailHasSuffix(*l.EdgeFriendEmailHasSuffix)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.EmailHasSuffix(*l.EdgeFriendEmailHasSuffix)))
 	}
 	if l.EdgeFriendLastAuthenticatedAtEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.LastAuthenticatedAtEQ(*l.EdgeFriendLastAuthenticatedAtEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.LastAuthenticatedAtEQ(*l.EdgeFriendLastAuthenticatedAtEQ)))
 	}
 	if l.EdgeFriendLastAuthenticatedAtNEQ != nil {
-		_predicates = append(_predicates, user.HasFriendsWith(user.LastAuthenticatedAtNEQ(*l.EdgeFriendLastAuthenticatedAtNEQ)))
+		_predicates = append(_predicates, __user.HasFriendsWith(__user.LastAuthenticatedAtNEQ(*l.EdgeFriendLastAuthenticatedAtNEQ)))
 	}
 	if l.EdgeFriendLastAuthenticatedAtIsNil != nil {
 		if *l.EdgeFriendLastAuthenticatedAtIsNil {
-			_predicates = append(_predicates, user.HasFriendsWith(user.LastAuthenticatedAtIsNil()))
+			_predicates = append(_predicates, __user.HasFriendsWith(__user.LastAuthenticatedAtIsNil()))
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasFriendsWith(user.LastAuthenticatedAtIsNil())))
+			_predicates = append(_predicates, __user.Not(__user.HasFriendsWith(__user.LastAuthenticatedAtIsNil())))
 		}
 	}
 	if l.EdgeHasFollowing != nil {
 		if *l.EdgeHasFollowing {
-			_predicates = append(_predicates, user.HasFollowing())
+			_predicates = append(_predicates, __user.HasFollowing())
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasFollowing()))
+			_predicates = append(_predicates, __user.Not(__user.HasFollowing()))
 		}
 	}
 	if l.EdgeHasFriendship != nil {
 		if *l.EdgeHasFriendship {
-			_predicates = append(_predicates, user.HasFriendships())
+			_predicates = append(_predicates, __user.HasFriendships())
 		} else {
-			_predicates = append(_predicates, user.Not(user.HasFriendships()))
+			_predicates = append(_predicates, __user.Not(__user.HasFriendships()))
 		}
 	}
 	if l.EdgeFriendshipIDEQ != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.IDEQ(*l.EdgeFriendshipIDEQ)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.IDEQ(*l.EdgeFriendshipIDEQ)))
 	}
 	if l.EdgeFriendshipIDNEQ != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.IDNEQ(*l.EdgeFriendshipIDNEQ)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.IDNEQ(*l.EdgeFriendshipIDNEQ)))
 	}
 	if l.EdgeFriendshipIDIn != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.IDIn(l.EdgeFriendshipIDIn...)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.IDIn(l.EdgeFriendshipIDIn...)))
 	}
 	if l.EdgeFriendshipIDNotIn != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.IDNotIn(l.EdgeFriendshipIDNotIn...)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.IDNotIn(l.EdgeFriendshipIDNotIn...)))
 	}
 	if l.EdgeFriendshipUserIDEQ != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.UserIDEQ(*l.EdgeFriendshipUserIDEQ)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.UserIDEQ(*l.EdgeFriendshipUserIDEQ)))
 	}
 	if l.EdgeFriendshipUserIDNEQ != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.UserIDNEQ(*l.EdgeFriendshipUserIDNEQ)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.UserIDNEQ(*l.EdgeFriendshipUserIDNEQ)))
 	}
 	if l.EdgeFriendshipUserIDIn != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.UserIDIn(l.EdgeFriendshipUserIDIn...)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.UserIDIn(l.EdgeFriendshipUserIDIn...)))
 	}
 	if l.EdgeFriendshipUserIDNotIn != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.UserIDNotIn(l.EdgeFriendshipUserIDNotIn...)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.UserIDNotIn(l.EdgeFriendshipUserIDNotIn...)))
 	}
 	if l.EdgeFriendshipFriendIDEQ != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.FriendIDEQ(*l.EdgeFriendshipFriendIDEQ)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.FriendIDEQ(*l.EdgeFriendshipFriendIDEQ)))
 	}
 	if l.EdgeFriendshipFriendIDNEQ != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.FriendIDNEQ(*l.EdgeFriendshipFriendIDNEQ)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.FriendIDNEQ(*l.EdgeFriendshipFriendIDNEQ)))
 	}
 	if l.EdgeFriendshipFriendIDIn != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.FriendIDIn(l.EdgeFriendshipFriendIDIn...)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.FriendIDIn(l.EdgeFriendshipFriendIDIn...)))
 	}
 	if l.EdgeFriendshipFriendIDNotIn != nil {
-		_predicates = append(_predicates, user.HasFriendshipsWith(friendship.FriendIDNotIn(l.EdgeFriendshipFriendIDNotIn...)))
+		_predicates = append(_predicates, __user.HasFriendshipsWith(__friendship.FriendIDNotIn(l.EdgeFriendshipFriendIDNotIn...)))
 	}
 
 	if l.UserFilterGroupSearchEQ != nil {
 		_predicates = append(_predicates, sql.OrPredicates(
-			user.NameEQ(*l.UserFilterGroupSearchEQ),
-			user.DescriptionEQ(*l.UserFilterGroupSearchEQ),
-			user.EmailEQ(*l.UserFilterGroupSearchEQ),
+			__user.NameEQ(*l.UserFilterGroupSearchEQ),
+			__user.DescriptionEQ(*l.UserFilterGroupSearchEQ),
+			__user.EmailEQ(*l.UserFilterGroupSearchEQ),
 		))
 	}
 	if l.UserFilterGroupSearchNEQ != nil {
 		_predicates = append(_predicates, sql.OrPredicates(
-			user.NameNEQ(*l.UserFilterGroupSearchNEQ),
-			user.DescriptionNEQ(*l.UserFilterGroupSearchNEQ),
-			user.EmailNEQ(*l.UserFilterGroupSearchNEQ),
+			__user.NameNEQ(*l.UserFilterGroupSearchNEQ),
+			__user.DescriptionNEQ(*l.UserFilterGroupSearchNEQ),
+			__user.EmailNEQ(*l.UserFilterGroupSearchNEQ),
 		))
 	}
 	if l.UserFilterGroupSearchIn != nil {
 		_predicates = append(_predicates, sql.OrPredicates(
-			user.NameIn(l.UserFilterGroupSearchIn...),
-			user.DescriptionIn(l.UserFilterGroupSearchIn...),
-			user.EmailIn(l.UserFilterGroupSearchIn...),
+			__user.NameIn(l.UserFilterGroupSearchIn...),
+			__user.DescriptionIn(l.UserFilterGroupSearchIn...),
+			__user.EmailIn(l.UserFilterGroupSearchIn...),
 		))
 	}
 	if l.UserFilterGroupSearchNotIn != nil {
 		_predicates = append(_predicates, sql.OrPredicates(
-			user.NameNotIn(l.UserFilterGroupSearchNotIn...),
-			user.DescriptionNotIn(l.UserFilterGroupSearchNotIn...),
-			user.EmailNotIn(l.UserFilterGroupSearchNotIn...),
+			__user.NameNotIn(l.UserFilterGroupSearchNotIn...),
+			__user.DescriptionNotIn(l.UserFilterGroupSearchNotIn...),
+			__user.EmailNotIn(l.UserFilterGroupSearchNotIn...),
 		))
 	}
 	if l.UserFilterGroupSearchEqualFold != nil {
 		_predicates = append(_predicates, sql.OrPredicates(
-			user.NameEqualFold(*l.UserFilterGroupSearchEqualFold),
-			user.DescriptionEqualFold(*l.UserFilterGroupSearchEqualFold),
-			user.EmailEqualFold(*l.UserFilterGroupSearchEqualFold),
+			__user.NameEqualFold(*l.UserFilterGroupSearchEqualFold),
+			__user.DescriptionEqualFold(*l.UserFilterGroupSearchEqualFold),
+			__user.EmailEqualFold(*l.UserFilterGroupSearchEqualFold),
 		))
 	}
 	if l.UserFilterGroupSearchContains != nil {
 		_predicates = append(_predicates, sql.OrPredicates(
-			user.NameContains(*l.UserFilterGroupSearchContains),
-			user.DescriptionContains(*l.UserFilterGroupSearchContains),
-			user.EmailContains(*l.UserFilterGroupSearchContains),
+			__user.NameContains(*l.UserFilterGroupSearchContains),
+			__user.DescriptionContains(*l.UserFilterGroupSearchContains),
+			__user.EmailContains(*l.UserFilterGroupSearchContains),
 		))
 	}
 	if l.UserFilterGroupSearchContainsFold != nil {
 		_predicates = append(_predicates, sql.OrPredicates(
-			user.NameContainsFold(*l.UserFilterGroupSearchContainsFold),
-			user.DescriptionContainsFold(*l.UserFilterGroupSearchContainsFold),
-			user.EmailContainsFold(*l.UserFilterGroupSearchContainsFold),
+			__user.NameContainsFold(*l.UserFilterGroupSearchContainsFold),
+			__user.DescriptionContainsFold(*l.UserFilterGroupSearchContainsFold),
+			__user.EmailContainsFold(*l.UserFilterGroupSearchContainsFold),
 		))
 	}
 	if l.UserFilterGroupSearchHasPrefix != nil {
 		_predicates = append(_predicates, sql.OrPredicates(
-			user.NameHasPrefix(*l.UserFilterGroupSearchHasPrefix),
-			user.DescriptionHasPrefix(*l.UserFilterGroupSearchHasPrefix),
-			user.EmailHasPrefix(*l.UserFilterGroupSearchHasPrefix),
+			__user.NameHasPrefix(*l.UserFilterGroupSearchHasPrefix),
+			__user.DescriptionHasPrefix(*l.UserFilterGroupSearchHasPrefix),
+			__user.EmailHasPrefix(*l.UserFilterGroupSearchHasPrefix),
 		))
 	}
 	if l.UserFilterGroupSearchHasSuffix != nil {
 		_predicates = append(_predicates, sql.OrPredicates(
-			user.NameHasSuffix(*l.UserFilterGroupSearchHasSuffix),
-			user.DescriptionHasSuffix(*l.UserFilterGroupSearchHasSuffix),
-			user.EmailHasSuffix(*l.UserFilterGroupSearchHasSuffix),
+			__user.NameHasSuffix(*l.UserFilterGroupSearchHasSuffix),
+			__user.DescriptionHasSuffix(*l.UserFilterGroupSearchHasSuffix),
+			__user.EmailHasSuffix(*l.UserFilterGroupSearchHasSuffix),
 		))
 	}
 	return l.ApplyFilterOperation(_predicates...)
 }
 
 // ApplySorting applies sorting to the query based on the provided sort and order fields.
-func (l *ListUserParams) ApplySorting(_query *ent.UserQuery) error {
+func (l *ListUserParams) ApplySorting(_query *__ent.UserQuery) error {
 	if err := l.Sorted.Validate(UserSortConfig); err != nil {
 		return err
 	}
@@ -2861,7 +2861,7 @@ func (l *ListUserParams) ApplySorting(_query *ent.UserQuery) error {
 
 // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
 // executes all necessary queries, returning the results.
-func (l *ListUserParams) Exec(ctx context.Context, _query *ent.UserQuery) (_results *PagedResponse[ent.User], err error) {
+func (l *ListUserParams) Exec(ctx context.Context, _query *__ent.UserQuery) (_results *PagedResponse[__ent.User], err error) {
 	_predicates, err := l.FilterPredicates()
 	if err != nil {
 		return nil, err

@@ -23,9 +23,9 @@ import (
         {{- if and (($t|getAnnotation).GetAllowClientIDs $.Annotations.RestConfig) $t.ID }}
             {{- template "helper/rest/fields/comment" $t.ID }}
             {{- if or (hasPrefix $t.ID.Type.Ident "[]") (hasPrefix $t.ID.Type.Ident "*") $t.ID.IsBytes }}
-                {{ $t.ID.StructField }} {{ $t.ID.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $t.ID) }}
+                {{ $t.ID.StructField }} {{ zenttype $t.ID.Type $t }} {{ template "helper/rest/fields/tag" (dict "Field" $t.ID) }}
             {{- else }}
-                {{ $t.ID.StructField }} *{{ $t.ID.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $t.ID) }}
+                {{ $t.ID.StructField }} *{{ zenttype $t.ID.Type $t }} {{ template "helper/rest/fields/tag" (dict "Field" $t.ID) }}
             {{- end }}
         {{- end }}
 
@@ -35,12 +35,12 @@ import (
             {{- template "helper/rest/fields/comment" $f }}
             {{- if or $f.Optional $f.Default }}
                 {{- if or (hasPrefix $f.Type.Ident "[]") (hasPrefix $f.Type.Ident "*") $f.IsBytes }}
-                    {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
+                    {{ $f.StructField }} {{ zenttype $f.Type $t }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- else }}
-                    {{ $f.StructField }} *{{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
+                    {{ $f.StructField }} *{{ zenttype $f.Type $t }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- end }}
             {{- else }}
-                {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
+                {{ $f.StructField }} {{ zenttype $f.Type $t }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
             {{- end }}
         {{- end }}
 
@@ -60,24 +60,24 @@ import (
 
                 {{- template "helper/rest/fields/comment" $f }}
                 {{- if $f.Nillable }}
-                    {{ $f.StructField }} Option[{{ $f.Type }}] {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
+                    {{ $f.StructField }} Option[{{ zenttype $f.Type $t }}] {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- else if or $f.Default $f.Optional }}
-                    {{ $f.StructField }} *{{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
+                    {{ $f.StructField }} *{{ zenttype $f.Type $t }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- else }}
-                    {{ $f.StructField }} {{ $f.Type }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
+                    {{ $f.StructField }} {{ zenttype $f.Type $t }} {{ template "helper/rest/fields/tag" (dict "Field" $f) }}
                 {{- end }}
             {{- else }}
                 {{- template "helper/rest/fields/comment" $e }}
                 {{- if $e.Optional }}
-                    {{ $e.StructField }} {{ if not $e.Unique }}[]{{else }}*{{ end }}{{ $e.Type.ID.Type }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
+                    {{ $e.StructField }} {{ if not $e.Unique }}[]{{else }}*{{ end }}{{ zenttype $e.Type.ID.Type $e.Type }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
                 {{- else }}
-                    {{ $e.StructField }} {{ $e.Type.ID.Type }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
+                    {{ $e.StructField }} {{ zenttype $e.Type.ID.Type $e.Type }} {{ template "helper/rest/edge/tag" (dict "Edge" $e) }}
                 {{- end }}
             {{- end }}
         {{- end }}
     }
 
-    func (c *Create{{ $t.Name|zsingular }}Params) ApplyInputs(_builder *ent.{{ $t.Name }}Create) *ent.{{ $t.Name }}Create {
+    func (c *Create{{ $t.Name|zsingular }}Params) ApplyInputs(_builder *__ent.{{ $t.Name }}Create) *__ent.{{ $t.Name }}Create {
         {{- if and (($t|getAnnotation).GetAllowClientIDs $.Annotations.RestConfig) $t.ID }}
             if c.{{ $t.ID.StructField }} != nil {
                 _builder.Set{{ $t.ID.StructField }}(*c.{{ $t.ID.StructField }})
@@ -143,20 +143,20 @@ import (
     // Exec wraps all logic (mapping all provided values to the builder), creates the entity,
     // and does another query (using provided query as base) to get the entity, with all eager
     // loaded edges.
-    func (c *Create{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _builder *ent.{{ $t.Name }}Create, _query *ent.{{ $t.Name }}Query) (*ent.{{ $t.Name }}, error) {
+    func (c *Create{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _builder *__ent.{{ $t.Name }}Create, _query *__ent.{{ $t.Name }}Query) (*__ent.{{ $t.Name }}, error) {
         _result, err := c.ApplyInputs(_builder).Save(ctx)
         if err != nil {
             return nil, err
         }
         {{- if $t.ID }}
-            return EagerLoad{{ $t.Name|zsingular }}(_query.Where({{ $t.Package }}.ID(_result.ID))).Only(ctx)
+            return EagerLoad{{ $t.Name|zsingular }}(_query.Where(__{{ $t.Package }}.ID(_result.ID))).Only(ctx)
         {{- else }}
             // Since {{ $t.Name|zsingular }} entities have a composite ID, we have to query by all known FK fields.
             return EagerLoad{{ $t.Name|zsingular }}(_query.Where(
                 {{ range $f := $t.Fields }}
                     {{- if or (($f|getAnnotation).GetSkip $.Annotations.RestConfig) $f.Annotations.Rest.ReadOnly $f.Optional }}{{ continue }}{{ end -}}
 
-                    {{ $t.Package }}.{{ $f.StructField }}EQ(_result.{{ $f.StructField }}),
+                    __{{ $t.Package }}.{{ $f.StructField }}EQ(_result.{{ $f.StructField }}),
                 {{ end }}
             )).Only(ctx)
         {{- end }}

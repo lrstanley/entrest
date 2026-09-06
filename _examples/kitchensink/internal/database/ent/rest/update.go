@@ -8,13 +8,13 @@ import (
 
 	github "github.com/google/go-github/v89/github"
 	uuid "github.com/google/uuid"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
+	__ent "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+	__category "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
+	__friendship "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
+	__pet "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	__post "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
+	__settings "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
+	__user "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 	schema "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/schema"
 )
 
@@ -28,7 +28,7 @@ type UpdateCategoryParams struct {
 	RemovePets Option[[]int]    `json:"remove_pets,omitzero"`
 }
 
-func (u *UpdateCategoryParams) ApplyInputs(_builder *ent.CategoryUpdateOne) *ent.CategoryUpdateOne {
+func (u *UpdateCategoryParams) ApplyInputs(_builder *__ent.CategoryUpdateOne) *__ent.CategoryUpdateOne {
 	if v, ok := u.Name.Get(); ok {
 		_builder.SetName(v)
 	}
@@ -56,12 +56,12 @@ func (u *UpdateCategoryParams) ApplyInputs(_builder *ent.CategoryUpdateOne) *ent
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdateCategoryParams) Exec(ctx context.Context, _builder *ent.CategoryUpdateOne, _query *ent.CategoryQuery) (*ent.Category, error) {
+func (c *UpdateCategoryParams) Exec(ctx context.Context, _builder *__ent.CategoryUpdateOne, _query *__ent.CategoryQuery) (*__ent.Category, error) {
 	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadCategory(_query.Where(category.ID(_result.ID))).Only(ctx)
+	return EagerLoadCategory(_query.Where(__category.ID(_result.ID))).Only(ctx)
 }
 
 // UpdateFriendshipParams defines parameters for updating a Friendship via a PATCH request.
@@ -71,7 +71,7 @@ type UpdateFriendshipParams struct {
 	FriendID  Option[uuid.UUID] `json:"friend_id"`
 }
 
-func (u *UpdateFriendshipParams) ApplyInputs(_builder *ent.FriendshipUpdateOne) *ent.FriendshipUpdateOne {
+func (u *UpdateFriendshipParams) ApplyInputs(_builder *__ent.FriendshipUpdateOne) *__ent.FriendshipUpdateOne {
 	if v, ok := u.CreatedAt.Get(); ok {
 		_builder.SetCreatedAt(v)
 	}
@@ -88,20 +88,20 @@ func (u *UpdateFriendshipParams) ApplyInputs(_builder *ent.FriendshipUpdateOne) 
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdateFriendshipParams) Exec(ctx context.Context, _builder *ent.FriendshipUpdateOne, _query *ent.FriendshipQuery) (*ent.Friendship, error) {
+func (c *UpdateFriendshipParams) Exec(ctx context.Context, _builder *__ent.FriendshipUpdateOne, _query *__ent.FriendshipQuery) (*__ent.Friendship, error) {
 	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadFriendship(_query.Where(friendship.ID(_result.ID))).Only(ctx)
+	return EagerLoadFriendship(_query.Where(__friendship.ID(_result.ID))).Only(ctx)
 }
 
 // UpdatePetParams defines parameters for updating a Pet via a PATCH request.
 type UpdatePetParams struct {
-	Name      Option[string]   `json:"name"`
-	Nicknames Option[[]string] `json:"nicknames,omitzero"`
-	Age       Option[int]      `json:"age"`
-	Type      Option[pet.Type] `json:"type"`
+	Name      Option[string]     `json:"name"`
+	Nicknames Option[[]string]   `json:"nicknames,omitzero"`
+	Age       Option[int]        `json:"age"`
+	Type      Option[__pet.Type] `json:"type"`
 	// Categories that the pet belongs to.
 	AddCategories Option[[]int] `json:"add_categories,omitzero"`
 	// Categories that the pet belongs to.
@@ -120,7 +120,7 @@ type UpdatePetParams struct {
 	RemoveFollowedBy Option[[]uuid.UUID] `json:"remove_followed_by,omitzero"`
 }
 
-func (u *UpdatePetParams) ApplyInputs(_builder *ent.PetUpdateOne) *ent.PetUpdateOne {
+func (u *UpdatePetParams) ApplyInputs(_builder *__ent.PetUpdateOne) *__ent.PetUpdateOne {
 	if v, ok := u.Name.Get(); ok {
 		_builder.SetName(v)
 	}
@@ -172,12 +172,12 @@ func (u *UpdatePetParams) ApplyInputs(_builder *ent.PetUpdateOne) *ent.PetUpdate
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdatePetParams) Exec(ctx context.Context, _builder *ent.PetUpdateOne, _query *ent.PetQuery) (*ent.Pet, error) {
+func (c *UpdatePetParams) Exec(ctx context.Context, _builder *__ent.PetUpdateOne, _query *__ent.PetQuery) (*__ent.Pet, error) {
 	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadPet(_query.Where(pet.ID(_result.ID))).Only(ctx)
+	return EagerLoadPet(_query.Where(__pet.ID(_result.ID))).Only(ctx)
 }
 
 // UpdatePostParams defines parameters for updating a Post via a PATCH request.
@@ -187,7 +187,7 @@ type UpdatePostParams struct {
 	Body  Option[string] `json:"body"`
 }
 
-func (u *UpdatePostParams) ApplyInputs(_builder *ent.PostUpdateOne) *ent.PostUpdateOne {
+func (u *UpdatePostParams) ApplyInputs(_builder *__ent.PostUpdateOne) *__ent.PostUpdateOne {
 	if v, ok := u.Title.Get(); ok {
 		_builder.SetTitle(v)
 	}
@@ -204,12 +204,12 @@ func (u *UpdatePostParams) ApplyInputs(_builder *ent.PostUpdateOne) *ent.PostUpd
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdatePostParams) Exec(ctx context.Context, _builder *ent.PostUpdateOne, _query *ent.PostQuery) (*ent.Post, error) {
+func (c *UpdatePostParams) Exec(ctx context.Context, _builder *__ent.PostUpdateOne, _query *__ent.PostQuery) (*__ent.Post, error) {
 	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadPost(_query.Where(post.ID(_result.ID))).Only(ctx)
+	return EagerLoadPost(_query.Where(__post.ID(_result.ID))).Only(ctx)
 }
 
 // UpdateSettingParams defines parameters for updating a Setting via a PATCH request.
@@ -222,7 +222,7 @@ type UpdateSettingParams struct {
 	RemoveAdmins Option[[]uuid.UUID] `json:"remove_admins,omitzero"`
 }
 
-func (u *UpdateSettingParams) ApplyInputs(_builder *ent.SettingsUpdateOne) *ent.SettingsUpdateOne {
+func (u *UpdateSettingParams) ApplyInputs(_builder *__ent.SettingsUpdateOne) *__ent.SettingsUpdateOne {
 	if v, ok := u.GlobalBanner.Get(); ok {
 		if v != nil {
 			_builder.SetGlobalBanner(*v)
@@ -243,12 +243,12 @@ func (u *UpdateSettingParams) ApplyInputs(_builder *ent.SettingsUpdateOne) *ent.
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdateSettingParams) Exec(ctx context.Context, _builder *ent.SettingsUpdateOne, _query *ent.SettingsQuery) (*ent.Settings, error) {
+func (c *UpdateSettingParams) Exec(ctx context.Context, _builder *__ent.SettingsUpdateOne, _query *__ent.SettingsQuery) (*__ent.Settings, error) {
 	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadSetting(_query.Where(settings.ID(_result.ID))).Only(ctx)
+	return EagerLoadSetting(_query.Where(__settings.ID(_result.ID))).Only(ctx)
 }
 
 // UpdateUserParams defines parameters for updating a User via a PATCH request.
@@ -256,7 +256,7 @@ type UpdateUserParams struct {
 	// Name of the user.
 	Name Option[string] `json:"name"`
 	// Type of object being defined (user or system which is for internal usecases).
-	Type Option[user.Type] `json:"type"`
+	Type Option[__user.Type] `json:"type"`
 	// Full name if USER, otherwise null.
 	Description Option[*string] `json:"description,omitzero"`
 	// If the user is still in the source system.
@@ -291,7 +291,7 @@ type UpdateUserParams struct {
 	RemoveFriendships Option[[]int]       `json:"remove_friendships,omitzero"`
 }
 
-func (u *UpdateUserParams) ApplyInputs(_builder *ent.UserUpdateOne) *ent.UserUpdateOne {
+func (u *UpdateUserParams) ApplyInputs(_builder *__ent.UserUpdateOne) *__ent.UserUpdateOne {
 	if v, ok := u.Name.Get(); ok {
 		_builder.SetName(v)
 	}
@@ -378,10 +378,10 @@ func (u *UpdateUserParams) ApplyInputs(_builder *ent.UserUpdateOne) *ent.UserUpd
 // Exec wraps all logic (mapping all provided values to the build), updates the entity,
 // and does another query (using provided query as base) to get the entity, with all eager
 // loaded edges.
-func (c *UpdateUserParams) Exec(ctx context.Context, _builder *ent.UserUpdateOne, _query *ent.UserQuery) (*ent.User, error) {
+func (c *UpdateUserParams) Exec(ctx context.Context, _builder *__ent.UserUpdateOne, _query *__ent.UserQuery) (*__ent.User, error) {
 	_result, err := c.ApplyInputs(_builder).Save(ctx)
 	if err != nil {
 		return nil, err
 	}
-	return EagerLoadUser(_query.Where(user.ID(_result.ID))).Only(ctx)
+	return EagerLoadUser(_query.Where(__user.ID(_result.ID))).Only(ctx)
 }

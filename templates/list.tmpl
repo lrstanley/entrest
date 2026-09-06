@@ -201,10 +201,10 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
     type List{{ $t.Name|zsingular }}Params struct {
         Sorted
         {{- if $pagination }}
-            Paginated[*ent.{{ $t.Name }}Query, ent.{{ $t.Name }}]
+            Paginated[*__ent.{{ $t.Name }}Query, __ent.{{ $t.Name }}]
         {{- end }}
         {{- if or $filters $groups }}
-            Filtered[predicate.{{ $t.Name }}]
+            Filtered[__predicate.{{ $t.Name }}]
         {{- end }}
 
         {{ if $filters }}
@@ -226,8 +226,8 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
 
     {{ if or $filters $groups }}
         // FilterPredicates returns the predicates for filter-related parameters in {{ $t.Name|singular }}.
-        func (l *List{{ $t.Name|zsingular }}Params) FilterPredicates() (predicate.{{ $t.Name }}, error) {
-            var _predicates []predicate.{{ $t.Name }}
+        func (l *List{{ $t.Name|zsingular }}Params) FilterPredicates() (__predicate.{{ $t.Name }}, error) {
+            var _predicates []__predicate.{{ $t.Name }}
 
             {{ range $f := $filters }}
                 if l.{{ $f.ComponentName }} != nil {
@@ -235,7 +235,7 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
                         if *l.{{ $f.ComponentName }} {
                             _predicates = append(_predicates, {{ $f.PredicateBuilder "l" }})
                         } else {
-                            _predicates = append(_predicates, {{ $t.Package }}.Not({{ $f.PredicateBuilder "l" }}))
+                        _predicates = append(_predicates, __{{ $t.Package }}.Not({{ $f.PredicateBuilder "l" }}))
                         }
                     {{- else }}
                         _predicates = append(_predicates, {{ $f.PredicateBuilder "l" }})
@@ -249,7 +249,7 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
                             if *l.{{ $g.ComponentName $op }} {
                                 _predicates = append(_predicates, {{ $g.PredicateBuilder "l" $op }})
                             } else {
-                                _predicates = append(_predicates, {{ $t.Package }}.Not({{ $g.PredicateBuilder "l" $op }}))
+                                _predicates = append(_predicates, __{{ $t.Package }}.Not({{ $g.PredicateBuilder "l" $op }}))
                             }
                         {{- else }}
                             _predicates = append(_predicates, {{ $g.PredicateBuilder "l" $op }})
@@ -262,7 +262,7 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
     {{- end }}{{/* end filters */}}
 
     // ApplySorting applies sorting to the query based on the provided sort and order fields.
-    func (l *List{{ $t.Name|zsingular }}Params) ApplySorting(_query *ent.{{ $t.Name }}Query) error {
+    func (l *List{{ $t.Name|zsingular }}Params) ApplySorting(_query *__ent.{{ $t.Name }}Query) error {
         if err := l.Sorted.Validate({{ $t.Name|zsingular }}SortConfig); err != nil {
             return err
         }
@@ -276,7 +276,7 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
     {{- if $pagination }}
         // Exec wraps all logic (filtering, sorting, pagination, eager loading) and
         // executes all necessary queries, returning the results.
-        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _query *ent.{{ $t.Name }}Query) (_results *PagedResponse[ent.{{ $t.Name }}], err error) {
+        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _query *__ent.{{ $t.Name }}Query) (_results *PagedResponse[__ent.{{ $t.Name }}], err error) {
             {{- if or $filters $groups }}
                 _predicates, err := l.FilterPredicates()
                 if err != nil {
@@ -293,7 +293,7 @@ func (f *Filtered[P]) ApplyFilterOperation(_predicates ...P) (P, error) {
     {{- else }}
         // Exec wraps all logic (filtering, sorting, and eager loading) and
         // executes all necessary queries, returning the results.
-        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _query *ent.{{ $t.Name }}Query) (_results []*ent.{{ $t.Name }}, err error) {
+        func (l *List{{ $t.Name|zsingular }}Params) Exec(ctx context.Context, _query *__ent.{{ $t.Name }}Query) (_results []*__ent.{{ $t.Name }}, err error) {
             {{- if or $filters $groups }}
                 _predicates, err := l.FilterPredicates()
                 if err != nil {

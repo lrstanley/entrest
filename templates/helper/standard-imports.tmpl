@@ -4,9 +4,9 @@
   the LICENSE file.
 */ -}}
 {{- define "helper/rest/standard-imports" }}
-    "{{ $.Config.Package }}"
-    "{{ $.Config.Package }}/predicate"
+    __ent "{{ $.Config.Package }}"
+    __predicate "{{ $.Config.Package }}/predicate"
     {{- with $.Config.FeatureEnabled "privacy" }}
-        "{{ $.Config.Package }}/privacy"
+        __privacy "{{ $.Config.Package }}/privacy"
     {{- end }}
 {{- end }}

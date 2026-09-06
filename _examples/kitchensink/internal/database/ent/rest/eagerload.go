@@ -3,24 +3,24 @@
 package rest
 
 import (
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+	__ent "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
 )
 
 // EagerLoadCategory eager-loads the edges of a Category entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadCategory(_query *ent.CategoryQuery) *ent.CategoryQuery {
+func EagerLoadCategory(_query *__ent.CategoryQuery) *__ent.CategoryQuery {
 	return _query
 }
 
 // EagerLoadFollow eager-loads the edges of a Follow entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadFollow(_query *ent.FollowsQuery) *ent.FollowsQuery {
+func EagerLoadFollow(_query *__ent.FollowsQuery) *__ent.FollowsQuery {
 	return _query.WithUser(
-		func(e *ent.UserQuery) {
+		func(e *__ent.UserQuery) {
 			applySortingUser(e, "name", "asc")
 		},
 	).WithPet(
-		func(e *ent.PetQuery) {
+		func(e *__ent.PetQuery) {
 			applySortingPet(e, "name", "asc")
 		},
 	)
@@ -28,20 +28,20 @@ func EagerLoadFollow(_query *ent.FollowsQuery) *ent.FollowsQuery {
 
 // EagerLoadFriendship eager-loads the edges of a Friendship entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadFriendship(_query *ent.FriendshipQuery) *ent.FriendshipQuery {
+func EagerLoadFriendship(_query *__ent.FriendshipQuery) *__ent.FriendshipQuery {
 	return _query
 }
 
 // EagerLoadPet eager-loads the edges of a Pet entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadPet(_query *ent.PetQuery) *ent.PetQuery {
+func EagerLoadPet(_query *__ent.PetQuery) *__ent.PetQuery {
 	return _query.WithCategories(
-		func(e *ent.CategoryQuery) {
+		func(e *__ent.CategoryQuery) {
 			applySortingCategory(e, "id", "asc")
 			e.Limit(1000)
 		},
 	).WithOwner(
-		func(e *ent.UserQuery) {
+		func(e *__ent.UserQuery) {
 			applySortingUser(e, "name", "asc")
 		},
 	)
@@ -49,9 +49,9 @@ func EagerLoadPet(_query *ent.PetQuery) *ent.PetQuery {
 
 // EagerLoadPost eager-loads the edges of a Post entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadPost(_query *ent.PostQuery) *ent.PostQuery {
+func EagerLoadPost(_query *__ent.PostQuery) *__ent.PostQuery {
 	return _query.WithAuthor(
-		func(e *ent.UserQuery) {
+		func(e *__ent.UserQuery) {
 			applySortingUser(e, "name", "asc")
 		},
 	)
@@ -59,9 +59,9 @@ func EagerLoadPost(_query *ent.PostQuery) *ent.PostQuery {
 
 // EagerLoadSetting eager-loads the edges of a Setting entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadSetting(_query *ent.SettingsQuery) *ent.SettingsQuery {
+func EagerLoadSetting(_query *__ent.SettingsQuery) *__ent.SettingsQuery {
 	return _query.WithAdmins(
-		func(e *ent.UserQuery) {
+		func(e *__ent.UserQuery) {
 			applySortingUser(e, "name", "asc")
 			e.Limit(1000)
 		},
@@ -70,9 +70,9 @@ func EagerLoadSetting(_query *ent.SettingsQuery) *ent.SettingsQuery {
 
 // EagerLoadUser eager-loads the edges of a User entity, if any edges
 // were requested to be eager-loaded, based off associated annotations.
-func EagerLoadUser(_query *ent.UserQuery) *ent.UserQuery {
+func EagerLoadUser(_query *__ent.UserQuery) *__ent.UserQuery {
 	return _query.WithPets(
-		func(e *ent.PetQuery) {
+		func(e *__ent.PetQuery) {
 			applySortingPet(e, "name", "asc")
 		},
 	)

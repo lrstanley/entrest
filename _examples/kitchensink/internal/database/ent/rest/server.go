@@ -20,14 +20,14 @@ import (
 
 	"github.com/go-playground/form/v4"
 	uuid "github.com/google/uuid"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/privacy"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
-	"github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
+	__ent "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent"
+	__category "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/category"
+	__friendship "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/friendship"
+	__pet "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/pet"
+	__post "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/post"
+	__privacy "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/privacy"
+	__settings "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/settings"
+	__user "github.com/lrstanley/entrest/_examples/kitchensink/internal/database/ent/user"
 )
 
 //go:embed openapi.json
@@ -488,14 +488,14 @@ type ServerConfig struct {
 }
 
 type Server struct {
-	db     *ent.Client
+	db     *__ent.Client
 	config *ServerConfig
 }
 
 // NewServer returns a new auto-generated server implementation for your ent schema.
 // [Server.Handler] returns a ready-to-use http.Handler that mounts all of the
 // necessary endpoints.
-func NewServer(_db *ent.Client, _config *ServerConfig) (*Server, error) {
+func NewServer(_db *__ent.Client, _config *ServerConfig) (*Server, error) {
 	s := &Server{
 		db:     _db,
 		config: _config,
@@ -544,13 +544,13 @@ func (s *Server) DefaultErrorHandler(w http.ResponseWriter, r *http.Request, _op
 		_resp.Code = http.StatusBadRequest
 	case IsRequestEntityTooLarge(err):
 		_resp.Code = http.StatusRequestEntityTooLarge
-	case errors.Is(err, privacy.Deny):
+	case errors.Is(err, __privacy.Deny):
 		_resp.Code = http.StatusForbidden
-	case ent.IsNotFound(err):
+	case __ent.IsNotFound(err):
 		_resp.Code = http.StatusNotFound
-	case ent.IsConstraintError(err), ent.IsNotSingular(err):
+	case __ent.IsConstraintError(err), __ent.IsNotSingular(err):
 		_resp.Code = http.StatusConflict
-	case ent.IsValidationError(err):
+	case __ent.IsValidationError(err):
 		_resp.Code = http.StatusBadRequest
 	case errors.As(err, &numErr):
 		_resp.Code = http.StatusBadRequest
@@ -637,10 +637,10 @@ func (s *Server) handleResponse[Resp any](w http.ResponseWriter, r *http.Request
 // by other middleware, or ent privacy layers. Note that the server will do this
 // by default, so you don't need to do this manually, unless it's a context that's
 // not being passed to the server and is being consumed elsewhere.
-func UseEntContext(_db *ent.Client) func(_next http.Handler) http.Handler {
+func UseEntContext(_db *__ent.Client) func(_next http.Handler) http.Handler {
 	return func(_next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-			_next.ServeHTTP(w, r.WithContext(ent.NewContext(r.Context(), _db)))
+			_next.ServeHTTP(w, r.WithContext(__ent.NewContext(r.Context(), _db)))
 		})
 	}
 }
@@ -718,27 +718,27 @@ func (s *Server) Handler() http.Handler {
 }
 
 // ListCategories maps to "GET /categories".
-func (s *Server) ListCategories(r *http.Request, p *ListCategoryParams) (*PagedResponse[ent.Category], error) {
+func (s *Server) ListCategories(r *http.Request, p *ListCategoryParams) (*PagedResponse[__ent.Category], error) {
 	return p.Exec(r.Context(), s.db.Category.Query())
 }
 
 // GetCategory maps to "GET /categories/{id}".
-func (s *Server) GetCategory(r *http.Request, categoryID int) (*ent.Category, error) {
-	return EagerLoadCategory(s.db.Category.Query().Where(category.ID(categoryID))).Only(r.Context())
+func (s *Server) GetCategory(r *http.Request, categoryID int) (*__ent.Category, error) {
+	return EagerLoadCategory(s.db.Category.Query().Where(__category.ID(categoryID))).Only(r.Context())
 }
 
 // ListCategoryPets maps to "GET /categories/{id}/pets".
-func (s *Server) ListCategoryPets(r *http.Request, categoryID int, p *ListPetParams) (*PagedResponse[ent.Pet], error) {
-	return p.Exec(r.Context(), s.db.Category.Query().Where(category.ID(categoryID)).QueryPets())
+func (s *Server) ListCategoryPets(r *http.Request, categoryID int, p *ListPetParams) (*PagedResponse[__ent.Pet], error) {
+	return p.Exec(r.Context(), s.db.Category.Query().Where(__category.ID(categoryID)).QueryPets())
 }
 
 // CreateCategory maps to "POST /categories".
-func (s *Server) CreateCategory(r *http.Request, p *CreateCategoryParams) (*ent.Category, error) {
+func (s *Server) CreateCategory(r *http.Request, p *CreateCategoryParams) (*__ent.Category, error) {
 	return p.Exec(r.Context(), s.db.Category.Create(), s.db.Category.Query())
 }
 
 // UpdateCategory maps to "PATCH /categories/{id}".
-func (s *Server) UpdateCategory(r *http.Request, categoryID int, p *UpdateCategoryParams) (*ent.Category, error) {
+func (s *Server) UpdateCategory(r *http.Request, categoryID int, p *UpdateCategoryParams) (*__ent.Category, error) {
 	return p.Exec(r.Context(), s.db.Category.UpdateOneID(categoryID), s.db.Category.Query())
 }
 
@@ -748,42 +748,42 @@ func (s *Server) DeleteCategory(r *http.Request, categoryID int) (*struct{}, err
 }
 
 // ListFollows maps to "GET /follows".
-func (s *Server) ListFollows(r *http.Request, p *ListFollowParams) (*PagedResponse[ent.Follows], error) {
+func (s *Server) ListFollows(r *http.Request, p *ListFollowParams) (*PagedResponse[__ent.Follows], error) {
 	return p.Exec(r.Context(), s.db.Follows.Query())
 }
 
 // CreateFollow maps to "POST /follows".
-func (s *Server) CreateFollow(r *http.Request, p *CreateFollowParams) (*ent.Follows, error) {
+func (s *Server) CreateFollow(r *http.Request, p *CreateFollowParams) (*__ent.Follows, error) {
 	return p.Exec(r.Context(), s.db.Follows.Create(), s.db.Follows.Query())
 }
 
 // ListFriendships maps to "GET /friendships".
-func (s *Server) ListFriendships(r *http.Request, p *ListFriendshipParams) (*PagedResponse[ent.Friendship], error) {
+func (s *Server) ListFriendships(r *http.Request, p *ListFriendshipParams) (*PagedResponse[__ent.Friendship], error) {
 	return p.Exec(r.Context(), s.db.Friendship.Query())
 }
 
 // GetFriendship maps to "GET /friendships/{id}".
-func (s *Server) GetFriendship(r *http.Request, friendshipID int) (*ent.Friendship, error) {
-	return EagerLoadFriendship(s.db.Friendship.Query().Where(friendship.ID(friendshipID))).Only(r.Context())
+func (s *Server) GetFriendship(r *http.Request, friendshipID int) (*__ent.Friendship, error) {
+	return EagerLoadFriendship(s.db.Friendship.Query().Where(__friendship.ID(friendshipID))).Only(r.Context())
 }
 
 // GetFriendshipUser maps to "GET /friendships/{id}/user".
-func (s *Server) GetFriendshipUser(r *http.Request, friendshipID int) (*ent.User, error) {
-	return EagerLoadUser(s.db.Friendship.Query().Where(friendship.ID(friendshipID)).QueryUser()).Only(r.Context())
+func (s *Server) GetFriendshipUser(r *http.Request, friendshipID int) (*__ent.User, error) {
+	return EagerLoadUser(s.db.Friendship.Query().Where(__friendship.ID(friendshipID)).QueryUser()).Only(r.Context())
 }
 
 // GetFriendshipFriend maps to "GET /friendships/{id}/friend".
-func (s *Server) GetFriendshipFriend(r *http.Request, friendshipID int) (*ent.User, error) {
-	return EagerLoadUser(s.db.Friendship.Query().Where(friendship.ID(friendshipID)).QueryFriend()).Only(r.Context())
+func (s *Server) GetFriendshipFriend(r *http.Request, friendshipID int) (*__ent.User, error) {
+	return EagerLoadUser(s.db.Friendship.Query().Where(__friendship.ID(friendshipID)).QueryFriend()).Only(r.Context())
 }
 
 // CreateFriendship maps to "POST /friendships".
-func (s *Server) CreateFriendship(r *http.Request, p *CreateFriendshipParams) (*ent.Friendship, error) {
+func (s *Server) CreateFriendship(r *http.Request, p *CreateFriendshipParams) (*__ent.Friendship, error) {
 	return p.Exec(r.Context(), s.db.Friendship.Create(), s.db.Friendship.Query())
 }
 
 // UpdateFriendship maps to "PATCH /friendships/{id}".
-func (s *Server) UpdateFriendship(r *http.Request, friendshipID int, p *UpdateFriendshipParams) (*ent.Friendship, error) {
+func (s *Server) UpdateFriendship(r *http.Request, friendshipID int, p *UpdateFriendshipParams) (*__ent.Friendship, error) {
 	return p.Exec(r.Context(), s.db.Friendship.UpdateOneID(friendshipID), s.db.Friendship.Query())
 }
 
@@ -793,42 +793,42 @@ func (s *Server) DeleteFriendship(r *http.Request, friendshipID int) (*struct{},
 }
 
 // ListPets maps to "GET /pets".
-func (s *Server) ListPets(r *http.Request, p *ListPetParams) (*PagedResponse[ent.Pet], error) {
+func (s *Server) ListPets(r *http.Request, p *ListPetParams) (*PagedResponse[__ent.Pet], error) {
 	return p.Exec(r.Context(), s.db.Pet.Query())
 }
 
 // GetPet maps to "GET /pets/{id}".
-func (s *Server) GetPet(r *http.Request, petID int) (*ent.Pet, error) {
-	return EagerLoadPet(s.db.Pet.Query().Where(pet.ID(petID))).Only(r.Context())
+func (s *Server) GetPet(r *http.Request, petID int) (*__ent.Pet, error) {
+	return EagerLoadPet(s.db.Pet.Query().Where(__pet.ID(petID))).Only(r.Context())
 }
 
 // ListPetCategories maps to "GET /pets/{id}/categories".
-func (s *Server) ListPetCategories(r *http.Request, petID int, p *ListCategoryParams) (*PagedResponse[ent.Category], error) {
-	return p.Exec(r.Context(), s.db.Pet.Query().Where(pet.ID(petID)).QueryCategories())
+func (s *Server) ListPetCategories(r *http.Request, petID int, p *ListCategoryParams) (*PagedResponse[__ent.Category], error) {
+	return p.Exec(r.Context(), s.db.Pet.Query().Where(__pet.ID(petID)).QueryCategories())
 }
 
 // GetPetOwner maps to "GET /pets/{id}/owner".
-func (s *Server) GetPetOwner(r *http.Request, petID int) (*ent.User, error) {
-	return EagerLoadUser(s.db.Pet.Query().Where(pet.ID(petID)).QueryOwner()).Only(r.Context())
+func (s *Server) GetPetOwner(r *http.Request, petID int) (*__ent.User, error) {
+	return EagerLoadUser(s.db.Pet.Query().Where(__pet.ID(petID)).QueryOwner()).Only(r.Context())
 }
 
 // ListPetFriends maps to "GET /pets/{id}/friends".
-func (s *Server) ListPetFriends(r *http.Request, petID int, p *ListPetParams) (*PagedResponse[ent.Pet], error) {
-	return p.Exec(r.Context(), s.db.Pet.Query().Where(pet.ID(petID)).QueryFriends())
+func (s *Server) ListPetFriends(r *http.Request, petID int, p *ListPetParams) (*PagedResponse[__ent.Pet], error) {
+	return p.Exec(r.Context(), s.db.Pet.Query().Where(__pet.ID(petID)).QueryFriends())
 }
 
 // ListPetFollowedBys maps to "GET /pets/{id}/followed-by".
-func (s *Server) ListPetFollowedBys(r *http.Request, petID int, p *ListUserParams) (*PagedResponse[ent.User], error) {
-	return p.Exec(r.Context(), s.db.Pet.Query().Where(pet.ID(petID)).QueryFollowedBy())
+func (s *Server) ListPetFollowedBys(r *http.Request, petID int, p *ListUserParams) (*PagedResponse[__ent.User], error) {
+	return p.Exec(r.Context(), s.db.Pet.Query().Where(__pet.ID(petID)).QueryFollowedBy())
 }
 
 // CreatePet maps to "POST /pets".
-func (s *Server) CreatePet(r *http.Request, p *CreatePetParams) (*ent.Pet, error) {
+func (s *Server) CreatePet(r *http.Request, p *CreatePetParams) (*__ent.Pet, error) {
 	return p.Exec(r.Context(), s.db.Pet.Create(), s.db.Pet.Query())
 }
 
 // UpdatePet maps to "PATCH /pets/{id}".
-func (s *Server) UpdatePet(r *http.Request, petID int, p *UpdatePetParams) (*ent.Pet, error) {
+func (s *Server) UpdatePet(r *http.Request, petID int, p *UpdatePetParams) (*__ent.Pet, error) {
 	return p.Exec(r.Context(), s.db.Pet.UpdateOneID(petID), s.db.Pet.Query())
 }
 
@@ -838,27 +838,27 @@ func (s *Server) DeletePet(r *http.Request, petID int) (*struct{}, error) {
 }
 
 // ListPosts maps to "GET /posts".
-func (s *Server) ListPosts(r *http.Request, p *ListPostParams) (*PagedResponse[ent.Post], error) {
+func (s *Server) ListPosts(r *http.Request, p *ListPostParams) (*PagedResponse[__ent.Post], error) {
 	return p.Exec(r.Context(), s.db.Post.Query())
 }
 
 // GetPost maps to "GET /posts/{id}".
-func (s *Server) GetPost(r *http.Request, postID int) (*ent.Post, error) {
-	return EagerLoadPost(s.db.Post.Query().Where(post.ID(postID))).Only(r.Context())
+func (s *Server) GetPost(r *http.Request, postID int) (*__ent.Post, error) {
+	return EagerLoadPost(s.db.Post.Query().Where(__post.ID(postID))).Only(r.Context())
 }
 
 // GetPostAuthor maps to "GET /posts/{id}/author".
-func (s *Server) GetPostAuthor(r *http.Request, postID int) (*ent.User, error) {
-	return EagerLoadUser(s.db.Post.Query().Where(post.ID(postID)).QueryAuthor()).Only(r.Context())
+func (s *Server) GetPostAuthor(r *http.Request, postID int) (*__ent.User, error) {
+	return EagerLoadUser(s.db.Post.Query().Where(__post.ID(postID)).QueryAuthor()).Only(r.Context())
 }
 
 // CreatePost maps to "POST /posts".
-func (s *Server) CreatePost(r *http.Request, p *CreatePostParams) (*ent.Post, error) {
+func (s *Server) CreatePost(r *http.Request, p *CreatePostParams) (*__ent.Post, error) {
 	return p.Exec(r.Context(), s.db.Post.Create(), s.db.Post.Query())
 }
 
 // UpdatePost maps to "PATCH /posts/{id}".
-func (s *Server) UpdatePost(r *http.Request, postID int, p *UpdatePostParams) (*ent.Post, error) {
+func (s *Server) UpdatePost(r *http.Request, postID int, p *UpdatePostParams) (*__ent.Post, error) {
 	return p.Exec(r.Context(), s.db.Post.UpdateOneID(postID), s.db.Post.Query())
 }
 
@@ -868,67 +868,67 @@ func (s *Server) DeletePost(r *http.Request, postID int) (*struct{}, error) {
 }
 
 // ListSettings maps to "GET /settings".
-func (s *Server) ListSettings(r *http.Request, p *ListSettingParams) (*PagedResponse[ent.Settings], error) {
+func (s *Server) ListSettings(r *http.Request, p *ListSettingParams) (*PagedResponse[__ent.Settings], error) {
 	return p.Exec(r.Context(), s.db.Settings.Query())
 }
 
 // GetSetting maps to "GET /settings/{id}".
-func (s *Server) GetSetting(r *http.Request, settingID int) (*ent.Settings, error) {
-	return EagerLoadSetting(s.db.Settings.Query().Where(settings.ID(settingID))).Only(r.Context())
+func (s *Server) GetSetting(r *http.Request, settingID int) (*__ent.Settings, error) {
+	return EagerLoadSetting(s.db.Settings.Query().Where(__settings.ID(settingID))).Only(r.Context())
 }
 
 // ListSettingAdmins maps to "GET /settings/{id}/admins".
-func (s *Server) ListSettingAdmins(r *http.Request, settingID int, p *ListUserParams) (*PagedResponse[ent.User], error) {
-	return p.Exec(r.Context(), s.db.Settings.Query().Where(settings.ID(settingID)).QueryAdmins())
+func (s *Server) ListSettingAdmins(r *http.Request, settingID int, p *ListUserParams) (*PagedResponse[__ent.User], error) {
+	return p.Exec(r.Context(), s.db.Settings.Query().Where(__settings.ID(settingID)).QueryAdmins())
 }
 
 // UpdateSetting maps to "PATCH /settings/{id}".
-func (s *Server) UpdateSetting(r *http.Request, settingID int, p *UpdateSettingParams) (*ent.Settings, error) {
+func (s *Server) UpdateSetting(r *http.Request, settingID int, p *UpdateSettingParams) (*__ent.Settings, error) {
 	return p.Exec(r.Context(), s.db.Settings.UpdateOneID(settingID), s.db.Settings.Query())
 }
 
 // ListUsers maps to "GET /users".
-func (s *Server) ListUsers(r *http.Request, p *ListUserParams) (*PagedResponse[ent.User], error) {
+func (s *Server) ListUsers(r *http.Request, p *ListUserParams) (*PagedResponse[__ent.User], error) {
 	return p.Exec(r.Context(), s.db.User.Query())
 }
 
 // GetUser maps to "GET /users/{id}".
-func (s *Server) GetUser(r *http.Request, userID uuid.UUID) (*ent.User, error) {
-	return EagerLoadUser(s.db.User.Query().Where(user.ID(userID))).Only(r.Context())
+func (s *Server) GetUser(r *http.Request, userID uuid.UUID) (*__ent.User, error) {
+	return EagerLoadUser(s.db.User.Query().Where(__user.ID(userID))).Only(r.Context())
 }
 
 // ListUserPets maps to "GET /users/{id}/pets".
-func (s *Server) ListUserPets(r *http.Request, userID uuid.UUID, p *ListPetParams) (*PagedResponse[ent.Pet], error) {
-	return p.Exec(r.Context(), s.db.User.Query().Where(user.ID(userID)).QueryPets())
+func (s *Server) ListUserPets(r *http.Request, userID uuid.UUID, p *ListPetParams) (*PagedResponse[__ent.Pet], error) {
+	return p.Exec(r.Context(), s.db.User.Query().Where(__user.ID(userID)).QueryPets())
 }
 
 // ListUserFollowedPets maps to "GET /users/{id}/followed-pets".
-func (s *Server) ListUserFollowedPets(r *http.Request, userID uuid.UUID, p *ListPetParams) (*PagedResponse[ent.Pet], error) {
-	return p.Exec(r.Context(), s.db.User.Query().Where(user.ID(userID)).QueryFollowedPets())
+func (s *Server) ListUserFollowedPets(r *http.Request, userID uuid.UUID, p *ListPetParams) (*PagedResponse[__ent.Pet], error) {
+	return p.Exec(r.Context(), s.db.User.Query().Where(__user.ID(userID)).QueryFollowedPets())
 }
 
 // ListUserFriends maps to "GET /users/{id}/friends".
-func (s *Server) ListUserFriends(r *http.Request, userID uuid.UUID, p *ListUserParams) (*PagedResponse[ent.User], error) {
-	return p.Exec(r.Context(), s.db.User.Query().Where(user.ID(userID)).QueryFriends())
+func (s *Server) ListUserFriends(r *http.Request, userID uuid.UUID, p *ListUserParams) (*PagedResponse[__ent.User], error) {
+	return p.Exec(r.Context(), s.db.User.Query().Where(__user.ID(userID)).QueryFriends())
 }
 
 // ListUserPosts maps to "GET /users/{id}/posts".
-func (s *Server) ListUserPosts(r *http.Request, userID uuid.UUID, p *ListPostParams) (*PagedResponse[ent.Post], error) {
-	return p.Exec(r.Context(), s.db.User.Query().Where(user.ID(userID)).QueryPosts())
+func (s *Server) ListUserPosts(r *http.Request, userID uuid.UUID, p *ListPostParams) (*PagedResponse[__ent.Post], error) {
+	return p.Exec(r.Context(), s.db.User.Query().Where(__user.ID(userID)).QueryPosts())
 }
 
 // ListUserFriendships maps to "GET /users/{id}/friendships".
-func (s *Server) ListUserFriendships(r *http.Request, userID uuid.UUID, p *ListFriendshipParams) (*PagedResponse[ent.Friendship], error) {
-	return p.Exec(r.Context(), s.db.User.Query().Where(user.ID(userID)).QueryFriendships())
+func (s *Server) ListUserFriendships(r *http.Request, userID uuid.UUID, p *ListFriendshipParams) (*PagedResponse[__ent.Friendship], error) {
+	return p.Exec(r.Context(), s.db.User.Query().Where(__user.ID(userID)).QueryFriendships())
 }
 
 // CreateUser maps to "POST /users".
-func (s *Server) CreateUser(r *http.Request, p *CreateUserParams) (*ent.User, error) {
+func (s *Server) CreateUser(r *http.Request, p *CreateUserParams) (*__ent.User, error) {
 	return p.Exec(r.Context(), s.db.User.Create(), s.db.User.Query())
 }
 
 // UpdateUser maps to "PATCH /users/{id}".
-func (s *Server) UpdateUser(r *http.Request, userID uuid.UUID, p *UpdateUserParams) (*ent.User, error) {
+func (s *Server) UpdateUser(r *http.Request, userID uuid.UUID, p *UpdateUserParams) (*__ent.User, error) {
 	return p.Exec(r.Context(), s.db.User.UpdateOneID(userID), s.db.User.Query())
 }
 

@@ -11,9 +11,11 @@ import (
 	"encoding/json/v2"
 	"fmt"
 	"slices"
+	"strings"
 	"sync"
 
 	"entgo.io/ent/entc/gen"
+	"entgo.io/ent/schema/field"
 )
 
 var (
@@ -187,4 +189,17 @@ func patchJSONTag(g *gen.Graph) error {
 		}
 	}
 	return nil
+}
+
+func prefixEntType(typ *field.TypeInfo, node *gen.Type) string {
+	if typ.PkgPath != "" {
+		return typ.String()
+	}
+
+	ident := typ.String()
+	pkg := node.Package()
+	if dir := node.PackageDir(); dir != pkg {
+		return strings.ReplaceAll(ident, dir+".", "__"+pkg+".")
+	}
+	return strings.ReplaceAll(ident, pkg+".", "__"+pkg+".")
 }
