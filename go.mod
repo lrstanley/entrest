@@ -6,7 +6,7 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/go-openapi/inflect v1.0.0
 	github.com/ogen-go/ogen v1.24.0
-	github.com/pb33f/libopenapi v0.38.7
+	github.com/pb33f/libopenapi v0.41.6
 	github.com/pb33f/libopenapi-validator v0.14.0
 	github.com/spyzhov/ajson v0.9.6
 	github.com/stoewer/go-strcase v1.3.1
@@ -35,8 +35,9 @@ require (
 	github.com/mattn/go-colorable v0.1.15 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mitchellh/go-wordwrap v1.0.1 // indirect
-	github.com/pb33f/jsonpath v0.8.3 // indirect
-	github.com/pb33f/ordered-map/v2 v2.3.1 // indirect
+	github.com/pb33f/go-yaml v0.1.1 // indirect
+	github.com/pb33f/jsonpath v0.8.4 // indirect
+	github.com/pb33f/ordered-map/v2 v2.3.2 // indirect
 	github.com/rogpeppe/go-internal v1.16.0 // indirect
 	github.com/santhosh-tekuri/jsonschema/v6 v6.0.3 // indirect
 	github.com/segmentio/asm v1.2.1 // indirect
