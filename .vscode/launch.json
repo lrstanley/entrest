@@ -11,7 +11,7 @@
       "type": "go"
     },
     {
-      "command": "./docs/node_modules/.bin/astro dev",
+      "command": "cd docs && bun run dev",
       "name": "docs server",
       "request": "launch",
       "type": "node-terminal"

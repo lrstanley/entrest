@@ -1,0 +1,10 @@
+{
+  "title": "Generating OpenAPI Specs",
+  "pages": [
+    "configuration",
+    "annotation-reference",
+    "eager-loading",
+    "pagination",
+    "extending"
+  ]
+}

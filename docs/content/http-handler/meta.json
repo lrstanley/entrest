@@ -1,0 +1,10 @@
+{
+  "title": "HTTP Handler",
+  "pages": [
+    "getting-started",
+    "configuration",
+    "api-docs",
+    "testing",
+    "auth-and-permissions"
+  ]
+}

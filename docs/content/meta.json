@@ -1,0 +1,12 @@
+{
+  "pages": [
+    "---Guides---",
+    "...guides",
+    "---Generating OpenAPI Specs---",
+    "...openapi-specs",
+    "---HTTP Handler---",
+    "...http-handler",
+    "---Resources---",
+    "...resources"
+  ]
+}

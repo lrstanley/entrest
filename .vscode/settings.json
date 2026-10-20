@@ -10,7 +10,7 @@
     "**/.golangci.yml": true,
     "**/LICENSE": true,
     "**/tmp": true,
-    "**/.astro": true,
+    "**/.source": true,
   },
   "go.lintTool": "golangci-lint-v2",
   "go.lintFlags": [

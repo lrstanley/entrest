@@ -9,10 +9,10 @@
 /_examples/simple/internal/database/ent
 
 # docs related
-/docs/.astro
-/docs/**/*.d.ts
+/docs/.source
+/docs/src/pages.gen.ts
 /docs/dist
+/docs/.preview
 /docs/node_modules
-/docs/assets/data
 
 **/TODO.md

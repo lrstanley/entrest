@@ -1,0 +1,222 @@
+---
+title: Extending the Spec
+---
+
+<Callout type="info" title="How-to guide">
+
+Add custom paths, security schemes, headers, and error responses to the generated OpenAPI spec via
+a base spec file, `entrest.Config` fields, or generation hooks.
+
+</Callout>
+
+You may want to extend the resulting OpenAPI spec, to add additional endpoints, tweak the schema,
+add security schemes, changelog/information, etc. entrest allows a few different ways of extending the OpenAPI
+spec.
+
+### `SpecFromPath`
+
+Configuration option [`SpecFromPath`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.SpecFromPath) allows
+you to provide a path to a JSON file containing the base OpenAPI spec. This is useful if you want to start with a
+base spec, and then add additional endpoints/security schemes/etc. This is the simplest option to managing extensions
+that is much less tedious than dealing with the `Spec` option.
+
+```go title="internal/database/entc.go" {5}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        // The path here is dependent on where your file that has "go:generate" is. Take a look at the "kitchensink"
+        // example for where the base-openapi.json file is located.
+        SpecFromPath: "../base-openapi.json",
+    })
+    // [...]
+}
+```
+
+Base OpenAPI spec from our kitchensink example, where we register a `/version` endpoint and associated schema:
+
+<include lang="json" meta='title="_examples/kitchensink/base-openapi.json"'>../../../_examples/kitchensink/base-openapi.json</include>
+
+After generation, the merged spec is written to `internal/database/ent/rest/openapi.json` and includes
+the `/version` endpoint from the base file alongside the generated CRUD paths.
+
+### Request Headers
+
+[`GlobalRequestHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.GlobalRequestHeaders) adds
+header parameters to every path in the spec. Use this for optional or required headers such as request IDs
+or API version strings. Do not use it for authentication — use security schemes instead (see
+[Auth and permissions](/http-handler/auth-and-permissions#document-security-in-openapi)).
+
+The kitchensink example wires up the built-in preset:
+
+```go title="internal/database/entc.go" {6}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        SpecFromPath:         "../base-openapi.json",
+        GlobalRequestHeaders: entrest.RequestIDHeader,
+    })
+    // [...]
+}
+```
+
+[`RequestIDHeader`](https://pkg.go.dev/github.com/lrstanley/entrest#RequestIDHeader) documents
+`X-Request-Id`. If you use the generated HTTP handlers, configure the runtime side with
+[`GetReqID`](/http-handler/configuration#request-ids) so the value appears on error responses.
+
+Define your own headers with [`RequestHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#RequestHeaders):
+
+```go title="internal/database/entc.go"
+GlobalRequestHeaders: entrest.RequestHeaders{
+    "X-Api-Version": {
+        Description: "API version to use.",
+        Required:    true,
+        Schema:      &ogen.Schema{Type: "string"},
+    },
+},
+```
+
+Merge presets with [`RequestHeaders.Append`](https://pkg.go.dev/github.com/lrstanley/entrest#RequestHeaders.Append):
+
+```go title="internal/database/entc.go"
+GlobalRequestHeaders: entrest.RequestIDHeader.Append(entrest.RequestHeaders{
+    "X-Correlation-Id": {
+        Description: "Correlation ID for distributed tracing.",
+        Schema:      &ogen.Schema{Type: "string"},
+    },
+}),
+```
+
+### Response Headers
+
+[`GlobalResponseHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.GlobalResponseHeaders) adds
+headers to every response on every operation, including shared error responses in `components.responses`.
+
+```go title="internal/database/entc.go" {6}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        SpecFromPath:          "../base-openapi.json",
+        GlobalResponseHeaders: entrest.RateLimitHeaders,
+    })
+    // [...]
+}
+```
+
+[`RateLimitHeaders`](https://pkg.go.dev/github.com/lrstanley/entrest#RateLimitHeaders) documents
+`X-Ratelimit-Limit`, `X-Ratelimit-Remaining`, and `X-Ratelimit-Reset`. The spec only declares them —
+your server must set the values.
+
+Define custom response headers the same way, or merge presets with
+[`ResponseHeaders.Append`](https://pkg.go.dev/github.com/lrstanley/entrest#ResponseHeaders.Append):
+
+```go title="internal/database/entc.go"
+GlobalResponseHeaders: entrest.RateLimitHeaders.Append(entrest.ResponseHeaders{
+    "X-Request-Id": {
+        Description: "Echo of the request ID.",
+        Schema:      &ogen.Schema{Type: "string"},
+    },
+}),
+```
+
+### Error Responses
+
+[`GlobalErrorResponses`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.GlobalErrorResponses) maps
+HTTP status codes to JSON error schemas. When unset, entrest uses
+[`DefaultErrorResponses`](https://pkg.go.dev/github.com/lrstanley/entrest#DefaultErrorResponses): **400**,
+**401**, **403**, **404**, **409**, **429**, and **500**. The shape matches what the generated handlers
+return (`error`, `type`, `code`, `request_id`, `timestamp`). See
+[Error handling](/http-handler/configuration#error-handling).
+
+Some operations omit certain codes:
+
+- **404** is not listed on list endpoints unless
+  [`ListNotFound`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.ListNotFound) is enabled.
+- **409** is only listed on create and update operations.
+
+Replace the defaults entirely:
+
+```go title="internal/database/entc.go"
+GlobalErrorResponses: entrest.ErrorResponses{
+    http.StatusInternalServerError: {
+        Type: "object",
+        Properties: ogen.Properties{
+            ogen.Property{Name: "message", Schema: &ogen.Schema{Type: "string"}},
+        },
+        Required: []string{"message"},
+    },
+},
+```
+
+Or extend them with [`ErrorResponses.Append`](https://pkg.go.dev/github.com/lrstanley/entrest#ErrorResponses.Append)
+and [`ErrorResponseObject`](https://pkg.go.dev/github.com/lrstanley/entrest#ErrorResponseObject):
+
+```go title="internal/database/entc.go"
+GlobalErrorResponses: entrest.DefaultErrorResponses.Append(entrest.ErrorResponses{
+    http.StatusTeapot: entrest.ErrorResponseObject(http.StatusTeapot),
+}),
+```
+
+Paths added in [`PostGenerateHook`](#pregeneratehook-and-postgeneratehook) receive the global error
+responses and headers as well.
+
+### `Spec` Configuration Option
+
+Configuration option [`Spec`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.Spec) allows you to provide
+a custom OpenAPI spec through the `ogen.Spec` type provided by [ogen](https://github.com/ogen-go/ogen). This is
+more of an advanced option, as it allows you to use additional Go logic to add additional generated endpoints or
+similar. This spec is effectively treated like the "base" in which the generated spec is merged into. A basic
+example:
+
+```go title="internal/database/entc.go" {3-13}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        Spec: &ogen.Spec{
+            Info: ogen.Info{
+                Title:       "My Sample API",
+                Description: "This is a sample API.",
+            },
+            Components: &ogen.Components{
+                Schemas: map[string]*ogen.Schema{
+                    "FooBar": {Type: "string"},
+                },
+            },
+        },
+    })
+    // [...]
+}
+```
+
+### `PreGenerateHook` and `PostGenerateHook`
+
+Configuration option [`PreGenerateHook`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.PreGenerateHook)
+and [`PostGenerateHook`](https://pkg.go.dev/github.com/lrstanley/entrest#Config.PostGenerateHook) are
+similar to the `Spec` option, but you get access to the ent graph. Primarily useful if you need to
+extend the spec with ent-specific information, or you want to reuse content from the generated configuration,
+and build upon it.
+
+Example with a `PreGenerateHook`:
+
+```go title="internal/database/entc.go" {3-7}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        PreGenerateHook: func(g *gen.Graph, spec *ogen.Spec) error {
+            // Example:
+            spec.Components.Schemas["FooBar"] = &ogen.Schema{Type: "string"}
+            return nil
+        },
+    })
+    // [...]
+}
+```
+
+Same thing with a `PostGenerateHook`, but it runs after the spec has been generated:
+
+```go title="internal/database/entc.go" {3-7}
+func main() {
+    ex, err := entrest.NewExtension(&entrest.Config{
+        PostGenerateHook: func(g *gen.Graph, spec *ogen.Spec) error {
+            // Example:
+            spec.Components.Schemas["FooBar"] = &ogen.Schema{Type: "string"}
+            return nil
+        },
+    })
+    // [...]
+}
+```

@@ -1,0 +1,74 @@
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "fumapress/css/preset.css";
+
+@theme {
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --default-font-family: "Geist", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* Catppuccin Latte (light) / Mocha (dark), with a purple accent. */
+:root {
+  --color-fd-background: #eff1f5;
+  --color-fd-foreground: #4c4f69;
+  --color-fd-muted: #e6e9ef;
+  --color-fd-muted-foreground: #6c6f85;
+  --color-fd-popover: #e6e9ef;
+  --color-fd-popover-foreground: #4c4f69;
+  --color-fd-card: #e6e9ef;
+  --color-fd-card-foreground: #4c4f69;
+  --color-fd-border: #ccd0da;
+  --color-fd-primary: #8839ef;
+  --color-fd-primary-foreground: #eff1f5;
+  --color-fd-secondary: #e6e9ef;
+  --color-fd-secondary-foreground: #4c4f69;
+  --color-fd-accent: #ccd0da;
+  --color-fd-accent-foreground: #4c4f69;
+  --color-fd-ring: #8839ef;
+}
+
+.dark {
+  --color-fd-background: #1e1e2e;
+  --color-fd-foreground: #cdd6f4;
+  --color-fd-muted: #181825;
+  --color-fd-muted-foreground: #a6adc8;
+  --color-fd-popover: #11111b;
+  --color-fd-popover-foreground: #cdd6f4;
+  --color-fd-card: #181825;
+  --color-fd-card-foreground: #cdd6f4;
+  --color-fd-border: #313244;
+  --color-fd-primary: #cba6f7;
+  --color-fd-primary-foreground: #11111b;
+  --color-fd-secondary: #181825;
+  --color-fd-secondary-foreground: #cdd6f4;
+  --color-fd-accent: #313244;
+  --color-fd-accent-foreground: #cdd6f4;
+  --color-fd-ring: #cba6f7;
+}
+
+.dark #nd-sidebar {
+  --color-fd-secondary: #313244;
+  --color-fd-muted: #313244;
+}
+
+/* Wider reading column, the old Starlight layout used 65rem. */
+:root {
+  --fd-layout-width: 90rem;
+}
+
+/* Mermaid diagrams are rendered to SVG at build time by Pele, themed with the Fumadocs tokens so they
+   follow light/dark mode without re-rendering. */
+.pele {
+  --pele-bg: var(--color-fd-background);
+  --pele-fg: var(--color-fd-foreground);
+  --pele-muted: var(--color-fd-muted-foreground);
+  --pele-line: var(--color-fd-muted-foreground);
+  --pele-surface: var(--color-fd-card);
+  --pele-surface-alt: var(--color-fd-accent);
+  --pele-border: var(--color-fd-primary);
+  --pele-accent: var(--color-fd-primary);
+  --pele-font: var(--default-font-family);
+  --pele-font-mono: var(--font-mono);
+  --pele-radius: 6px;
+}

@@ -1,0 +1,208 @@
+---
+title: Getting Started
+description: A guide to getting started with entrest.
+---
+
+<Callout type="info" title="Tutorial">
+
+Step-by-step setup for a new entrest project — schemas, codegen, and a running HTTP server. Assumes
+basic familiarity with [EntGo](https://entgo.io/).
+
+</Callout>
+
+**entrest** is an [EntGo](https://entgo.io/) extension for generating compliant OpenAPI
+specs and an HTTP handler implementation that matches that spec. It expands upon the
+approach used by [entoas](https://github.com/ent/contrib/tree/master/entoas#entoas),
+with additional functionality, and pairs the generated specification with a
+fully-functional HTTP handler implementation.
+
+- ✨ Generates OpenAPI specs for your EntGo schema.
+- ✨ Generates a fully functional HTTP handler implementation that matches the OpenAPI spec.
+- ✨ Supports automatic pagination (where applicable).
+- ✨ Supports advanced filtering (using query parameters, `AND`/`OR` predicates, etc).
+- ✨ Supports eager-loading edges, so you don't have to make additional calls unnecessarily.
+- ✨ Supports various forms of sorting.
+- ✨ And more!
+
+<Callout type="idea">
+
+It is recommended to read through the [EntGo getting started guide](https://entgo.io/docs/getting-started/)
+before proceeding to get a better understanding of EntGo.
+
+Additionally, to load extensions with additional configuration, using EntGo's
+[entc integration](https://entgo.io/docs/code-gen/#use-entc-as-a-package) is required.
+
+</Callout>
+
+## Project Structure
+
+We recommend a project structure that looks similar to this:
+
+```text
+├── internal
+│   ├── ...
+│   ├── database
+│   │   ├── ent/               # contains all entgo-generated code
+│   │   │   ├── ...
+│   │   │   └── rest/          # HTTP handler, OpenAPI spec & entrest code
+│   │   ├── schema/            # entgo schemas (w/ entrest annotations)
+│   │   │   ├── ...
+│   │   │   ├── schema_foo.go
+│   │   │   └── schema_bar.go
+│   │   └── entc.go            # entc logic (where to load entrest)
+│   └── generate.go            # used to trigger all internal codegen logic, including pinning codegen dependencies.
+└── main.go                    # main entrypoint for the application, mount HTTP handler, custom endpoints, etc
+```
+
+##### Why?
+
+There are a few reasons why we recommend this structure:
+
+- Generated code is isolated in its own folder. In most cases, you can simply ignore the folder in your
+  editor, so it's less distracting.
+- Schemas aren't buried compared to the standard entgo setup.
+- All database-related code is explicitly in an `internal/` folder, which is best practice for logic
+  that shouldn't be imported by external packages.
+
+##### Future Growth
+
+As the complexity of your project grows, it may be worth separating out logic even further. Some examples:
+
+- HTTP logic -- `main.go -> http.go`.
+- Initializing the DB client/migrations -- `main.go -> internal/database/client.go`
+- Multiple "main" entrypoints (API backend, CLI, worker(s), etc) -- `main.go -> cmd/http-server/main.go`
+
+## Initialize Project
+
+You can find a full example project that matches this guide [here](https://github.com/lrstanley/entrest/tree/master/_examples/simple).
+
+<Steps>
+
+<Step>
+
+Start by initializing a new Go project:
+
+```bash
+mkdir -p my-project && cd my-project
+go mod init github.com/example/my-project
+```
+
+</Step>
+
+<Step>
+
+Setup subfolder for schema files:
+
+```bash
+mkdir -p internal/database/schema
+```
+
+</Step>
+
+<Step>
+
+Add a few schema files:
+
+Example `Pet` schema, which also has a few edge relationships, one of which we eager load. Take
+note of some of the attached annotations:
+
+<include lang="go" meta='{7,19-21,27-29,42-44,56-57,62} title="internal/database/schema/pet.go"'>../../../_examples/simple/internal/database/schema/pet.go</include>
+
+Example `User` schema, which also has a single edge relationship, which we eager load. Take note
+of some of of the attached annotations:
+
+<include lang="go" meta='{8,21-22,27-28,35-37,48-49} title="internal/database/schema/user.go"'>../../../_examples/simple/internal/database/schema/user.go</include>
+
+</Step>
+
+<Step>
+
+Add an `internal/database/entc.go` file, which is used to configure the extension, and run code
+generation. Make sure to replace the `github.com/example/my-project`
+module references with your module name.
+
+<include lang="go" meta='{10,14-21,27-28,30} title="internal/database/entc.go"'>../../../_examples/simple/internal/database/entc.go</include>
+
+</Step>
+
+<Step>
+
+Add a `internal/generate.go` file, where the `go:generate` comment is used to trigger all internal
+codegen logic. This file is also used to pin codegen dependencies:
+
+<include lang="go" meta='{3,9} title="internal/generate.go"'>../../../_examples/simple/internal/generate.go</include>
+
+</Step>
+
+<Step>
+
+Add a `main.go` file, which mounts the HTTP handler, and initializes the database client:
+
+<include lang="go" meta='{14,40,48} title="main.go"'>../../../_examples/simple/main.go</include>
+
+</Step>
+
+<Step>
+
+Lastly, run code generation:
+
+```bash
+go generate -x ./...
+```
+
+</Step>
+
+</Steps>
+
+That's it! You should now have a fully-functional project that uses entrest. This includes:
+
+1. A managed database schema using [EntGo](https://entgo.io/).
+2. A fully-functional HTTP handler implementation using [chi](https://github.com/go-chi/chi) (or any
+   other HTTP router that supports `net/http`).
+3. A fully-functional OpenAPI spec, which can be used to generate client libraries, or to validate
+   requests (see `internal/database/ent/rest/openapi.json`).
+
+## Running The Server
+
+To run the application, simply run the following commands to download all dependencies, then run the
+application:
+
+```bash
+go mod tidy
+go run main.go
+```
+
+```console
+[...]
+go: downloading github.com/go-playground/assert/v2 v2.0.1
+[...]
+running http server
+```
+
+## Next Steps
+
+Now that you've got a basic HTTP API setup, you can start making API requests to it, or further customizing
+it.
+
+<Cards>
+    <Card
+        title="Calling Your New API"
+        description="Learn how to view your API documentation, and make sample requests."
+        href="/guides/calling-your-new-api"
+    />
+    <Card
+        title="Annotation Reference"
+        description="Every annotation, and where it can be applied."
+        href="/openapi-specs/annotation-reference"
+    />
+    <Card
+        title="Mount the Handler"
+        description="Mount the generated HTTP handler and expose CRUD endpoints."
+        href="/http-handler/getting-started"
+    />
+    <Card
+        title="Runtime Configuration"
+        description="Configure the generated HTTP handler via rest.ServerConfig."
+        href="/http-handler/configuration"
+    />
+</Cards>
