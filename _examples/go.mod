@@ -6,7 +6,7 @@ replace github.com/lrstanley/entrest => ../
 
 require (
 	entgo.io/ent v0.14.6
-	github.com/brianvoe/gofakeit/v7 v7.17.0
+	github.com/brianvoe/gofakeit/v7 v7.18.0
 	github.com/go-chi/chi/v5 v5.3.2
 	github.com/go-playground/form/v4 v4.3.1
 	github.com/google/go-github/v89 v89.0.0
