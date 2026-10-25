@@ -50,7 +50,7 @@ We recommend a project structure that looks similar to this:
 │   │   │   ├── schema_foo.go
 │   │   │   └── schema_bar.go
 │   │   └── entc.go            # entc logic (where to load entrest)
-│   └── generate.go            # used to trigger all internal codegen logic, including pinning codegen dependencies.
+│   └── generate.go            # used to trigger all internal codegen logic.
 └── main.go                    # main entrypoint for the application, mount HTTP handler, custom endpoints, etc
 ```
 
@@ -128,9 +128,22 @@ module references with your module name.
 <Step>
 
 Add a `internal/generate.go` file, where the `go:generate` comment is used to trigger all internal
-codegen logic. This file is also used to pin codegen dependencies:
+codegen logic:
 
-<include lang="go" meta='{3,9} title="internal/generate.go"'>../../../_examples/simple/internal/generate.go</include>
+<include lang="go" meta='{3} title="internal/generate.go"'>../../../_examples/simple/internal/generate.go</include>
+
+</Step>
+
+<Step>
+
+Track the codegen dependencies as [Go tools](https://go.dev/doc/go1.24#tools) (Go 1.24+). Because
+`entc.go` is excluded from normal builds (`//go:build ignore`), `go mod tidy` can't see what it
+imports. Registering them as tools adds a `tool` block to your `go.mod`, so they're pinned and kept
+up to date like any other dependency:
+
+```bash
+go get -tool entgo.io/ent/entc github.com/lrstanley/entrest
+```
 
 </Step>
 
