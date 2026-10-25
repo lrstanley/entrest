@@ -2,6 +2,7 @@ import { Link } from "fumapress/client";
 import { asMarkdown, md } from "fumapress/markdown";
 import { ArrowDownUp, ArrowRight, BookOpen, FileJson, Filter, Rocket, Server } from "lucide-react";
 import hero from "../assets/hero.png";
+import { LlmsLinks } from "../components/llms-links";
 import { Logo } from "../components/logo";
 
 const features = [
@@ -108,6 +109,10 @@ ${features.map((f) => `- **${f.title}**: ${f.body}`).join("\n")}
                         </div>
                     ))}
                 </section>
+
+                <footer className="flex justify-center border-t border-fd-border pt-8">
+                    <LlmsLinks />
+                </footer>
             </main>
         </>
     );

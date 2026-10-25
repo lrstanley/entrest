@@ -8,6 +8,7 @@ import { flexsearchPlugin } from "fumapress/plugins/flexsearch";
 import { defineDocs } from "fumadocs-mdx/macro";
 import favicon from "./src/assets/favicon.svg";
 import { DiscordIcon } from "./src/components/discord-icon";
+import { LlmsLinks } from "./src/components/llms-links";
 import { Logo } from "./src/components/logo";
 import { getMdxComponents } from "./src/components/mdx";
 
@@ -64,9 +65,12 @@ const config = defineConfig({
     renderPage: createDocsLayoutPage({
         render(page) {
             // the page already ends with "Next Steps" cards, a prev/next footer would just repeat them.
-            if (page.url === "/guides/getting-started")
-                return { pageProps: { footer: { enabled: false } } };
-            return {};
+            return {
+                layoutProps: { sidebar: { footer: <LlmsLinks className="mt-3 px-1" /> } },
+                ...(page.url === "/guides/getting-started" && {
+                    pageProps: { footer: { enabled: false } },
+                }),
+            };
         },
     }),
     meta: {
