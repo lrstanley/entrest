@@ -6,7 +6,8 @@ import { createHomeLayout } from "fumapress/layouts/home";
 import { llmsPlugin } from "fumapress/plugins/llms.txt";
 import { flexsearchPlugin } from "fumapress/plugins/flexsearch";
 import { defineDocs } from "fumadocs-mdx/macro";
-import favicon from "./src/assets/favicon.png";
+import favicon from "./src/assets/favicon.svg";
+import { DiscordIcon } from "./src/components/discord-icon";
 import { Logo } from "./src/components/logo";
 import { getMdxComponents } from "./src/components/mdx";
 
@@ -30,7 +31,7 @@ const config = defineConfig({
     mode: "static",
     site: {
         name: "entrest",
-        baseUrl: "https://lrstanley.github.io/entrest",
+        baseUrl: "https://entrest.dev",
         git: {
             user: "lrstanley",
             repo: "entrest",
@@ -50,7 +51,14 @@ const config = defineConfig({
                 external: true,
             },
             { text: "EntGo", url: "https://entgo.io/", external: true },
-            { text: "Discord", url: "https://liam.sh/chat", external: true },
+            {
+                type: "icon",
+                text: "Discord",
+                label: "Discord",
+                url: "https://liam.sh/chat",
+                icon: <DiscordIcon />,
+                external: true,
+            },
         ],
     },
     renderPage: createDocsLayoutPage({
@@ -68,7 +76,7 @@ const config = defineConfig({
                     <meta name="author" content="Liam Stanley" />
                     <meta name="copyright" content="© Liam Stanley" />
                     <meta name="darkreader-lock" />
-                    <link rel="icon" href={favicon} />
+                    <link rel="icon" href={favicon} type="image/svg+xml" />
                     <link rel="preconnect" href="https://fonts.googleapis.com" />
                     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
                     <link

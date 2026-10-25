@@ -61,7 +61,7 @@ Depending on the annotation used, it can only be applied in specific locations, 
 > schema shouldn't be queryable, or if there is a sensitive field that should never be returned (but
 > sensitive isn't set on the field for some reason).
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Fields() []ent.Field {
@@ -80,7 +80,7 @@ func (Pet) Fields() []ent.Field {
 > Sets the field to be read-only in the REST API. **If you want to make a schema or edge read-only,
 > use the Operations annotation instead.**
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Fields() []ent.Field {
@@ -100,7 +100,7 @@ func (Pet) Fields() []ent.Field {
 > fields purpose is, or what the format could be. Many OpenAPI documentation browsers will use this
 > information as an example value within the POST/PATCH body.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Fields() []ent.Field {
@@ -123,7 +123,7 @@ func (Pet) Fields() []ent.Field {
 > See [Eager Loading](/openapi-specs/eager-loading) for more information. See also
 > [EntGo: Eager Loading](https://entgo.io/docs/eager-load/).
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Edges() []ent.Edge {
@@ -141,7 +141,7 @@ func (Pet) Edges() []ent.Edge {
 
 > Sets the field to be sortable in the REST API. Note that only types that can be sorted, will be sortable.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Fields() []ent.Field {
@@ -165,7 +165,7 @@ func (Pet) Fields() []ent.Field {
 > Note that this will also change the way eager-loaded edges which are based on this schema are sorted.
 > This is currently the only way to sort eager-loaded data.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -185,7 +185,7 @@ func (Pet) Annotations() []ent.Annotation {
 > Note that this will also change the way eager-loaded edges which are based on this schema are sorted.
 > This is currently the only way to sort eager-loaded data.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -205,7 +205,7 @@ func (Pet) Annotations() []ent.Annotation {
 > See [all predicate constants](https://pkg.go.dev/github.com/lrstanley/entrest#Predicate) that
 > can be used with `entrest.WithFilter` for more information.
 
-##### Example 1
+##### Example 1 [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Fields() []ent.Field {
@@ -217,7 +217,7 @@ func (Pet) Fields() []ent.Field {
 }
 ```
 
-##### Example 2
+##### Example 2 [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Fields() []ent.Field {
@@ -241,7 +241,7 @@ func (Pet) Fields() []ent.Field {
 > included in this filter group. The group name must match when used on the edge if you want that edge
 > to be included in that group.
 
-##### Example
+##### Example [!toc]
 
 Using the following annotations:
 
@@ -295,7 +295,7 @@ and(type.eq==USER, or(username.ihas==foo, display_name.ihas==foo, email.ihas==fo
 >
 > You can use `entrest.SchemaObjectAny` for an object with any properties (effectively `any`).
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Fields() []ent.Field {
@@ -316,7 +316,7 @@ func (Pet) Fields() []ent.Field {
 >
 > See [Pagination](/openapi-specs/pagination) for more information.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -338,7 +338,7 @@ func (Pet) Annotations() []ent.Annotation {
 > necessary validation (permissions) or disallow resources from being deleted. Otherwise, you may
 > allow an attacker to spoof a previously deleted resource, leading to takeover attack vectors.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -355,7 +355,7 @@ func (Pet) Annotations() []ent.Annotation {
 > Provides an [OpenAPI summary](https://swagger.io/specification/#operation-object) for the specified
 > operation. This should be a short summary of what the operation does.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -373,7 +373,7 @@ func (Pet) Annotations() []ent.Annotation {
 > operation. This should be a verbose explanation of the operation behavior. CommonMark syntax MAY be used
 > for rich text representation.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -391,7 +391,7 @@ func (Pet) Annotations() []ent.Annotation {
 > for this schema/edge. Tags can be used for logical grouping of operations by resources or any other
 > qualifier.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -409,7 +409,7 @@ func (Pet) Annotations() []ent.Annotation {
 > schema/edge. This will otherwise default to the schema/edge's name(s). Tags can be used for logical grouping
 > of operations by resources or any other qualifier.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -426,7 +426,7 @@ func (Pet) Annotations() []ent.Annotation {
 > Provides an [OpenAPI operation ID](https://swagger.io/docs/specification/paths-and-operations/#operationid)
 > for the specified operation. This should be snake-cased and **must be unique** for the operation.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3-4}
 func (Pet) Annotations() []ent.Annotation {
@@ -445,7 +445,7 @@ func (Pet) Annotations() []ent.Annotation {
 > schema/edge/field in the REST API. This will otherwise default to the schema/edge/field comment. It's
 > recommended to use the field comment rather than setting this annotation when possible.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -463,7 +463,7 @@ func (Pet) Annotations() []ent.Annotation {
 >
 > See [Pagination](/openapi-specs/pagination) for more information.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -481,7 +481,7 @@ func (Pet) Annotations() []ent.Annotation {
 >
 > See [Pagination](/openapi-specs/pagination) for more information.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -499,7 +499,7 @@ func (Pet) Annotations() []ent.Annotation {
 >
 > See [Pagination](/openapi-specs/pagination) for more information.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -519,7 +519,7 @@ func (Pet) Annotations() []ent.Annotation {
 >
 > See [Eager Loading](/openapi-specs/eager-loading) for more information.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -543,7 +543,7 @@ func (Pet) Annotations() []ent.Annotation {
 >
 > See [Eager Loading](/openapi-specs/eager-loading) for more information.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Edges() []ent.Edge {
@@ -577,7 +577,7 @@ func (Pet) Annotations() []ent.Annotation {
 > the `bulk` field, which would just be `<field>` (sets the non-unique edge to be set to those provided
 > values).**
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Edges() []ent.Edge {
@@ -601,7 +601,7 @@ func (Pet) Edges() []ent.Edge {
 >
 > See [Mount the Handler](/http-handler/getting-started) for more information.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3}
 func (Pet) Annotations() []ent.Annotation {
@@ -617,7 +617,7 @@ func (Pet) Annotations() []ent.Annotation {
 
 > Sets the OpenAPI deprecated flag for the specified schema/edge/field.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {4}
 func (Pet) Fields() []ent.Field {
@@ -648,7 +648,7 @@ func (Pet) Fields() []ent.Field {
 > keep `OperationUpdate` on the schema, mark fields with [`WithReadOnly`](#withreadonly), and
 > restrict individual edges as needed.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3-6}
 func (Pet) Annotations() []ent.Annotation {
@@ -687,7 +687,7 @@ func (Pet) Edges() []ent.Edge {
 > is used (or, for edges without an explicit setting, the parent schema's operations). See
 > [`WithIncludeOperations`](#withincludeoperations) for how schema vs edge operations interact.
 
-##### Example
+##### Example [!toc]
 
 ```go title="internal/database/schema/schema_pet.go" {3-6}
 func (Pet) Annotations() []ent.Annotation {

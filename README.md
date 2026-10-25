@@ -84,7 +84,7 @@ fully-functional HTTP handler implementation.
 
 ## :gear: Usage
 
-Take a look at the [official documentation](https://lrstanley.github.io/entrest/) for guides, examples, and more.
+Take a look at the [official documentation](https://entrest.dev/) for guides, examples, and more.
 
 <!-- template:begin:goget -->
 <!-- do not edit anything in this "template" block, its auto-generated -->

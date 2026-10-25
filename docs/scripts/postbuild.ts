@@ -1,14 +1,12 @@
 // Post-build checks and fixups for the static site in dist/public.
 //
 //  1. Markdown outputs (llms.txt, llms-full.txt, /<page>.md) are generated with root-relative links
-//     (e.g. /guides/getting-started) which ignore the site's base path, so rewrite them to absolute URLs.
-//  2. Validate every internal link and #fragment in the generated HTML (the built-in link-validation plugin
-//     doesn't support a non-root base path).
+//     (e.g. /guides/getting-started), so rewrite them to absolute URLs.
+//  2. Validate every internal link and #fragment in the generated HTML.
 import { existsSync, readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
-const SITE = "https://lrstanley.github.io/entrest";
-const BASE = "/entrest";
+const SITE = "https://entrest.dev";
 const OUT = join(import.meta.dirname, "..", "dist", "public");
 
 function walk(dir: string): string[] {
@@ -73,11 +71,11 @@ for (const file of htmlFiles) {
     const [path = "", fragment] = href.replace(/&amp;/g, "&").split("#");
     let target = file;
     if (path) {
-      if (!path.startsWith(BASE + "/") && path !== BASE) {
-        errors.push(`${page}: link ${href} is not under ${BASE}/`);
+      if (!path.startsWith("/")) {
+        errors.push(`${page}: link ${href} is not root-relative`);
         continue;
       }
-      const rel = path.slice(BASE.length).replace(/^\//, "").replace(/\/$/, "");
+      const rel = path.replace(/^\//, "").replace(/\/$/, "");
       const candidates = [join(OUT, rel, "index.html"), join(OUT, rel)];
       const found = candidates.find((c) => existsSync(c) && statSync(c).isFile());
       if (!found) {

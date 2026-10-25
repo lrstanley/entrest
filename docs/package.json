@@ -7,7 +7,7 @@
     "dev": "fumapress dev",
     "build": "fumapress build && bun scripts/postbuild.ts && tsc --noEmit",
     "start": "fumapress start",
-    "preview": "rm -rf .preview && mkdir .preview && ln -s ../dist/public .preview/entrest && bunx serve .preview",
+    "preview": "bunx serve dist/public",
     "types:check": "tsc --noEmit"
   },
   "dependencies": {

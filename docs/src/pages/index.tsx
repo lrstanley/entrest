@@ -2,6 +2,7 @@ import { Link } from "fumapress/client";
 import { asMarkdown, md } from "fumapress/markdown";
 import { ArrowDownUp, ArrowRight, BookOpen, FileJson, Filter, Rocket, Server } from "lucide-react";
 import hero from "../assets/hero.png";
+import { Logo } from "../components/logo";
 
 const features = [
     {
@@ -58,9 +59,8 @@ ${features.map((f) => `- **${f.title}**: ${f.body}`).join("\n")}
             />
             <main className="mx-auto flex w-full max-w-6xl flex-col gap-16 px-6 py-16 md:py-24">
                 <section className="flex flex-col items-center gap-8 text-center">
-                    <h1 className="font-mono text-5xl font-bold tracking-tight md:text-7xl">
-                        <span className="text-fd-primary">ent.</span>
-                        <span>rest</span>
+                    <h1>
+                        <Logo className="text-5xl md:text-7xl" />
                     </h1>
                     <p className="max-w-2xl text-lg text-fd-muted-foreground">
                         <code className="text-fd-primary">ent.rest</code> is an{" "}
