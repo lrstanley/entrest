@@ -4,6 +4,8 @@
   "$schema": "https://unpkg.com/wrangler/config-schema.json",
   "name": "entrest-docs",
   "compatibility_date": "2026-11-03",
+  // opt out of wrangler's usage metrics (overrides the user's own preference).
+  "send_metrics": false,
   "assets": {
     "directory": "./dist/public",
     "not_found_handling": "404-page",
