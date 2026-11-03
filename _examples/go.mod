@@ -8,7 +8,7 @@ require (
 	entgo.io/ent v0.14.6
 	github.com/brianvoe/gofakeit/v7 v7.17.0
 	github.com/go-chi/chi/v5 v5.3.2
-	github.com/go-playground/form/v4 v4.3.1
+	github.com/go-playground/form/v4 v4.5.0
 	github.com/google/go-github/v89 v89.0.0
 	github.com/google/uuid v1.6.0
 	github.com/lrstanley/entrest v1.2.0
