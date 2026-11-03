@@ -14,5 +14,6 @@
 /docs/dist
 /docs/.preview
 /docs/node_modules
+/docs/.wrangler
 
 **/TODO.md

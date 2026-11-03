@@ -1,0 +1,13 @@
+// Deploys the static docs build as an assets-only Worker (no "main", so no Worker code runs).
+// https://developers.cloudflare.com/workers/static-assets/
+{
+  "$schema": "https://unpkg.com/wrangler/config-schema.json",
+  "name": "entrest-docs",
+  "compatibility_date": "2026-11-03",
+  "assets": {
+    "directory": "./dist/public",
+    "not_found_handling": "404-page",
+    // pages are emitted as <path>/index.html but linked (and canonicalized) without a trailing slash.
+    "html_handling": "drop-trailing-slash"
+  }
+}
