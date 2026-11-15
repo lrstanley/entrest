@@ -4,7 +4,7 @@ go 1.27.0
 
 require (
 	entgo.io/ent v0.14.6
-	github.com/go-openapi/inflect v1.0.0
+	github.com/go-openapi/inflect v1.0.1
 	github.com/ogen-go/ogen v1.24.0
 	github.com/pb33f/libopenapi v0.38.7
 	github.com/pb33f/libopenapi-validator v0.14.0
