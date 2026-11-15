@@ -16,7 +16,7 @@
     "fumadocs-core": "^16.16.2",
     "fumadocs-mdx": "^15.4.6",
     "fumadocs-ui": "npm:@fumadocs/base-ui@^16.16.2",
-    "fumapress": "1.6.2",
+    "fumapress": "2.0.2",
     "lucide-react": "^1.47.0",
     "pele": "^1.7.0",
     "react": "^19.3.0",
