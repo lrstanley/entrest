@@ -87,15 +87,6 @@ Below are a few guidelines if you would like to contribute:
   files. This should be available for any editor that supports `gopls`, however
   you can also run it locally with `golangci-lint run` after installing it.
 
-
-
-
-
-
-
-
-
-
 <!-- source for this section: ./.github/ci-config.yml -->
 
 ## :page_with_curl: Documentation
@@ -139,7 +130,6 @@ During rapid prototyping, you may wish to only run `make examples` for examples,
 module. See the contents of the [Makefile](Makefile) for more information on specifics.
 
 Make sure you read the [Go](hamster-golang) section.
-
 
 ## :clipboard: References
 
